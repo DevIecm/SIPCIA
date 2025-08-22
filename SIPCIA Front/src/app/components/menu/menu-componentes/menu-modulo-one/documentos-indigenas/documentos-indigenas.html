@@ -1,0 +1,70 @@
+<app-navbar></app-navbar>
+
+<div class="buttons-session">
+  <div class="row">
+    <div class="column">
+      <div class="div-redondeado-right">
+        <h3 class="title">{{ data.direccion }} 29</h3>
+      </div>
+      <div class="div-redondeado-right-home">
+        <mat-icon class="icon-home">home</mat-icon>
+        <h3 class="title">{{ data.subm9 }}</h3>
+      </div>
+    </div>
+
+    <div class="column">
+      <button (click)="logout()" class="button-close div-redondeado-left-sesion">
+        <div>
+          <h3 class="title">{{ data.csesion }}</h3>
+        </div>
+      </button>
+      <div class="div-redondeado-left">
+        <h3 class="title">Marco Tulio Galindo Gómez <br> Titular de Organo Desconcentrado en OPLE</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="contenedor-card">
+  <div *ngIf="!muestraBuscar" class="container" style="z-index: 1;">
+    <div class="div-class">
+      <div class="container-buscador-tabs">
+        <mat-label >Buscar:</mat-label>
+      </div>
+      <div>
+        <input 
+          class="buscador-container-tabs" 
+          matInput 
+          (keyup)="applyFilter($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <mat-tab-group (selectedTabChange)="tabChanged($event)" [selectedIndex]="selectedTabIndex"style="z-index: 0;">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Documentos Normativos
+      </ng-template>
+      <div style="padding: 10px;">asas</div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Documentos de <br>apóyo a Direcciones<br>Distritales
+      </ng-template>
+      Documentos Normativos
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Fichas Técnicas
+      </ng-template>
+      Documentos Normativos
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+            Otros Documentos<br>Generados por<br>Direcciones Distritales
+      </ng-template>
+      Documentos Normativos
+    </mat-tab>  
+  </mat-tab-group>
+</div>

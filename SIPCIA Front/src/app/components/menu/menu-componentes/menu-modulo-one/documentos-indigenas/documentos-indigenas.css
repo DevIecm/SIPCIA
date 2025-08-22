@@ -1,0 +1,129 @@
+.buttons-session {
+    margin-top: 1%;
+}
+
+
+.right-panel {
+    flex: 1;
+    display: flex;
+    padding: 40px;
+}
+
+.contenedor-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.column {
+    flex: 1;
+    width: 50%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.div-redondeado-right {
+    margin-top: 1.5%;
+    padding: 20px;
+    width: 230px;
+    height: 4px;
+    color: #f4f4f4!important;
+    background-color: #9B3BCA!important;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+    position: relative;
+}
+
+.div-redondeado-right-home {
+    margin-top: -4.7%;
+    padding: 26px;
+    width: 790px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #BF90DD!important;
+    border-top-right-radius: 26px;
+    border-bottom-right-radius: 26px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 7pt;
+}
+
+.div-redondeado-left {
+    padding: 20px;
+    width: 300px;
+    height: 10px;
+    color: #f4f4f4!important;
+    background-color: #9B3BCA!important;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    margin-left: auto;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+    font-size: 9pt;
+    text-align: right;
+}
+
+.div-redondeado-left-sesion {
+    margin-top: -2%;
+    padding: 13px;
+    width: 200px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #FBB03B!important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+    font-size: 9pt;
+}
+
+.button-close {
+    border-color: transparent;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.button-registro {
+    background-color: #FBB03B!important;
+    color: #f4f4f4!important;
+    cursor: pointer;
+    width: 160px;
+}
+
+.button-clean {
+    background-color: #9D75CA!important;
+    color: #f4f4f4!important;
+    cursor: pointer;
+}
+
+.icon-home {
+    margin-right: 13px;
+    vertical-align: middle;
+}
+
+
+.div-class {
+    margin-left: 6%;
+    margin-top: -2%;
+    position: fixed;
+}

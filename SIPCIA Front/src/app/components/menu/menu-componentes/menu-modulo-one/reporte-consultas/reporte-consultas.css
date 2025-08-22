@@ -1,0 +1,191 @@
+.buttons-session {
+    margin-top: 1%;
+}
+
+.contenedor-card {
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-left: 38px;
+    width: 96%;
+    z-index: 0;
+    position: absolute;
+}
+
+.button {
+    z-index: 1;
+    background-color: #FBB03B;
+    z-index: 1;
+    border: transparent;
+    width: 230px;
+    border-radius: 45px;
+    height: 35px;
+    position: absolute;
+    margin-top: -16px;
+    margin-left: 85%;
+    font-weight: bold;
+}
+
+.button-first {
+    z-index: 1;
+    background-color: #FBB03B;
+    z-index: 1;
+    border: transparent;
+    width: 194px;
+    border-radius: 45px;
+    height: 35px;
+    position: absolute;
+    margin-top: -16px;
+    margin-left: 74%;
+    font-weight: bold;
+}
+
+.login-card {
+    width: 80%; /* Ajusta a lo que necesites */
+    padding: 30px;
+    background-color: transparent;
+    border-radius: 16px;
+}
+
+.column {
+    flex: 1;
+    width: 50%;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.div-redondeado-right {
+    margin-top: 1.5%;
+    padding: 20px;
+    width: 230px;
+    height: 4px;
+    color: #f4f4f4!important;
+    background-color: #9B3BCA!important;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+    position: relative;
+}
+
+.div-redondeado-right-home {
+    margin-top: -4.7%;
+    padding: 26px;
+    width: 540px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #BF90DD!important;
+    border-top-right-radius: 26px;
+    border-bottom-right-radius: 26px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9px;
+}
+
+.div-redondeado-left {
+    padding: 20px;
+    width: 300px;
+    height: 10px;
+    color: #f4f4f4!important;
+    background-color: #9B3BCA!important;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    margin-left: auto;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+    font-size: 9pt;
+    text-align: right;
+}
+
+.div-redondeado-left-sesion {
+    margin-top: -2%;
+    padding: 13px;
+    width: 200px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #FBB03B!important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+    font-size: 9pt;
+}
+
+.button-close {
+    border-color: transparent;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.button-registro {
+    background-color: #FBB03B!important;
+    color: #f4f4f4!important;
+    cursor: pointer;
+    width: 160px;
+}
+
+.button-clean {
+    background-color: #9D75CA!important;
+    color: #f4f4f4!important;
+    cursor: pointer;
+}
+
+.icon-home {
+    margin-right: 13px;
+    vertical-align: middle;
+}
+
+table {
+    width: 80%;
+    background-color: transparent;
+ 
+}
+
+th {
+    color: #ffff;
+    background-color: #9d75ca !important;
+}   
+
+tr {
+    font-size: 9px;
+    height: 19px;
+}
+
+.back-table {
+    border-radius: 10px;
+    padding: 17px;
+    background-color: #bf90dd;
+}
+
+/* COLUMNAS */
+th,
+td {
+    text-align: center;
+    border: 1px solid white;
+    padding: 8px;
+}
+
+.white-row {
+    background-color: white;
+}
+
+.purple-row {
+    background-color: #c5c5ff; /* Puedes cambiar el tono de morado si deseas */
+}

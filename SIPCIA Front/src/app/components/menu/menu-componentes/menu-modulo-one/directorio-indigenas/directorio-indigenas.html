@@ -1,0 +1,108 @@
+<app-navbar></app-navbar>
+
+<nav class="navbar bg-body-tertiary" style="display: inline;">
+  <div class="container-fluid" style="padding: 0px;">
+    <a class="navbar-brand">
+      <div class="row row-cols-1">
+        <div class="col">
+          <div class="div-redondeado-right">
+            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ data.direccion }} 29</h3>
+          </div>
+        </div>
+        <div class="container div-redondeado-right-home text-center">
+          <div class="row"> 
+            <div class="col" style=" margin: -4px;">
+              <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
+            </div>
+            <div class="col">
+              <h3 style="font-size: 12px; margin: 0px;">1.2 Directorio de Instancias Representativas de <br> Pueblos, Barrios y Comunidades Indígenas</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <div class="row row-cols-1">
+        <div class="col">
+            <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+                <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+            </button>
+        </div>
+
+        <div class="col">
+            <div class="div-redondeado-left">
+              <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+            </div>
+        </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container justify-content-center mt-4">
+  <div class="row">
+    <div class="col-6 d-flex">
+      <div class="box-search container justify-content-center">
+        <label>Buscar:</label>
+      </div>
+      <input type="text" class="form-control"  name="searchTerm" >
+    </div>
+    <div class="col-6 d-flex justify-content-end">
+      <button class="btn button">Descarga Directorio</button>
+    </div>
+  </div>
+
+  <div class="row back-table" style="margin-top: 8px;">
+    <div class="col-12">
+      <table class="table">
+        <thead>
+          <tr class="table-primary">
+            <th scope="col">No.</th>
+            <th scope="col">Editar</th>
+            <th scope="col">Generar Bitácora</th>
+            <th scope="col">Folio único</th>
+            <th scope="col">Demarcación</th>
+            <th scope="col">Nombre Completo</th>
+            <th scope="col">Nombre del Pueblo Originario</th>
+            <th scope="col">Nombre del Pueblo</th>
+            <th scope="col">Nombre del Barrio</th>
+            <th scope="col">Comunidad</th>
+            <th scope="col">UT / Otro</th>
+            <th scope="col">Nombre de la <br> Comunidad <br> Indígena</th>
+            <th scope="col">Nombre de la Instancia <br> Representativa a la <br> que pertenece</th>
+            <th scope="col">Cargo que ocupa en la <br> Instancia Representativa</th>
+            <th scope="col">Domicilio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dataSource.data; let i = index" class="dual-row">
+            <td>{{ item.position ? item.position : '-'}}</td>
+            <td> <button type="button" class="btn button-table" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-pencil-square"></i></button></td>
+            <td><i class="bi bi-journal-text"></i></td>
+            <td>{{ item.unico ? item.unico : '-'}}</td>
+            <td>{{ item.demarcacion }}</td>
+            <td>{{ item.ncompleto }}</td>
+            <td>{{ item.unico ? item.unico : '-'}}</td>
+            <td>{{ item.demarcacion ? item.demarcacion : '-'}}</td>
+            <td>{{ item.ncompleto ? item.ncompleto : '-'}}</td>
+            <td>{{ item.nporiginario ? item.nporiginario : '-'}}</td>
+            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
+            <td>{{ item.nbarrio ? item.nbarrio : '-'}}</td>
+            <td>{{ item.comunidad ? item.comunidad : '-'}}</td>
+            <td>{{ item.ut ? item.ut : '-'}}</td>
+            <td>{{ item.nindigena ? item.nindigena : '-'}}</td>      
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-formulario-registro></app-formulario-registro>
+      </div>
+    </div>
+  </div>
+</div>

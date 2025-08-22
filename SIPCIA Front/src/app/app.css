@@ -1,0 +1,64 @@
+
+
+/* Base de todas las pestañas */
+::ng-deep .mat-mdc-tab {
+  border-radius: 10px 10px 0 0;
+  padding: 6px 16px;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+/* Evitar doble borde entre tabs */
+::ng-deep .mat-mdc-tab + .mat-mdc-tab {
+  border-left: none;
+}
+
+/* Colores por pestaña */
+::ng-deep .mat-mdc-tab:nth-child(1) { background-color: #BF90DD; z-index: 1; }
+::ng-deep .mat-mdc-tab:nth-child(2) { background-color: #9D75CA; margin-left: -6px; z-index: 2; }
+::ng-deep .mat-mdc-tab:nth-child(3) { background-color: #9B3BCA; margin-left: -6px; z-index: 3; }
+::ng-deep .mat-mdc-tab:nth-child(4) { background-color: #9D00CA; color: black !important; margin-left: -6px; z-index: 4; }
+
+
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab-body:nth-child(1) .mat-mdc-tab-body-content { border-radius: 7px; background-color: #BF90DD; }
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab-body:nth-child(2) .mat-mdc-tab-body-content { padding: 20px; background-color: #9D75CA; }
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab-body:nth-child(3) .mat-mdc-tab-body-content { padding: 20px; background-color: #9B3BCA; }
+::ng-deep .mat-mdc-tab-group .mat-mdc-tab-body:nth-child(4) .mat-mdc-tab-body-content { padding: 20px; background-color: #9D00CA; }
+
+/* Hover: oscurece y trae al frente */
+::ng-deep .mat-mdc-tab:hover {
+  filter: brightness(0.85);
+  z-index: 10;
+}
+
+/* Pestaña activa: efecto carpeta abierta */
+::ng-deep .mat-mdc-tab.mdc-tab--active {
+  filter: brightness(0.95);
+  z-index: 20; /* siempre al frente */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Parte inferior curva para pestaña activa */
+::ng-deep .mat-mdc-tab.mdc-tab--active::after {
+  content: "";
+  position: absolute;
+  color: #ffff!important; 
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 8px;
+  background-color: inherit;
+  border-radius: 0 0 10px 10px;
+}
+
+::ng-deep .mat-mdc-tab-labels {
+  margin-left: 590px;
+  margin-right: 60px;
+}
+
+::ng-deep .mdc-tab__text-label {
+  color: #ffff!important; 
+}

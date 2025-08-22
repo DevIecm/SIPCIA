@@ -1,0 +1,153 @@
+<app-navbar></app-navbar>
+
+<nav class="navbar bg-body-tertiary" style="display: inline;">
+  <div class="container-fluid" style="padding: 0px;">
+    <a class="navbar-brand">
+      <div class="row row-cols-1">
+        <div class="col">
+          <div class="div-redondeado-right">
+            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ data.direccion }} 29</h3>
+          </div>
+        </div>
+        <div class="container div-redondeado-right-home text-center">
+          <div class="row"> 
+            <div class="col" style=" margin: -4px;">
+              <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
+            </div>
+            <div class="col">
+              <h3 style="font-size: 12px; margin: 0px;">1.6 Reporte del número de instancias <br> representativas</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <div class="row row-cols-1">
+        <div class="col">
+            <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+                <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+            </button>
+        </div>
+
+        <div class="col">
+            <div class="div-redondeado-left">
+              <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+            </div>
+        </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container text-center mt-4" style="z-index: 1;">
+  <div class="row">
+    <div class="col d-flex justify-content-end">
+      <button class="btn button">Generar y Descarga de Reporte</button>
+    </div>
+  </div>
+</div>
+
+<div class="container back-table justify-content-center mt-4" style="z-index: 2;">
+
+
+  <div class="row mt-6">
+    <div class="col-12 d-flex justify-content-center mb-3">
+      <label class="label-title">Número de instancias representativas de pueblos, barrios y comunidades indígenas</label>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-12 d-flex justify-content-end">
+      <div>
+        <label class="form-label label-dem">*Demarcación:</label>
+        <select>
+          <option value="non" selected></option>
+            @for (item of foods; track item) {
+              <option [value]="item.value">{{item.viewValue}}</option>
+            }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <table class="table">
+        <thead>
+          <tr class="table-primary">
+            <th scope="col">Pueblos <br> Originarios</th>
+            <th scope="col">Pueblos</th>
+            <th scope="col">Barrios</th>
+            <th scope="col">Comiunidades <br> Indígenas</th>
+            <th scope="col">UT*</th>
+            <th scope="col">Otros</th>
+            <th scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dataSource.data; let i = index">
+            <td>{{ item.position ? item.position : '-'}}</td>
+            <td>{{ item.unico ? item.unico : '-'}}</td>
+            <td>{{ item.demarcacion }}</td>
+            <td>{{ item.ncompleto }}</td>
+            <td>{{ item.unico ? item.unico : '-'}}</td>
+            <td>{{ item.demarcacion ? item.demarcacion : '-'}}</td>
+            <td>{{ item.ncompleto ? item.ncompleto : '-'}}</td>      
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="container back-table-home justify-content-center mt-4">
+
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center mb-3">
+      <label class="label-title">Número de instancias representativas, organizaciones y personas relevantes <br> pertenecientes a pueblos y comunidades afromexicanas</label>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-12 d-flex justify-content-end">
+      <div>
+        <label class="form-label label-dem">*Demarcación:</label>
+        <select>
+          <option value="non" selected></option>
+            @for (item of foods; track item) {
+              <option [value]="item.value">{{item.viewValue}}</option>
+            }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <table class="table">
+        <thead>
+          <tr class="table-primary">
+            <th scope="col">Pueblos</th>
+            <th scope="col">Comunidades</th>
+            <th scope="col">Organizaciones</th>
+            <th scope="col">Personas <br> Relevantes</th>
+            <th scope="col">Otros</th>
+            <th scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dataSource.data; let i = index">
+            <td>{{ item.position ? item.position : '-'}}</td>
+            <td>{{ item.unico ? item.unico : '-'}}</td>
+            <td>{{ item.demarcacion }}</td>
+            <td>{{ item.ncompleto }}</td>
+            <td>{{ item.unico ? item.unico : '-'}}</td>
+            <td>{{ item.demarcacion ? item.demarcacion : '-'}}</td>  
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
