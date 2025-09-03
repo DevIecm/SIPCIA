@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const router = express.Router();
 
-//insert de registro
+//insert de registro probado
 router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
     try{
          // Todos los campos del formulario (los que esperas recibir del front)
@@ -17,16 +17,36 @@ router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
             documentos, enlace_documentos, fecha_registro, usuario_registro, modulo_registro, estado_registro
             } = req.body;
 
-
-
+        if (
+            nombre_completo == null || nombre_completo === '' ||
+            seccion_electoral == null ||
+            demarcacion == null ||
+            distrito_electoral == null ||
+            comunidad == null ||
+            nombre_comunidad == null || nombre_comunidad === '' ||
+            nombre_instancia == null || nombre_instancia === '' ||
+            cargo_instancia == null || cargo_instancia === '' ||
+            domicilio == null || domicilio === '' ||
+            telefono_particular == null ||
+            telefono_celular == null ||
+            correo_electronico_oficial == null || correo_electronico_oficial === '' ||
+            correo_electronico_personal == null || correo_electronico_personal === '' ||
+            documentos == null ||
+            usuario_registro == null ||
+            modulo_registro == null ||
+            estado_registro == null
+        ) {
+            return res.status(400).json({ message: "Datos requeridos" });
+        }
+        /* 
         if(!nombre_completo ||!seccion_electoral || !demarcacion|| !distrito_electoral|| !comunidad|| !nombre_comunidad|| !nombre_instancia 
             || !cargo_instancia || !domicilio || !telefono_particular || !telefono_celular || !correo_electronico_oficial || !correo_electronico_personal || !documentos 
             || !usuario_registro || !modulo_registro || !estado_registro){
             return res.status(400).json({ message: "Datos requeridos"})
-        } 
+        } */
 
         //fecha
-        const original = new Date(fecha_registro);
+        const original = new Date();
         const offsetInMs = original.getTimezoneOffset() * 60000;
         const fechaLocal = new Date(original.getTime() - offsetInMs);
         
@@ -112,7 +132,7 @@ router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
 
 
 
-//consulta de registro falta regresar id del registro
+//consulta de registro falta regresar id del registro probado
 router.get("/getRegistro", Midleware.verifyToken, async (req, res) => {
     try {
         const { id } = req.query; //pibote por medio del id del usuario registrado
@@ -172,9 +192,9 @@ router.get("/getRegistro", Midleware.verifyToken, async (req, res) => {
                     JOIN demarcacion_territorial as dt on r.demarcacion = dt.id
                     JOIN cat_distrito as cd on r.distrito_electoral = cd.id
                     JOIN comunidad as c on r.comunidad = c.id
-                    JOIN cat_pueblos_originarios as cpo on r.pueblo_originario = cpo.id
-                    JOIN cat_pueblos as cp on r.pueblo_pbl = cp.id
-                    JOIN cat_barrios as cb on r.barrio_pbl = cb.id
+                    LEFT JOIN cat_pueblos_originarios as cpo on r.pueblo_originario = cpo.id
+                    LEFT JOIN cat_pueblos as cp on r.pueblo_pbl = cp.id
+                    LEFT JOIN cat_barrios as cb on r.barrio_pbl = cb.id
                     JOIN unidad_territorial as ut on r.unidad_territorial_pbl = ut.id 
                     JOIN usuarios as usu on r.usuario_registro = usu.id
                     JOIN tipo_usuario as tu on r.modulo_registro = tu.id 
@@ -207,26 +227,32 @@ router.patch("/updateRegistro", Midleware.verifyToken, async (req, res) => {
             fecha_registro, hora_registro, usuario_registro, modulo_registro, estado_registro
          } = req.body;
 
-         //fecha
-        const original = new Date(fecha_registro);
-        const offsetInMs = original.getTimezoneOffset() * 60000;
-        const fechaLocal = new Date(original.getTime() - offsetInMs);
-        
-        //hora
-        const ahora = new Date();
-        const horas = ahora.getHours().toString().padStart(2, '0');
-        const minutos = ahora.getMinutes().toString().padStart(2, '0');
-        const segundos = ahora.getSeconds().toString().padStart(2, '0');
-        const horaActual = `${horas}:${minutos}:${segundos}`;
+        if (
+            id_registro == null || id_registro === '' ||
+            nombre_completo == null || nombre_completo === '' ||
+            seccion_electoral == null ||
+            demarcacion == null ||
+            distrito_electoral == null ||
+            nombre_comunidad == null || nombre_comunidad === '' ||
+            nombre_instancia == null || nombre_instancia === '' ||
+            cargo_instancia == null || cargo_instancia === '' ||
+            domicilio == null || domicilio === '' ||
+            telefono_particular == null ||
+            telefono_celular == null ||
+            correo_electronico_oficial == null || correo_electronico_oficial === '' ||
+            correo_electronico_personal == null || correo_electronico_personal === '' ||
+            documentos == null ||
+            usuario_registro == null ||
+            modulo_registro == null ||
+            estado_registro == null
+        ) {
+            return res.status(400).json({ message: "Datos requeridos" });
+        } 
 
-        if (!id_registro || !nombre_completo || !seccion_electoral || !demarcacion || !distrito_electoral || !nombre_comunidad || !nombre_instancia
-            || !cargo_instancia || !domicilio || !telefono_particular || !telefono_celular || !correo_electronico_oficial || !correo_electronico_personal || !documentos
-            || !usuario_registro || !modulo_registro || !estado_registro) {
-            return res.status(400).json({ message: "Datos requeridos" })
-        }
 
         const pool = await connectToDatabase();
         const result = await pool.request()
+            .input('id_registro', sql.Int, id_registro)
             .input('nombre_completo', sql.VarChar, nombre_completo)
             .input('seccion_electoral', sql.Int, seccion_electoral)
             .input('demarcacion', sql.Int, demarcacion)
@@ -252,12 +278,9 @@ router.patch("/updateRegistro", Midleware.verifyToken, async (req, res) => {
             .input('correo_electronico_personal', sql.VarChar, correo_electronico_personal)
             .input('documentos', sql.Int, documentos)
             .input('enlace_documentos', sql.VarChar, enlace_documentos)
-            .input('fecha_registro', sql.DateTime, fechaLocal)
-            .input('hora_registro', sql.VarChar, horaActual)
             .input('usuario_registro', sql.Int, usuario_registro)
             .input('modulo_registro', sql.Int, modulo_registro)
             .input('estado_registro', sql.Int, estado_registro)
-
             .query(`UPDATE registro SET
                 nombre_completo = @nombre_completo,
                 seccion_electoral = @seccion_electoral,
@@ -284,8 +307,6 @@ router.patch("/updateRegistro", Midleware.verifyToken, async (req, res) => {
                 correo_electronico_personal = @correo_electronico_personal,
                 documentos = @documentos,
                 enlace_documentos = @enlace_documentos,
-                fecha_registro = @fecha_registro,
-                hora_registro = @hora_registro,
                 usuario_registro = @usuario_registro,
                 modulo_registro = @modulo_registro,
                 estado_registro = @estado_registro
@@ -335,6 +356,5 @@ router.get("/getbyseccion", Midleware.verifyToken, async (req, res) => {
         return res.status(500).json({ message: "Error de servidor", error: error.message0});
     }
 });
-
 
 export default router;
