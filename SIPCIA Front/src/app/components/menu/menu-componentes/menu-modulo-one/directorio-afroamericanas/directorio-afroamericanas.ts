@@ -1,88 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Navbar } from '../../../../navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import * as data from '../../../../labels/label.json';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FormularioRegistro } from '../../formularios-modulos/formulario-registro/formulario-registro';
-
-interface PeriodicElement {
-  position: number;
-  edit: string;
-  generar: string;
-  unico: number;
-  demarcacion: string;
-  ncompleto: string;
-  nporiginario: string;
-  npueblo: string;
-  nbarrio: string;
-  comunidad: string;
-  ut: string;
-  nindigena: string;
-  nrepresentativa: string;
-  cinstancia: string;
-  domicilio: string;
-}
-
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  
-  {  
-    position: 1,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "test",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    nrepresentativa: "test",
-    cinstancia: "test",
-    domicilio: "test",
-  },
-  { 
-    position: 1,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    nrepresentativa: "",
-    cinstancia: "test",
-    domicilio: "test",
-  },
-  { 
-    position: 1,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "test",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    nrepresentativa: "test",
-    cinstancia: "test",
-    domicilio: "test",
-  }
-];
-
+import { Register } from '../../../../../services/registerService/register';
+import { Auth } from '../../../../../services/authService/auth';
 
 @Component({
   selector: 'app-directorio-afroamericanas',
@@ -96,48 +22,107 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './directorio-afroamericanas.html',
   styleUrl: './directorio-afroamericanas.css'
 })
-export class DirectorioAfroamericanas implements OnInit{
+export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestroy {
+  
+  @ViewChild('miModal', { static: false }) miModal!: ElementRef;
+  @ViewChild('formHijo', { static: false }) formHijo!: FormularioRegistro;
+
+  ngAfterViewInit(): void {
+    const modalEl = this.miModal.nativeElement;
+    modalEl.addEventListener('hidden.bs.modal', this.onModalClosed);
+  }
+
+  ngOnDestroy(): void {
+    this.miModal.nativeElement.removeEventListener('hidden.bs.modal', this.onModalClosed);
+  }
+
+  onModalClosed = () => {
+    this.formHijo.resetFormulario();
+    console.log("se cierra")
+    this.getRegister();
+  };
+
   nombreUser: string = '';
   cargoUser: string = '';
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   data: any = data;
+  dataTable: any = [];
+  tokenSesion: string = '';
+  searchTerm: string = '';
+  allDatable: any[] = [];
+  position: string = '';
+  tipo_usuario: number = 0;
+  registroSeleccionadoId: number | undefined;
 
   ngOnInit(): void {
+    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
     this.nombreUser = sessionStorage.getItem('nameUsuario')!;
+    this.tokenSesion = sessionStorage.getItem('key')!;
+    this.position = sessionStorage.getItem('dir')!;
+    this.getRegister();
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  constructor(private router: Router, private formBuilder: FormBuilder) {}
+  constructor(
+    private router: Router, 
+    private serviceRegister: Register,
+    private service: Auth) {}
   
   logout() {
     this.router.navigate(['']);
   }
 
-  onSubmit() {
-    Swal.fire({
-      title: "¿Está seguro que desea registrar la información capturada?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#FBB03B",
-      cancelButtonColor: "#9D75CA",
-      confirmButtonText: "Aceptar",
-      cancelButtonText: "Cancelar"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Se le ha asignado el folio único.",
-          text: "5684684641516516-ASSADAS",
-          icon: "success",
-          confirmButtonText: "Aceptar" 
-        });
+  search(): void {
+    const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+
+    if (rawFilter === '') {
+      this.dataTable = [...this.allDatable];
+      return;
+    }
+
+    this.dataTable = this.allDatable.filter((val) => {
+      const folio = (val.folio ?? '').toString().toLowerCase().trim();
+      const nombre = (val.nombre_completo ?? '').toLowerCase().trim();
+      const pueblo = (val.pueblo_afro ?? '').toLowerCase().trim();
+      const comunidad = (val.comunidad ?? '').toLowerCase().trim();
+      const organizacion = (val.organizacion_afro ?? '').toLowerCase().trim();
+
+      return (
+        folio.includes(rawFilter) ||
+        nombre.includes(rawFilter) ||
+        pueblo.includes(rawFilter) ||
+        comunidad.includes(rawFilter) ||
+        organizacion.includes(rawFilter)
+      );
+    });
+  }
+
+  getRegister() {
+    this.serviceRegister.getRegisterData(2, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.comunidades.length > 0) {
+          this.dataTable = data.comunidades;
+          this.allDatable = data.comunidades;
+        } else {
+          Swal.fire("No se encontraron registros");
+        }
+      },
+      error: (err) => {
+
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros")
+        }
+
       }
     });
-  };
+  }
+
+  abrirModal(id: number) {
+    this.registroSeleccionadoId = id;
+  }
 
   onValidateInfo() {
     this.router.navigate(['/menu']);

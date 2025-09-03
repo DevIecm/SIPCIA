@@ -113,13 +113,14 @@
 }
 
 input {
-    height: 32px;
+    text-align: center;
+    height: 37px;
     border-radius: 15px;
     border: 1px solid black;
 } 
 
 .select-input {
-    height: 32px;
+    height: 37px;
     border-radius: 15px;
     border: 1px solid black;
     align-items: center;

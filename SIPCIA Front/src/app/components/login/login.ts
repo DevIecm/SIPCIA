@@ -26,6 +26,7 @@ export class Login implements OnInit {
   password = "";
   formularioLogin: FormGroup | undefined;
   textoFormulario: string = "";
+  tipoUsuario: number | number = 0;
 
   ngOnInit() {
     sessionStorage.removeItem('key');
@@ -53,16 +54,19 @@ export class Login implements OnInit {
   constructor(private router: Router, private formBuilder: FormBuilder, private auth: Auth) {}
 
   onSubmit() {
+    this.tipoUsuario = Number(localStorage.getItem("modulo"));
+    
     try {
       if(this.formularioLogin?.valid){
-        this.auth.login(this.formularioLogin?.value.username, this.formularioLogin?.value.password).subscribe({
+        this.auth.login(this.formularioLogin?.value.username, this.formularioLogin?.value.password, this.tipoUsuario).subscribe({
           next: (res) => {
-            console.log("Login successful", res);
             sessionStorage.setItem("key", res.token);
-            sessionStorage.setItem("dir", res.userData[0].distrital);
+            sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
             sessionStorage.setItem("tipoUsuario", res.userData[0].tipo_usuario);
             sessionStorage.setItem("nameUsuario", res.userData[0].nombre_usuario);
             sessionStorage.setItem("cargo_usuario", res.userData[0].cargo_usuario);
+            sessionStorage.setItem("id_usuario", res.userData[0].id);
+            sessionStorage.setItem("area", res.userData[0].area_adscripcion);
             this.router.navigate(['/menu']);
           },
           error: (err) => {

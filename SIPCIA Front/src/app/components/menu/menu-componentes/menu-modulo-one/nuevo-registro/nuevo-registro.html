@@ -6,7 +6,7 @@
         <div class="row row-cols-1">
           <div class="col">
             <div class="div-redondeado-right">
-              <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ data.direccion }} 29</h3>
+              <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
             </div>
           </div>
 
@@ -56,7 +56,7 @@
             <div class="mb-3">
               <label class="form-label">*Nombre Completo:</label>
               <input
-                formControlName="nombreCompleto"
+                formControlName="nombre_completo"
                 type="text" 
                 class="form-control">
             </div>
@@ -70,18 +70,25 @@
             <div class="mb-3">
               <label class="form-label">*Sección Electoral:</label>
               <input 
+                maxlength="4"
                 type="text"
-                formControlName="selctoral"
+                formControlName="seccion_electoral"
                 class="form-control">
             </div>
           </div>
           <div class="col">
             <div class="mb-3">
               <label class="form-label">Demarcación:</label>
-              <input 
-                type="text"
+              <select 
                 formControlName="demarcacion"
-                class="form-control">
+                class="select-input form-select" 
+                aria-label="Default select example"
+                [(ngModel)]="opcionDemarcacion"  >
+                <option selected></option>
+                @for (item of catalogoDemarcacion; track item) {
+                  <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                }
+              </select>
             </div>
           </div>
           <div class="col">
@@ -98,10 +105,16 @@
           <div class="col">
             <div class="mb-3">
               <label class="form-label">*Seleccionar comunidad:</label>
-              <select formControlName="scomunidad"class="select-input form-select" aria-label="Default select example">
-                <option value="non" selected></option>
-                @for (item of foods; track item) {
-                  <option [value]="item.value">{{item.viewValue}}</option>
+              <select 
+                formControlName="scomunidad"
+                class="select-input form-select" 
+                aria-label="Default select example"
+                [(ngModel)]="opcionComunidad"
+                (change)="onChangeComunidad()"
+              >
+                <option selected></option>
+                @for (item of catalogoComunidad; track item) {
+                  <option [value]="item.id">{{item.comunidad}}</option>
                 }
               </select>
             </div>
@@ -118,17 +131,23 @@
         </div>
       </div>
 
-      <div class="card text-center" style="margin-top: 15px; border: 1px solid black;">
+      <div *ngIf="showIndigenas" class="card text-center" style="margin-top: 15px; margin-bottom: 10px; border: 1px solid black;">
         <div class="card-body">
           <div class="container text-center">
             <div class="row">
               <div class="col">
                 <div class="mb-3">
                   <label class="form-label">*Pueblo Originario:</label>
-                  <select formControlName="ooriginario" class="select-input form-select" aria-label="Default select example">
-                    <option value="non" selected></option>
-                    @for (item of foods; track item) {
-                      <option [value]="item.value">{{item.viewValue}}</option>
+                  <select 
+                    formControlName="ooriginario" 
+                    class="select-input form-select" 
+                    aria-label="Default select example"
+                    [(ngModel)]="opcionPuebloOriginario"
+                    (change)="onChangePuebloOriginario()"
+                  >
+                    <option selected></option>
+                    @for (item of catalogoPueblor; track item) {
+                      <option [value]="item.id">{{item.pueblo_originario}}</option>
                     }
                   </select>
                 </div>
@@ -136,10 +155,16 @@
               <div class="col">
                 <div class="mb-3">
                   <label class="form-label">*Pueblo:</label>
-                  <select formControlName="pueblo" class="select-input form-select" aria-label="Default select example">
+                  <select 
+                    formControlName="pueblo" 
+                    class="select-input form-select" 
+                    aria-label="Default select example"
+                    [(ngModel)]="opcionPueblo"
+                    (change)="onChangePueblo()"
+                  >
                     <option value="non" selected></option>
-                    @for (item of foods; track item) {
-                      <option [value]="item.value">{{item.viewValue}}</option>
+                    @for (item of catalogoPueblos; track item) {
+                      <option [value]="item.id">{{item.pueblo}}</option>
                     }
                   </select>
                 </div>
@@ -147,10 +172,16 @@
               <div class="col">
                 <div class="mb-3">
                   <label class="form-label">*Barrio:</label>
-                  <select formControlName="barrio" class="select-input form-select" aria-label="Default select example">
+                  <select 
+                    formControlName="barrio" 
+                    class="select-input form-select" 
+                    aria-label="Default select example"
+                    [(ngModel)]="opcionBarrio"
+                    (change)="onChangeBarrio()"
+                  >
                     <option value="non" selected></option>
-                    @for (item of foods; track item) {
-                      <option [value]="item.value">{{item.viewValue}}</option>
+                    @for (item of catalogoBarrios; track item) {
+                      <option [value]="item.id">{{item.barrio}}</option>
                     }
                   </select>
                 </div>
@@ -160,10 +191,16 @@
               <div class="col">
                 <div class="mb-3">
                   <label class="form-label">*Unidad Territorial:</label>
-                  <select formControlName="uterritorial" class="select-input form-select" aria-label="Default select example">
+                  <select 
+                    formControlName="uterritorial" 
+                    class="select-input form-select" 
+                    aria-label="Default select example"
+                    [(ngModel)]="opcionUnidadTerritorial"
+                    (change)="onChangeUnidadTerritorial()"
+                  >
                     <option value="non" selected></option>
-                    @for (item of foods; track item) {
-                      <option [value]="item.value">{{item.viewValue}}</option>
+                    @for (item of catalogoUnidadTerritorial; track item) {
+                      <option [value]="item.id">{{item.ut}}</option>
                     }
                   </select>
                 </div>
@@ -183,7 +220,9 @@
                   <input 
                     formControlName="otro"
                     type="text" 
-                    class="form-control">
+                    class="form-control"
+                    (change)="onChangeOtro()"
+                  >
                 </div>
               </div>
             </div>
@@ -191,7 +230,7 @@
         </div>
       </div>
 
-      <div class="card text-center" style="margin-top: 15px; border: 1px solid black; margin-bottom: 30px;">
+      <div *ngIf="showAfromexicanos" class="card text-center" style="margin-top: 15px; border: 1px solid black; margin-bottom: 30px;">
         <div class="card-body">
           <div class="container text-center">
             <div class="row">
@@ -201,7 +240,9 @@
                   <input 
                     formControlName="pueblor"
                     type="text" 
-                    class="form-control">
+                    class="form-control"
+                    (change)="onChangePuebloT()"
+                  >
                 </div>
               </div>
               <div class="col">
@@ -210,7 +251,9 @@
                   <input 
                     formControlName="comunidadr"
                     type="text" 
-                    class="form-control">
+                    class="form-control"
+                    (change)="onChangeComunidadT()"
+                  >
                 </div>
               </div>
               <div class="col">
@@ -219,7 +262,9 @@
                   <input 
                     formControlName="organizacion"
                     type="text" 
-                    class="form-control">
+                    class="form-control"
+                    (change)="onChangeOrganizacionT()"
+                  >
                 </div>
               </div>
             </div>
@@ -239,7 +284,9 @@
                   <input
                     formControlName="otror"
                     type="text" 
-                    class="form-control">
+                    class="form-control"
+                    (change)="onChangeOtroT()"
+                  >
                 </div>
               </div>
             </div>
@@ -303,7 +350,7 @@
           <div class="col-4">
             <div class="mb-3">
               <label class="form-label">*Teléfono celular:</label>
-              <input 
+              <input
                 formControlName="tcelular"
                 type="text" 
                 class="form-control">
@@ -326,7 +373,7 @@
               <label class="form-label">Correo electrónico oficial:</label>
               <input 
                 formControlName="coficial"
-                type="text" 
+                type="email" 
                 class="form-control">
             </div>
           </div>
@@ -334,7 +381,8 @@
             <div class="mb-3">
               <label class="form-label">*Correo electrónico no oficial (personal):</label>
               <input 
-                type="text" 
+                (blur)="liberaFormulario()" 
+                type="email"
                 formControlName="cpersonal"
                 class="form-control">
             </div>
@@ -370,7 +418,7 @@
       <div class="container text-center" style="margin-top: 15px;">
         <div class="row">
           <div class="col">
-            <button type="submit" class="btn button-register">{{data.btn1}}</button>
+            <button type="submit" [disabled]="!liberaForm" class="btn button-register">{{data.btn1}}</button>
           </div>
           <div class="col">
             <button type="button" (click)="resetData()" class="btn button-clean">{{data.btn2}}</button>

@@ -6,7 +6,7 @@
       <div class="row row-cols-1">
         <div class="col">
           <div class="div-redondeado-right">
-            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ data.direccion }} 29</h3>
+            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
           </div>
         </div>
         <div class="container div-redondeado-right-home text-center">
@@ -44,7 +44,12 @@
       <div class="box-search container justify-content-center">
         <label>Buscar:</label>
       </div>
-      <input type="text" class="form-control"  name="searchTerm" >
+      <input 
+        type="text" 
+        class="form-control" 
+        name="searchTerm" 
+        [(ngModel)]="searchTerm"
+        (input)="search()">
     </div>
     <div class="col-6 d-flex justify-content-end">
       <button class="btn button">Descarga Directorio</button>
@@ -62,34 +67,44 @@
             <th scope="col">Folio único</th>
             <th scope="col">Demarcación</th>
             <th scope="col">Nombre Completo</th>
-            <th scope="col">Nombre del Pueblo Originario</th>
-            <th scope="col">Nombre del Pueblo</th>
-            <th scope="col">Nombre del Barrio</th>
+            <th scope="col">Pueblo</th>
             <th scope="col">Comunidad</th>
-            <th scope="col">UT / Otro</th>
-            <th scope="col">Nombre de la <br> Comunidad <br> Indígena</th>
+            <th scope="col">Organización</th>
+            <th scope="col">Persona Relevante</th>
+            <th scope="col">Otro</th>
+            <th scope="col">Nombre de la <br> Comunidad <br> Afromexicana</th>
             <th scope="col">Nombre de la Instancia <br> Representativa a la <br> que pertenece</th>
             <th scope="col">Cargo que ocupa en la <br> Instancia Representativa</th>
             <th scope="col">Domicilio</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of dataSource.data; let i = index" class="dual-row">
-            <td>{{ item.position ? item.position : '-'}}</td>
-            <td> <button type="button" class="btn button-table" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-pencil-square"></i></button></td>
+          <tr *ngFor="let item of dataTable; index as i" class="dual-row">
+            <td>{{ item.id_registro ? item.id_registro : '-'}}</td>
+            <td> 
+              <button 
+                type="button" 
+                class="btn button-table" 
+                data-bs-toggle="modal" 
+                data-bs-target="#miModal"
+                (click)="abrirModal(item.id_registro)"
+              >
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </td>
             <td><i class="bi bi-journal-text"></i></td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion }}</td>
-            <td>{{ item.ncompleto }}</td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion ? item.demarcacion : '-'}}</td>
-            <td>{{ item.ncompleto ? item.ncompleto : '-'}}</td>
-            <td>{{ item.nporiginario ? item.nporiginario : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.nbarrio ? item.nbarrio : '-'}}</td>
+            <td>{{ item.folio ? item.folio : '-'}}</td>
+            <td>{{ item.demarcacion_territorial ? item.demarcacion_territorial : '-' }}</td>
+            <td>{{ item.nombre_completo ? item.nombre_completo : '-' }}</td>
+            <td>{{ item.pueblo_afro ? item.pueblo_afro : '-'}}</td>
             <td>{{ item.comunidad ? item.comunidad : '-'}}</td>
-            <td>{{ item.ut ? item.ut : '-'}}</td>
-            <td>{{ item.nindigena ? item.nindigena : '-'}}</td>      
+            <td>{{ item.organizacion_afro ? item.organizacion_afro : '-'}}</td>
+            <td>{{ item.persona_relevante_afro ? item.persona_relevante_afro : '-'}}</td>
+            <td>{{ item.otro_afro ? item.otro_afro : '-'}}</td>
+            <td>{{ item.nombre_comunidad ? item.nombre_comunidad : '-'}}</td>
+            <td>{{ item.comunidad ? item.comunidad : '-'}}</td>
+            <td>{{ item.cargo_instancia ? item.cargo_instancia : '-'}}</td>
+            <td>{{ item.domicilio ? item.domicilio : '-'}}</td>      
           </tr>
         </tbody>
       </table>
@@ -97,11 +112,16 @@
   </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="miModal" #miModal tabindex="-1" aria-labelledby="miModal" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-body">
-        <app-formulario-registro></app-formulario-registro>
+        <app-formulario-registro
+          #formHijo
+          *ngIf="registroSeleccionadoId"
+          [idRegistro]="registroSeleccionadoId"
+          >
+        </app-formulario-registro>
       </div>
     </div>
   </div>

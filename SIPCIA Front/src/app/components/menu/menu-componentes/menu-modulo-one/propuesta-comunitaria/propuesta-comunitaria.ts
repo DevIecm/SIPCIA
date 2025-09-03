@@ -1,19 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, viewChild } from '@angular/core';
 import { Navbar } from '../../../../navbar/navbar';
-import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import * as data from '../../../../labels/label.json';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { FormularioRegistro } from '../../formularios-modulos/formulario-registro/formulario-registro';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { FormularioPropuesta } from '../../formularios-modulos/formulario-propuesta/formulario-propuesta';
 
 interface PeriodicElement {
   position: number;
@@ -83,42 +77,47 @@ const ELEMENT_DATA: PeriodicElement[] = [
 @Component({
   selector: 'app-propuesta-comunitaria',
   imports: [
-    Navbar, 
-    MatCardModule,
+    Navbar,
     CommonModule,
-    MatButtonModule,
-    MatFormFieldModule,
     FormsModule,
-    MatGridListModule,
-    MatInputModule,
-    MatIconModule,
     ReactiveFormsModule,
-    MatTableModule, 
-    MatPaginatorModule
+    FormularioPropuesta
   ],
   templateUrl: './propuesta-comunitaria.html',
   styleUrl: './propuesta-comunitaria.css'
 })
-export class PropuestaComunitaria implements OnInit{
-  displayedColumns: string[] = [
-    'position',
-    'edit',
-    'generar',
-    'unico',
-    'demarcacion',
-    'ncompleto',
-    'nporiginario',
-    'npueblo',
-    'nbarrio',
-    'comunidad',
-    'ut',
-    'nindigena',
-    'observaciones'
-  ];
+export class PropuestaComunitaria implements OnInit, AfterViewInit, OnDestroy {
+  
+  @ViewChild('miModal', { static: false }) miModal!: ElementRef;
+  @ViewChild('formHijo', { static: false }) formHijo!: FormularioPropuesta;
+
+  ngAfterViewInit(): void {
+    const modalEl = this.miModal.nativeElement;
+    modalEl.addEventListener('hidden.bs.modal', this.onModalClosed);
+  }
+
+  ngOnDestroy(): void {
+    this.miModal.nativeElement.removeEventListener('hidden.bs.modal', this.onModalClosed);
+  }
+
+  onModalClosed = () => {
+    this.formHijo.resetFormulario();
+    // this.getRegister();
+  };
+
+  nombreUser: string = '';
+  cargoUser: string = '';
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   data: any = data;
+  registroSeleccionadoId: number | undefined;
+  position: string = '';
+
+  isRegistroC: boolean = false;
 
   ngOnInit(): void {
+    this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
+    this.nombreUser = sessionStorage.getItem('nameUsuario')!;
+    this.position = sessionStorage.getItem('dir')!;
   }
 
   applyFilter(event: Event) {
@@ -126,7 +125,7 @@ export class PropuestaComunitaria implements OnInit{
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  constructor(private router: Router, private formBuilder: FormBuilder) {}
+  constructor(private router: Router) {}
   
   logout() {
     this.router.navigate(['']);
@@ -152,4 +151,14 @@ export class PropuestaComunitaria implements OnInit{
       }
     });
   };
+
+  onValidateInfo() {
+    this.router.navigate(['/menu']);
+  };
+
+  abrirModal(id: number, edicion: boolean) {
+    console.log("++++++++++++++++"+edicion)
+    this.isRegistroC = edicion
+    this.registroSeleccionadoId = id;
+  }
 }

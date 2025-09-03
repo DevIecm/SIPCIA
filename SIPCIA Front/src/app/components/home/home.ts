@@ -10,8 +10,12 @@ import { Router } from '@angular/router';
 export class Home implements OnInit{
 
   ngOnInit(): void {
-      localStorage.removeItem('modulo');
-      sessionStorage.removeItem('key');
+    localStorage.removeItem('modulo');
+    sessionStorage.removeItem('key');
+    sessionStorage.removeItem("dir");
+    sessionStorage.removeItem("tipoUsuario");
+    sessionStorage.removeItem("nameUsuario");
+    sessionStorage.removeItem("cargo_usuario");
   }
 
   constructor(private router: Router) {}

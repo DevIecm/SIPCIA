@@ -24,6 +24,7 @@ export class MenuHome implements OnInit{
   showModulo2: boolean = false;
   showModulo3: boolean = false;
   showModulo4: boolean = false;
+  position: string = '';
   
   ngOnInit(): void {
     if(this.moduloSelected === "1"){
@@ -39,6 +40,7 @@ export class MenuHome implements OnInit{
     localStorage.removeItem('moduloClicked');
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
     this.nombreUser = sessionStorage.getItem('nameUsuario')!;
+    this.position = sessionStorage.getItem('dir')!;
   }
 
   constructor(private router: Router) {}

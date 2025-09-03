@@ -79,10 +79,11 @@ i{
 }
 
 select {
-    height: 25px;
+    height: 34px;
     border-radius: 15px;
     border: 1px solid black;
-    width: 235px;
+    width: 268px;
+    text-align: center;
 } 
 
 table {
@@ -105,7 +106,7 @@ tr {
 
 .back-table {
     justify-content: center;
-    height: 214px;
+    height: 246px;
     border-radius: 10px;
     padding: 21px;
     background-color: #bf90dd;
@@ -113,7 +114,7 @@ tr {
 
 .back-table-home {
     justify-content: center;
-    height: 246px;
+    height: 276px;
     border-radius: 10px;
     padding: 21px;
     background-color: #bf90dd;

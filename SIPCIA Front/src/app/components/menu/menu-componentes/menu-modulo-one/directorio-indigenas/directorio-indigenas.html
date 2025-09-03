@@ -6,7 +6,8 @@
       <div class="row row-cols-1">
         <div class="col">
           <div class="div-redondeado-right">
-            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ data.direccion }} 29</h3>
+            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
+            <!-- <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ data.direccion }} 29</h3> -->
           </div>
         </div>
         <div class="container div-redondeado-right-home text-center">
@@ -44,7 +45,12 @@
       <div class="box-search container justify-content-center">
         <label>Buscar:</label>
       </div>
-      <input type="text" class="form-control"  name="searchTerm" >
+      <input 
+        type="text" 
+        class="form-control" 
+        name="searchTerm"
+        [(ngModel)]="searchTerm"
+        (input)="search()">
     </div>
     <div class="col-6 d-flex justify-content-end">
       <button class="btn button">Descarga Directorio</button>
@@ -74,22 +80,32 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of dataSource.data; let i = index" class="dual-row">
-            <td>{{ item.position ? item.position : '-'}}</td>
-            <td> <button type="button" class="btn button-table" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-pencil-square"></i></button></td>
+          <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
+            <td>{{ item.id_registro ? item.id_registro : '-'}}</td>
+            <td> 
+              <button 
+                type="button" 
+                class="btn button-table" 
+                data-bs-toggle="modal" 
+                data-bs-target="#miModal"
+                (click)="abrirModal(item.id_registro)"
+              >
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </td>
             <td><i class="bi bi-journal-text"></i></td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion }}</td>
-            <td>{{ item.ncompleto }}</td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion ? item.demarcacion : '-'}}</td>
-            <td>{{ item.ncompleto ? item.ncompleto : '-'}}</td>
-            <td>{{ item.nporiginario ? item.nporiginario : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.nbarrio ? item.nbarrio : '-'}}</td>
+            <td>{{ item.folio ? item.folio : '-'}}</td>
+            <td>{{ item.demarcacion_territorial ? item.demarcacion_territorial : '-' }}</td>
+            <td>{{ item.nombre_completo ? item.nombre_completo : '-' }}</td>
+            <td>{{ item.pueblo_originario ? item.pueblo_originario : '-'}}</td>
+            <td>{{ item.pueblo ? item.pueblo : '-'}}</td>
+            <td>{{ item.barrio ? item.barrio : '-'}}</td>
             <td>{{ item.comunidad ? item.comunidad : '-'}}</td>
-            <td>{{ item.ut ? item.ut : '-'}}</td>
-            <td>{{ item.nindigena ? item.nindigena : '-'}}</td>      
+            <td>{{ item.unidad_territorial ? item.unidad_territorial : '-'}}</td>
+            <td>{{ item.nombre_comunidad ? item.nombre_comunidad : '-'}}</td>
+            <td>{{ item.nombre_instancia ? item.nombre_instancia : '-'}}</td>
+            <td>{{ item.cargo_instancia ? item.cargo_instancia : '-'}}</td>
+            <td>{{ item.domicilio ? item.domicilio : '-'}}</td>      
           </tr>
         </tbody>
       </table>
@@ -97,11 +113,16 @@
   </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="miModal" #miModal tabindex="-1" aria-labelledby="miModal" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-body">
-        <app-formulario-registro></app-formulario-registro>
+        <app-formulario-registro
+          #formHijo
+          *ngIf="registroSeleccionadoId"
+          [idRegistro]="registroSeleccionadoId"
+          >
+        </app-formulario-registro>
       </div>
     </div>
   </div>

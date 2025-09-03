@@ -1,70 +1,67 @@
 <app-navbar></app-navbar>
 
-<div class="buttons-session">
-  <div class="row">
-    <div class="column">
-      <div class="div-redondeado-right">
-        <h3 class="title">{{ data.direccion }} 29</h3>
-      </div>
-      <div class="div-redondeado-right-home">
-        <mat-icon class="icon-home">home</mat-icon>
-        <h3 class="title">{{ data.subm9 }}</h3>
-      </div>
-    </div>
-
-    <div class="column">
-      <button (click)="logout()" class="button-close div-redondeado-left-sesion">
-        <div>
-          <h3 class="title">{{ data.csesion }}</h3>
+<nav class="navbar bg-body-tertiary" style="display: inline;">
+  <div class="container-fluid" style="padding: 0px;">
+    <a class="navbar-brand">
+      <div class="row row-cols-1">
+        <div class="col">
+          <div class="div-redondeado-right">
+            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
+          </div>
         </div>
-      </button>
-      <div class="div-redondeado-left">
-        <h3 class="title">Marco Tulio Galindo Gómez <br> Titular de Organo Desconcentrado en OPLE</h3>
+        <div class="container div-redondeado-right-home text-center">
+          <div class="row"> 
+            <div class="col" style=" margin: -4px;">
+              <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
+            </div>
+            <div class="col">
+              <h3 style="font-size: 12px; margin: 0px;">1.11 Documentos normativos y técnicos (DEOEyG) <br>para documentar las consultas Indígenas</h3>
+            </div>
+          </div>
+        </div>
       </div>
+    </a>
+
+    <div class="row row-cols-1">
+        <div class="col">
+            <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+                <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+            </button>
+        </div>
+
+        <div class="col">
+            <div class="div-redondeado-left">
+              <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+            </div>
+        </div>
     </div>
   </div>
-</div>
+</nav>
 
-<div class="contenedor-card">
-  <div *ngIf="!muestraBuscar" class="container" style="z-index: 1;">
-    <div class="div-class">
-      <div class="container-buscador-tabs">
-        <mat-label >Buscar:</mat-label>
+<div class="container justify-content-center mt-4">
+  <div class="row">
+    <div class="col-6 d-flex">
+      <div class="box-search container justify-content-center">
+        <label>Buscar:</label>
       </div>
-      <div>
-        <input 
-          class="buscador-container-tabs" 
-          matInput 
-          (keyup)="applyFilter($event)"
-        />
-      </div>
+      <input type="text" class="form-control input-search"  name="searchTerm" >
     </div>
   </div>
 
-  <mat-tab-group (selectedTabChange)="tabChanged($event)" [selectedIndex]="selectedTabIndex"style="z-index: 0;">
-    <mat-tab>
-      <ng-template mat-tab-label>
-        Documentos Normativos
-      </ng-template>
-      <div style="padding: 10px;">asas</div>
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        Documentos de <br>apóyo a Direcciones<br>Distritales
-      </ng-template>
-      Documentos Normativos
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        Fichas Técnicas
-      </ng-template>
-      Documentos Normativos
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-            Otros Documentos<br>Generados por<br>Direcciones Distritales
-      </ng-template>
-      Documentos Normativos
-    </mat-tab>  
-  </mat-tab-group>
+  <div class="mt-4">
+    <ul class="nav nav-tabs justify-content-end">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Active</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Active</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Active</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Active</a>
+      </li>
+    </ul>
+  </div>
 </div>
