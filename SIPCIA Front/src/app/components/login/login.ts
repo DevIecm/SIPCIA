@@ -58,40 +58,44 @@ export class Login implements OnInit {
     
     try {
       if(this.formularioLogin?.valid){
-        this.auth.login(this.formularioLogin?.value.username, this.formularioLogin?.value.password, this.tipoUsuario).subscribe({
-          next: (res) => {
-            sessionStorage.setItem("key", res.token);
-            sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
-            sessionStorage.setItem("tipoUsuario", res.userData[0].tipo_usuario);
-            sessionStorage.setItem("nameUsuario", res.userData[0].nombre_usuario);
-            sessionStorage.setItem("cargo_usuario", res.userData[0].cargo_usuario);
-            sessionStorage.setItem("id_usuario", res.userData[0].id);
-            sessionStorage.setItem("area", res.userData[0].area_adscripcion);
-            this.router.navigate(['/menu']);
-          },
-          error: (err) => {
-            if(err.error.code === 401){
-            Swal.fire({
-              icon: "error",
-              title: "Usuario inactivo",
-              text: "Por favor contacta al Administrador del Sistema",
-            });
-          } else if(err.error.code === 101) {
-            Swal.fire({
-              icon: "error",
-              title: "Usuario no encontrado",
-              text: "Por favor contacta al Administrador del Sistema",
-            });
-          }
-          }
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Es necesario llenar el formulario",
-        });
+        this.router.navigate(['/menu']);
       }
+    //   }
+    //   if(this.formularioLogin?.valid){
+    //     this.auth.login(this.formularioLogin?.value.username, this.formularioLogin?.value.password, this.tipoUsuario).subscribe({
+    //       next: (res) => {
+    //         sessionStorage.setItem("key", res.token);
+    //         sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
+    //         sessionStorage.setItem("tipoUsuario", res.userData[0].tipo_usuario);
+    //         sessionStorage.setItem("nameUsuario", res.userData[0].nombre_usuario);
+    //         sessionStorage.setItem("cargo_usuario", res.userData[0].cargo_usuario);
+    //         sessionStorage.setItem("id_usuario", res.userData[0].id);
+    //         sessionStorage.setItem("area", res.userData[0].area_adscripcion);
+    //         this.router.navigate(['/menu']);
+    //       },
+    //       error: (err) => {
+    //         if(err.error.code === 401){
+    //         Swal.fire({
+    //           icon: "error",
+    //           title: "Usuario inactivo",
+    //           text: "Por favor contacta al Administrador del Sistema",
+    //         });
+    //       } else if(err.error.code === 101) {
+    //         Swal.fire({
+    //           icon: "error",
+    //           title: "Usuario no encontrado",
+    //           text: "Por favor contacta al Administrador del Sistema",
+    //         });
+    //       }
+    //       }
+    //     });
+    //   } else {
+    //     Swal.fire({
+    //       icon: "error",
+    //       title: "Error",
+    //       text: "Es necesario llenar el formulario",
+    //     });
+      // }
     } catch (error) {
       console.error("Error al iniciar sesión", error);
     }

@@ -52,7 +52,7 @@
 
       <div class="container text-start" style="margin-bottom: 40px;">
         <div class="row">
-          <div class="col">
+          <div class="col-12">
             <div class="mb-3">
               <label class="form-label">*Nombre Completo:</label>
               <input
@@ -65,44 +65,41 @@
       </div>
 
       <div class="container text-center">
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Sección Electoral:</label>
-              <input 
-                maxlength="4"
-                type="text"
-                formControlName="seccion_electoral"
-                class="form-control">
-            </div>
+        <div class="row mb-3">
+          <div class="col-4">
+            <label class="form-label">*Sección Electoral:</label>
+            <input 
+              maxlength="4"
+              type="text"
+              formControlName="seccion_electoral"
+              class="form-control"
+            >
           </div>
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">Demarcación:</label>
-              <select 
-                formControlName="demarcacion"
-                class="select-input form-select" 
-                aria-label="Default select example"
-                [(ngModel)]="opcionDemarcacion"  >
-                <option selected></option>
-                @for (item of catalogoDemarcacion; track item) {
-                  <option [value]="item.id">{{item.demarcacion_territorial}}</option>
-                }
-              </select>
-            </div>
+          <div class="col-4">
+            <label class="form-label">Demarcación:</label>
+            <select 
+              formControlName="demarcacion"
+              class="select-input form-select" 
+              aria-label="Default select example"
+              [(ngModel)]="opcionDemarcacion"  
+            >
+              <option selected></option>
+              @for (item of catalogoDemarcacion; track item) {
+                <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+              }
+            </select>
           </div>
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">Distrito Electoral Local Uninominal:</label>
-              <input 
-                type="text"
-                formControlName="duninominal"
-                class="form-control">
-            </div>
+          <div class="col-4 ">
+            <label class="form-label">Distrito Electoral Local Uninominal:</label>
+            <input 
+              type="text"
+              formControlName="duninominal"
+              class="form-control"
+            >
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div class="col-6">
             <div class="mb-3">
               <label class="form-label">*Seleccionar comunidad:</label>
               <select 
@@ -119,7 +116,7 @@
               </select>
             </div>
           </div>
-          <div class="col">
+          <div class="col-6">
             <div class="mb-3">
               <label class="form-label">*Nombre de la comunidad:</label>
               <input
@@ -367,6 +364,7 @@
             </div>
           </div>
         </div>
+        
         <div class="row">
           <div class="col-6">
             <div class="mb-3">

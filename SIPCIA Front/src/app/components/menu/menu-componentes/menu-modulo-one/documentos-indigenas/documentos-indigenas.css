@@ -12,6 +12,7 @@
 
 .div-redondeado-right {
     padding: 20px;
+    width: 200px;
     height: 4px;
     color: #f4f4f4!important;
     background-color: #9B3BCA!important;
@@ -144,3 +145,49 @@ i{
     display: flex;
     font-size: 14px;
 }
+
+
+.nav-item {
+    display: inline-block;
+    margin-left: -6px;
+    width: 182px;
+
+    min-width: 200px; /* Ajusta este valor según necesites */
+}
+
+.nav-link {
+    font-size: 11px;
+    font-weight: bold;
+    color: white !important;
+    white-space: nowrap;
+    display: flex;
+    height: 100%; /* Asegura que ocupe todo el alto del li */   
+    justify-content: flex-end; /* Alinea el contenido al final (derecha) */
+    align-items: center; /* Centra verticalmente */
+}
+
+.color-1 .nav-link { 
+    border: none;
+    background-color: #BF90DD; 
+}
+
+.color-2 .nav-link { 
+    border: none;
+    background-color: #9D75CA; 
+}
+
+.color-3 .nav-link { 
+    border: none;
+    background-color: #9B3BCA; 
+}
+
+.color-4 .nav-link { 
+    border: none;
+    background-color: #9D00CA; 
+}
+
+.tabs-inside {
+    width: 1138px;
+    border-radius: 5px;
+}
+

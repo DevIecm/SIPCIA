@@ -103,9 +103,9 @@
 }
 
 .card-size {
-    margin-left: 20%;
+    margin-left: 177px;
     padding: 30px;
-    width: 60%;
+    width: 962px;
     height: auto;
     border: 1px solid black;
     margin-top: 15px;
@@ -128,7 +128,7 @@ input {
 }
 
 .button-clean {
-    width: 50%;
+    width: 179px;
     height: 38px;
     border-radius: 15px;
     background-color: #9B3BCA!important;

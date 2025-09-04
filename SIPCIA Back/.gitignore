@@ -1,0 +1,54 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Entorno
+.env
+.env.*.local
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+tmp/
+temp/
+
+# Editor y herramientas
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Cobertura de pruebas
+coverage/
+
+# PM2 y otros procesos
+pids/
+*.pid
+*.seed
+
+# Archivos de depuración
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+
+# Optional: si usas TypeScript
+*.tsbuildinfo
+
+# Optional: si usas Prisma
+prisma/migrations/
+
+# Optional: si usas Next.js en modo API (monorepo)
+.next/

@@ -49,19 +49,40 @@
   </div>
 
   <div class="mt-4">
-    <ul class="nav nav-tabs justify-content-end">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Active</a>
+    <ul class="nav nav-tabs justify-content-end" style="position: relative;">
+      <li class="nav-item color-1" style="position: relative; z-index: 3;">
+        <a class="nav-link active text-end" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Documentos Normativos</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Active</a>
+      <li class="nav-item color-2" style="position: relative; z-index: 2;">
+        <a class="nav-link  text-end" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Documentos de<br>apoyo a Direcciones<br>Distritales</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Active</a>
+      <li class="nav-item color-3" style="position: relative; z-index: 1;">
+        <a class="nav-link  text-end" id="nav-contact-tab" data-bs-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Fichas Técnicas</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Active</a>
+      <li class="nav-item color-4" style="position: relative; z-index: 0;">
+        <a class="nav-link  text-end" id="nav-other-tab" data-bs-toggle="tab" href="#nav-other" role="tab" aria-controls="nav-other" aria-selected="false">Otros Documentos<br>Generados por<br>Direcciones Distritales</a>
       </li>
     </ul>
-  </div>
+
+    <div class="tab-content p-3 tabs-inside" id="nav-tabContent">
+			<div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+				<div>HOLS</div>
+			</div>
+			<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+				<p><strong>This is some placeholder content the Profile tab's associated content.</strong>
+					Clicking another tab will toggle the visibility of this one for the next.
+					The tab JavaScript swaps classes to control the content visibility and styling. You can use it with
+					tabs, pills, and any other <code>.nav</code>-powered navigation.</p>
+			</div>
+			<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+				<p><strong>This is some placeholder content the Contact tab's associated content.</strong>
+					Clicking another tab will toggle the visibility of this one for the next.
+					The tab JavaScript swaps classes to control the content visibility and styling. You can use it with
+					tabs, pills, and any other <code>.nav</code>-powered navigation.</p>
+			</div>
+      <div class="tab-pane fade" id="nav-other" role="tabpanel" aria-labelledby="nav-other-tab">
+        <p>Contenido de otros documentos...</p>
+      </div>
+		</div>
+	</div>
 </div>
