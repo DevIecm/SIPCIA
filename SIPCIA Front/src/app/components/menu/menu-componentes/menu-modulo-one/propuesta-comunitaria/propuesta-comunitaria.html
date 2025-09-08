@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="container div-redondeado-right-home text-center">
-          <div class="row"> 
+          <div class="row">
             <div class="col" style=" margin: -4px;">
               <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
             </div>
@@ -24,17 +24,17 @@
     </a>
 
     <div class="row row-cols-1">
-        <div class="col">
-            <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
-                <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
-            </button>
-        </div>
+      <div class="col">
+        <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+          <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+        </button>
+      </div>
 
-        <div class="col">
-            <div class="div-redondeado-left">
-              <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
-            </div>
+      <div class="col">
+        <div class="div-redondeado-left">
+          <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
         </div>
+      </div>
     </div>
   </div>
 </nav>
@@ -45,15 +45,11 @@
       <div class="box-search container justify-content-center">
         <label>Buscar:</label>
       </div>
-      <input type="text" class="form-control"  name="searchTerm" >
+      <input type="text" class="form-control" name="searchTerm">
     </div>
     <div class="col-4 d-flex justify-content-end">
-      <button 
-        class="btn button"
-        type="button" 
-        data-bs-toggle="modal" 
-        data-bs-target="#miModal"
-        (click)="abrirModal(1, true)">Registrar propuesta</button>
+      <button class="btn button" type="button" data-bs-toggle="modal" data-bs-target="#miModal"
+        (click)="openModal(undefined)">Registrar propuesta</button>
     </div>
     <div class="col-2 d-flex justify-content-end">
       <button class="btn button">Genera y Descarga de Reporte</button>
@@ -82,31 +78,25 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of dataSource.data; let i = index" class="dual-row">
-            <td>{{ item.position ? item.position : '-'}}</td>
-            <td> 
-              <button 
-                type="button" 
-                class="btn button-table" 
-                data-bs-toggle="modal" 
-                data-bs-target="#miModal"
-                (click)="abrirModal(item.position, false)"
-              >
+          <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
+            <td>{{ item.id_registro ? item.id_registro : '-'}}</td>
+            <td>
+              <button type="button" class="btn button-table" (click)="openModal(item.id_registro)">
                 <i class="bi bi-pencil-square"></i>
               </button>
             </td>
             <td><i class="bi bi-journal-text"></i></td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion }}</td>
-            <td>{{ item.ncompleto }}</td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion ? item.demarcacion : '-'}}</td>
-            <td>{{ item.ncompleto ? item.ncompleto : '-'}}</td>
-            <td>{{ item.nporiginario ? item.nporiginario : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>  
+            <td>{{ item.fecha_registro | date:'dd/MM/yyyy'}}</td>
+            <td>{{ item.demarcacion_territorial ? item.demarcacion_territorial : '-' }}</td>
+            <td>{{ item.lugar_espacio }}</td>
+            <td>{{ item.domicilio ? item.domicilio : '-'}}</td>
+            <td>{{ item.intitucion_propietaria ? item.intitucion_propietaria : '-'}}</td>
+            <td>{{ item.prestamo_iecm === true ? 'Si' : 'No'}}</td>
+            <td>{{ item.nuevo_prestamo === true ? 'Si' : 'No'}}</td>
+            <td>{{ item.superficie_espacio ? item.superficie_espacio : '-'}}</td>
+            <td>{{ item.aforo ? item.aforo : '-'}}</td>
+            <td>{{ item.ventilacion === true ? 'Si' : 'No'}}</td>
+            <td>{{ item.observaciones ? item.observaciones : '-'}}</td>
           </tr>
         </tbody>
       </table>
@@ -114,18 +104,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="miModal" #miModal tabindex="-1" aria-labelledby="miModal" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-body">
-        <app-formulario-propuesta
-          #formHijo
-          *ngIf="registroSeleccionadoId"
-          [idRegistro]="registroSeleccionadoId"
-          [idRegistroC]="isRegistroC"
-          >
-        </app-formulario-propuesta>
-      </div>
-    </div>
-  </div>
-</div>
+@if(showModal) {
+<app-formulario-propuesta [idRegistro]="idRegistroSeleccionado" [isOpen]="showModal" (close)="closeModal()">
+</app-formulario-propuesta>
+}

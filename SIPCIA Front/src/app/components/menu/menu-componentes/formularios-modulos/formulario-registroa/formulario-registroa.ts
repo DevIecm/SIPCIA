@@ -37,25 +37,25 @@ export class FormularioRegistroa {
   tipo_usuario: number = 0;
 
   selectedFile: File | null = null;
-      imagePreviewUrl: string | null = null;
+  imagePreviewUrl: string | null = null;
 
-      onFileSelected(event: Event): void {
-        const input = event.target as HTMLInputElement;
-        if (input.files && input.files.length > 0) {
-          this.selectedFile = input.files[0];
-          this.previewImage();
-        }
-      }
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.previewImage();
+    }
+  }
 
-      previewImage(): void {
-        if (this.selectedFile) {
-          const reader = new FileReader();
-          reader.onload = (e: ProgressEvent<FileReader>) => {
-            this.imagePreviewUrl = e.target?.result as string;
-          };
-          reader.readAsDataURL(this.selectedFile);
-        }
-      }
+  previewImage(): void {
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        this.imagePreviewUrl = e.target?.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
 
   constructor(
     private catalogos: Catalogos,
@@ -226,11 +226,8 @@ export class FormularioRegistroa {
 
     if(changes['idRegistroC'] && changes['idRegistroC'].currentValue) {
       this.catalogo_demarcacion();
-      console.log("registro"+this.idRegistroC)
     }
-
   }
-
 
   catalogo_demarcacion() {
     this.catalogos.getCatalogos("cat_demarcacion_territorial", this.tokenSesion).subscribe({

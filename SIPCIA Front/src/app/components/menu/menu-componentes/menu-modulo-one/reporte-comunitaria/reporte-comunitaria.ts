@@ -5,81 +5,10 @@ import { Router } from '@angular/router';
 import * as data from '../../../../labels/label.json';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FormularioRegistro } from '../../formularios-modulos/formulario-registro/formulario-registro';
 import { FormularioComunitaria } from '../../formularios-modulos/formulario-comunitaria/formulario-comunitaria';
-interface PeriodicElement {
-  position: number;
-  edit: string;
-  generar: string;
-  unico: number;
-  demarcacion: string;
-  ncompleto: string;
-  nporiginario: string;
-  npueblo: string;
-  nbarrio: string;
-  comunidad: string;
-  ut: string;
-  nindigena: string;
-  nrepresentativa: string;
-  cinstancia: string;
-  domicilio: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  
-  {  
-    position: 1,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "test",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    nrepresentativa: "test",
-    cinstancia: "test",
-    domicilio: "test",
-  },
-  { 
-    position: 2,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    nrepresentativa: "",
-    cinstancia: "test",
-    domicilio: "test",
-  },
-  { 
-    position: 3,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "test",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    nrepresentativa: "test",
-    cinstancia: "test",
-    domicilio: "test",
-  }
-];
+import { Reportes } from '../../../../../services/reporteService/reportes';
+import { Auth } from '../../../../../services/authService/auth';
 
 @Component({
   selector: 'app-reporte-comunitaria',
@@ -93,78 +22,106 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './reporte-comunitaria.html',
   styleUrl: './reporte-comunitaria.css'
 })
-export class ReporteComunitaria implements OnInit, AfterViewInit, OnDestroy {
+
+export class ReporteComunitaria implements OnInit {
   
   @ViewChild('miModal', { static: false }) miModal!: ElementRef;
-  @ViewChild('formHijo', { static: false }) formHijo!: FormularioRegistro;
-
-  ngAfterViewInit(): void {
-    const modalEl = this.miModal.nativeElement;
-    modalEl.addEventListener('hidden.bs.modal', this.onModalClosed);
-  }
-
-  ngOnDestroy(): void {
-    this.miModal.nativeElement.removeEventListener('hidden.bs.modal', this.onModalClosed);
-  }
-
-  onModalClosed = () => {
-    this.formHijo.resetFormulario();
-    // this.getRegister();
-  };
+  @ViewChild('formHijo', { static: false }) formHijo!: FormularioComunitaria;
 
   nombreUser: string = '';
   cargoUser: string = '';
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-  data: any = data;
-  registroSeleccionadoId: number | undefined;
+  tokenSesion: string = '';
   position: string = '';
+  searchTerm: string = '';
+
+  dataTable: any = [];
+  allDatable: any[] = [];
+
+  area_adscripcion: number = 0;
+  tipo_usuario: number = 0;
+  idRegistroSeleccionado: number | undefined;
+
+  data: any = data;
+  registroSeleccionadoId: number | null = null;
+  showModal = false;
 
   isRegistroC: boolean = false;
 
   ngOnInit(): void {
+    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
     this.nombreUser = sessionStorage.getItem('nameUsuario')!;
     this.position = sessionStorage.getItem('dir')!;
-  }
+    this.tokenSesion = sessionStorage.getItem('key')!;
+    this.area_adscripcion = Number(sessionStorage.getItem('area'));
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.getRegister();
   }
-
-  constructor(private router: Router) {}
   
-  logout() {
-    this.router.navigate(['']);
-  }
+  constructor(
+    private router: Router,
+    private reporteService: Reportes,
+    private service: Auth
+  ) {}
 
-  onSubmit() {
-    Swal.fire({
-      title: "¿Está seguro que desea registrar la información capturada?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#FBB03B",
-      cancelButtonColor: "#9D75CA",
-      confirmButtonText: "Aceptar",
-      cancelButtonText: "Cancelar"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Se le ha asignado el folio único.",
-          text: "5684684641516516-ASSADAS",
-          icon: "success",
-          confirmButtonText: "Aceptar" 
-        });
-      }
+  search(): void {
+    const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+
+    if (rawFilter === '') {
+      this.dataTable = [...this.allDatable];
+      return;
+    }
+
+    this.dataTable = this.allDatable.filter((val) => {
+      const direccion_distrital = (val.direccion_distrital ?? '').toString().toLowerCase().trim();
+      const domicilio_lugar = (val.domicilio_lugar ?? '').toLowerCase().trim();
+
+      return (
+        direccion_distrital.includes(rawFilter) ||
+        domicilio_lugar.includes(rawFilter)
+      );
     });
   };
+
+  getRegister() {
+    this.reporteService.getRegisterDataTable(this.area_adscripcion, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.getAfluencia.length > 0) {
+          this.dataTable = data.getAfluencia;
+          this.allDatable = data.getAfluencia;
+        } else {
+          Swal.fire("No se encontraron registros");
+        }        
+      },
+      error: (err) => {
+
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros")
+        }
+
+      }
+    });
+  }
 
   onValidateInfo() {
     this.router.navigate(['/menu']);
   };
 
-  abrirModal(id: number, edicion: boolean) {
-    this.isRegistroC = edicion
-    this.registroSeleccionadoId = id;
+  logout() {
+    this.router.navigate(['']);
+  }
+
+  openModal(id: number | undefined) {
+    this.showModal = true;
+    this.idRegistroSeleccionado = id;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.getRegister();
   }
 }

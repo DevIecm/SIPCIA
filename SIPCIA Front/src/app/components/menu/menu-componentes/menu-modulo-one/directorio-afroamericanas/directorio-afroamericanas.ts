@@ -38,7 +38,6 @@ export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestro
 
   onModalClosed = () => {
     this.formHijo.resetFormulario();
-    console.log("se cierra")
     this.getRegister();
   };
 

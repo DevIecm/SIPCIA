@@ -1,255 +1,259 @@
-<div class="card text-center card-size fw-bold">
+<div class="modal show fade d-block" tabindex="-1" *ngIf="isOpen" (click)="onBackdropClick($event)" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" style="width: auto; max-width: 83%;" (click)="$event.stopPropagation()">
+        <div class="modal-content" style="width: auto; height: auto;">
+            <div class="modal-body">
+                <div class="card card-size text-center fw-bold">
+                    <div class="card-body">
+                        <form [formGroup]="formularioRegistro!" (ngSubmit)="saveForm()">
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ labelTitle }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-  <div class="card-body">
-    <form [formGroup]="formularioRegistro!" (ngSubmit)="saveForm()">
-        <div class="container text-center">
-            <div class="row">
-                <div class="col">
-                    <div class="mb-3">
-                    <label class="form-label">{{ 
-                        idRegistroC ? 
-                        'Registro - Propuesta de lugares y espacios para Asambleas Comunitarias' : 
-                        'Edición - Propuesta de lugares y espacios para Asambleas Comunitarias' 
-                    }}</label>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Dirección Distrital</label>
+                                            <input 
+                                                type="text"
+                                                [(ngModel)]="area"
+                                                formControlName="dDistrital"
+                                                class="form-control txt-input">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="container text-center">
+                                            <div class="row row-cols-1">
+                                                <div class="col"><label class="form-label">Fecha de registro</label></div>
+                                                <div class="col"><label class="form-label" style="color: #b7b5b8;" >{{ today }}</label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label class="form-label">Dirección Distrital</label>
-                        <input 
-                            type="text"
-                            formControlName="dDistrital"
-                            class="form-control txt-input">
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="container text-center">
-                        <div class="row row-cols-1">
-                            <div class="col"><label class="form-label">Dirección Distrital</label></div>
-                            <div class="col"><label class="form-label" style="color: #b7b5b8;" >{{ today }}</label></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="container text-center mt-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">*Demarcación Territorial</label>
+                                            <select 
+                                                formControlName="demarcacion"
+                                                class="select-input form-select" 
+                                                aria-label="Default select example"
+                                                [(ngModel)]="opcionDemarcacion"
+                                            >
+                                                <option selected></option>
+                                                @for (item of catalogoDemarcacion; track item) {
+                                                <option [value]="item.id">{{item.demarcacion_territorial }}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">*Denominación del lugar o espacio</label>
+                                            <input 
+                                                type="text"
+                                                formControlName="lugar_espacio"
+                                                class="form-control txt-input">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">*Domiclio</label>
+                                            <input 
+                                                type="text"
+                                                formControlName="domicilio"
+                                                class="form-control txt-input"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-center mt-4">
-            <div class="row">
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label class="form-label">*Demarcación Territorial</label>
-                        <select 
-                            formControlName="demarcacion"
-                            class="select-input form-select" 
-                            aria-label="Default select example"
-                            [(ngModel)]="opcionDemarcacion"
-                        >
-                            <option selected></option>
-                            @for (item of catalogoDemarcacion; track item) {
-                            <option [value]="item.id">{{item.demarcacion_territorial}}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label class="form-label">*Denominación del lugar o espacio</label>
-                        <input 
-                            type="text"
-                            formControlName="denominacionl"
-                            class="form-control txt-input">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="mb-3">
-                        <label class="form-label">*Domiclio</label>
-                        <input 
-                            type="text"
-                            formControlName="domiciliol"
-                            class="form-control txt-input"
-                        >
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Ubicación georreferenciada <br>(kml)</label>
+                                            <input class="form-control txt-input" type="file" id="formFile">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br> lo determine la DEOEyG</label>
+                                            <input class="form-control txt-input" type="file" id="formFile">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Ubicación georreferenciada <br>(kml)</label>
-                        <input class="form-control txt-input" type="file" id="formFile">
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br> lo determine la DEOEyG</label>
-                        <input class="form-control txt-input" type="file" id="formFile">
-                    </div>
-                </div>
-            </div>
-        </div>
+                        
+                            <div class="container text-center mt-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">*Institución propietaria, encargada o responsable del lugar o espacio</label>
+                                            <input 
+                                                type="text"
+                                                formControlName="intitucion_propietaria"
+                                                class="form-control txt-input"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-       
-        <div class="container text-center mt-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="mb-3">
-                        <label class="form-label">*Institución propietaria, encargada o responsable del lugar o espacio</label>
-                        <input 
-                            type="text"
-                            formControlName="domiciliol"
-                            class="form-control txt-input"
-                        >
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="container text-start mt-4">
+                                <div class="row row-cols-2">
+                                    <div class="col mb-3">
+                                        <label class="form-label">*¿Ha sido facilitado el préstamo al IECM con anterioridad?</label>
+                                    </div>
+                                    <div class="col">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="form-check form-check-reverse">
+                                                        <input style="border: 1px solid black;" value="1" formControlName="anterioridad" class="form-check-input" type="radio"  [(ngModel)]="optionAnterioridad" id="radioDefault1">
+                                                        <label class="form-check-label" for="reverseCheck1">
+                                                            Si
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-check form-check-reverse">
+                                                        <input style="border: 1px solid black;" value="2" formControlName="anterioridad" class="form-check-input" type="radio" [(ngModel)]="optionAnterioridad" id="radioDefault1">
+                                                        <label class="form-check-label" for="reverseCheck1">
+                                                            No
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col mb-3">
+                                        <label class="form-label">*¿Considera que sea posible un nuevo préstamo al IECM?</label>
+                                    </div>
+                                    <div class="col">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-check form-check-reverse">
+                                                        <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                                        <label class="form-check-label" for="reverseCheck1">
+                                                            Si
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-check form-check-reverse">
+                                                        <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                                        <label class="form-check-label" for="reverseCheck1">
+                                                            No
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">*Superficie aproximada en m2 del lugar o espacio</label>
+                                    </div>
+                                    <div class="col mb-3">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div>
+                                                        <input 
+                                                            type="text"
+                                                            formControlName="superficie_espacio"
+                                                            class="form-control txt-input"
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col mb-3">
+                                        <label class="form-label">*Aforo (Capacidad de sillas, butacas o asientos)</label>
+                                    </div>
+                                    <div class="col">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div>
+                                                        <input 
+                                                            type="text"
+                                                            formControlName="aforo"
+                                                            class="form-control txt-input"
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">*Suficiente ventilación como medida preventiva Sanitaria</label>
+                                    </div>
+                                    <div class="col">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-check form-check-reverse">
+                                                        <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                                        <label class="form-check-label" for="reverseCheck1">
+                                                            Si
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-check form-check-reverse">
+                                                        <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                                        <label class="form-check-label" for="reverseCheck1">
+                                                            No
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="container text-center mt-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label for="exampleFormControlTextarea1" class="form-label">Observaciones</label>
+                                            <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-start mt-4">
-            <div class="row row-cols-2">
-                <div class="col mb-3">
-                    <label class="form-label">*¿Ha sido facilitado el préstamo al IECM con anterioridad?</label>
-                </div>
-                <div class="col">
-                    <div class="container text-center">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-check form-check-reverse">
-                                    <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-                                    <label class="form-check-label" for="reverseCheck1">
-                                        Si
-                                    </label>
+                            <div class="container text-center" style="margin-top: 15px;">
+                                <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn button-register">Registrar</button>
+                                </div>
+                                <div class="col">
+                                    <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+                                </div>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div class="form-check form-check-reverse">
-                                    <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-                                    <label class="form-check-label" for="reverseCheck1">
-                                        No
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-3">
-                    <label class="form-label">*¿Considera que sea posible un nuevo préstamo al IECM?</label>
-                </div>
-                <div class="col">
-                    <div class="container text-center">
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check form-check-reverse">
-                                    <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-                                    <label class="form-check-label" for="reverseCheck1">
-                                        Si
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-check form-check-reverse">
-                                    <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-                                    <label class="form-check-label" for="reverseCheck1">
-                                        No
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <label class="form-label">*Superficie aproximada en m2 del lugar o espacio</label>
-                </div>
-                <div class="col mb-3">
-                    <div class="container text-center">
-                        <div class="row">
-                            <div class="col-12">
-                                <div>
-                                    <input 
-                                        type="text"
-                                        formControlName="domiciliol"
-                                        class="form-control txt-input"
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-3">
-                    <label class="form-label">*Aforo (Capacidad de sillas, butacas o asientos)</label>
-                </div>
-                <div class="col">
-                     <div class="container text-center">
-                        <div class="row">
-                            <div class="col-12">
-                                <div>
-                                    <input 
-                                        type="text"
-                                        formControlName="domiciliol"
-                                        class="form-control txt-input"
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <label class="form-label">*Suficiente ventilación como medida preventiva Sanitaria</label>
-                </div>
-                <div class="col">
-                    <div class="container text-center">
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check form-check-reverse">
-                                    <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-                                    <label class="form-check-label" for="reverseCheck1">
-                                        Si
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-check form-check-reverse">
-                                    <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-                                    <label class="form-check-label" for="reverseCheck1">
-                                        No
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="container text-center mt-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Observaciones</label>
-                        <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container text-center" style="margin-top: 15px;">
-            <div class="row">
-            <div class="col">
-                <button type="submit" class="btn button-register">Registrar</button>
-            </div>
-            <div class="col">
-                <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
-            </div>
-            </div>
-        </div>
-    </form>
-  </div>
+    </div>
 </div>

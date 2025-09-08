@@ -18,6 +18,7 @@ import { Catalogos } from '../../../../../services/catService/catalogos';
   templateUrl: './formulario-registro.html',
   styleUrl: './formulario-registro.css'
 })
+
 export class FormularioRegistro implements OnInit{
   @Input() idRegistro! : number;
   @Output() formSaved = new EventEmitter<void>();
@@ -529,7 +530,6 @@ export class FormularioRegistro implements OnInit{
         otro: ''
       });
 
-
       this.formularioRegistro.get('ooriginario')?.disable();
       this.formularioRegistro.get('pueblo')?.disable();
       this.formularioRegistro.get('barrio')?.disable();
@@ -613,7 +613,6 @@ export class FormularioRegistro implements OnInit{
         comunidadr: '',
         organizacion: ''
       });
-
 
       this.formularioRegistro.get('pueblor')?.disable();
       this.formularioRegistro.get('comunidadr')?.disable();

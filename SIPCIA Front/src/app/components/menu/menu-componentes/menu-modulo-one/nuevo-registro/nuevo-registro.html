@@ -52,7 +52,7 @@
 
       <div class="container text-start" style="margin-bottom: 40px;">
         <div class="row">
-          <div class="col-12">
+          <div class="col">
             <div class="mb-3">
               <label class="form-label">*Nombre Completo:</label>
               <input
@@ -65,41 +65,44 @@
       </div>
 
       <div class="container text-center">
-        <div class="row mb-3">
-          <div class="col-4">
-            <label class="form-label">*Sección Electoral:</label>
-            <input 
-              maxlength="4"
-              type="text"
-              formControlName="seccion_electoral"
-              class="form-control"
-            >
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label class="form-label">*Sección Electoral:</label>
+              <input 
+                maxlength="4"
+                type="text"
+                formControlName="seccion_electoral"
+                class="form-control">
+            </div>
           </div>
-          <div class="col-4">
-            <label class="form-label">Demarcación:</label>
-            <select 
-              formControlName="demarcacion"
-              class="select-input form-select" 
-              aria-label="Default select example"
-              [(ngModel)]="opcionDemarcacion"  
-            >
-              <option selected></option>
-              @for (item of catalogoDemarcacion; track item) {
-                <option [value]="item.id">{{item.demarcacion_territorial}}</option>
-              }
-            </select>
+          <div class="col">
+            <div class="mb-3">
+              <label class="form-label">Demarcación:</label>
+              <select 
+                formControlName="demarcacion"
+                class="select-input form-select" 
+                aria-label="Default select example"
+                [(ngModel)]="opcionDemarcacion"  >
+                <option selected></option>
+                @for (item of catalogoDemarcacion; track item) {
+                  <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                }
+              </select>
+            </div>
           </div>
-          <div class="col-4 ">
-            <label class="form-label">Distrito Electoral Local Uninominal:</label>
-            <input 
-              type="text"
-              formControlName="duninominal"
-              class="form-control"
-            >
+          <div class="col">
+            <div class="mb-3">
+              <label class="form-label">Distrito Electoral Local Uninominal:</label>
+              <input 
+                type="text"
+                formControlName="duninominal"
+                class="form-control">
+            </div>
           </div>
         </div>
         <div class="row">
-          <div class="col-6">
+          <div class="col">
             <div class="mb-3">
               <label class="form-label">*Seleccionar comunidad:</label>
               <select 
@@ -116,10 +119,11 @@
               </select>
             </div>
           </div>
-          <div class="col-6">
+          <div class="col">
             <div class="mb-3">
               <label class="form-label">*Nombre de la comunidad:</label>
               <input
+                maxlength="200"
                 formControlName="ncomunidad"
                 type="text" 
                 class="form-control">
@@ -216,7 +220,8 @@
                   <label class="form-label">Otro:</label>
                   <input 
                     formControlName="otro"
-                    type="text" 
+                    type="text"
+                    maxlength="200"
                     class="form-control"
                     (change)="onChangeOtro()"
                   >
@@ -281,6 +286,7 @@
                   <input
                     formControlName="otror"
                     type="text" 
+                    maxlength="200"
                     class="form-control"
                     (change)="onChangeOtroT()"
                   >
@@ -298,6 +304,7 @@
               <label class="form-label">*Nombre de la instancia representativa o autoridad tradicional a la que pertenece:</label>
               <input 
                 formControlName="ninstancia"
+                maxlength="200"
                 type="text" 
                 class="form-control">
             </div>
@@ -312,6 +319,7 @@
               <label class="form-label">*Cargo que ocupa en la instancia representativa o autoridad tradicional:</label>
               <input 
                 formControlName="cinstancia"
+                maxlength="200"
                 type="text" 
                 class="form-control">
             </div>
@@ -339,8 +347,12 @@
             <div class="mb-3">
               <label class="form-label">Teléfono particular (fijo):</label>
               <input
+                maxlength="10"
                 formControlName="tfijo"
-                type="text" 
+                type="text"
+                pattern="[0-9]*"
+                inputmode="numeric" 
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                 class="form-control">
             </div>
           </div>
@@ -348,8 +360,13 @@
             <div class="mb-3">
               <label class="form-label">*Teléfono celular:</label>
               <input
+
+                maxlength="10"
                 formControlName="tcelular"
-                type="text" 
+                type="text"
+                pattern="[0-9]*"
+                inputmode="numeric" 
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                 class="form-control">
             </div>
           </div>
@@ -364,7 +381,6 @@
             </div>
           </div>
         </div>
-        
         <div class="row">
           <div class="col-6">
             <div class="mb-3">
@@ -416,13 +432,34 @@
       <div class="container text-center" style="margin-top: 15px;">
         <div class="row">
           <div class="col">
-            <button type="submit" [disabled]="!liberaForm" class="btn button-register">{{data.btn1}}</button>
+            <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
           </div>
           <div class="col">
             <button type="button" (click)="resetData()" class="btn button-clean">{{data.btn2}}</button>
           </div>
         </div>
       </div>
+
+      <div *ngIf="formularioRegistro?.get('coficial')?.invalid && 
+          (formularioRegistro?.get('coficial')?.dirty || formularioRegistro?.get('coficial')?.touched)">
+        <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['required']">
+          El correo es requerido.
+        </div>
+        <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['email']">
+          Por favor, ingresa un correo electrónico válido.
+        </div>
+      </div>
+
+      <div *ngIf="formularioRegistro?.get('cpersonal')?.invalid && 
+          (formularioRegistro?.get('cpersonal')?.dirty || formularioRegistro?.get('cpersonal')?.touched)">
+        <div *ngIf="formularioRegistro?.get('cpersonal')?.errors?.['required']">
+          El correo es requerido.
+        </div>
+        <div *ngIf="formularioRegistro?.get('cpersonal')?.errors?.['email']">
+          Por favor, ingresa un correo electrónico válido.
+        </div>
+      </div>
+
     </form>
   </div>
 </div>

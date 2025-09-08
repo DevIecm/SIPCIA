@@ -96,11 +96,11 @@ export class NuevoRegistro implements OnInit{
       ninstancia: ['', Validators.required],
       cinstancia: ['', Validators.required],
       domicilio: ['', Validators.required],
-      tfijo: ['', Validators.required, [Validators.pattern('^[0-9]+$')]],
-      tcelular: ['', Validators.required, [Validators.pattern('^[0-9]+$')]],
+      tfijo: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      tcelular: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       docs: [{ value: '', disabled: true }],
-      coficial: ['', Validators.required, Validators.email],
-      cpersonal: ['', Validators.required, Validators.email]
+      coficial: ['', [Validators.required, Validators.email]],
+      cpersonal: ['', [Validators.required, Validators.email]],
     });
 
     this.currentTime = this.datePipe.transform(new Date(), 'HH:mm:ss') + ' hrs.';
@@ -393,6 +393,9 @@ export class NuevoRegistro implements OnInit{
       cancelButtonText: "Cancelar"
     }).then((result) => {
       if (result.isConfirmed) {
+
+        console.log(this.formularioRegistro?.invalid);
+        console.log(this.formularioRegistro);
           
         if (!this.formularioRegistro) {
           return;

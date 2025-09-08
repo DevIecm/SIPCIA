@@ -227,7 +227,6 @@ export class FormularioConsultas {
       this.catalogoComunidad();
       this.catalogoDemarcacion();
       this.catalogoPueblor();
-      console.log("registro"+this.idRegistroC)
     }
   };
 

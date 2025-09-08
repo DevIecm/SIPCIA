@@ -63,7 +63,8 @@ export class DirectorioIndigenas implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router, 
     private serviceRegister: Register,
-    private service: Auth,) {}
+    private service: Auth
+  ) {}
   
   logout() {
     this.router.navigate(['']);
@@ -90,7 +91,8 @@ export class DirectorioIndigenas implements OnInit, AfterViewInit, OnDestroy {
         comunidad.includes(rawFilter)
       );
     });
-  }
+  };
+
   getRegister() {
     this.serviceRegister.getRegisterData(1, this.tokenSesion).subscribe({
       next: (data) => {

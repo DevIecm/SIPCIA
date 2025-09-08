@@ -39,7 +39,7 @@ export class Register {
       ...data
     };
 
-    return this.http.post(this.apiUrl + 'registro/updateRegistro', body, { headers })
+    return this.http.patch(this.apiUrl + 'registro/updateRegistro', body, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);

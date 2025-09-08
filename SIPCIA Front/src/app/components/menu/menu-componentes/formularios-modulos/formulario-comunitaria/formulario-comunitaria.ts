@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
+import { Input, Component, OnInit, Output, SimpleChanges, EventEmitter, input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import * as data from '../../../../labels/label.json';
@@ -21,19 +21,25 @@ import { Reportes } from '../../../../../services/reporteService/reportes';
 })
 export class FormularioComunitaria {
 
-  @Input() idRegistro! : number;
+  @Input() isOpen = false;
   @Input() idRegistroC: any;
-  @Output() formSaved = new EventEmitter<void>();
+  @Input() idRegistro : number | undefined;
+  @Output() close = new EventEmitter<void>();
 
   formularioRegistro: FormGroup | undefined;
 
   catalogoDemarcacion: any = [];
+  infoUpdate: any = [];
 
   opcionDemarcacion: any = null;
+
   tokenSesion: string = '';
   today: string = '';
-  area: string = '';
-
+  labelTitle: string = '';
+  
+  area: number = 0;
+  id_usuario: number = 0;
+  cabecera: number = 0;
   tipo_usuario: number = 0;
 
   constructor(
@@ -64,16 +70,17 @@ export class FormularioComunitaria {
           if (result.isConfirmed) {
 
             const datosFormularioCompletos = {
-              odc_demarcacion: 12,
-              demarcacion_territorial: this.formularioRegistro.get('demarcacion')?.value || null,
-              denominacion_lugar: this.formularioRegistro.get('denominacionl')?.value || null,
-              domicilio_lugar: this.formularioRegistro.get('domiciliol')?.value || null,
+              distrito_electoral: this.area,
+              distrito_cabecera: this.cabecera,
+              demarcacion_territorial: Number(this.formularioRegistro.get('demarcacion_territorial')?.value) || null,
+              denominacion_lugar: this.formularioRegistro.get('denominacion_lugar')?.value || null,
+              domicilio_lugar: this.formularioRegistro.get('domicilio_lugar')?.value || null,
               foto: 0,
               enlace_foto: "ruta/documento",
-              ubicacion: '0',
+              ubicacion: 0,
               enlace_ubicacion: "ruta/ubicacion",
-              observaciones: this.formularioRegistro.get('domiciliol')?.value || null,
-              usuario_registro: 1,
+              observaciones: this.formularioRegistro.get('observaciones')?.value || null,
+              usuario_registro: this.id_usuario,
               modulo_registro: this.tipo_usuario,
               estado_registro: 1,
               tipo_usuario: this.tipo_usuario
@@ -89,7 +96,12 @@ export class FormularioComunitaria {
                     confirmButtonText: "Aceptar",
                     confirmButtonColor: "#FBB03B",
                   });
-                  this.resetData();
+
+                  setTimeout(() => {
+                    this.onClose();
+                    this.resetData();
+                  }, 3000);
+
                 }
               }, error: (err) => {
                 
@@ -102,7 +114,6 @@ export class FormularioComunitaria {
                 }
               }
             });
-
           }
         });
       } else {
@@ -122,22 +133,24 @@ export class FormularioComunitaria {
             }
 
             const datosFormularioCompletos = {
-              odc_demarcacion: 12,
-              demarcacion_territorial: this.formularioRegistro.get('demarcacion')?.value || null,
-              denominacion_lugar: this.formularioRegistro.get('denominacionl')?.value || null,
-              domicilio_lugar: this.formularioRegistro.get('domiciliol')?.value || null,
+              id_registro: this.idRegistro,
+              distrito_electoral: this.area,
+              distrito_cabecera: this.cabecera,
+              demarcacion_territorial: this.formularioRegistro.get('demarcacion_territorial')?.value || null,
+              denominacion_lugar: this.formularioRegistro.get('denominacion_lugar')?.value || null,
+              domicilio_lugar: this.formularioRegistro.get('domicilio_lugar')?.value || null,
               foto: 0,
               enlace_foto: "ruta/documento",
-              ubicacion: '0',
+              ubicacion: 0,
               enlace_ubicacion: "ruta/ubicacion",
-              observaciones: this.formularioRegistro.get('domiciliol')?.value || null,
-              usuario_registro: 1,
-              modulo_registro: 1,
+              observaciones: this.formularioRegistro.get('observaciones')?.value || null,
+              usuario_registro: this.id_usuario,
+              modulo_registro: this.tipo_usuario,
               estado_registro: 1,
               tipo_usuario: this.tipo_usuario
             };
 
-            this.registerService.insertaRegistro(datosFormularioCompletos, this.tokenSesion).subscribe({
+            this.registerService.updateRegistro(datosFormularioCompletos, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
@@ -147,7 +160,11 @@ export class FormularioComunitaria {
                     confirmButtonText: "Aceptar",
                     confirmButtonColor: "#FBB03B",
                   });
-                  this.resetData();
+
+                  setTimeout(() => {
+                    this.onClose();
+                    this.resetData();
+                  }, 3000);
                 }
               }, error: (err) => {
                 
@@ -172,41 +189,94 @@ export class FormularioComunitaria {
     this.formularioRegistro?.reset();
   };
 
-  resetFormulario() {
-    // this.formularioRegistro?.patchValue({
-    //   demarcacion: this.infoUpdate.id_demarcacion_territorial,    
-    // };
-  }
-
   ngOnInit() {
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
-    this.area = sessionStorage.getItem('area')!;
+    this.area = Number(sessionStorage.getItem('area')!);
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
+    this.cabecera = Number(sessionStorage.getItem('cabecera'));
+    this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
 
     this.formularioRegistro = this.formBuilder.group({
-      demarcacion: [''],
-      denominacionl: [''],
-      domiciliol: [''],
-      observaciones: ['']
+      demarcacion_territorial: [''],
+      denominacion_lugar: [''],
+      domicilio_lugar: [''],
+      observaciones: [''],
+      fubicacion: [''],
+      flugar: [{ value: '', disabled: true}]
     });
 
     this.catalogo_demarcacion();
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-
-    this.tokenSesion = sessionStorage.getItem('key')!;
-
-    if(changes['idRegistro'] && changes['idRegistro'].currentValue) {
-      this.catalogo_demarcacion();
-    }
-
-    if(changes['idRegistroC'] && changes['idRegistroC'].currentValue) {
-      this.catalogo_demarcacion();
+    if(!this.idRegistro){
+      this.idRegistroC = true;
+      this.labelTitle = ' Registro - Lugar de mayor afluencia comunitaria';
+    } else {
+      this.labelTitle = 'Edición - Lugar de mayor afluencia comunitaria';
+      this.idRegistroC = false
+      this.getDataById(this.idRegistro);
     }
   }
 
+  onClose() {
+    this.close.emit();
+  }
+
+  onBackdropClick(event: MouseEvent) {
+    this.onClose();
+  }
+
+  getDataById(id: number) {
+    try {
+      if (!this.idRegistro) return;
+
+      this.registerService.getDataById(id, this.tokenSesion).subscribe({
+        
+        next: (data) => {
+
+          this.infoUpdate = data.getRegistroAfluencia[0];
+          
+          if(data.getRegistroAfluencia.length > 0) {
+
+            const datosFormularioCompletos = {
+              distrito_electoral: this.area,
+              distrito_cabecera: this.cabecera,
+              demarcacion_territorial: data.getRegistroAfluencia[0].demarcacion_territorial,
+              denominacion_lugar: data.getRegistroAfluencia[0].denominacion_lugar,
+              domicilio_lugar: data.getRegistroAfluencia[0].domicilio_lugar,
+              foto: 0,
+              enlace_foto: "ruta/documento",
+              ubicacion: 0,
+              enlace_ubicacion: "ruta/ubicacion",
+              observaciones: data.getRegistroAfluencia[0].observaciones,
+              usuario_registro: this.id_usuario,
+              modulo_registro: this.tipo_usuario,
+              estado_registro: 1,
+              tipo_usuario: this.tipo_usuario
+            };
+
+            this.formularioRegistro!.patchValue(datosFormularioCompletos);
+          
+          } else {
+            Swal.fire("No se encontraron registros");
+          }
+        },
+        error: (err) => {
+  
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+  
+          if(err.error.code === 100) {
+            Swal.fire("No se encontraron registros")
+          }
+  
+        }
+      });
+    } catch(error) {
+      console.error(error);
+    }
+  }
 
   catalogo_demarcacion() {
     this.catalogos.getCatalogos("cat_demarcacion_territorial", this.tokenSesion).subscribe({

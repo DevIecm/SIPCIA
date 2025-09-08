@@ -20,20 +20,30 @@ import { Reportes } from '../../../../../services/reporteService/reportes';
   styleUrl: './formulario-propuesta.css'
 })
 export class FormularioPropuesta {
-  @Input() idRegistro!: number;
-  @Input() idRegistroC!: boolean;
-  @Output() formSaved = new EventEmitter<void>();
 
+  @Input() isOpen = false;
+  @Input() idRegistroC: any;
+  @Input() idRegistro : number | undefined;
+  @Output() close = new EventEmitter<void>();
+  
   formularioRegistro: FormGroup | undefined;
 
   catalogoDemarcacion: any = [];
+  infoUpdate: any = [];
 
   opcionDemarcacion: any = null;
+  
   tokenSesion: string = '';
   today: string = '';
-  area: string = '';
+  labelTitle: string = '';
 
+  area: number = 0;
+  id_usuario: number = 0;
+  cabecera: number = 0;
   tipo_usuario: number = 0;
+  optionAnterioridad: number = 0;
+  optionPrestamo: number = 0;
+  optionMedida: number = 0;
 
   constructor(
     private catalogos: Catalogos,
@@ -62,33 +72,44 @@ export class FormularioPropuesta {
 
           if (result.isConfirmed) {
 
-            const datosFormularioCompletos = {
-              odc_demarcacion: 12,
-              demarcacion_territorial: this.formularioRegistro.get('demarcacion')?.value || null,
-              denominacion_lugar: this.formularioRegistro.get('denominacionl')?.value || null,
-              domicilio_lugar: this.formularioRegistro.get('domiciliol')?.value || null,
-              foto: 0,
-              enlace_foto: "ruta/documento",
-              ubicacion: '0',
-              enlace_ubicacion: "ruta/ubicacion",
-              observaciones: this.formularioRegistro.get('domiciliol')?.value || null,
-              usuario_registro: 1,
+            const datosForm = {
+              usuario_registro:this.id_usuario,
+              distrito_electoral: this.area,
+              demarcacion: Number(this.formularioRegistro.get('demarcacion')?.value) || null,
+              lugar_espacio: this.formularioRegistro.get('lugar_espacio')?.value || null,
+              domicilio: this.formularioRegistro.get('domicilio')?.value || null,
+              fotografia: 0,
+              enlace_fotografia: "ruta/documento",
+              ubicacion_kml: 0,
+              enlace_ubicacion: "ruta/documento", 
+              intitucion_propietaria: this.formularioRegistro.get('intitucion_propietaria')?.value || null,
+              prestamo_iecm: Number(this.optionAnterioridad),
+              nuevo_prestamo: 1,
+              superficie_espacio: Number(this.formularioRegistro.get('superficie_espacio')?.value) || null,
+              aforo: Number(this.formularioRegistro.get('aforo')?.value) || null,
+              ventilacion: 2,
+              observaciones: this.formularioRegistro.get('observaciones')?.value || null,
               modulo_registro: this.tipo_usuario,
               estado_registro: 1,
-              tipo_usuario: this.tipo_usuario
             };
 
-            this.registerService.insertaRegistro(datosFormularioCompletos, this.tokenSesion).subscribe({
+            console.log(datosForm)
+
+            this.registerService.insertaRegistroComunitaria(datosForm, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
-                    title: "Se le ha asignado el folio único.",
-                    text: data.folio,
+                    title: " Se ha registrado correctamente.",
                     icon: "success",
                     confirmButtonText: "Aceptar",
                     confirmButtonColor: "#FBB03B",
                   });
-                  this.resetData();
+                  
+                  setTimeout(() => {
+                    this.onClose();
+                    this.resetData();
+                  }, 3000);
+
                 }
               }, error: (err) => {
                 
@@ -120,33 +141,44 @@ export class FormularioPropuesta {
               return;
             }
 
-            const datosFormularioCompletos = {
-              odc_demarcacion: 12,
-              demarcacion_territorial: this.formularioRegistro.get('demarcacion')?.value || null,
-              denominacion_lugar: this.formularioRegistro.get('denominacionl')?.value || null,
-              domicilio_lugar: this.formularioRegistro.get('domiciliol')?.value || null,
-              foto: 0,
-              enlace_foto: "ruta/documento",
-              ubicacion: '0',
-              enlace_ubicacion: "ruta/ubicacion",
-              observaciones: this.formularioRegistro.get('domiciliol')?.value || null,
+            const datosForm = {
+              id_registro: 1,
+              distrito_electoral: 1,
+              demarcacion: Number(this.formularioRegistro.get('demarcacion')?.value) || null,
+              lugar_espacio: this.formularioRegistro.get('lugar_espacio')?.value || null,
+              domicilio: this.formularioRegistro.get('domicilio')?.value || null,
+              fotografia: 0,
+              enlace_fotografia: "ruta/documento",
+              ubicacion_kml: 0,
+              enlace_ubicacion: "ruta/documento", 
+              intitucion_propietaria: this.formularioRegistro.get('intitucion_propietaria')?.value || null,
+              prestamo_iecm: 2,
+              nuevo_prestamo: 1,
+              superficie_espacio: Number(this.formularioRegistro.get('superficie_espacio')?.value) || null,
+              aforo: Number(this.formularioRegistro.get('aforo')?.value) || null,
+              ventilacion: 2,
+              observaciones: this.formularioRegistro.get('observaciones')?.value || null,
               usuario_registro: 1,
-              modulo_registro: 1,
+              modulo_registro: this.tipo_usuario,
               estado_registro: 1,
-              tipo_usuario: this.tipo_usuario
             };
 
-            this.registerService.insertaRegistro(datosFormularioCompletos, this.tokenSesion).subscribe({
+            this.registerService.updateRegistroComunitaria(datosForm, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
-                    title: "Se le ha asignado el folio único.",
+                    title: " Se ha registrado correctamente.",
                     text: data.folio,
                     icon: "success",
                     confirmButtonText: "Aceptar",
                     confirmButtonColor: "#FBB03B",
                   });
-                  this.resetData();
+                  
+                  setTimeout(() => {
+                    this.onClose();
+                    this.resetData();
+                  }, 3000);
+
                 }
               }, error: (err) => {
                 
@@ -180,35 +212,86 @@ export class FormularioPropuesta {
   ngOnInit() {
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
-    this.area = sessionStorage.getItem('area')!;
+    this.area = Number(sessionStorage.getItem('area')!);
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
+    this.cabecera = Number(sessionStorage.getItem('cabecera'));
+    this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
 
     this.formularioRegistro = this.formBuilder.group({
       dDistrital: [{ value:'', disabled: true}],
       demarcacion: [''],
-      denominacionl: [''],
-      domiciliol: [''],
-      observaciones: ['']
+      lugar_espacio: [''],
+      intitucion_propietaria: [''],
+      domicilio: [''],
+      superficie_espacio: [''],
+      aforo: [''],
+      observaciones: [''],
+      anterioridad: ['']
     });
 
     this.catalogo_demarcacion();
+
+    if(!this.idRegistro){
+      this.idRegistroC = true;
+      this.labelTitle = 'Registro - Propuesta de lugares y espacios para Asambleas Comunitarias';
+    } else {
+      this.labelTitle = 'Edición - Propuesta de lugares y espacios para Asambleas Comunitarias';
+      this.idRegistroC = false;
+      this.getDataById(this.idRegistro);
+    }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  getDataById(id: number) {
+    try {
+      if (!this.idRegistro) return;
 
-    this.tokenSesion = sessionStorage.getItem('key')!;
+      this.registerService.getDataByIdComunitaria(id, this.tokenSesion).subscribe({
+        
+        next: (data) => {
 
-    if(changes['idRegistro'] && changes['idRegistro'].currentValue) {
-      this.catalogo_demarcacion();
+          this.infoUpdate = data.getRegistroAfluencia[0];
+          
+          if(data.getRegistroAfluencia.length > 0) {
+
+            const datosFormularioCompletos = {
+              distrito_electoral: this.area,
+              distrito_cabecera: this.cabecera,
+              demarcacion: data.getRegistroAfluencia[0].demarcacion,
+              denominacion_lugar: data.getRegistroAfluencia[0].denominacion_lugar,
+              domicilio_lugar: data.getRegistroAfluencia[0].domicilio_lugar,
+              foto: 0,
+              enlace_foto: "ruta/documento",
+              ubicacion: 0,
+              enlace_ubicacion: "ruta/ubicacion",
+              observaciones: data.getRegistroAfluencia[0].observaciones,
+              usuario_registro: this.id_usuario,
+              modulo_registro: this.tipo_usuario,
+              estado_registro: 1,
+              tipo_usuario: this.tipo_usuario
+            };
+
+            this.formularioRegistro!.patchValue(datosFormularioCompletos);
+          
+          } else {
+            Swal.fire("No se encontraron registros");
+          }
+        },
+        error: (err) => {
+  
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+  
+          if(err.error.code === 100) {
+            Swal.fire("No se encontraron registros");
+          }
+  
+        }
+      });
+    } catch(error) {
+      console.error(error);
     }
-
-    if(changes['idRegistroC'] && changes['idRegistroC'].currentValue) {
-      this.catalogo_demarcacion();
-      console.log("registro"+this.idRegistroC)
-    }
-
   }
-
 
   catalogo_demarcacion() {
     this.catalogos.getCatalogos("cat_demarcacion_territorial", this.tokenSesion).subscribe({
@@ -226,4 +309,12 @@ export class FormularioPropuesta {
       }
     });
   };
+
+  onClose() {
+    this.close.emit();
+  }
+
+  onBackdropClick(event: MouseEvent) {
+    this.onClose();
+  }
 }
