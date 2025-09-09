@@ -1,0 +1,260 @@
+import { connectToDatabase, sql } from "../../Config/Configuracion.js";
+import Midleware from "../../Config/Midleware.js";
+import express, { json } from 'express';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const router = express.Router();
+
+router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
+
+  const {
+    demarcacion_territorial,
+    distrito_electoral,
+    fecha_reunion,
+    hora_reunion,
+    numero_asistentes_reunion,
+    lugar_reunion,
+    fecha_asamblea_informativa,
+    hora_asamblea_informativa,
+    numero_asistentes_informativa,
+    lugar_asamblea_informativa,
+    fecha_asamblea_consultiva,
+    hora_asamblea_consultiva,
+    numero_asistentes_consultiva,
+    lugar_asamblea_consultiva,
+    periodo_del,
+    periodo_al,
+    numero_lugares_publicos,
+    plan_trabajo,
+    resumen_acta,
+    solicitud_cambios,
+    cambios_solicitados,
+    observaciones,
+    usuario_registro,
+    modulo_registro,
+    estado_registro,
+  } = req.body;
+
+  const { persona_responsable_fta } = req.body
+
+  if (!demarcacion_territorial || !distrito_electoral || !usuario_registro ||
+    !modulo_registro || !estado_registro) {
+    return res.json(400).json({ message: "Datos requeridos" })
+  }
+
+  // Fecha y hora
+  const original = new Date();
+  const offsetInMs = original.getTimezoneOffset() * 60000;
+  const fechaLocal = new Date(original.getTime() - offsetInMs);
+  const ahora = new Date();
+  const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
+
+
+
+  const pool = await connectToDatabase();
+  const transaction = pool.transaction();
+
+  try {
+    await transaction.begin();
+    const request = new sql.Request(transaction);
+
+
+    const resultadoFolio = await pool.request().query(`
+            SELECT MAX(CAST(RIGHT(nombre_ficha, 5) AS INT)) AS ultimoFolio
+            FROM ficha_tecnica_afromexicana
+            `);
+
+    const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
+    const siguienteFolio = ultimoFolio + 1;
+    const nombre_ficha = `FICHATECNICA_AT_DD00_${siguienteFolio.toString().padStart(5, '0')}`;
+
+
+    const result = await request
+      .input('demarcacion_territorial', sql.Int, demarcacion_territorial)
+      .input('distrito_electoral', sql.Int, distrito_electoral)
+      .input('fecha_reunion', sql.DateTime, fecha_reunion)
+      .input('hora_reunion', sql.VarChar, hora_reunion)
+      .input('numero_asistentes_reunion', sql.Numeric, numero_asistentes_reunion)
+      .input('lugar_reunion', sql.VarChar, lugar_reunion)
+      .input('fecha_asamblea_informativa', sql.DateTime, fecha_asamblea_informativa)
+      .input('hora_asamblea_informativa', sql.VarChar, hora_asamblea_informativa)
+      .input('numero_asistentes_informativa', sql.Numeric, numero_asistentes_informativa)
+      .input('lugar_asamblea_informativa', sql.VarChar, lugar_asamblea_informativa)
+      .input('fecha_asamblea_consultiva', sql.DateTime, fecha_asamblea_consultiva)
+      .input('hora_asamblea_consultiva', sql.VarChar, hora_asamblea_consultiva)
+      .input('numero_asistentes_consultiva', sql.Numeric, numero_asistentes_consultiva)
+      .input('lugar_asamblea_consultiva', sql.VarChar, lugar_asamblea_consultiva)
+      .input('periodo_del', sql.DateTime, periodo_del)
+      .input('periodo_al', sql.DateTime, periodo_al)
+      .input('numero_lugares_publicos', sql.Numeric, numero_lugares_publicos)
+      .input('plan_trabajo', sql.VarChar, plan_trabajo)
+      .input('resumen_acta', sql.VarChar, resumen_acta)
+      .input('solicitud_cambios', sql.Int, solicitud_cambios)
+      .input('cambios_solicitados', sql.VarChar, cambios_solicitados)
+      .input('observaciones', sql.VarChar, observaciones)
+      .input('fecha_registro', sql.DateTime, fechaLocal)
+      .input('hora_registro', sql.VarChar, horaActual)
+      .input('usuario_registro', sql.Int, usuario_registro)
+      .input('modulo_registro', sql.Int, modulo_registro)
+      .input('estado_registro', sql.Int, estado_registro)
+      .input('nombre_ficha', sql.VarChar, nombre_ficha)
+      .query(`
+                INSERT INTO ficha_tecnica_afromexicana                     
+                    (demarcacion_territorial, distrito_electoral, fecha_reunion,
+                    hora_reunion, numero_asistentes_reunion, lugar_reunion, fecha_asamblea_informativa,
+                    hora_asamblea_informativa, numero_asistentes_informativa, lugar_asamblea_informativa, fecha_asamblea_consultiva,
+                    hora_asamblea_consultiva, numero_asistentes_consultiva, lugar_asamblea_consultiva, periodo_del,
+                    periodo_al, numero_lugares_publicos, plan_trabajo, resumen_acta,
+                    solicitud_cambios, cambios_solicitados, observaciones, fecha_registro,
+                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha)
+                OUTPUT INSERTED.id
+                VALUES (@demarcacion_territorial, @distrito_electoral, @fecha_reunion,
+                    @hora_reunion, @numero_asistentes_reunion, @lugar_reunion, @fecha_asamblea_informativa,
+                    @hora_asamblea_informativa, @numero_asistentes_informativa, @lugar_asamblea_informativa, @fecha_asamblea_consultiva,
+                    @hora_asamblea_consultiva, @numero_asistentes_consultiva, @lugar_asamblea_consultiva, @periodo_del,
+                    @periodo_al, @numero_lugares_publicos, @plan_trabajo, @resumen_acta,
+                    @solicitud_cambios, @cambios_solicitados, @observaciones, @fecha_registro,
+                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha)
+            `);
+
+    const idRegistro = result.recordset[0].id;
+
+    //personas responsable
+    if (Array.isArray(persona_responsable_fta) && persona_responsable_fta.length > 0) {
+      for (const persona of persona_responsable_fta) {
+
+        const request = new sql.Request(transaction);
+        const { dd_cabecera_demarcacion, direccion_distrital } = persona;
+
+        await request
+          .input('ficha_tecnica_iafromexicana', sql.Int, idRegistro)
+          .input('dd_cabecera_demarcacion', sql.VarChar, dd_cabecera_demarcacion)
+          .input('direccion_distrital', sql.VarChar, direccion_distrital)
+          .query(`
+                INSERT INTO persona_responsable_fta (
+                ficha_tecnica_iafromexicana, dd_cabecera_demarcacion, direccion_distrital
+                )
+                VALUES (
+                @ficha_tecnica_iafromexicana, @dd_cabecera_demarcacion, @direccion_distrital
+                )
+            `);
+      }
+    }
+
+    // Demarcación territorial
+    const resultDemarcacion = await transaction.request()
+      .input('id', sql.Int, demarcacion_territorial)
+      .query('SELECT demarcacion_territorial FROM demarcacion_territorial WHERE id = @id');
+    const demarcacion_territorialCatalogo = resultDemarcacion.recordset[0]?.demarcacion_territorial || `(${demarcacion_territorial})`;
+
+    // Distrito electoral
+    const resultDistrito = await transaction.request()
+      .input('id', sql.Int, distrito_electoral)
+      .query('SELECT direccion_distrital FROM cat_distrito WHERE id = @id');
+    const distrito_electoralCatalogo = resultDistrito.recordset[0]?.direccion_distrital || `(${distrito_electoral})`;
+
+    // Usuario registro
+    const resultUsuario = await transaction.request()
+      .input('id', sql.Int, usuario_registro)
+      .query('SELECT usuario FROM usuarios WHERE id = @id');
+    const usuario_registroCatalogo = resultUsuario.recordset[0]?.usuario || `(${usuario_registro})`;
+
+    // Módulo registro
+    const resultModulo = await transaction.request()
+      .input('id', sql.Int, modulo_registro)
+      .query('SELECT tipo_usuario FROM tipo_usuario WHERE id = @id');
+    const modulo_registroCatalogo = resultModulo.recordset[0]?.tipo_usuario || `(${modulo_registro})`;
+
+    // Estado registro
+    const resultEstado = await transaction.request()
+      .input('id', sql.Int, estado_registro)
+      .query('SELECT estado_registro FROM estado_registro WHERE id = @id');
+    const estado_registroCatalogo = resultEstado.recordset[0]?.estado_registro || `(${estado_registro})`;
+
+
+    const catalogos = {
+      demarcacion_territorial: { [demarcacion_territorial]: demarcacion_territorialCatalogo },
+      distrito_electoral: { [distrito_electoral]: distrito_electoralCatalogo },
+      usuario_registro: { [usuario_registro]: usuario_registroCatalogo },
+      modulo_registro: { [modulo_registro]: modulo_registroCatalogo },
+      estado_registro: { [estado_registro]: estado_registroCatalogo },
+    };
+
+    const campos = {
+      demarcacion_territorial,
+      distrito_electoral,
+      fecha_reunion,
+      hora_reunion,
+      numero_asistentes_reunion,
+      lugar_reunion,
+      fecha_asamblea_informativa,
+      hora_asamblea_informativa,
+      numero_asistentes_informativa,
+      lugar_asamblea_informativa,
+      fecha_asamblea_consultiva,
+      hora_asamblea_consultiva,
+      numero_asistentes_consultiva,
+      lugar_asamblea_consultiva,
+      periodo_del,
+      periodo_al,
+      numero_lugares_publicos,
+      plan_trabajo,
+      resumen_acta,
+      solicitud_cambios,
+      cambios_solicitados,
+      observaciones,
+      usuario_registro,
+      modulo_registro,
+      estado_registro,
+      persona_responsable_fta
+    }
+
+    function reemplazarCatalogos(campos, catalogos) {
+      const resultado = { ...campos };
+
+      for (const campo in catalogos) {
+        const id = campos[campo];
+
+        if (id !== undefined && id !== null && id !== '') {
+          const nombre = catalogos[campo][id];
+          resultado[campo] = nombre || ` (${id})`;
+        }
+      }
+      return resultado;
+    }
+
+    const camposConValores = reemplazarCatalogos(campos, catalogos);
+    const camposModificados = JSON.stringify(camposConValores);
+
+    //registrar bitacora fichas
+    await transaction.request()
+      .input('usuario', sql.Int, usuario_registro)
+      .input('tipo_usuario', sql.Int, modulo_registro)
+      .input('fecha', sql.Date, fechaLocal)
+      .input('hora', sql.VarChar, horaActual)
+      .input('registro_id', sql.Int, idRegistro)
+      .input('campos_modificados', sql.VarChar(sql.MAX), camposModificados)
+      .query(`
+                INSERT INTO log_ficha_tecnica_afromexicana (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
+                VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
+            `);
+
+
+
+    // Confirmar la transacción
+    await transaction.commit();
+    return res.status(200).json({ message: "Registro creado", id: idRegistro, nombre_ficha: nombre_ficha });
+
+
+
+  } catch (error) {
+    await transaction.rollback();
+    console.error('Error en transacción:', error);
+    return { ok: false, error };
+  }
+
+});
+
+export default router;

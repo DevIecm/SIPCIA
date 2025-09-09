@@ -196,11 +196,86 @@ router.get("/cat_demarcacion_territorial", Midleware.verifyToken, async (req, re
                     id,
                     demarcacion_territorial,
                     clave_dt
-                FROM demarcacion_territorial;`);
+                FROM demarcacion_territorial
+                where status = 1;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
         cat_demarcacion_territorial: result.recordset
+      });
+    } else {
+      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
+});
+
+
+// nuevos catalogos
+// catalogo Numero de reporte
+router.get("/cat_numero_reporte", Midleware.verifyToken, async (req, res) => {
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+        .query(`SELECT 
+                    id,
+                    numero_reporte
+                FROM cat_numero_reporte`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        cat_numero_reporte: result.recordset
+      });
+    } else {
+      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
+});
+
+
+// catalogo Fecha y periodo
+router.get("/cat_fecha_periodo", Midleware.verifyToken, async (req, res) => {
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+        .query(`SELECT 
+                    id,
+                    numero_reporte
+                FROM cat_fecha_periodo`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        cat_fecha_periodo: result.recordset
+      });
+    } else {
+      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
+});
+
+
+
+//Catalogo  cat_lenguas_indigenas
+router.get("/cat_lenguas_indigenas", Midleware.verifyToken, async (req, res) => {
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+        .query(`SELECT 
+                    id,
+                    lengua_indigena
+                FROM cat_lenguas_indigenas`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        cat_lenguas_indigenas: result.recordset
       });
     } else {
       return res.status(404).json({ message: "No se encontraron datos de tipo" });
