@@ -93,7 +93,13 @@
                 <i class="bi bi-pencil-square"></i>
               </button>
             </td>
-            <td><i class="bi bi-journal-text"></i></td>
+            <td>
+              <i 
+                (click)="goToBitacora(item.id_registro, 'mayorAfluencia')" 
+                class="bi bi-journal-text"
+                title="Ir a bitácora"
+              ></i>
+            </td>
             <td>{{ item.direccion_distrital ? item.direccion_distrital : '-'}}</td>
             <td>{{ item.distrito_cabecera ? item.distrito_cabecera : '-' }}</td>
             <td>{{ item.demarcacion_territorial ? item.demarcacion_territorial : '-' }}</td>

@@ -54,6 +54,9 @@ export class PropuestaComunitaria implements OnInit {
 
     this.getRegister();
   }
+  goToBitacora(id: number, tipo: string) {
+    this.router.navigate(['/bitacora', id, tipo]);
+  }
 
   search(): void {
     const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();

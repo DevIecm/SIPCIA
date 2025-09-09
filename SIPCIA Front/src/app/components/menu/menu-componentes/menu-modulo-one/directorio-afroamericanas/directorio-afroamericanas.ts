@@ -35,6 +35,9 @@ export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestro
   ngOnDestroy(): void {
     this.miModal.nativeElement.removeEventListener('hidden.bs.modal', this.onModalClosed);
   }
+  goToBitacora(id: number, tipo: string) {
+    this.router.navigate(['/bitacora', id, tipo]);
+  }
 
   onModalClosed = () => {
     this.formHijo.resetFormulario();

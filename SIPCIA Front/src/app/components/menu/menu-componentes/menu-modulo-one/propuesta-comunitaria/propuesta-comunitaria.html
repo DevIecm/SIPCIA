@@ -90,7 +90,7 @@
                 <i class="bi bi-pencil-square"></i>
               </button>
             </td>
-            <td><i class="bi bi-journal-text"></i></td>
+            <td><i (click)="goToBitacora(item.id_registro, 'lugaresAsambleas')" class="bi bi-journal-text"></i></td>
             <td>{{ item.fecha_registro | date:'dd/MM/yyyy'}}</td>
             <td>{{ item.demarcacion_territorial ? item.demarcacion_territorial : '-' }}</td>
             <td>{{ item.lugar_espacio }}</td>

@@ -34,6 +34,9 @@ export class DirectorioIndigenas implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.miModal.nativeElement.removeEventListener('hidden.bs.modal', this.onModalClosed);
   }
+  goToBitacora(id: number, tipo: string) {
+    this.router.navigate(['/bitacora', id, tipo]);
+  }
 
   onModalClosed = () => {
     this.formHijo.resetFormulario();

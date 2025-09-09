@@ -1,1 +1,218 @@
-<p>bitacora works!</p>
+<app-navbar></app-navbar>
+
+<nav class="navbar bg-body-tertiary" style="display: inline;">
+    <div class="container-fluid" style="padding: 0px;">
+        <a class="navbar-brand">
+            <div class="row row-cols-1">
+                <div class="col">
+                    <div class="div-redondeado-right">
+                        <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
+                    </div>
+                </div>
+                <div class="container div-redondeado-right-home text-center">
+                    <div class="row">
+                        <div class="col" style=" margin: -4px;">
+                            <i (click)="onValidateInfo()" i class="bi bi-house-door-fill fs-3"></i>
+                        </div>
+                        <div class="col">
+                            <h3 style="font-size: 30px; margin: 0px;">Bitácora</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <div class="row row-cols-1">
+            <div class="col">
+                <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+                    <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+                </button>
+            </div>
+
+            <div class="col">
+                <div class="div-redondeado-left">
+                    <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row back-table" style="margin-top: 8px;">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">No.</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Datos</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="this.tipoBitacora==='directorio'">
+                    <tr *ngFor="let item of dataTable; index as i" class="dual-row">
+                        <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
+                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
+                        <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
+                        <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
+                        <td>
+                            <div *ngIf="item.Datos?.nombre_completo">
+                                Nombre Cmpleto:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.nombre_completo }}
+                            </div>
+                            <div *ngIf="item.Datos?.seccion_electoral">
+                                Sección Electoral:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.seccion_electoral }}
+                            </div>
+                            <div *ngIf="item.Datos?.demarcacion">
+                                Demarcación:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.demarcacion }}
+                            </div>
+                            <div *ngIf="item.Datos?.distrito_electoral">
+                                Distrito Electoral Local Uninominal:&nbsp;&nbsp;&nbsp;&nbsp;{{
+                                item.Datos.distrito_electoral }}
+                            </div>
+                            <div *ngIf="item.Datos?.pueblo_pbl">
+                                Pueblo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.pueblo_pbl }}
+                            </div>
+                            <div *ngIf="item.Datos?.pueblo_originario">
+                                Pueblo Originario:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.pueblo_originario }}
+                            </div>
+                            <div *ngIf="item.Datos?.otro_pbl">
+                                Otro Pueblo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.otro_pbl }}
+                            </div>
+                            <div *ngIf="item.Datos?.pueblo_afro">
+                                Pueblo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.pueblo_afro }}
+                            </div>
+                            <div *ngIf="item.Datos?.otro_afro">
+                                Otro Pueblo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.otro_afro }}
+                            </div>
+                            <div *ngIf="item.Datos?.comunidad">
+                                Comunidad:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.comunidad }}
+                            </div>
+                            <div *ngIf="item.Datos?.nombre_comunidad">
+                                Nombre de la comunidad:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.nombre_comunidad }}
+                            </div>
+                            <div *ngIf="item.Datos?.nombre_instancia">
+                                Nombre de la instancia representativa o
+                                autoridad tradicional a la que pertence:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.nombre_instancia }}
+                            </div>
+                            <div *ngIf="item.Datos?.cargo_instancia">
+                                Cargo que ocupa en la instancia
+                                representativa o autoridad tradicional:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.cargo_instancia }}
+                            </div>
+                            <div *ngIf="item.Datos?.domicilio">
+                                Domicilio:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.domicilio }}
+                            </div>
+                            <div *ngIf="item.Datos?.telefono_particular">
+                                Teléfono particular (fijo):&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.telefono_particular }}
+                            </div>
+                            <div *ngIf="item.Datos?.telefono_celular">
+                                Teléfono celular:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.telefono_celular }}
+                            </div>
+                            <div *ngIf="item.Datos?.correo_electronico_oficial">
+                                Correo electrónico oficial:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.correo_electronico_oficial  }}
+                            </div>
+                            <div *ngIf="item.Datos?.correo_electronico_personal">
+                                Correo  electrónico no oficial (Personal):&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.correo_electronico_personal  }}
+                            </div>
+                            <div *ngIf="item.Datos?.enlace_documentos">
+                                Documentos:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.enlace_documentos  }}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tbody *ngIf="this.tipoBitacora==='mayorAfluencia'">
+                    <tr *ngFor="let item of dataTable; index as i" class="dual-row">
+                        <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
+                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
+                        <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
+                        <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
+                        <td>
+                            <div *ngIf="item.Datos?.distrito_electoral">
+                                Distrito Electoral Local Uninominal:&nbsp;&nbsp;&nbsp;&nbsp;{{
+                                item.Datos.distrito_electoral }}
+                            </div>
+
+                            <div *ngIf="item.Datos?.demarcacion_territorial">
+                                Demarcación:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.demarcacion_territorial }}
+                            </div>
+                            <div *ngIf="item.Datos?.distrito_cabecera">
+                                Organo Desconcentrado
+                                Cabecera de Demarcación:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.distrito_cabecera }}
+                            </div>
+                            <div *ngIf="item.Datos?.denominacion_lugar">
+                                *Denominación del Lugar:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.denominacion_lugar }}
+                            </div>
+                            <div *ngIf="item.Datos?.domicilio_lugar">
+                                Domicilio del Lugar:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.domicilio_lugar }}
+                            </div>
+                            <div *ngIf="item.Datos?.enlace_ubicacion">
+                                Ubicacíon:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.enlace_ubicacion }}
+                            </div>
+                            <div *ngIf="item.Datos?.enlace_foto">
+                                Foto:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.enlace_foto }}
+                            </div>
+                            <div *ngIf="item.Datos?.enlace_documentos">
+                                Documentos:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.enlace_documentos  }}
+                            </div>
+                            <div *ngIf="item.Datos?.observaciones">
+                                Observaciones:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.observaciones  }}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tbody *ngIf="this.tipoBitacora==='lugaresAsambleas'">
+                    <tr *ngFor="let item of dataTable; index as i" class="dual-row">
+                        <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
+                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
+                        <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
+                        <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
+                        <td>
+                            <div *ngIf="item.Datos?.distrito_electoral">
+                                Distrito Electoral Local Uninominal:&nbsp;&nbsp;&nbsp;&nbsp;{{
+                                item.Datos.distrito_electoral }}
+                            </div>
+                            <div *ngIf="item.Datos?.demarcacion">
+                                Demarcación Territorial:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.demarcacion }}
+                            </div>
+
+                            <div *ngIf="item.Datos?.lugar_espacio">
+                                Denominación del lugar o espacio:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.lugar_espacio }}
+                            </div>
+                            <div *ngIf="item.Datos?.domicilio">
+                                Domicilio:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.domicilio }}
+                            </div>
+                            <div *ngIf="item.Datos?.enlace_ubicacion">
+                                Ubicacíon:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.enlace_ubicacion }}
+                            </div>
+                            <div *ngIf="item.Datos?.intitucion_propietaria">
+                                Institución propietaria, encargada o responsable del lugar o espacio:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.intitucion_propietaria }}
+                            </div>
+                            <div *ngIf="item.Datos?.prestamo_iecm !== undefined && item.Datos?.prestamo_iecm !== null">
+                                Préstamo al IECM:&nbsp;&nbsp;&nbsp;&nbsp;
+                                {{ item.Datos.prestamo_iecm === 1 ? 'Sí' : 'No' }}
+                            </div>
+                            <div *ngIf="item.Datos?.nuevo_prestamo !== undefined && item.Datos?.nuevo_prestamo !== null">
+                                Nuevo Préstamo:&nbsp;&nbsp;&nbsp;&nbsp;
+                                {{ item.Datos.nuevo_prestamo === 1 ? 'Sí' : 'No' }}
+                            </div>
+                            <div *ngIf="item.Datos?.superficie_espacio">
+                                Superficie del lugar o espacio:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.superficie_espacio }}
+                            </div>
+                            <div *ngIf="item.Datos?.aforo">
+                                Aforo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.aforo }}
+                            </div>
+                            <div *ngIf="item.Datos?.ventilacion">
+                                Suficiente ventilación como medida preventiva Sanitaria:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.ventilacion }}
+                            </div>
+                            <div *ngIf="item.Datos?.observaciones">
+                                Observaciones:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.observaciones  }}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</nav>

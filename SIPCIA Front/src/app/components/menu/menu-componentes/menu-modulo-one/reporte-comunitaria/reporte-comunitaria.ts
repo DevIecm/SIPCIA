@@ -57,6 +57,9 @@ export class ReporteComunitaria implements OnInit {
 
     this.getRegister();
   }
+ goToBitacora(id: number, tipo: string) {
+  this.router.navigate(['/bitacora', id, tipo]);
+}
   
   constructor(
     private router: Router,

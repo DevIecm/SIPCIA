@@ -20,7 +20,8 @@ export const routes: Routes = [
     { path: 'rconsultas', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-one/reporte-consultas/reporte-consultas').then(m => m.ReporteConsultas), canActivate: [AuthGuard] },
     { path: 'cacompanamiento', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-one/catalogo-acompanamiento/catalogo-acompanamiento').then(m => m.CatalogoAcompanamiento), canActivate: [AuthGuard] },
     { path: 'dnindigenas', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-one/documentos-indigenas/documentos-indigenas').then(m => m.DocumentosIndigenas), canActivate: [AuthGuard] },
-    { path: 'dnafroamericanas', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-one/documentos-afroamericanas/documentos-afroamericanas').then(m => m.DocumentosAfroamericanas), canActivate: [AuthGuard] }
+    { path: 'dnafroamericanas', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-one/documentos-afroamericanas/documentos-afroamericanas').then(m => m.DocumentosAfroamericanas), canActivate: [AuthGuard] },
+    { path: 'bitacora/:id/:tipo', loadComponent: () => import('./components/menu/menu-componentes/bitacora/bitacora').then(m => m.Bitacora), canActivate: [AuthGuard] }
 
     //Modulo2
 
