@@ -64,12 +64,12 @@ export class PropuestaComunitaria implements OnInit {
     }
 
     this.dataTable = this.allDatable.filter((val) => {
-      const direccion_distrital = (val.direccion_distrital ?? '').toString().toLowerCase().trim();
-      const domicilio_lugar = (val.domicilio_lugar ?? '').toLowerCase().trim();
+      const demarcacion_territorial = (val.demarcacion_territorial ?? '').toString().toLowerCase().trim();
+      const domicilio = (val.domicilio ?? '').toLowerCase().trim();
 
       return (
-        direccion_distrital.includes(rawFilter) ||
-        domicilio_lugar.includes(rawFilter)
+        demarcacion_territorial.includes(rawFilter) ||
+        domicilio.includes(rawFilter)
       );
     });
   };

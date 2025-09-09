@@ -319,6 +319,7 @@
               <input
                 formControlName="tfijo"
                 type="text" 
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                 class="form-control">
             </div>
           </div>
@@ -328,6 +329,7 @@
               <input
                 formControlName="tcelular"
                 type="text" 
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                 class="form-control">
             </div>
           </div>
@@ -392,13 +394,34 @@
       <div class="container text-center" style="margin-top: 15px;">
         <div class="row">
           <div class="col">
-            <button type="submit" class="btn button-register">{{data.btn1}}</button>
+            <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
           </div>
           <div class="col">
             <button type="button" (click)="resetData()" class="btn button-clean">{{data.btn2}}</button>
           </div>
         </div>
       </div>
+
+      <div *ngIf="formularioRegistro?.get('coficial')?.invalid && 
+          (formularioRegistro?.get('coficial')?.dirty || formularioRegistro?.get('coficial')?.touched)">
+        <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['required']">
+          El correo es requerido.
+        </div>
+        <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['email']">
+          Por favor, ingresa un correo electrónico válido.
+        </div>
+      </div>
+
+      <div *ngIf="formularioRegistro?.get('cpersonal')?.invalid && 
+          (formularioRegistro?.get('cpersonal')?.dirty || formularioRegistro?.get('cpersonal')?.touched)">
+        <div *ngIf="formularioRegistro?.get('cpersonal')?.errors?.['required']">
+          El correo es requerido.
+        </div>
+        <div *ngIf="formularioRegistro?.get('cpersonal')?.errors?.['email']">
+          Por favor, ingresa un correo electrónico válido.
+        </div>
+      </div>
+
     </form>
   </div>
 </div>

@@ -90,8 +90,7 @@ export class FormularioComunitaria {
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
-                    title: "Se le ha asignado el folio único.",
-                    text: data.folio,
+                    title: "Se ha registrado correctamente.",
                     icon: "success",
                     confirmButtonText: "Aceptar",
                     confirmButtonColor: "#FBB03B",
@@ -154,8 +153,7 @@ export class FormularioComunitaria {
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
-                    title: "Se le ha asignado el folio único.",
-                    text: data.folio,
+                    title: "Se han guardado correctamentelos cambios.",
                     icon: "success",
                     confirmButtonText: "Aceptar",
                     confirmButtonColor: "#FBB03B",

@@ -111,5 +111,9 @@
 </div>
 
 @if(showModal) {
-<app-formulario-comunitaria [idRegistro]="idRegistroSeleccionado" [isOpen]="showModal" (close)="closeModal()"></app-formulario-comunitaria>
+<app-formulario-comunitaria 
+  [idRegistro]="idRegistroSeleccionado" 
+  [isOpen]="showModal" 
+  (close)="closeModal()">
+</app-formulario-comunitaria>
 }

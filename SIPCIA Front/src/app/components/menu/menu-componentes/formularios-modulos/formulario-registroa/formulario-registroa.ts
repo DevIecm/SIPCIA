@@ -21,19 +21,26 @@ import { Reportes } from '../../../../../services/reporteService/reportes';
 })
 export class FormularioRegistroa {
 
-  @Input() idRegistro!: number;
-  @Input() idRegistroC!: boolean;
-  @Output() formSaved = new EventEmitter<void>();
+  @Input() isOpen = false;
+  @Input() idRegistroC: any;
+  @Input() idRegistro : number | undefined;
+  @Output() close = new EventEmitter<void>();
 
   formularioRegistro: FormGroup | undefined;
 
   catalogoDemarcacion: any = [];
+  infoUpdate: any = [];
+
 
   opcionDemarcacion: any = null;
+
   tokenSesion: string = '';
   today: string = '';
-  area: string = '';
+  labelTitle: string = '';
 
+  area: number = 0;
+  id_usuario: number = 0;
+  cabecera: number = 0;
   tipo_usuario: number = 0;
 
   selectedFile: File | null = null;
@@ -199,10 +206,18 @@ export class FormularioRegistroa {
     });
   }
 
+  onClose() {
+    this.close.emit();
+  }
+
+  onBackdropClick(event: MouseEvent) {
+    this.onClose();
+  }
+
   ngOnInit() {
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
-    this.area = sessionStorage.getItem('area')!;
+    this.area = Number(sessionStorage.getItem('area')!);
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
 
     this.formularioRegistro = this.formBuilder.group({
@@ -214,19 +229,6 @@ export class FormularioRegistroa {
     });
 
     this.catalogo_demarcacion();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-
-    this.tokenSesion = sessionStorage.getItem('key')!;
-
-    if(changes['idRegistro'] && changes['idRegistro'].currentValue) {
-      this.catalogo_demarcacion();
-    }
-
-    if(changes['idRegistroC'] && changes['idRegistroC'].currentValue) {
-      this.catalogo_demarcacion();
-    }
   }
 
   catalogo_demarcacion() {

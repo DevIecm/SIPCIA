@@ -393,9 +393,6 @@ export class NuevoRegistro implements OnInit{
       cancelButtonText: "Cancelar"
     }).then((result) => {
       if (result.isConfirmed) {
-
-        console.log(this.formularioRegistro?.invalid);
-        console.log(this.formularioRegistro);
           
         if (!this.formularioRegistro) {
           return;

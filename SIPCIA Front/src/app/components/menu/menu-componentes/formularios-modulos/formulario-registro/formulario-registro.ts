@@ -83,7 +83,7 @@ export class FormularioRegistro implements OnInit{
       seccion_electoral: ['', Validators.required],
       demarcacion: [''],
       duninominal: [{ value: '', disabled: true }],
-      scomunidad: [{ value: '', disabled: true }],
+      scomunidad: [''],
       ncomunidad: ['', Validators.required],
 
       ooriginario: [''],
@@ -102,11 +102,11 @@ export class FormularioRegistro implements OnInit{
       ninstancia: ['', Validators.required],
       cinstancia: ['', Validators.required],
       domicilio: ['', Validators.required],
-      tfijo: ['', Validators.required],
-      tcelular: ['', Validators.required],
+      tfijo: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      tcelular: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       docs: [{ value: '', disabled: true }],
-      coficial: ['', Validators.required],
-      cpersonal: ['', Validators.required]
+      coficial: ['', [Validators.required, Validators.email]],
+      cpersonal: ['', [Validators.required, Validators.email]],
     });
 
     this.moduloClicked = localStorage.getItem('moduloClicked')!;

@@ -1,248 +1,256 @@
-<div class="card text-center card-size fw-bold">
+<div class="modal show fade d-block" tabindex="-1" *ngIf="isOpen" (click)="onBackdropClick($event)" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" style="width: auto; max-width: 60%;" (click)="$event.stopPropagation()">
+        <div class="modal-content" style="width: auto; height: auto;">
+            <div class="modal-body">
+                <div class="card card-size text-center fw-bold">
+                    <div class="card-body">
+                        <form [formGroup]="formularioRegistro!" (ngSubmit)="saveForm()">
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3">
+                                        <label class="form-label">{{ labelTitle }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-  <div class="card-body">
-    <form [formGroup]="formularioRegistro!" (ngSubmit)="saveForm()">
-        <div class="container text-center">
-            <div class="row">
-                <div class="col">
-                    <div class="mb-3">
-                    <label class="form-label">{{ 
-                        idRegistroC ? 
-                        'Atención a consultas' : 
-                        'Edición - Atención a consultas' 
-                    }}</label>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="container text-center mb-5">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Dirección Distrital</label> <br>
+                                        <label class="form-label" style="color: #b7b5b8;" >{{ area }}</label>
+                                    </div>
+                                    <div class="col">
+                                        <div>
+                                            <label class="form-label">*Número de Reporte:</label>
+                                            <select 
+                                                formControlName="nreporte"
+                                                class="select-input form-select" 
+                                                aria-label="Default select example"
+                                            >
+                                                <option selected></option>
+                                                @for (item of catalogoReporte; track item) {
+                                                <option [value]="item.id">{{item.numero_reporte}}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div>
+                                            <label class="form-label">*Fecha y periodo:</label>
+                                            <select 
+                                                formControlName="fyperiodo"
+                                                class="select-input form-select" 
+                                                aria-label="Default select example"
+                                            >
+                                                <option selected></option>
+                                                @for (item of catalogoFecha; track item) {
+                                                <option [value]="item.id">{{item.numero_reporte}}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-center mb-5">
-            <div class="row">
-                <div class="col">
-                    <label class="form-label">Dirección Distrital</label> <br>
-                    <label class="form-label" style="color: #b7b5b8;" >{{ area }}</label>
-                </div>
-                <div class="col">
-                    <div>
-                        <label class="form-label">*Número de Reporte:</label>
-                        <select 
-                            formControlName="demarcacion"
-                            class="select-input form-select" 
-                            aria-label="Default select example"
-                            [(ngModel)]="opcionDemarcacion"
-                        >
-                            <option selected></option>
-                            @for (item of catalogoDemarcacion; track item) {
-                            <option [value]="item.id">{{item.demarcacion_territorial}}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="col">
-                    <div>
-                        <label class="form-label">*Fecha y periodo:</label>
-                        <select 
-                            formControlName="demarcacion"
-                            class="select-input form-select" 
-                            aria-label="Default select example"
-                            [(ngModel)]="opcionDemarcacion"
-                        >
-                            <option selected></option>
-                            @for (item of catalogoDemarcacion; track item) {
-                            <option [value]="item.id">{{item.demarcacion_territorial}}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="container text-center mt-4">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-check">
+                                            <input 
+                                                class="form-check-input" 
+                                                type="checkbox" 
+                                                id="checkDefault"
+                                                [checked]="formularioRegistro?.get('presento_caso')?.value === 1"
+                                                (change)="onCheckboxChange($event)">
+                                            <label class="form-check-label" for="checkDefault">
+                                                No se presentó el caso
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label">Número consecutivo de Consulta:</label>
+                                            <input 
+                                                type="text"
+                                                formControlName="consecutivo"
+                                                [(ngModel)]="idConsecutivo"
+                                                class="form-control txt-input">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label">*Fecha de la consulta:</label>
+                                        <input 
+                                            type="text"
+                                            placeholder="dd/mm/yyyy"
+                                            formControlName="fconsulta"
+                                            class="form-control txt-input">
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-center mt-4">
-            <div class="row">
-                <div class="col-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="checkDefault">
-                        <label class="form-check-label" for="checkDefault">
-                            No se presentó el caso
-                        </label>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <label class="form-label">Número consecutivo de Consulta:</label>
-                        <input 
-                            type="text"
-                            formControlName="dDistrital"
-                            class="form-control txt-input">
-                </div>
-                <div class="col-4">
-                    <label class="form-label">*Fecha de la consulta:</label>
-                    <input 
-                        type="text"
-                        formControlName="dDistrital"
-                        class="form-control txt-input">
-                </div>
-            </div>
-        </div>
+                            <div class="row">
+                                <div class="col-12 text-start">
+                                    <div class="mb-3">
+                                        <label class="form-label">*Nombre Completo</label>
+                                        <input 
+                                            type="text"
+                                            formControlName="ncompleto"
+                                            class="form-control txt-input"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="row">
-            <div class="col-12 text-start">
-                <div class="mb-3">
-                    <label class="form-label">*Nombre Completo</label>
-                    <input 
-                        type="text"
-                        formControlName="domiciliol"
-                        class="form-control txt-input"
-                    >
-                </div>
-            </div>
-        </div>
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">*Pueblo Originario:</label>
+                                            <select 
+                                                formControlName="ooriginario" 
+                                                class="select-input form-select" 
+                                                aria-label="Default select example"
+                                                [(ngModel)]="opcionPuebloOriginario"
+                                            >
+                                                <option selected></option>
+                                                @for (item of catalogoPueblor; track item) {
+                                                <option [value]="item.id">{{item.pueblo_originario}}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">*Pueblo:</label>
+                                            <select 
+                                                formControlName="pueblo" 
+                                                class="select-input form-select" 
+                                                aria-label="Default select example"
+                                                [(ngModel)]="opcionPueblo"
+                                            >
+                                                <option value="non" selected></option>
+                                                @for (item of catalogoPueblos; track item) {
+                                                <option [value]="item.id">{{item.pueblo}}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">*Barrio:</label>
+                                            <select 
+                                                formControlName="barrio" 
+                                                class="select-input form-select" 
+                                                aria-label="Default select example"
+                                                [(ngModel)]="opcionBarrio"
+                                            >
+                                                <option value="non" selected></option>
+                                                @for (item of catalogoBarrios; track item) {
+                                                <option [value]="item.id">{{item.barrio}}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-4">
-                    <div class="mb-3">
-                        <label class="form-label">*Pueblo Originario:</label>
-                        <select 
-                            formControlName="ooriginario" 
-                            class="select-input form-select" 
-                            aria-label="Default select example"
-                            [(ngModel)]="opcionPuebloOriginario"
-                        >
-                            <option selected></option>
-                            @for (item of catalogoPueblor; track item) {
-                            <option [value]="item.id">{{item.pueblo_originario}}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="mb-3">
-                        <label class="form-label">*Pueblo:</label>
-                        <select 
-                            formControlName="pueblo" 
-                            class="select-input form-select" 
-                            aria-label="Default select example"
-                            [(ngModel)]="opcionPueblo"
-                        >
-                            <option value="non" selected></option>
-                            @for (item of catalogoPueblos; track item) {
-                            <option [value]="item.id">{{item.pueblo}}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="mb-3">
-                        <label class="form-label">*Barrio:</label>
-                        <select 
-                            formControlName="barrio" 
-                            class="select-input form-select" 
-                            aria-label="Default select example"
-                            [(ngModel)]="opcionBarrio"
-                        >
-                            <option value="non" selected></option>
-                            @for (item of catalogoBarrios; track item) {
-                            <option [value]="item.id">{{item.barrio}}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">*Unidad Territorial:</label>
+                                            <select 
+                                                formControlName="uterritorial" 
+                                                class="select-input form-select" 
+                                                aria-label="Default select example"
+                                                [(ngModel)]="opcionUnidadTerritorial"
+                                            >
+                                                <option value="non" selected></option>
+                                                @for (item of catalogoUnidadTerritorial; track item) {
+                                                <option [value]="item.id">{{item.ut}}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Otro:</label>
+                                            <input 
+                                                formControlName="otro"
+                                                type="text" 
+                                                class="form-control txt-input"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label class="form-label">*Unidad Territorial:</label>
-                        <select 
-                            formControlName="uterritorial" 
-                            class="select-input form-select" 
-                            aria-label="Default select example"
-                            [(ngModel)]="opcionUnidadTerritorial"
-                        >
-                            <option value="non" selected></option>
-                            @for (item of catalogoUnidadTerritorial; track item) {
-                            <option [value]="item.id">{{item.ut}}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label class="form-label">Otro:</label>
-                        <input 
-                            formControlName="otro"
-                            type="text" 
-                            class="form-control txt-input"
-                        >
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="row text-start">
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Cargo que ocupa:</label>
+                                        <input 
+                                            type="text"
+                                            formControlName="cargo"
+                                            class="form-control txt-input"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                                    
+                            <div class="container text-start mt-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label for="exampleFormControlTextarea1" class="form-label">Describa la consulta:</label>
+                                            <textarea formControlName="consulta" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="row text-start">
-            <div class="col-12">
-                <div class="mb-3">
-                    <label class="form-label">Cargo que ocupa:</label>
-                    <input 
-                        type="text"
-                        formControlName="domiciliol"
-                        class="form-control txt-input"
-                    >
-                </div>
-            </div>
-        </div>
-                
-        <div class="container text-start mt-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Describa la consulta:</label>
-                        <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <div class="container text-start mt-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label for="exampleFormControlTextarea1" class="form-label">Forma en la que se atendió la consulta:</label>
+                                            <textarea formControlName="forma" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="container text-start mt-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Forma en la que se atendió la consulta:</label>
-                        <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label for="exampleFormControlTextarea1" class="form-label">Observaciones y/o precisiones:</label>
+                                            <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br> lo determine la DEOEyG</label>
+                                            <input class="form-control txt-input" type="file" id="formFile">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="container text-center" style="margin-top: 15px;">
+                                <div class="row">
+                                <div class="col">
+                                    <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">Guardar</button>
+                                </div>
+                                <div class="col">
+                                    <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+                                </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Observaciones y/o precisiones:</label>
-                        <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br> lo determine la DEOEyG</label>
-                        <input class="form-control txt-input" type="file" id="formFile">
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="container text-center" style="margin-top: 15px;">
-            <div class="row">
-            <div class="col">
-                <button type="submit" class="btn button-register">Guardar</button>
-            </div>
-            <div class="col">
-                <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
-            </div>
-            </div>
-        </div>
-    </form>
-  </div>
+    </div>
 </div>

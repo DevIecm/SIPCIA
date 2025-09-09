@@ -17,7 +17,19 @@
 
                             <div class="container text-center">
                                 <div class="row">
-                                    <div class="col-6">
+                                    @if(this.idRegistro){
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label class="form-label">Número Consecutivo</label>
+                                                <input 
+                                                    type="text"
+                                                    [(ngModel)]="consecutivo"
+                                                    formControlName="consecutivo"
+                                                    class="form-control txt-input">
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="col">
                                         <div class="mb-3">
                                             <label class="form-label">Dirección Distrital</label>
                                             <input 
@@ -27,7 +39,7 @@
                                                 class="form-control txt-input">
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col">
                                         <div class="container text-center">
                                             <div class="row row-cols-1">
                                                 <div class="col"><label class="form-label">Fecha de registro</label></div>
@@ -123,7 +135,13 @@
                                             <div class="row">
                                                 <div class="col-6">
                                                     <div class="form-check form-check-reverse">
-                                                        <input style="border: 1px solid black;" value="1" formControlName="anterioridad" class="form-check-input" type="radio"  [(ngModel)]="optionAnterioridad" id="radioDefault1">
+                                                        <input 
+                                                            style="border: 1px solid black;" 
+                                                            value="1" 
+                                                            formControlName="anterioridad" 
+                                                            class="form-check-input" 
+                                                            type="radio"  
+                                                            [(ngModel)]="optionAnterioridad">
                                                         <label class="form-check-label" for="reverseCheck1">
                                                             Si
                                                         </label>
@@ -131,7 +149,13 @@
                                                 </div>
                                                 <div class="col">
                                                     <div class="form-check form-check-reverse">
-                                                        <input style="border: 1px solid black;" value="2" formControlName="anterioridad" class="form-check-input" type="radio" [(ngModel)]="optionAnterioridad" id="radioDefault1">
+                                                        <input 
+                                                            style="border: 1px solid black;" 
+                                                            value="0" 
+                                                            formControlName="anterioridad" 
+                                                            class="form-check-input" 
+                                                            type="radio" 
+                                                            [(ngModel)]="optionAnterioridad">
                                                         <label class="form-check-label" for="reverseCheck1">
                                                             No
                                                         </label>
@@ -148,7 +172,13 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="form-check form-check-reverse">
-                                                        <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                                        <input 
+                                                            value="1"
+                                                            formControlName="prestamo"
+                                                            [(ngModel)]="optionPrestamo"
+                                                            style="border: 1px solid black;" 
+                                                            class="form-check-input" 
+                                                            type="radio">
                                                         <label class="form-check-label" for="reverseCheck1">
                                                             Si
                                                         </label>
@@ -156,7 +186,13 @@
                                                 </div>
                                                 <div class="col">
                                                     <div class="form-check form-check-reverse">
-                                                        <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                                        <input 
+                                                            value="0"
+                                                            formControlName="prestamo"
+                                                            [(ngModel)]="optionPrestamo"
+                                                            style="border: 1px solid black;" 
+                                                            class="form-check-input" 
+                                                            type="radio">
                                                         <label class="form-check-label" for="reverseCheck1">
                                                             No
                                                         </label>
@@ -177,6 +213,9 @@
                                                             type="text"
                                                             formControlName="superficie_espacio"
                                                             class="form-control txt-input"
+                                                            pattern="[0-9]*"
+                                                            inputmode="numeric" 
+                                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                         >
                                                     </div>
                                                 </div>
@@ -192,6 +231,9 @@
                                                 <div class="col-12">
                                                     <div>
                                                         <input 
+                                                            pattern="[0-9]*"
+                                                            inputmode="numeric" 
+                                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                             type="text"
                                                             formControlName="aforo"
                                                             class="form-control txt-input"
@@ -209,7 +251,13 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="form-check form-check-reverse">
-                                                        <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                                        <input 
+                                                            value="1"
+                                                            formControlName="ventilacion"
+                                                            [(ngModel)]="optionMedida"
+                                                            style="border: 1px solid black;" 
+                                                            class="form-check-input" 
+                                                            type="radio">
                                                         <label class="form-check-label" for="reverseCheck1">
                                                             Si
                                                         </label>
@@ -217,7 +265,13 @@
                                                 </div>
                                                 <div class="col">
                                                     <div class="form-check form-check-reverse">
-                                                        <input style="border: 1px solid black;" class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
+                                                        <input 
+                                                            value="0"
+                                                            formControlName="ventilacion"
+                                                            [(ngModel)]="optionMedida"
+                                                            style="border: 1px solid black;" 
+                                                            class="form-check-input" 
+                                                            type="radio">
                                                         <label class="form-check-label" for="reverseCheck1">
                                                             No
                                                         </label>
@@ -243,7 +297,7 @@
                             <div class="container text-center" style="margin-top: 15px;">
                                 <div class="row">
                                 <div class="col">
-                                    <button type="submit" class="btn button-register">Registrar</button>
+                                    <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">Registrar</button>
                                 </div>
                                 <div class="col">
                                     <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>

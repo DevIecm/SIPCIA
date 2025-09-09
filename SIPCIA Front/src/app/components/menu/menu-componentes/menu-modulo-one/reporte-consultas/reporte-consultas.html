@@ -44,7 +44,7 @@
       <div class="box-search container justify-content-center">
         <label>Buscar:</label>
       </div>
-      <input type="text" class="form-control input-search"  name="searchTerm" >
+      <input type="text" class="form-control input-search" [(ngModel)]="searchTerm" (input)="search()"  name="searchTerm" >
     </div>
     <div class="col-4 d-flex justify-content-end">
       <button 
@@ -52,7 +52,7 @@
         type="button" 
         data-bs-toggle="modal" 
         data-bs-target="#miModal"
-        (click)="abrirModal(1, true)">Registrar consulta</button>
+        (click)="openModal(undefined)">Registrar consulta</button>
     </div>
     <div class="col-2 d-flex justify-content-end">
       <button class="btn button">Genera y Descarga de Reporte</button>
@@ -83,35 +83,33 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of dataSource.data; let i = index" class="dual-row">
+          <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
             <td>
               <input style="width: 11px; height: 11px;" class="form-check-input" type="checkbox" value="" id="checkDefault">
             </td>
             <td> 
               <button 
                 type="button" 
-                class="btn button-table" 
-                data-bs-toggle="modal" 
-                data-bs-target="#miModal"
-                (click)="abrirModal(item.position, false)"
+                class="btn button-table"
+                (click)="openModal(item.id_registro)"
               >
                 <i class="bi bi-pencil-square"></i>
               </button>
             </td>
-            <td> si</td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion }}</td>
-            <td>{{ item.ncompleto }}</td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion ? item.demarcacion : '-'}}</td>
-            <td>{{ item.ncompleto ? item.ncompleto : '-'}}</td>
+            <td>{{ item.presento_caso === false ? 'No' : 'Si'}}</td>
+            <td>{{ item.numero_consecutivo ? item.numero_consecutivo : '-'}}</td>
+            <td>{{ formatFecha(item.fecha_consulta)}}</td>
+            <td>{{ item.nombre_completo }}</td>
+            <td>{{ item.pueblo_originario ? item.pueblo_originario : '-'}}</td>
+            <td>{{ item.pueblo ? item.pueblo : '-'}}</td>
+            <td>{{ item.barrio ? item.barrio : '-'}}</td>
             <td>{{ item.nporiginario ? item.nporiginario : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>  
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
+            <td>{{ item.otro ? item.otro : '-'}}</td>  
+            <td>{{ item.cargo ? item.cargo : '-'}}</td>
+            <td>{{ item.descripcion_consulta ? item.descripcion_consulta : '-'}}</td>
+            <td>{{ item.forma_atendio ? item.forma_atendio : '-'}}</td>
+            <td>{{ item.observaciones ? item.observaciones : '-'}}</td>
+            <td>{{ item.enlace_documento ? item.enlace_documento : '-'}}</td>
           </tr>
         </tbody>
       </table>
@@ -119,18 +117,10 @@
   </div>
 </div>
 
-<div class="modal fade" id="miModal" #miModal tabindex="-1" aria-labelledby="miModal" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-body">
-        <app-formulario-consultas
-          #formHijo
-          *ngIf="registroSeleccionadoId"
-          [idRegistro]="registroSeleccionadoId"
-          [idRegistroC]="isRegistroC"
-          >
-        </app-formulario-consultas>
-      </div>
-    </div>
-  </div>
-</div>
+@if(showModal) {
+  <app-formulario-consultas
+    [idRegistro]="idRegistroSeleccionado" 
+    [isOpen]="showModal" 
+    (close)="closeModal()">
+  </app-formulario-consultas>
+}

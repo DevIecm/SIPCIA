@@ -148,4 +148,153 @@ export class Reportes {
     return this.http.get(this.apiUrl + 'lugares/getRegistroLugares', {headers, params})
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
+
+  //Reporte consultas
+
+  insertaRegistroConsultas(data: any, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const body = {
+      ...data,
+    };
+
+    return this.http.post(this.apiUrl + 'atencion/altaAtencion', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
+  updateRegistroConsultas(data: any, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const body = {
+      ...data
+    };
+
+    return this.http.patch(this.apiUrl + 'atencion/updateAntencion', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
+  getRegisterDataTableConsultas(area: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+
+    const params = new HttpParams()
+      .set('distrito_electoral', area)
+      
+    return this.http.get(this.apiUrl + 'atencion/getAtencion', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+  getRegisterConsecutivoConsultas(area: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+
+    const params = new HttpParams()
+      .set('distrito_electoral', area)
+      
+    return this.http.get(this.apiUrl + 'atencion/getConsCon', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+  getDataByIdConsultas(id: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+      .set('id', id)
+
+    return this.http.get(this.apiUrl + 'atencion/getRegistroAtencion', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+ //Reporte acompañamiento
+
+  insertaRegistroAcompa(data: any, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const body = {
+      ...data,
+    };
+
+    return this.http.post(this.apiUrl + 'atencion/altaAtencion', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
+  updateRegistroAcompa(data: any, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const body = {
+      ...data
+    };
+
+    return this.http.patch(this.apiUrl + 'atencion/updateAntencion', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
+  getRegisterDataTableAcompa(area: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+
+    const params = new HttpParams()
+      .set('distrito_electoral', area)
+      
+    return this.http.get(this.apiUrl + 'instituciones/getInstituciones', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+  getRegisterConsecutivoAcompa(area: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+
+    const params = new HttpParams()
+      .set('distrito_electoral', area)
+      
+    return this.http.get(this.apiUrl + 'atencion/getConsCon', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+  getDataByIdAcompa(id: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+      .set('id', id)
+
+    return this.http.get(this.apiUrl + 'atencion/getRegistroAtencion', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
 }

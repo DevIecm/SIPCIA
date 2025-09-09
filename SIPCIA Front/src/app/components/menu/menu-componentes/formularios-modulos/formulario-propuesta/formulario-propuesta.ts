@@ -37,6 +37,7 @@ export class FormularioPropuesta {
   today: string = '';
   labelTitle: string = '';
 
+  consecutivo: number = 0;
   area: number = 0;
   id_usuario: number = 0;
   cabecera: number = 0;
@@ -52,6 +53,41 @@ export class FormularioPropuesta {
     private datePipe: DatePipe,
     private registerService: Reportes
   ) {}
+
+  ngOnInit() {
+    this.tokenSesion = sessionStorage.getItem('key')!;
+    this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
+    this.area = Number(sessionStorage.getItem('area')!);
+    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
+    this.cabecera = Number(sessionStorage.getItem('cabecera'));
+    this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
+
+    this.formularioRegistro = this.formBuilder.group({
+      dDistrital: [{ value:'', disabled: true}],
+      demarcacion: ['', [Validators.required]],
+      lugar_espacio: ['', [Validators.required]],
+      intitucion_propietaria: ['', [Validators.required]],
+      domicilio: ['', [Validators.required]],
+      superficie_espacio: ['', [Validators.required]],
+      aforo: ['', [Validators.required]],
+      observaciones: [''],
+      anterioridad: ['', [Validators.required]],
+      prestamo: ['', [Validators.required]],
+      ventilacion: ['', [Validators.required]],
+      consecutivo: [{value: '', disabled: true}]
+    });
+
+    this.catalogo_demarcacion();
+
+    if(!this.idRegistro){
+      this.idRegistroC = true;
+      this.labelTitle = 'Registro - Propuesta de lugares y espacios para Asambleas Comunitarias';
+    } else {
+      this.labelTitle = 'Edición - Propuesta de lugares y espacios para Asambleas Comunitarias';
+      this.idRegistroC = false;
+      this.getDataById(this.idRegistro);
+    }
+  }
 
   saveForm(){
     try {
@@ -84,16 +120,15 @@ export class FormularioPropuesta {
               enlace_ubicacion: "ruta/documento", 
               intitucion_propietaria: this.formularioRegistro.get('intitucion_propietaria')?.value || null,
               prestamo_iecm: Number(this.optionAnterioridad),
-              nuevo_prestamo: 1,
+              nuevo_prestamo: Number(this.optionPrestamo),
               superficie_espacio: Number(this.formularioRegistro.get('superficie_espacio')?.value) || null,
               aforo: Number(this.formularioRegistro.get('aforo')?.value) || null,
-              ventilacion: 2,
+              ventilacion: Number(this.optionMedida),
               observaciones: this.formularioRegistro.get('observaciones')?.value || null,
               modulo_registro: this.tipo_usuario,
               estado_registro: 1,
             };
 
-            console.log(datosForm)
 
             this.registerService.insertaRegistroComunitaria(datosForm, this.tokenSesion).subscribe({
               next: (data) => {
@@ -142,8 +177,8 @@ export class FormularioPropuesta {
             }
 
             const datosForm = {
-              id_registro: 1,
-              distrito_electoral: 1,
+              id_registro: this.idRegistro,
+              distrito_electoral: this.area,
               demarcacion: Number(this.formularioRegistro.get('demarcacion')?.value) || null,
               lugar_espacio: this.formularioRegistro.get('lugar_espacio')?.value || null,
               domicilio: this.formularioRegistro.get('domicilio')?.value || null,
@@ -152,11 +187,11 @@ export class FormularioPropuesta {
               ubicacion_kml: 0,
               enlace_ubicacion: "ruta/documento", 
               intitucion_propietaria: this.formularioRegistro.get('intitucion_propietaria')?.value || null,
-              prestamo_iecm: 2,
-              nuevo_prestamo: 1,
+              prestamo_iecm: Number(this.optionAnterioridad),
+              nuevo_prestamo: Number(this.optionPrestamo),
               superficie_espacio: Number(this.formularioRegistro.get('superficie_espacio')?.value) || null,
               aforo: Number(this.formularioRegistro.get('aforo')?.value) || null,
-              ventilacion: 2,
+              ventilacion: Number(this.optionMedida),
               observaciones: this.formularioRegistro.get('observaciones')?.value || null,
               usuario_registro: 1,
               modulo_registro: this.tipo_usuario,
@@ -167,7 +202,7 @@ export class FormularioPropuesta {
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
-                    title: " Se ha registrado correctamente.",
+                    title: " Se han guardado correctamente los cambios.",
                     text: data.folio,
                     icon: "success",
                     confirmButtonText: "Aceptar",
@@ -203,44 +238,6 @@ export class FormularioPropuesta {
     this.formularioRegistro?.reset();
   };
 
-  resetFormulario() {   
-    this.formularioRegistro?.patchValue({
-      demarcacion: null,    
-    });
-  }
-
-  ngOnInit() {
-    this.tokenSesion = sessionStorage.getItem('key')!;
-    this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
-    this.area = Number(sessionStorage.getItem('area')!);
-    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
-    this.cabecera = Number(sessionStorage.getItem('cabecera'));
-    this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
-
-    this.formularioRegistro = this.formBuilder.group({
-      dDistrital: [{ value:'', disabled: true}],
-      demarcacion: [''],
-      lugar_espacio: [''],
-      intitucion_propietaria: [''],
-      domicilio: [''],
-      superficie_espacio: [''],
-      aforo: [''],
-      observaciones: [''],
-      anterioridad: ['']
-    });
-
-    this.catalogo_demarcacion();
-
-    if(!this.idRegistro){
-      this.idRegistroC = true;
-      this.labelTitle = 'Registro - Propuesta de lugares y espacios para Asambleas Comunitarias';
-    } else {
-      this.labelTitle = 'Edición - Propuesta de lugares y espacios para Asambleas Comunitarias';
-      this.idRegistroC = false;
-      this.getDataById(this.idRegistro);
-    }
-  }
-
   getDataById(id: number) {
     try {
       if (!this.idRegistro) return;
@@ -249,25 +246,26 @@ export class FormularioPropuesta {
         
         next: (data) => {
 
-          this.infoUpdate = data.getRegistroAfluencia[0];
+          this.infoUpdate = data.getRegistroLugares[0];
           
-          if(data.getRegistroAfluencia.length > 0) {
+          if(data.getRegistroLugares.length > 0) {
 
             const datosFormularioCompletos = {
-              distrito_electoral: this.area,
-              distrito_cabecera: this.cabecera,
-              demarcacion: data.getRegistroAfluencia[0].demarcacion,
-              denominacion_lugar: data.getRegistroAfluencia[0].denominacion_lugar,
-              domicilio_lugar: data.getRegistroAfluencia[0].domicilio_lugar,
-              foto: 0,
-              enlace_foto: "ruta/documento",
-              ubicacion: 0,
-              enlace_ubicacion: "ruta/ubicacion",
-              observaciones: data.getRegistroAfluencia[0].observaciones,
               usuario_registro: this.id_usuario,
+              distrito_electoral: this.area,
+              demarcacion: this.infoUpdate.id_demarcacion,
+              lugar_espacio: this.infoUpdate.lugar_espacio,
+              domicilio: this.infoUpdate.domicilio, 
+              intitucion_propietaria: this.infoUpdate.intitucion_propietaria,
+              anterioridad: this.infoUpdate.prestamo_iecm === false ? "0" : "1",
+              prestamo: this.infoUpdate.nuevo_prestamo === false ? "0" : "1",
+              superficie_espacio: this.infoUpdate.superficie_espacio,
+              aforo: this.infoUpdate.aforo,
+              ventilacion: this.infoUpdate.ventilacion === false ? "0" : "1",
+              observaciones: this.infoUpdate.observaciones,
               modulo_registro: this.tipo_usuario,
               estado_registro: 1,
-              tipo_usuario: this.tipo_usuario
+              consecutivo: this.infoUpdate.consecutivo
             };
 
             this.formularioRegistro!.patchValue(datosFormularioCompletos);

@@ -44,7 +44,12 @@
       <div class="box-search container justify-content-center">
         <label>Buscar:</label>
       </div>
-      <input type="text" class="form-control input-search"  name="searchTerm" >
+      <input 
+        type="text" 
+        class="form-control input-search" 
+        [(ngModel)]="searchTerm"
+        (input)="search()"  
+        name="searchTerm" >
     </div>
     <div class="col-4 d-flex justify-content-end">
       <button 
@@ -52,7 +57,7 @@
         type="button" 
         data-bs-toggle="modal" 
         data-bs-target="#miModal"
-        (click)="abrirModal(1, true)">Nuevo registro</button>
+        (click)="openModal(undefined)">Nuevo registro</button>
     </div>
     <div class="col-2 d-flex justify-content-end">
       <button class="btn button">Genera y Descarga de Reporte</button>
@@ -82,15 +87,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of dataSource.data; let i = index" class="dual-row">
+          <tr *ngFor="let item of dataTable.data; let i = index" class="dual-row">
             <td>{{ item.position }}</td>
             <td> 
               <button 
                 type="button" 
-                class="btn button-table" 
-                data-bs-toggle="modal" 
-                data-bs-target="#miModal"
-                (click)="abrirModal(item.position, false)"
+                class="btn button-table"
+                (click)="openModal(item.position)"
               >
                 <i class="bi bi-pencil-square"></i>
               </button>
@@ -115,18 +118,9 @@
   </div>
 </div>
 
-<div class="modal fade" id="miModal" #miModal tabindex="-1" aria-labelledby="miModal" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-body">
-        <app-formulario-registroa
-          #formHijo
-          *ngIf="registroSeleccionadoId"
-          [idRegistro]="registroSeleccionadoId"
-          [idRegistroC]="isRegistroC"
-          >
-        </app-formulario-registroa>
-      </div>
-    </div>
-  </div>
-</div>
+<app-formulario-registroa
+  [idRegistro]="idRegistroSeleccionado"
+  [idRegistroC]="isRegistroC"
+  (close)="closeModal()">
+</app-formulario-registroa>
+      
