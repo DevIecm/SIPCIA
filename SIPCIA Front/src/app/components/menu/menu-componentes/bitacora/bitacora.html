@@ -5,22 +5,23 @@
         <a class="navbar-brand">
             <div class="row row-cols-1">
                 <div class="col">
-                    <div class="div-redondeado-right">
-                        <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
-                    </div>
+                <div class="div-redondeado-right">
+                    <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
+                </div>
                 </div>
                 <div class="container div-redondeado-right-home text-center">
-                    <div class="row">
-                        <div class="col" style=" margin: -4px;">
-                            <i (click)="onValidateInfo()" i class="bi bi-house-door-fill fs-3"></i>
-                        </div>
-                        <div class="col">
-                            <h3 style="font-size: 30px; margin: 0px;">Bitácora</h3>
-                        </div>
+                <div class="row"> 
+                    <div class="col" style=" margin: -4px;">
+                    <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
                     </div>
+                    <div class="col">
+                    <h3 style="font-size: 19px;">Bitacora</h3>
+                    </div>
+                </div>
                 </div>
             </div>
         </a>
+
 
         <div class="row row-cols-1">
             <div class="col">
@@ -36,7 +37,9 @@
             </div>
         </div>
     </div>
+</nav>
 
+<div class="container justify-content-center mt-4">
     <div class="row back-table" style="margin-top: 8px;">
         <div class="col-12">
             <table class="table">
@@ -55,7 +58,7 @@
                         <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
                         <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
                         <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
-                        <td>
+                        <td style="text-align: justify;">
                             <div *ngIf="item.Datos?.nombre_completo">
                                 Nombre Cmpleto:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.nombre_completo }}
                             </div>
@@ -126,7 +129,7 @@
                         <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
                         <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
                         <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
-                        <td>
+                        <td style="text-align: justify;">
                             <div *ngIf="item.Datos?.distrito_electoral">
                                 Distrito Electoral Local Uninominal:&nbsp;&nbsp;&nbsp;&nbsp;{{
                                 item.Datos.distrito_electoral }}
@@ -167,7 +170,7 @@
                         <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
                         <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
                         <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
-                        <td>
+                        <td style="text-align: justify;">
                             <div *ngIf="item.Datos?.distrito_electoral">
                                 Distrito Electoral Local Uninominal:&nbsp;&nbsp;&nbsp;&nbsp;{{
                                 item.Datos.distrito_electoral }}
@@ -214,5 +217,5 @@
             </table>
         </div>
     </div>
+</div>
 
-</nav>

@@ -234,7 +234,7 @@ export class Reportes {
       ...data,
     };
 
-    return this.http.post(this.apiUrl + 'atencion/altaAtencion', body, { headers })
+    return this.http.post(this.apiUrl + 'instituciones/altaInstituciones', body, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
@@ -251,7 +251,7 @@ export class Reportes {
       ...data
     };
 
-    return this.http.patch(this.apiUrl + 'atencion/updateAntencion', body, { headers })
+    return this.http.patch(this.apiUrl + 'instituciones/updateInstituciones', body, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
@@ -272,19 +272,6 @@ export class Reportes {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-  getRegisterConsecutivoAcompa(area: number, token: string): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-
-    const params = new HttpParams()
-      .set('distrito_electoral', area)
-      
-    return this.http.get(this.apiUrl + 'atencion/getConsCon', {headers, params})
-      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
-  };
-
   getDataByIdAcompa(id: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -293,7 +280,7 @@ export class Reportes {
     const params = new HttpParams()
       .set('id', id)
 
-    return this.http.get(this.apiUrl + 'atencion/getRegistroAtencion', {headers, params})
+    return this.http.get(this.apiUrl + 'instituciones/getRegistroInstituciones', {headers, params})
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 

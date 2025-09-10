@@ -100,8 +100,8 @@ th {
 
 .back-table {
     border-radius: 10px;
-    padding: 14px;
-    background-color: #bf90dd;
+    padding: 15px;
+    background-color: white;
 }
 
 .button {
@@ -146,7 +146,6 @@ i{
     font-size: 14px;
 }
 
-
 .nav-item {
     display: inline-block;
     margin-left: -6px;
@@ -186,7 +185,23 @@ i{
     background-color: #9D00CA; 
 }
 
+.color-1 {
+    background-color: #BF90DD;
+}
+
+.color-2 {
+    background-color: #9D75CA;
+}
+
+.color-3 {
+    background-color: #9B3BCA;
+}
+
+.color-4 {
+    background-color: #9D00CA;
+}
+
 .tabs-inside {
-    width: 1138px;
+    width: 102%;
     border-radius: 5px;
 }

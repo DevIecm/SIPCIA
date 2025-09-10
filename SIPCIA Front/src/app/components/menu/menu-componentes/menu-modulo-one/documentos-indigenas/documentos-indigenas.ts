@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
 })
 export class DocumentosIndigenas implements OnInit{
 
+  activeTab: string = 'home';
   data: any = data;
 
   nombreUser: string = '';

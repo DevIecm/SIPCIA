@@ -65,12 +65,10 @@ export class CatalogoAcompanamiento implements OnInit {
     }
 
     this.dataTable = this.allDatable.filter((val) => {
-      const direccion_distrital = (val.direccion_distrital ?? '').toString().toLowerCase().trim();
-      const domicilio_lugar = (val.domicilio_lugar ?? '').toLowerCase().trim();
+      const nombre_completo = (val.nombre_completo ?? '').toString().toLowerCase().trim();
 
       return (
-        direccion_distrital.includes(rawFilter) ||
-        domicilio_lugar.includes(rawFilter)
+        nombre_completo.includes(rawFilter)      
       );
     });
   };

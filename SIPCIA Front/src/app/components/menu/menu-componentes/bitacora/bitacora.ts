@@ -19,7 +19,7 @@ import { Auth } from '../../../../services/authService/auth';
   styleUrl: './bitacora.css'
 })
 
-export class Bitacora implements OnInit, AfterViewInit, OnDestroy {
+export class Bitacora implements OnInit {
 
   private route = inject(ActivatedRoute);
   idRegistro!: number;
@@ -36,12 +36,14 @@ export class Bitacora implements OnInit, AfterViewInit, OnDestroy {
   tipo_usuario: number = 0;
   registroSeleccionadoId: number | undefined;
 
-
   ngOnInit() {
+    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
+    this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
+    this.nombreUser = sessionStorage.getItem('nameUsuario')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.idRegistro = Number(this.route.snapshot.paramMap.get('id'));
     this.tipoBitacora = this.route.snapshot.paramMap.get('tipo') || 'defaultTipo';
-    console.log('ID recibido:', this.idRegistro, this.tipoBitacora);
+
     this.position = sessionStorage.getItem('dir')!;
     this.getBitacora();
   }
@@ -53,12 +55,6 @@ export class Bitacora implements OnInit, AfterViewInit, OnDestroy {
     private service: Auth,
   ) { }
 
-  ngOnDestroy(): void {
-
-  }
-  ngAfterViewInit(): void {
-
-  }
   logout() {
     this.router.navigate(['']);
   }
@@ -66,7 +62,9 @@ export class Bitacora implements OnInit, AfterViewInit, OnDestroy {
   onValidateInfo() {
     this.router.navigate(['/menu']);
   };
+
   getBitacora() {
+
     if (this.tipoBitacora === 'lugaresAsambleas') {
       this.getbitacoraLugares.getbitacoraLugares(this.idRegistro, this.tokenSesion).subscribe({
         next: (data) => {
@@ -89,51 +87,49 @@ export class Bitacora implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
-    }
-    if (this.tipoBitacora === 'mayorAfluencia') {
-      this.getBitacoraAfluencia.getBitacoraAfluencia(this.idRegistro, this.tokenSesion).subscribe({
-        next: (data) => {
-          if (data.getbitacoraAfluencia.length > 0) {
-            this.dataTable = data.getbitacoraAfluencia;
-          } else {
-            Swal.fire("No se encontraron registros");
-          }
-        },
-        error: (err) => {
+    } if (this.tipoBitacora === 'mayorAfluencia') {
+        this.getBitacoraAfluencia.getBitacoraAfluencia(this.idRegistro, this.tokenSesion).subscribe({
+          next: (data) => {
+            if (data.getbitacoraAfluencia.length > 0) {
+              this.dataTable = data.getbitacoraAfluencia;
+            } else {
+              Swal.fire("No se encontraron registros");
+            }
+          },
+          error: (err) => {
 
-          if (err.error.code === 160) {
-            this.service.cerrarSesionByToken();
-          }
+            if (err.error.code === 160) {
+              this.service.cerrarSesionByToken();
+            }
 
-          if (err.error.code === 100) {
-            Swal.fire("No se encontraron registros")
-          }
+            if (err.error.code === 100) {
+              Swal.fire("No se encontraron registros")
+            }
 
-        }
-      });
+          }
+        });
 
     } if (this.tipoBitacora === 'directorio') {
-      console.log("entro aqui");
-      this.getBitacoraComunidad.getBitacoraComunidad(this.idRegistro, this.tokenSesion).subscribe({
-        next: (data) => {
-          if (data.bitacora.length > 0) {
-            this.dataTable = data.bitacora;
-          } else {
-            Swal.fire("No se encontraron registros");
-          }
-        },
-        error: (err) => {
+        this.getBitacoraComunidad.getBitacoraComunidad(this.idRegistro, this.tokenSesion).subscribe({
+          next: (data) => {
+            if (data.bitacora.length > 0) {
+              this.dataTable = data.bitacora;
+            } else {
+              Swal.fire("No se encontraron registros");
+            }
+          },
+          error: (err) => {
 
-          if (err.error.code === 160) {
-            this.service.cerrarSesionByToken();
-          }
+            if (err.error.code === 160) {
+              this.service.cerrarSesionByToken();
+            }
 
-          if (err.error.code === 100) {
-            Swal.fire("No se encontraron registros")
-          }
+            if (err.error.code === 100) {
+              Swal.fire("No se encontraron registros")
+            }
 
-        }
-      });
+          }
+        });
     }
   }
 }

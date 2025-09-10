@@ -17,17 +17,13 @@
                             <div class="container text-center mt-4">
                                 <div class="row">
                                     <div class="col-6">
-                                        <label class="form-label">{{ 
-                                            idRegistroC ? 
-                                            'Registro de Instituciones y personas para acompañamiento' : 
-                                            'Edición - Instituciones y personas para acompañamiento' 
-                                        }}</label>
+                                        <label class="form-label">{{ labelTitle }}</label>
                                     </div>
                                     <div class="col-3">
                                         <div class="container text-center">
                                             <div class="row row-cols-1">
                                                 <div class="col"><label class="form-label">Dirección Distrital:</label></div>
-                                                <div class="col"><label class="form-label" style="color: #b7b5b8;" >29</label></div>
+                                                <div class="col"><label class="form-label" style="color: #b7b5b8;" >{{ area }}</label></div>
                                             </div>
                                         </div>
                                     </div>
@@ -60,8 +56,7 @@
                                                         <select 
                                                             formControlName="demarcacion"
                                                             class="select-input form-select" 
-                                                            aria-label="Default select example"
-                                                            [(ngModel)]="opcionDemarcacion"
+                                                            aria-label="Default select example" 
                                                         >
                                                             <option selected></option>
                                                             @for (item of catalogoDemarcacion; track item) {
@@ -72,28 +67,26 @@
                                                     <div class="mb-3">
                                                         <label class="form-label">*Pueblo Originario:</label>
                                                         <select 
-                                                            formControlName="demarcacion"
+                                                            formControlName="ooriginario"
                                                             class="select-input form-select" 
                                                             aria-label="Default select example"
-                                                            [(ngModel)]="opcionDemarcacion"
                                                         >
                                                             <option selected></option>
-                                                            @for (item of catalogoDemarcacion; track item) {
-                                                            <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                                                            @for (item of catalogoPueblor; track item) {
+                                                            <option [value]="item.id">{{item.pueblo_originario}}</option>
                                                             }
                                                         </select>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label">*Unidad Territorial:</label>
                                                         <select 
-                                                            formControlName="demarcacion"
+                                                            formControlName="uterritorial"
                                                             class="select-input form-select" 
                                                             aria-label="Default select example"
-                                                            [(ngModel)]="opcionDemarcacion"
                                                         >
                                                             <option selected></option>
-                                                            @for (item of catalogoDemarcacion; track item) {
-                                                            <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                                                            @for (item of catalogoUnidadTerritorial; track item) {
+                                                            <option [value]="item.id">{{item.ut}}</option>
                                                             }
                                                         </select>
                                                     </div>
@@ -109,7 +102,7 @@
                                                         <label class="form-label">*Nombre (s) y apellidos completos:</label>
                                                         <input 
                                                             type="text"
-                                                            formControlName="domiciliol"
+                                                            formControlName="ncompleto"
                                                             class="form-control txt-input"
                                                         >
                                                     </div>
@@ -121,28 +114,27 @@
                                                 <div class="col">
                                                     <label class="form-label">*Pueblo:</label>
                                                     <select 
-                                                        formControlName="demarcacion"
+                                                        formControlName="pueblo"
                                                         class="select-input form-select" 
                                                         aria-label="Default select example"
-                                                        [(ngModel)]="opcionDemarcacion"
                                                     >
                                                         <option selected></option>
-                                                        @for (item of catalogoDemarcacion; track item) {
-                                                        <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                                                        @for (item of catalogoPueblos; track item) {
+                                                        <option [value]="item.id">{{item.pueblo}}</option>
                                                         }
                                                     </select>
                                                 </div>
                                                 <div class="col mb-3">
                                                     <label class="form-label">*Barrio:</label>
                                                     <select 
-                                                        formControlName="demarcacion"
+                                                        formControlName="barrio"
                                                         class="select-input form-select" 
                                                         aria-label="Default select example"
                                                         [(ngModel)]="opcionDemarcacion"
                                                     >
                                                         <option selected></option>
-                                                        @for (item of catalogoDemarcacion; track item) {
-                                                        <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                                                        @for (item of catalogoBarrios; track item) {
+                                                        <option [value]="item.id">{{item.barrio}}</option>
                                                         }
                                                     </select>
                                                 </div>
@@ -155,7 +147,7 @@
                                                         <label class="form-label">Otro</label>
                                                         <input 
                                                             type="text"
-                                                            formControlName="domiciliol"
+                                                            formControlName="otro"
                                                             class="form-control txt-input"
                                                         >
                                                     </div>
@@ -170,30 +162,24 @@
                                             <div class="mb-3">
                                                 <label class="form-label">*Seleccionar comunidad:</label>
                                                 <select 
-                                                    formControlName="demarcacion"
+                                                    formControlName="comunidad"
                                                     class="select-input form-select" 
                                                     aria-label="Default select example"
                                                     [(ngModel)]="opcionDemarcacion"
                                                 >
                                                     <option selected></option>
-                                                    @for (item of catalogoDemarcacion; track item) {
-                                                    <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                                                    @for (item of catalogoComunidad; track item) {
+                                                    <option [value]="item.id">{{item.comunidad}}</option>
                                                     }
                                                 </select>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">Interés profesional como:</label>
-                                                <select 
-                                                    formControlName="demarcacion"
-                                                    class="select-input form-select" 
-                                                    aria-label="Default select example"
-                                                    [(ngModel)]="opcionDemarcacion"
+                                                <input 
+                                                    type="text"
+                                                    formControlName="interes"
+                                                    class="form-control txt-input"
                                                 >
-                                                    <option selected></option>
-                                                    @for (item of catalogoDemarcacion; track item) {
-                                                    <option [value]="item.id">{{item.demarcacion_territorial}}</option>
-                                                    }
-                                                </select>
                                             </div>
 
                                             <label class="form-label">Datos de la institución a la que pertence</label>
@@ -201,7 +187,7 @@
                                                 <label class="form-label">Nombre de la institución:</label>
                                                 <input 
                                                     type="text"
-                                                    formControlName="domiciliol"
+                                                    formControlName="ninstitucion"
                                                     class="form-control txt-input"
                                                 >
                                             </div>
@@ -209,7 +195,7 @@
                                                 <label class="form-label">Cargo:</label>
                                                 <input 
                                                     type="text"
-                                                    formControlName="domiciliol"
+                                                    formControlName="cargo"
                                                     class="form-control txt-input"
                                                 >
                                             </div>
@@ -232,7 +218,7 @@
                                             <label class="form-label">Domicilio:</label>
                                             <input 
                                                 type="text"
-                                                formControlName="domiciliol"
+                                                formControlName="domicilio"
                                                 class="form-control txt-input"
                                             >
                                         </div>
@@ -240,7 +226,7 @@
                                             <label class="form-label">Teléfono:</label>
                                             <input 
                                                 type="text"
-                                                formControlName="domiciliol"
+                                                formControlName="telefono"
                                                 class="form-control txt-input"
                                             >
                                         </div>
@@ -248,7 +234,7 @@
                                             <label class="form-label">Correo Electrónico:</label>
                                             <input 
                                                 type="text"
-                                                formControlName="domiciliol"
+                                                formControlName="correo"
                                                 class="form-control txt-input"
                                             >
                                         </div>

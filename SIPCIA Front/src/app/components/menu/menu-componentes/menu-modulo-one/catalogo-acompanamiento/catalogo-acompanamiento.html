@@ -81,36 +81,34 @@
             <th scope="col">Comunidad</th>
             <th scope="col">Interés profesional</th>
             <th scope="col">Nombre de la Institución</th>
-            <th scope="col">Describe la consulta</th>
             <th scope="col">Cargo</th>
             <th scope="col">Documentos / CV</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of dataTable.data; let i = index" class="dual-row">
-            <td>{{ item.position }}</td>
+          <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
+            <td>{{ item.id_registro }}</td>
             <td> 
               <button 
                 type="button" 
                 class="btn button-table"
-                (click)="openModal(item.position)"
+                (click)="openModal(item.id_registro)"
               >
                 <i class="bi bi-pencil-square"></i>
               </button>
             </td>
             <td><i class="bi bi-journal-text"></i></td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion }}</td>
-            <td>{{ item.ncompleto }}</td>
-            <td>{{ item.unico ? item.unico : '-'}}</td>
-            <td>{{ item.demarcacion ? item.demarcacion : '-'}}</td>
-            <td>{{ item.ncompleto ? item.ncompleto : '-'}}</td>
-            <td>{{ item.nporiginario ? item.nporiginario : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>  
+            <td>{{ item.nombre_completo ? item.nombre_completo : '-'}}</td>
+            <td>{{ item.pueblo_originario }}</td>
+            <td>{{ item.pueblo }}</td>
+            <td>{{ item.barrio ? item.barrio : '-'}}</td>
+            <td>{{ item.ut ? item.ut : '-'}}</td>
+            <td>{{ item.otro ? item.otro : '-'}}</td>
+            <td>{{ item.comunidad ? item.comunidad : '-'}}</td>  
+            <td>{{ item.interes_profesional ? item.interes_profesional : '-'}}</td>
+            <td>{{ item.nombre_institucion ? item.nombre_institucion : '-'}}</td>
             <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
+            <td>{{ item.cv_enlace ? item.cv_enlace : '-'}}</td>
           </tr>
         </tbody>
       </table>
@@ -118,9 +116,10 @@
   </div>
 </div>
 
+@if(showModal) {
 <app-formulario-registroa
   [idRegistro]="idRegistroSeleccionado"
-  [idRegistroC]="isRegistroC"
+  [isOpen]="showModal"
   (close)="closeModal()">
 </app-formulario-registroa>
-      
+}
