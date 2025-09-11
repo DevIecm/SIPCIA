@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { FormularioRegistroa } from '../../formularios-modulos/formulario-registroa/formulario-registroa';
 import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
+import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
 
 @Component({
   selector: 'app-catalogo-acompanamiento',
@@ -55,6 +56,16 @@ export class CatalogoAcompanamiento implements OnInit {
     this.getRegister();
   }
 
+   getReporte(){
+    this.descargarReporteInstitucion.descargarReporteInstitucion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  }
+
  
   search(): void {
     const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
@@ -76,6 +87,7 @@ export class CatalogoAcompanamiento implements OnInit {
   constructor(
     private router: Router,
     private reporteService: Reportes,
+    private descargarReporteInstitucion: reporteService,
     private service: Auth) {}
 
   onSubmit() {

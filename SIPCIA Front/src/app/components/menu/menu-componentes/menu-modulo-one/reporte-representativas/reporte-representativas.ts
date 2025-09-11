@@ -10,6 +10,7 @@ import { Catalogos } from '../../../../../services/catService/catalogos';
 import Swal from 'sweetalert2';
 import { Auth } from '../../../../../services/authService/auth';
 import { Reportes } from '../../../../../services/reporteService/reportes';
+import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
 
 @Component({
   selector: 'app-reporte-representativas',
@@ -38,12 +39,14 @@ export class ReporteRepresentativas implements OnInit{
   position: string = '';
   reporteI:  any = [];
   reporteA: any = [];
+  area: number = 0;
 
   constructor(
     private router: Router, 
     private catalogos: Catalogos,
     private service: Auth,
     private formBuilder: FormBuilder,
+    private descargarReporteInstancias: reporteService,
     private reportes: Reportes) {}
 
   ngOnInit(): void {
@@ -55,11 +58,22 @@ export class ReporteRepresentativas implements OnInit{
 
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
     this.nombreUser = sessionStorage.getItem('nameUsuario')!;
+    this.area = Number(sessionStorage.getItem('area')!);
     this.moduloClicked = localStorage.getItem('moduloClicked')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.position = sessionStorage.getItem('dir')!;
     this.catalogo_demarcacion();
     this.catalogo_demarcacionA();
+  }
+
+    getReporte(){
+    this.descargarReporteInstancias.descargarReporteInstancias(this.area,this.tokenSesion).subscribe((blob: Blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
   }
 
   onValidateInfo() {

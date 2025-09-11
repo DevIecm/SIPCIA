@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { FormularioRegistro } from '../../formularios-modulos/formulario-registro/formulario-registro';
 import { Register } from '../../../../../services/registerService/register';
+import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
 import { Auth } from '../../../../../services/authService/auth';
 
 @Component({
@@ -37,6 +38,15 @@ export class DirectorioIndigenas implements OnInit, AfterViewInit, OnDestroy {
   goToBitacora(id: number, tipo: string) {
     this.router.navigate(['/bitacora', id, tipo]);
   }
+  getReporte(){
+    this.descargarReporte.descargarReporte(1,this.area,this.tokenSesion).subscribe((blob: Blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  }
 
   onModalClosed = () => {
     this.formHijo.resetFormulario();
@@ -50,13 +60,15 @@ export class DirectorioIndigenas implements OnInit, AfterViewInit, OnDestroy {
   dataTable: any = [];
   searchTerm: string = '';
   allDatable: any[] = [];
-  position: string = '';
+  position: string = '';  
+  area: number = 0;
   tipo_usuario: number = 0;
   registroSeleccionadoId: number | undefined;
 
   ngOnInit(): void {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
+    this.area = Number(sessionStorage.getItem('area')!);
     this.nombreUser = sessionStorage.getItem('nameUsuario')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.position = sessionStorage.getItem('dir')!;
@@ -66,6 +78,7 @@ export class DirectorioIndigenas implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private router: Router, 
     private serviceRegister: Register,
+    private descargarReporte: reporteService,
     private service: Auth
   ) {}
   

@@ -9,6 +9,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FormularioConsultas } from "../../formularios-modulos/formulario-consultas/formulario-consultas";
 import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
+import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
 
 @Component({
   selector: 'app-reporte-consultas',
@@ -55,9 +56,20 @@ export class ReporteConsultas implements OnInit {
     this.getRegister();
   }
 
+  getReporte(){
+    this.descargarReporteAtencion.descargarReporteAtencion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  }
+
   constructor(
     private router: Router, 
     private reporteService: Reportes, 
+    private descargarReporteAtencion: reporteService,
     private service: Auth
   ) {}
   

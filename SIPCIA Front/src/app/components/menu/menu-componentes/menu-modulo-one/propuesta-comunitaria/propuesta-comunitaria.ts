@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { FormularioPropuesta } from '../../formularios-modulos/formulario-propuesta/formulario-propuesta';
 import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
+import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
 
 @Component({
   selector: 'app-propuesta-comunitaria',
@@ -54,6 +55,18 @@ export class PropuestaComunitaria implements OnInit {
 
     this.getRegister();
   }
+
+   getReporte(){
+    this.descargarReporteAsamblea.descargarReporteAsamblea(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  }
+
+
   goToBitacora(id: number, tipo: string) {
     this.router.navigate(['/bitacora', id, tipo]);
   }
@@ -80,6 +93,7 @@ export class PropuestaComunitaria implements OnInit {
   constructor(
     private router: Router, 
     private reporteService: Reportes,
+    private descargarReporteAsamblea: reporteService,
     private service: Auth
   ) {}
   

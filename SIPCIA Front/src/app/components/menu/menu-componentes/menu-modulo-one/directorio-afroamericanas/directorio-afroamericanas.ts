@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { FormularioRegistro } from '../../formularios-modulos/formulario-registro/formulario-registro';
 import { Register } from '../../../../../services/registerService/register';
 import { Auth } from '../../../../../services/authService/auth';
+import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
 
 @Component({
   selector: 'app-directorio-afroamericanas',
@@ -38,6 +39,15 @@ export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestro
   goToBitacora(id: number, tipo: string) {
     this.router.navigate(['/bitacora', id, tipo]);
   }
+    getReporte(){
+    this.descargarReporteAfro.descargarReporteAfro(2,this.area,this.tokenSesion).subscribe((blob: Blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  }
 
   onModalClosed = () => {
     this.formHijo.resetFormulario();
@@ -54,10 +64,12 @@ export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestro
   position: string = '';
   tipo_usuario: number = 0;
   registroSeleccionadoId: number | undefined;
+  area: number = 0;
 
   ngOnInit(): void {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
+    this.area = Number(sessionStorage.getItem('area')!);
     this.nombreUser = sessionStorage.getItem('nameUsuario')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.position = sessionStorage.getItem('dir')!;
@@ -67,6 +79,7 @@ export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestro
   constructor(
     private router: Router, 
     private serviceRegister: Register,
+    private descargarReporteAfro: reporteService,
     private service: Auth) {}
   
   logout() {
