@@ -2,24 +2,40 @@ import cors from 'cors';
 import express from 'express';
 import http from 'http';
 
-   const hostname = '145.0.46.49'; // Escucha en todas las interfaces
-
+const hostname = '145.0.46.49';
 
 const app = express();
 const port = 4000;
 
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(cors());
 
 
 import login from './Services/login.js';
 import registro from './Services/registro.js';
 import catalogos from './Services/catalogos.js';
+import directorio from './Services/directorio.js';
+import bitacora from './Services/bitacora.js';
+import reportes  from './Services/reportes/instanciasRepetidas.js';
+import atencion from './Services/reportes/atencionConsultas.js';
+import afluencia from './Services/mayorAfluencia/registroAfluencia.js';
+import lugares from './Services/lugaresAsambleas/registroLugares.js';
+import instituciones from './Services/instituciones/catalogoInstituciones.js';
+import fichas from './Services/fichas/fichaInd.js';
+import fichasAfro from './Services/fichas/fichaAfro.js';
 
 app.use('/api/login', login);
 app.use('/api/registro', registro);
 app.use('/api/catalogos', catalogos);
-
+app.use('/api/directorio', directorio);
+app.use('/api/bitacora', bitacora);
+app.use('/api/reportes', reportes);
+app.use('/api/atencion', atencion);
+app.use('/api/afluencia', afluencia);
+app.use('/api/lugares', lugares);
+app.use('/api/instituciones', instituciones);
+app.use('/api/fichas', fichas);
+app.use('/api/fichasAfro', fichasAfro)
 app.listen(port, hostname, () => {
-    console.log(`El servicio esta corriendo en ${port}`);
 })

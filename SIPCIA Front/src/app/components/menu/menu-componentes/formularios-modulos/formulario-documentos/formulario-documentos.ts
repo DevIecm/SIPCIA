@@ -1,27 +1,27 @@
-import { Input, Component, OnInit, Output, SimpleChanges, EventEmitter, input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
-import Swal from 'sweetalert2';
-import { Auth } from '../../../../../services/authService/auth';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Catalogos } from '../../../../../services/catService/catalogos';
+import { Auth } from '../../../../../services/authService/auth';
 import { Reportes } from '../../../../../services/reporteService/reportes';
+import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-formulario-comunitaria',
+  selector: 'app-formulario-documentos',
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
   ],
   providers: [DatePipe],
-  templateUrl: './formulario-comunitaria.html',
-  styleUrl: './formulario-comunitaria.css'
+  templateUrl: './formulario-documentos.html',
+  styleUrl: './formulario-documentos.css'
 })
-export class FormularioComunitaria {
+export class FormularioDocumentos {
 
   @Input() isOpen = false;
   @Input() idRegistroC: any;
-  @Input() idRegistro : number | undefined;
+  @Input() formId : number | undefined;
   @Output() close = new EventEmitter<void>();
 
   formularioRegistro: FormGroup | undefined;
@@ -130,7 +130,6 @@ export class FormularioComunitaria {
             }
 
             const datosFormularioCompletos = {
-              id_registro: this.idRegistro,
               distrito_electoral: this.area,
               distrito_cabecera: this.cabecera,
               demarcacion_territorial: this.formularioRegistro.get('demarcacion_territorial')?.value || null,
@@ -194,23 +193,30 @@ export class FormularioComunitaria {
     this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
 
     this.formularioRegistro = this.formBuilder.group({
-      demarcacion_territorial: [''],
-      denominacion_lugar: [''],
-      domicilio_lugar: [''],
+      dDistrital: [{ value:'', disabled: true}],
+      demarcacion: ['', [Validators.required]],
+      lugar_espacio: ['', [Validators.required]],
+      intitucion_propietaria: ['', [Validators.required]],
+      domicilio: ['', [Validators.required]],
+      superficie_espacio: ['', [Validators.required]],
+      aforo: ['', [Validators.required]],
       observaciones: [''],
-      fubicacion: [''],
-      flugar: [{ value: '', disabled: true}]
+      anterioridad: ['', [Validators.required]],
+      prestamo: ['', [Validators.required]],
+      ventilacion: ['', [Validators.required]],
+      consecutivo: [{value: '', disabled: true}]
     });
 
     this.catalogo_demarcacion();
 
-    if(!this.idRegistro){
+    if(this.formId === 1){
       this.idRegistroC = true;
-      this.labelTitle = ' Registro - Lugar de mayor afluencia comunitaria';
+      this.labelTitle = 'Ficha técnica de la reunión de trabajo con instancias representativas y autoridades tradicionales de forma previa a la realización de las asambleas comunitarias.';
+      this.getDataById(1);
     } else {
-      this.labelTitle = 'Edición - Lugar de mayor afluencia comunitaria';
+      this.labelTitle = 'Ficha técnica de la reunión de trabajo con instancias representativas y autoridades tradicionales de forma previa a la realización de las asambleas comunitarias.';
       this.idRegistroC = false
-      this.getDataById(this.idRegistro);
+      this.getDataById(2);
     }
   }
 
@@ -224,7 +230,7 @@ export class FormularioComunitaria {
 
   getDataById(id: number) {
     try {
-      if (!this.idRegistro) return;
+      if (this.formId) return;
 
       this.registerService.getDataById(id, this.tokenSesion).subscribe({
         
@@ -291,3 +297,4 @@ export class FormularioComunitaria {
     });
   };
 }
+  

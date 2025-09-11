@@ -10,82 +10,6 @@ import { FormularioConsultas } from "../../formularios-modulos/formulario-consul
 import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
 
-interface PeriodicElement {
-  position: number;
-  edit: string;
-  generar: string;
-  unico: number;
-  demarcacion: string;
-  ncompleto: string;
-  nporiginario: string;
-  npueblo: string;
-  nbarrio: string;
-  comunidad: string;
-  ut: string;
-  nindigena: string;
-  dconsulta: string;
-  fconsulta: string;
-  observaciones: string;
-  sdocumentos: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {  
-    position: 1,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "test",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    dconsulta: "",
-    fconsulta: "",
-    observaciones: "",
-    sdocumentos: "",
-  },
-  { 
-    position: 1,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    fconsulta: "",
-    observaciones: "",
-    sdocumentos: "",
-    dconsulta: "",
-  },
-  { 
-    position: 1,
-    edit: "test",
-    generar: "test",
-    unico: 2134123423,
-    demarcacion: "test",
-    ncompleto: "test",
-    nporiginario: "test",
-    npueblo: "test",
-    nbarrio: "string",
-    comunidad: "",
-    ut: "",
-    nindigena: "test",
-    fconsulta: "",
-    observaciones: "",
-    sdocumentos: "",
-    dconsulta: "",
-  }
-];
-
 @Component({
   selector: 'app-reporte-consultas',
   imports: [
@@ -114,7 +38,6 @@ export class ReporteConsultas implements OnInit {
   nombreUser: string = '';
   cargoUser: string = '';
   searchTerm: string = '';
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   data: any = data;
   position: string = '';
 

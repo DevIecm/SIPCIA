@@ -1,0 +1,345 @@
+<div class="modal show fade d-block" tabindex="-1" *ngIf="isOpen" (click)="onBackdropClick($event)" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" style="width: auto; max-width: 73%;" (click)="$event.stopPropagation()">
+        <div class="modal-content" style="width: auto; height: auto;">
+            <div class="modal-body">
+                <div class="card card-size text-center fw-bold">
+                    <div class="card-body">
+                        <form [formGroup]="formularioRegistro!" (ngSubmit)="saveForm()">
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3">
+                                        <label class="form-label">Ficha técnica de la reunión de trabajo con instancias representativas y autoridades tradicionales <br> de forma previa a la realización de las asambleas comunitarias.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container text-center mt-4" style="align-items: start;">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3 d-flex align-items-center">
+                                            <label style="text-align: end;" class="form-label me-4 mb-0">Demarcación Territorial:</label>
+                                            <select 
+                                                formControlName="demarcacion_territorial"
+                                                class="select-input form-select" 
+                                                aria-label="Default select example"
+                                                [(ngModel)]="opcionDemarcacion"
+                                            >
+                                                <option selected></option>
+                                                @for (item of catalogoDemarcacion; track item) {
+                                                <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-2"></div>
+                                    <div class="col-4">
+                                        <div class="mb-3 d-flex align-items-center">
+                                            <label class="form-label me-2 mb-0">Fecha:</label>
+                                            <input 
+                                                type="text"
+                                                formControlName="denominacion_lugar"
+                                                class="form-control input-fecha">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3 d-flex align-items-center">
+                                            <label style="text-align: end;" class="form-label me-2 mb-0">Dirección Distrital <br> Cabecera de Demarcación:</label>
+                                            <input 
+                                                type="text"
+                                                formControlName="denominacion_lugar"
+                                                class="form-control input-d">
+                                        </div>
+                                    </div>
+                                    <div class="col-2"></div>
+                                    <div class="col-4"></div>
+                                </div>
+                            </div>
+
+                            <div class="card card-size text-center fw-bold" style="border-radius: 0px; font-size: 14px;">
+                                <div class="card-body">
+                                    <div class="container text-center d-flex flex-column">
+                                        <div class="row">
+                                            <div class="col-2"></div>
+                                            <div class="col-2 mt-auto">
+                                                <label class="form-label me-2 mb-0">Fecha:</label>
+                                            </div>
+                                            <div class="col-2 mt-auto">
+                                                <label class="form-label me-2 mb-0">Horario:</label>
+                                            </div>
+                                            <div class="col-2 mt-auto">
+                                                <label class="form-label me-2 mb-0">Número <br> Estimado de <br> Asistentes:</label>
+                                            </div>
+                                            <div class="col-4 mt-auto">
+                                                <label class="form-label me-2 mb-0">Lugar:</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4">
+                                            <div class="col-2">
+                                                <label class="form-label me-2 mb-0">Reunión de trabajo con las <br> instancias representativas:</label>
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-4 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4">
+                                            <div class="col-2">
+                                                <label class="form-label me-2 mb-0">Asamblea Comunitaria <br> Informativa:</label>
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-4 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4">
+                                            <div class="col-2">
+                                                <label class="form-label me-2 mb-0">Asamblea Comunitaria <br> Informativa:</label>
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                            <div class="col-4 mt-2">
+                                                <input 
+                                                    type="text"
+                                                    formControlName="denominacion_lugar"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="containe text-center mt-4">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div style="border: 1px black solid;">
+                                            <label class="form-label">Documento</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                         <div style="border: 1px black solid;">
+                                            <label class="form-label">Traducción en lengua indígena</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="containe text-center mt-4 mb-4">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div>
+                                            <label style="text-align: end;" class="form-label">Plan de trabajo para la instrumentación <br> de la consulta indígena 2025</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-a" autocomplete="off">
+                                                    <label class="btn btn-primary btn-toggle" for="btn-check-a">Náhuatl</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-b" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-b">Mazteco</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-c" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-c">Mixteco</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-d" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-d">Otomí</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-e" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-e">Mazahua</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-f" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-f">Zapoteco</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div>
+                                            <label style="text-align: end;" class="form-label">Plan de trabajo para la instrumentación <br> de la consulta indígena 2025</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div>
+                                            <label style="text-align: end;" class="form-label">Resumen del Acta de la(s) reunion(es) <br> con las Instancias Representativas</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <input type="checkbox input-check" class="btn-check" id="btn-check-a" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-a">Náhuatl</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-b" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-b">Mazteco</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-c" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-c">Mixteco</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-d" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-d">Otomí</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-e" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-e">Mazahua</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="btn-check" id="btn-check-f" autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-f">Zapoteco</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div>
+                                            <label style="text-align: end;" class="form-label">Plan de trabajo para la instrumentación <br> de la consulta indígena 2025</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="container text-center">
+                                <div class="row">
+                                    <div class="col-7 d-flex align-items-center justify-content-center">
+                                        <label class="form-label mb-0 me-3 text-end" style="white-space: nowrap;">
+                                            ¿Se solicitaron cambios en <br> el orden del día?
+                                        </label>
+
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div class="form-check me-4 d-flex align-items-center">
+                                                <input 
+                                                    id="radioSi"
+                                                    style="border: 1px solid black; width: 19px; height: 19px;" 
+                                                    value="1" 
+                                                    formControlName="anterioridad" 
+                                                    class="form-check-input" 
+                                                    type="radio">
+                                                <label class="form-check-label ms-1" for="radioSi">Sí</label>
+                                            </div>
+                                            <div class="form-check d-flex align-items-center">
+                                                <input 
+                                                    id="radioNo"
+                                                    style="border: 1px solid black; width: 19px; height: 19px;" 
+                                                    value="0" 
+                                                    formControlName="anterioridad" 
+                                                    class="form-check-input" 
+                                                    type="radio">
+                                                <label class="form-check-label ms-1" for="radioNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-5">
+                                        <div class="mb-3">
+                                            <label for="exampleFormControlTextarea1" class="form-label">¿Cuáles?</label>
+                                            <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container text-center">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="exampleFormControlTextarea1" class="form-label">Observaciones</label>
+                                        <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container text-center" style="margin-top: 15px;">
+                                <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn button-register">Guardar</button>
+                                </div>
+                                <div class="col">
+                                    <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+                                </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

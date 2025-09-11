@@ -10,6 +10,7 @@ dotenv.config();
     }
 });
 
+
 const config = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -20,10 +21,10 @@ const config = {
         encrypt: process.env.NODE_ENV === 'production',
         trustServerCertificate: process.env.NODE_ENV !== 'production',
         enableArithAbort: true
-    }
+    },
+    requestTimeout: 40000 
 };
 
-console.log(config);
 
 let pool;
 

@@ -18,9 +18,9 @@ function encryptSHA256(text) {
 router.post("/login", async (req, res) => {
     try{
 
-        const { username, password } = req.body;
+        const { username, password, tipo_usuario } = req.body;
 
-        if(!username || !password) {
+        if(!username || !password || !tipo_usuario) {
             return res.status(400).json({ message: "Datos requeridos"})
         }
 
@@ -29,22 +29,24 @@ router.post("/login", async (req, res) => {
         const pool = await connectToDatabase();
         const result = await pool.request()
             .input('username', sql.VarChar, username)
-            .input('password', sql.VarChar, ecryptedPass)
+            .input('password', sql.VarChar, password)
+            .input('tipo_usuario', sql.Int, tipo_usuario)
             .query(`SELECT
                         cs.id,
                         cs.usuario,
-                        cs.password,
                         cs.tipo_usuario,
                         cs.estado_usuario,
                         cs.nombre_usuario,
                         cs.cargo_usuario,
                         cs.correo_usuario,
-                        cs.area_adscripcion
+                        cs.area_adscripcion,
+                        cd.adscripcion_usuario,
+                        cd.distrito
                     FROM usuarios cs
                         JOIN tipo_usuario tu ON cs.tipo_usuario = tu.id 
                         JOIN estado_usuario es ON cs.estado_usuario = es.id
                         JOIN adscripcion_usuario cd ON cs.area_adscripcion = cd.id
-                    WHERE cs.usuario = @username AND cs.password = @password`)
+                    WHERE cs.usuario = @username AND cs.password = @password AND cs.tipo_usuario = @tipo_usuario`)
 
         if (result.recordset.length > 0) {
             if(result.recordset[0].estado_usuario === 1){

@@ -21,6 +21,8 @@ function verifyToken(req, res, next) {
     try {
         const payload = jwt.verify(token, secretKey);
         req.username = payload.username;
+        req.id = payload.id;
+        req.tipo_usuario = payload.tipo_usuario;
         next();
     } catch (error) {
         console.error("Token no válido:", error.message);
@@ -32,7 +34,6 @@ function verificarTokenGet(req, res, next) {
   const tokenCliente = req.header("x-api-key");
   
   if(tokenCliente == process.env.API_KEY) {
-    console.log("Token válido");
   }
 
   if (!tokenCliente || tokenCliente !== process.env.API_KEY) {

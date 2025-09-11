@@ -32,24 +32,28 @@ import Swal from 'sweetalert2';
 })
 
 export class DocumentosAfroamericanas implements OnInit{
+  activeTab: string = 'home';
+
   data: any = data;
-  formularioRegistro: FormGroup | undefined;
+
+  nombreUser: string = '';
+  cargoUser: string = '';
+  position: string = '';
 
   ngOnInit(): void {
-    this.formularioRegistro = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
-    });
+    this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
+    this.nombreUser = sessionStorage.getItem('nameUsuario')!;
+    this.position = sessionStorage.getItem('dir')!;
   }
 
   constructor(private router: Router, private formBuilder: FormBuilder) {}
   
   logout() {
     this.router.navigate(['']);
-  }
+  };
 
-  onSubmit() {
-
-  }
+  onValidateInfo() {
+    this.router.navigate(['/menu']);
+  };
 
 }

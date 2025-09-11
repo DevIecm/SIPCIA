@@ -12,6 +12,7 @@ import { Auth } from '../../../../../services/authService/auth';
 
 @Component({
   selector: 'app-reporte-comunitaria',
+  standalone: true,
   imports: [
     Navbar,
     CommonModule,
@@ -57,9 +58,10 @@ export class ReporteComunitaria implements OnInit {
 
     this.getRegister();
   }
- goToBitacora(id: number, tipo: string) {
-  this.router.navigate(['/bitacora', id, tipo]);
-}
+
+  goToBitacora(id: number, tipo: string) {
+    this.router.navigate(['/bitacora', id, tipo]);
+  }
   
   constructor(
     private router: Router,
