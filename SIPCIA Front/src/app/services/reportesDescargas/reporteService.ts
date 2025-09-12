@@ -95,7 +95,6 @@ export class reporteService {
       );
   }
 
-
     descargarReporteAsamblea(distrito_electoral: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -109,6 +108,6 @@ export class reporteService {
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
         })
-      );
+    );
   }
 }
