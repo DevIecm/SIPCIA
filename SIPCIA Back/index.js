@@ -24,6 +24,7 @@ import lugares from './Services/lugaresAsambleas/registroLugares.js';
 import instituciones from './Services/instituciones/catalogoInstituciones.js';
 import fichas from './Services/fichas/fichaInd.js';
 import fichasAfro from './Services/fichas/fichaAfro.js';
+import reportesDes from './Services/reportes/reporteDirectorioIndigena.js';
 
 app.use('/api/login', login);
 app.use('/api/registro', registro);
@@ -37,5 +38,6 @@ app.use('/api/lugares', lugares);
 app.use('/api/instituciones', instituciones);
 app.use('/api/fichas', fichas);
 app.use('/api/fichasAfro', fichasAfro)
+app.use('/api/reportesDes', reportesDes)
 app.listen(port, hostname, () => {
-})
+});

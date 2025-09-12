@@ -67,7 +67,7 @@ router.post("/altaInstituciones", Midleware.verifyToken, async(req, res)=>{
 
         const result = await transaction.request()
         .input('distrito_electoral', sql.Int, distrito_electoral)
-        .input('fotografia', sql.Int, fotografia) //mandar  0
+        .input('fotografia', sql.VarChar, fotografia)
         .input('demarcacion_territorial', sql.Int, demarcacion_territorial)
         .input('nombre_completo', sql.VarChar, nombre_completo)
         .input('pueblo_originario',sql.Int, pueblo_originario)
@@ -87,7 +87,7 @@ router.post("/altaInstituciones", Midleware.verifyToken, async(req, res)=>{
         .input('usuario_registro', sql.Int, usuario_registro)
         .input('modulo_registro', sql.Int, modulo_registro)
         .input('estado_registro', sql.Int, estado_registro)  
-        .input('cv_documento', sql.Int, cv_documento)
+        .input('cv_documento', sql.Int, cv_documento) //0
         .input('cv_enlace', sql.VarChar, cv_enlace)
         .query(`INSERT INTO registro_instituciones (distrito_electoral, fotografia,
             demarcacion_territorial, nombre_completo, pueblo_originario, pueblo, barrio,
@@ -284,7 +284,7 @@ router.patch("/updateInstituciones", Midleware.verifyToken, async(req,res)=>{
             await transaction.request()
                 .input('id_registro', sql.Int, id_registro)
                 .input('distrito_electoral', sql.Int, distrito_electoral)
-                .input('fotografia', sql.Int, fotografia) //mandar  0
+                .input('fotografia', sql.VarChar, fotografia)
                 .input('demarcacion_territorial', sql.Int, demarcacion_territorial)
                 .input('nombre_completo', sql.VarChar, nombre_completo)
                 .input('pueblo_originario',sql.Int, pueblo_originario)
@@ -412,6 +412,64 @@ router.get("/getInstituciones", Midleware.verifyToken, async(req, res)=>{
         if (result.recordset.length > 0) {
             return res.status(200).json({
                 getInstituciones: result.recordset
+            });
+        } else {
+            return res.status(404).json({ message: "No se encontraron datos" });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error de servidor", error: error.message });
+    }
+})
+//consulta registros de tabla por distrito
+router.get("/getRegistroInstituciones", Midleware.verifyToken, async(req, res)=>{
+
+    const { id } = req.query;
+
+    if(!id){
+        return res.status(400).json({ message: "Datos requeridos"})
+    }
+
+    try{
+
+        const pool = await connectToDatabase();
+        const result = await pool.request()
+        .input('id', sql.Int, id)
+        .query(`select 
+                ri.id as id_registro,
+                ri.demarcacion_territorial id_demarcacion,
+                dt.demarcacion_territorial  as demarcacion_territoral,
+                ri.nombre_completo,
+                ri.pueblo_originario as id_pueblo_originario,
+                cpo.pueblo_originario,
+                ri.pueblo as id_pueblo,
+                cp.pueblo,
+                ri.barrio as id_barrio,
+                cb.barrio,
+                ri.unidad_territorial as id_unidad_territorial,
+                ut.ut,
+                ri.otro,
+                ri.comunidad as id_comunidad,
+                c.comunidad,
+                ri.interes_profesional,
+                ri.domicilio,
+                ri.telefono,
+                ri.nombre_institucion,
+                ri.correo_electronico,
+                ri.cargo 
+                FROM  registro_instituciones ri
+                join demarcacion_territorial dt on ri.demarcacion_territorial = dt.id
+                join cat_pueblos_originarios cpo on ri.pueblo_originario = cpo.id 
+                join cat_pueblos cp on ri.pueblo = cp.id
+                join cat_barrios cb on ri.barrio = cb.id 
+                join unidad_territorial ut on ri.unidad_territorial = ut.id 
+                join comunidad c on ri.comunidad = c.id
+                where ri.id = @id;`);
+
+        if (result.recordset.length > 0) {
+            return res.status(200).json({
+                getRegistroInstituciones: result.recordset
             });
         } else {
             return res.status(404).json({ message: "No se encontraron datos" });
