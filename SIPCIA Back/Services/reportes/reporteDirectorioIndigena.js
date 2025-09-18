@@ -885,6 +885,180 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async(req,res)=>{
 });
 
 
+//Rporte de mayor afluencia
+router.get("/reporteAfluencia", Midleware.verifyToken, async(req,res)=>{
+
+    const { distrito_electoral } = req.query;
+
+  if (!distrito_electoral) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
+
+    // fecha y hora
+    const original = new Date();
+    const offsetInMs = original.getTimezoneOffset() * 60000;
+    const fechaLocal = new Date(original.getTime() - offsetInMs);
+
+    // convertir a DD/MM/YYYY
+    const fechaFormateada = fechaLocal.toLocaleDateString("es-MX", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    });
+
+  try {
+
+
+     const pool = await connectToDatabase();
+
+    const result = await pool.request()
+      .input("distrito_electoral", sql.Int, distrito_electoral)
+      .query(`select           
+              ROW_NUMBER() OVER(ORDER BY ra.id) AS numero_consecutivo,
+              dt.demarcacion_territorial,
+              ra.denominacion_lugar,
+              ra.domicilio_lugar,
+              ra.enlace_ubicacion,
+              ra.enlace_foto,
+              ra.observaciones 
+              from registro_afluencia ra 
+              join demarcacion_territorial dt on ra.demarcacion_territorial = dt.id 
+              where ra.distrito_electoral =  @distrito_electoral`);
+
+    const rows = result.recordset;
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("NombreDelReporte");
+
+    //inserta imgaen
+    const logoPath = path.join(__dirname, '../../assets/iecm.png');
+    const logoId = workbook.addImage({
+      filename: logoPath,
+      extension: "png",
+    });
+
+    worksheet.addImage(logoId, {
+      tl: { col: 0.1, row: 0.1 },
+      ext: { width: 150, height: 70 },
+    });
+
+
+    worksheet.mergeCells("B3:L3");
+    const titulo = worksheet.getCell("B3:L3");
+    titulo.value =
+    "Registro de lugares de mayor afluencia comunitaria\n" + 
+    "de los Pueblos, Barrios y Comunidades Indígenas y Afromexicanas"
+    titulo.font = { size: 13, bold: true};
+    titulo.alignment = { 
+    vertical: "middle", 
+    horizontal: "center", 
+    wrapText: true 
+  };
+ 
+    worksheet.mergeCells("G1:G2");
+    const anexo = worksheet.getCell("G1");
+    anexo.value =
+      "ANEXO 4";
+    anexo.font = { 
+      size: 27, 
+      bold: true, 
+      color: { argb: "FF6F42C1" }
+    };
+    anexo.alignment = { vertical: "middle", horizontal: "center" };
+
+    const distrito = worksheet.getCell("B4");
+    distrito.value = {
+    richText: [
+        { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
+        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+    ]
+    };
+    distrito.alignment = { vertical: "middle", horizontal: "left" };
+
+    const numRep = worksheet.getCell("B5");
+    numRep.value = {
+    richText: [
+        { text: "Órgano Desconcentrado Cabecera de Demarcación: ", font: { size: 12, bold: true } },
+        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+    ]
+    };
+    numRep.alignment = { vertical: "middle", horizontal: "left" };
+
+
+    const cellFecha = worksheet.getCell("G5");
+    cellFecha.value = {
+    richText: [
+        { text: "Fecha y período: ", font: { size: 12, bold: true } },
+        { text: String(fechaFormateada), font: { size: 12, bold: true, underline: true } }
+    ]
+    };
+    cellFecha.alignment = { vertical: "middle", horizontal: "left" };
+
+    // Ajustar alto
+    worksheet.getRow(3).height = 60;
+    
+    worksheet.addRow([]);
+
+  const headers = [
+  "No.",
+  "Demarcación Territorial",
+  "Denominación Del Lugar",
+  "Domicilio del Lugar",
+  "Ubicacion georreferenciada kml",
+  "Foto del lugar",
+  "Observaciones"
+   ];
+
+  worksheet.addRow(headers);
+  worksheet.columns = headers.map(() => ({ width: 20 }));
+
+
+      worksheet.getRow(8).eachCell((cell) => {
+      cell.alignment = {
+        vertical: "middle",
+        horizontal: "center",
+        wrapText: true,
+      };
+     cell.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+    };
+    });
+
+    // Filtros
+    worksheet.autoFilter = {
+      from: "A8",
+      to: "C8",
+    };
+ 
+    rows.forEach((row) => {
+      worksheet.addRow([
+        row.numero_consecutivo,
+        row.demarcacion_territorial,
+        row.denominacion_lugar,
+        row.domicilio_lugar,
+        row.enlace_ubicacion,
+        row.enlace_foto,
+        row.observaciones 
+      ]);
+    });
+
+
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", "attachment; filename=reporte.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  }catch (error) {
+    console.error(error);
+    res.status(500).send("Error al generar el reporte");
+  }
+
+});
+
+
 // Reporte de atencion a consultas
 router.get("/reporteAtencion", Midleware.verifyToken, async(req,res)=>{
 

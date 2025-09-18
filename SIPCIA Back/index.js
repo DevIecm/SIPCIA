@@ -1,6 +1,8 @@
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
+import path from "path";
+import { fileURLToPath } from "url";
 
 const hostname = '145.0.46.49';
 
@@ -39,5 +41,13 @@ app.use('/api/instituciones', instituciones);
 app.use('/api/fichas', fichas);
 app.use('/api/fichasAfro', fichasAfro)
 app.use('/api/reportesDes', reportesDes)
+
+
+app.use(
+  '/Services/uploads',
+  express.static(path.join(process.cwd(), 'Services', 'uploads'))
+);
+
+
 app.listen(port, hostname, () => {
 });

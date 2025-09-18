@@ -64,6 +64,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
     const resultadoFolio = await pool.request().query(`
             SELECT MAX(CAST(RIGHT(nombre_ficha, 5) AS INT)) AS ultimoFolio
             FROM ficha_tecnica_afromexicana
+            WHERE ISNUMERIC(RIGHT(nombre_ficha, 5)) = 1;
             `);
 
     const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
@@ -245,7 +246,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
 
     // Confirmar la transacción
     await transaction.commit();
-    return res.status(200).json({ message: "Registro creado", id: idRegistro, nombre_ficha: nombre_ficha });
+    return res.status(200).json({ message: "Registro creado", id: idRegistro, nombre_ficha: nombre_ficha, code: 200 });
 
 
 
@@ -255,6 +256,107 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
     return { ok: false, error };
   }
 
+});
+
+//get todas las consultas de fichas 
+router.get("/getFichasAfro", Midleware.verifyToken, async (req, res) => {
+    const {
+        distrito_electoral
+    }= req.query
+
+    if (!distrito_electoral){
+        return res.status(400).json({ message: "Datos requeridos"})
+    }
+
+    try {
+
+        const pool = await connectToDatabase();
+        const result = await pool.request()
+        
+            .input('distrito_electoral', sql.Int, distrito_electoral)
+            .query(`select id, nombre_ficha, fecha_registro  
+                from ficha_tecnica_afromexicana
+                where distrito_electoral = @distrito_electoral;`);
+
+        if (result.recordset.length > 0) {
+            return res.status(200).json({
+                getFichasAfro: result.recordset,
+                code: 200
+            });
+        } else {
+            return res.status(404).json({ message: "No se encontraron datos" });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error de servidor", error: error.message });
+    }
+});
+
+
+//consulta de registro
+router.get("/getRegistroFichaAfro", Midleware.verifyToken, async (req, res) => {
+
+    const { id } = req.query; 
+
+        if(!id){
+            return res.status(400).json({ message: "Datos requeridos"})
+        }
+        
+        try {
+
+            const pool = await connectToDatabase();
+
+            const result = await pool.request()
+            .input('id', sql.Int, id)
+            .query(`SELECT 
+                    fi.id,
+                    fi.demarcacion_territorial AS id_demarcacion,
+                    dt.demarcacion_territorial,
+                    fi.distrito_electoral,
+                    fi.fecha_registro,
+                    fi.fecha_reunion,
+                    fi.fecha_asamblea_informativa,
+                    fi.fecha_asamblea_consultiva,
+                    fi.nombre_ficha,
+                    fi.hora_reunion,
+                    fi.hora_asamblea_informativa,
+                    fi.hora_asamblea_consultiva,
+                    fi.numero_asistentes_reunion,
+                    fi.numero_asistentes_informativa,
+                    fi.numero_asistentes_consultiva,
+                    fi.lugar_reunion,
+                    fi.lugar_asamblea_informativa,
+                    fi.lugar_asamblea_consultiva,
+                    fi.periodo_del,
+                    fi.periodo_al,
+                    fi.numero_lugares_publicos,
+                    (
+                        SELECT 
+                        prf.ficha_tecnica_iafromexicana,
+                        prf.dd_cabecera_demarcacion,
+                        prf.direccion_distrital
+                        FROM persona_responsable_fta prf
+                        WHERE prf.ficha_tecnica_iafromexicana = fi.id
+                        FOR JSON PATH
+                    ) AS personaRes
+                FROM ficha_tecnica_afromexicana fi
+                JOIN demarcacion_territorial dt ON fi.demarcacion_territorial = dt.id
+                where fi.id = @id;
+                `)
+        
+        if (result.recordset.length > 0) {
+            return res.status(200).json({
+                getRegistroFichaAfro: result.recordset,
+                code: 200
+            });
+        } else {
+            return res.status(404).json({ message: "No se encontraron registros", code: 100})
+        }
+        }catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error de servidor", error: error.message });
+    }
 });
 
 export default router;

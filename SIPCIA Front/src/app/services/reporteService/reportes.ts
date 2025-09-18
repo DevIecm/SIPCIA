@@ -46,6 +46,20 @@ export class Reportes {
       );
   };
 
+  nuinsertaRegistro(data: FormData, token: string): Observable<any> {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.post(this.apiUrl + 'afluencia/altaAfluencia', data, { headers })
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+
   updateRegistro(data: any, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -56,6 +70,19 @@ export class Reportes {
     };
 
     return this.http.patch(this.apiUrl + 'afluencia/updateAfluencia', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
+    nuupdateRegistro(data: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    
+    return this.http.patch(this.apiUrl + 'afluencia/updateAfluencia', data, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
@@ -107,6 +134,20 @@ export class Reportes {
       );
   };
 
+  
+  nuinsertaRegistroComunitaria(data: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post(this.apiUrl + 'lugares/altaLugar', data, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
   updateRegistroComunitaria(data: any, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -117,6 +158,19 @@ export class Reportes {
     };
 
     return this.http.patch(this.apiUrl + 'lugares/updateLugar', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
+  nuupdateRegistroComunitaria(data: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.patch(this.apiUrl + 'lugares/updateLugar', data, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
@@ -242,6 +296,19 @@ export class Reportes {
       );
   };
 
+  nuinsertaRegistroAcompa(data: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post(this.apiUrl + 'instituciones/altaInstituciones', data, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
   updateRegistroAcompa(data: any, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -252,6 +319,19 @@ export class Reportes {
     };
 
     return this.http.patch(this.apiUrl + 'instituciones/updateInstituciones', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
+    nuupdateRegistroAcompa(data: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.patch(this.apiUrl + 'instituciones/updateInstituciones', data, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);

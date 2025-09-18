@@ -97,7 +97,7 @@
                 <i class="bi bi-pencil-square"></i>
               </button>
             </td>
-            <td><i class="bi bi-journal-text"></i></td>
+            <td><i (click)="goToBitacora(item.id_registro, 'catInstituciones')" class="bi bi-journal-text"></i></td>
             <td>{{ item.nombre_completo ? item.nombre_completo : '-'}}</td>
             <td>{{ item.pueblo_originario }}</td>
             <td>{{ item.pueblo }}</td>

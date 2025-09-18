@@ -68,8 +68,9 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
 
 
         const resultadoFolio = await pool.request().query(`
-            SELECT MAX(CAST(RIGHT(nombre_ficha, 5) AS INT)) AS ultimoFolio
-            FROM ficha_tecnica_indigena
+        SELECT MAX(CAST(RIGHT(nombre_ficha, 5) AS INT)) AS ultimoFolio
+        FROM ficha_tecnica_indigena
+        WHERE ISNUMERIC(RIGHT(nombre_ficha, 5)) = 1;
             `);
          
         const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
@@ -324,7 +325,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
 
         // Confirmar la transacción
         await transaction.commit();
-        return res.status(200).json({ message: "Registro creado", id: idRegistro, nombre_ficha: nombre_ficha });
+        return res.status(200).json({ message: "Registro creado", id: idRegistro, nombre_ficha: nombre_ficha, code: 200 });
 
     } catch (error) {
         await transaction.rollback();
@@ -334,5 +335,141 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
 
 });
 
+//get todas las consultas de fichas 
+router.get("/getFichasInd", Midleware.verifyToken, async (req, res) => {
+    const {
+        distrito_electoral
+    }= req.query
+
+    if (!distrito_electoral){
+        return res.status(400).json({ message: "Datos requeridos"})
+    }
+
+    try {
+
+        const pool = await connectToDatabase();
+        const result = await pool.request()
+        
+            .input('distrito_electoral', sql.Int, distrito_electoral)
+            .query(`select id, nombre_ficha, fecha_registro  
+                from ficha_tecnica_indigena
+                where distrito_electoral = @distrito_electoral;`);
+
+        if (result.recordset.length > 0) {
+            return res.status(200).json({
+                getFichasInd: result.recordset,
+                code: 200
+            });
+        } else {
+            return res.status(404).json({ message: "No se encontraron datos" });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error de servidor", error: error.message });
+    }
+});
+
+
+//consulta de registro
+router.get("/getRegistroFichaInd", Midleware.verifyToken, async (req, res) => {
+
+    const { id } = req.query; 
+
+        if(!id){
+            return res.status(400).json({ message: "Datos requeridos"})
+        }
+        
+        try {
+
+            const pool = await connectToDatabase();
+
+            const result = await pool.request()
+            .input('id', sql.Int, id)
+            .query(`SELECT 
+                    fi.id,
+                    fi.demarcacion_territorial AS id_demarcacion,
+                    dt.demarcacion_territorial,
+                    fi.distrito_electoral,
+                    fi.fecha_registro,
+                    fi.fecha_reunion,
+                    fi.fecha_asamblea_informativa,
+                    fi.fecha_asamblea_consultiva,
+                    fi.nombre_ficha,
+                    fi.hora_reunion,
+                    fi.hora_asamblea_informativa,
+                    fi.hora_asamblea_consultiva,
+                    fi.numero_asistentes_reunion,
+                    fi.numero_asistentes_informativa,
+                    fi.numero_asistentes_consultiva,
+                    fi.lugar_reunion,
+                    fi.lugar_asamblea_informativa,
+                    fi.lugar_asamblea_consultiva,
+                    fi.periodo_del,
+                    fi.periodo_al,
+                    fi.numero_lugares_publicos,
+                    fi.solicitud_cambios,
+                    fi.cambios_solicitados,
+                    fi.observaciones,
+                    (
+                        SELECT 
+                            cli.id AS id_lengua,
+                            cli.lengua_indigena
+                        FROM traduccion_plan_trabajo tpt
+                        left JOIN cat_lenguas_indigenas cli ON tpt.lengua_indigena = cli.id
+                        WHERE tpt.ficha_tecnica_indigena = fi.id
+                        FOR JSON PATH
+                    ) AS lenguas,
+                    fi.otro_plan_trabajo,
+                    (
+                        SELECT 
+                        cli.id AS id_lengua,
+                        cli.lengua_indigena 
+                        FROM traduccion_resumen_acta tra
+                        left JOIN cat_lenguas_indigenas cli ON tra.lengua_indigena = cli.id
+                        WHERE tra.ficha_tecnica_indigena = fi.id
+                        FOR JSON PATH
+                    ) AS resumen,
+                fi.otro_resumen_acta,
+                (
+                        SELECT 
+                        prf.ficha_tecnica_indigena,
+                        prf.dd_cabecera_demarcacion,
+                        prf.direccion_distrital
+                        FROM persona_responsable_fti prf
+                        WHERE prf.ficha_tecnica_indigena = fi.id
+                        FOR JSON PATH
+                    ) AS personaRes
+                FROM ficha_tecnica_indigena fi
+                JOIN demarcacion_territorial dt ON fi.demarcacion_territorial = dt.id
+                where fi.id = @id;
+                `)
+
+        if (result.recordset.length > 0) {
+            
+          const parsedResults = result.recordset.map(item => {
+            try {
+              return {
+                ...item,
+                lenguas: JSON.parse(item.lenguas),
+                resumen: JSON.parse(item.resumen),
+                personaRes: JSON.parse(item.personaRes)
+              };
+            } catch (error) {
+              return item;
+            }
+          });
+          return res.status(200).json({
+            getRegistroFichaInd: parsedResults,
+            code: 200
+          });
+        } else {
+          return res.status(404).json({ message: "No se encontraron datos de tipo" });
+        } 
+        }catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error de servidor", error: error.message });
+    }
+});
 
 export default router;

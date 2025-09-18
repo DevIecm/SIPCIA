@@ -95,6 +95,22 @@ export class reporteService {
       );
   }
 
+  descargarReporteAfluencia(distrito_electoral: number, token: string): Observable<Blob> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+    .set('distrito_electoral', distrito_electoral)
+
+    return this.http.get(this.apiUrl + 'reportesDes/reporteAfluencia', { headers, params, responseType: 'blob' })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  }
+
     descargarReporteAsamblea(distrito_electoral: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`

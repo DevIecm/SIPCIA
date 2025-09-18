@@ -214,6 +214,65 @@
                         </td>
                     </tr>
                 </tbody>
+                <tbody *ngIf="this.tipoBitacora==='catInstituciones'">
+                    <tr *ngFor="let item of dataTable; index as i" class="dual-row">
+                        <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
+                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
+                        <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
+                        <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
+                        <td style="text-align: justify;">
+                            <div *ngIf="item.Datos?.nombre_completo">
+                                Nombre Completo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.nombre_completo }}
+                            </div>
+                            <div *ngIf="item.Datos?.distrito_electoral">
+                                Distrito Electoral Local Uninominal:&nbsp;&nbsp;&nbsp;&nbsp;{{
+                                item.Datos.distrito_electoral }}
+                            </div>
+                            <div *ngIf="item.Datos?.pueblo">
+                                Pueblo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.pueblo }}
+                            </div>
+                            <div *ngIf="item.Datos?.pueblo_originario">
+                                Pueblo Originario:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.pueblo_originario }}
+                            </div>
+                            <div *ngIf="item.Datos?.otro">
+                                Otro Pueblo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.otro }}
+                            </div>
+                            <div *ngIf="item.Datos?.domicilio">
+                                Domicilio:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.domicilio }}
+                            </div>
+                            <div *ngIf="item.Datos?.telefono">
+                                Teléfono:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.telefono }}
+                            </div>
+                            <div *ngIf="item.Datos?.unidad_territorial">
+                                Unidad Territorial:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.unidad_territorial }}
+                            </div>
+                            <div *ngIf="item.Datos?.barrio">
+                                Barrio:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.barrio  }}
+                            </div>
+                            <div *ngIf="item.Datos?.cargo">
+                                Cargo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.cargo  }}
+                            </div>
+                            <div *ngIf="item.Datos?.comunidad">
+                                comunidad:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.comunidad  }}
+                            </div>
+                            <div *ngIf="item.Datos?.correo_electronico">
+                                Correo electrónico:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.correo_electronico  }}
+                            </div>
+                            <div *ngIf="item.Datos?.demarcacion_territorial">
+                                Demarcación:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.demarcacion_territorial }}
+                            </div>
+                            <div *ngIf="item.Datos?.fotografia">
+                                Fotografía:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.fotografia }}
+                            </div>
+                            <div *ngIf="item.Datos?.interes_profesional">
+                                Interes Profesional:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.interes_profesional }}
+                            </div>
+                            <div *ngIf="item.Datos?.nombre_institucion">
+                                Nombre de Institución:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.nombre_institucion }}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>

@@ -45,9 +45,10 @@
                                             <div class="row">
                                                 <div class="col-6">
                                                     <div style="border: 1px solid" *ngIf="imagePreviewUrl">
-                                                    <img [src]="imagePreviewUrl" alt="Previsualización de la imagen" style=" max-width: 192px;">
+                                                    <img *ngIf="imagePreviewUrl" [src]="imagePreviewUrl" class="img-fluid rounded" alt="Fotografía" />
                                                     </div>
-                                                    <input class="form-control txt-input" (change)="onFileSelected($event)" type="file" accept="image/*" id="formFile">
+                                                    <label class="col-sm-8 form-label" style="color: #b7b5b8;">Fotografía (png, jpg, gif)</label>
+                                                    <input class="form-control txt-input" (change)="onFotoSelected($event)" type="file" accept="image/*" id="formFile">
                                                 </div>
                                                 
                                                 <div class="col-6">
@@ -240,8 +241,8 @@
                                         </div>
                                         <div class="col-12">
                                             <div class="mb-3">
-                                                <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Ubicación georreferenciada <br>(kml)</label>
-                                                <input class="form-control txt-input" type="file" id="formFile">
+                                                <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br>lo determine la DEOEyG</label>
+                                                <input disabled="true" class="form-control txt-input" type="file" id="formFile">
                                             </div>
                                         </div>
                                     </div>

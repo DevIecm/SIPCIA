@@ -97,13 +97,24 @@
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Ubicación georreferenciada <br>(kml)</label>
-                                            <input class="form-control txt-input" type="file" id="formFile">
                                         </div>
+
+                                        <input 
+                                            class="form-control"
+                                            type="file"
+                                            id="formFile"
+                                            (change)="onFileSelected($event)" 
+                                            accept=".kml" />
+
+                                            <div *ngIf="infoUpdate?.enlace_ubicacion">
+                                            <small>Archivo actual: {{ infoUpdate.enlace_ubicacion }}</small>
+                                            </div>
+
                                     </div>
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br> lo determine la DEOEyG</label>
-                                            <input class="form-control txt-input" type="file" id="formFile">
+                                            <input disabled="true"  class="form-control txt-input" type="file" id="formFile">
                                         </div>
                                     </div>
                                 </div>

@@ -50,4 +50,16 @@ export class bitacoras {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   }
 
+    getbitacoraInstituciones(id_registro: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+      .set('id_registro', id_registro)
+
+    return this.http.get(this.apiUrl + 'bitacora/getbitacoraInstituciones', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  }
+
 }

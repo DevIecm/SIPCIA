@@ -2,17 +2,48 @@ import { connectToDatabase, sql } from "../../Config/Configuracion.js";
 import Midleware from "../../Config/Midleware.js";
 import express from 'express';
 import dotenv from 'dotenv';
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
+const storageFotos = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../uploads/fotos");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const fileFilterFotos = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|gif/;
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (allowedTypes.test(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Solo se permiten imágenes PNG, JPG o GIF"));
+  }
+};
+
+const uploadFoto = multer({ storage: storageFotos, fileFilter: fileFilterFotos });
+
+
 // registro de Instituciones
-router.post("/altaInstituciones", Midleware.verifyToken, async(req, res)=>{
+router.post("/altaInstituciones", Midleware.verifyToken, uploadFoto.single("fotografia"), async(req, res)=>{
 
     const {
         distrito_electoral,
-        fotografia,
         demarcacion_territorial,
         nombre_completo,
         pueblo_originario,
@@ -54,6 +85,14 @@ router.post("/altaInstituciones", Midleware.verifyToken, async(req, res)=>{
     const fechaLocal = new Date(original.getTime() - offsetInMs);
     const ahora = new Date();
     const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
+
+
+  let fotografia = null;
+
+  if (req.file) {
+    fotografia = `/uploads/fotos/${req.file.filename}`;
+  }
+
 
     let transaction;
 
@@ -160,13 +199,10 @@ router.post("/altaInstituciones", Midleware.verifyToken, async(req, res)=>{
 });
 
 //update instituciones
-
-router.patch("/updateInstituciones", Midleware.verifyToken, async(req,res)=>{
-
-    const {
+router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("fotografia"), async (req, res) => {
+    let {
         id_registro,
         distrito_electoral,
-        fotografia,
         demarcacion_territorial,
         nombre_completo,
         pueblo_originario,
@@ -188,66 +224,43 @@ router.patch("/updateInstituciones", Midleware.verifyToken, async(req,res)=>{
         cv_enlace
     } = req.body;
 
-    if(demarcacion_territorial == null || demarcacion_territorial === '' ||
-        nombre_completo ==  null || nombre_completo === '' ||
+    if (demarcacion_territorial == null || demarcacion_territorial === '' ||
+        nombre_completo == null || nombre_completo === '' ||
         pueblo_originario == null || pueblo_originario === '' ||
-        barrio == null || barrio === '' ||
         barrio == null || barrio === '' ||
         unidad_territorial == null || unidad_territorial === '' ||
         comunidad == null || comunidad === '' ||
-        usuario_registro ==  null || usuario_registro === '' ||
+        usuario_registro == null || usuario_registro === '' ||
         modulo_registro == null || modulo_registro === '' ||
         estado_registro == null || estado_registro === ''
-    ){
-        return res.status(400).json({ message: "Datos requeridos"})
+    ) {
+        return res.status(400).json({ message: "Datos requeridos" })
     }
 
-    try{
-
+    try {
         const pool = await connectToDatabase();
         const transaction = pool.transaction();
-
         await transaction.begin();
 
-        // Obtener datos actuales
         const resultAnterior = await transaction.request()
             .input('id', sql.Int, id_registro)
             .query('SELECT * FROM registro_instituciones WHERE id = @id');
 
         const registroAnterior = resultAnterior.recordset[0];
-
         if (!registroAnterior) {
             return res.status(404).json({ message: "Registro no encontrado" });
         }
 
-        //comparar
-        const camposEditables = [
-            "distrito_electoral",
-            "fotografia",
-            "demarcacion_territorial",
-            "nombre_completo",
-            "pueblo_originario",
-            "pueblo",
-            "barrio",
-            "unidad_territorial",
-            "otro",
-            "comunidad",
-            "interes_profesional",
-            "nombre_institucion",
-            "cargo",
-            "domicilio",
-            "telefono",
-            "correo_electronico",
-            "usuario_registro",
-            "modulo_registro",
-            "estado_registro",
-            "cv_documento",
-            "cv_enlace"
-        ];
+        let fotografiaFinal;
+        if (req.file) {
+            fotografiaFinal = "/uploads/fotos/" + req.file.filename;
+        } else {
+            fotografiaFinal = registroAnterior.fotografia;
+        }
 
         const nuevosDatos = {
             distrito_electoral,
-            fotografia,
+            fotografia: fotografiaFinal,
             demarcacion_territorial,
             nombre_completo,
             pueblo_originario,
@@ -269,42 +282,26 @@ router.patch("/updateInstituciones", Midleware.verifyToken, async(req,res)=>{
             cv_enlace
         };
 
+        const camposEditables = Object.keys(nuevosDatos);
 
-         const cambios = {};
+        const cambios = {};
         for (const campo of camposEditables) {
             const valorAnterior = registroAnterior[campo];
             const valorNuevo = nuevosDatos[campo];
-
             if (valorAnterior != valorNuevo) {
                 cambios[campo] = valorNuevo;
             }
         }
 
-                 if (Object.keys(cambios).length > 0) {
-            await transaction.request()
-                .input('id_registro', sql.Int, id_registro)
-                .input('distrito_electoral', sql.Int, distrito_electoral)
-                .input('fotografia', sql.VarChar, fotografia)
-                .input('demarcacion_territorial', sql.Int, demarcacion_territorial)
-                .input('nombre_completo', sql.VarChar, nombre_completo)
-                .input('pueblo_originario',sql.Int, pueblo_originario)
-                .input('pueblo',sql.Int, pueblo)
-                .input('barrio',sql.Int, barrio)
-                .input('unidad_territorial', sql.Int, unidad_territorial)
-                .input('otro', sql.VarChar, otro)
-                .input('comunidad',sql.Int, comunidad)
-                .input('interes_profesional',sql.VarChar, interes_profesional)
-                .input('nombre_institucion', sql.VarChar, nombre_institucion)
-                .input('cargo', sql.VarChar, cargo)
-                .input('domicilio', sql.VarChar, domicilio)
-                .input('telefono', sql.VarChar, telefono)
-                .input('correo_electronico', sql.VarChar, correo_electronico)
-                .input('usuario_registro', sql.Int, usuario_registro)
-                .input('modulo_registro', sql.Int, modulo_registro)
-                .input('estado_registro', sql.Int, estado_registro)  
-                .input('cv_documento', sql.Int, cv_documento)
-                .input('cv_enlace', sql.VarChar, cv_enlace)                
-                .query(`UPDATE registro_instituciones SET
+        if (Object.keys(cambios).length > 0) {
+            const requestUpdate = transaction.request();
+            requestUpdate.input('id_registro', sql.Int, id_registro);
+            for (const [campo, valor] of Object.entries(nuevosDatos)) {
+                requestUpdate.input(campo, sql.VarChar, valor); // ajustar tipo según tu BD
+            }
+
+            await requestUpdate.query(`
+                UPDATE registro_instituciones SET
                     distrito_electoral = @distrito_electoral,
                     fotografia = @fotografia,
                     demarcacion_territorial = @demarcacion_territorial,
@@ -314,8 +311,8 @@ router.patch("/updateInstituciones", Midleware.verifyToken, async(req,res)=>{
                     barrio = @barrio,
                     unidad_territorial = @unidad_territorial,
                     otro = @otro,
-                    comunidad =@comunidad,
-                    interes_profesional =@interes_profesional,
+                    comunidad = @comunidad,
+                    interes_profesional = @interes_profesional,
                     nombre_institucion = @nombre_institucion,
                     cargo = @cargo,
                     domicilio = @domicilio,
@@ -326,16 +323,14 @@ router.patch("/updateInstituciones", Midleware.verifyToken, async(req,res)=>{
                     estado_registro = @estado_registro,
                     cv_documento = @cv_documento,
                     cv_enlace = @cv_enlace
-                    WHERE id = @id_registro;
-                `);
+                WHERE id = @id_registro;
+            `);
         }
 
-    // Fecha y hora
         const original = new Date();
         const offsetInMs = original.getTimezoneOffset() * 60000;
         const fechaLocal = new Date(original.getTime() - offsetInMs);
-        const ahora = new Date();
-        const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
+        const horaActual = new Date().toTimeString().split(' ')[0];
 
         const camposModificados = JSON.stringify(cambios);
 
@@ -351,20 +346,16 @@ router.patch("/updateInstituciones", Midleware.verifyToken, async(req,res)=>{
                 VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
             `);
 
-        // Confirmar la transacción
         await transaction.commit();
 
         return res.status(200).json({
-            message: "Registro actualiazado correctamente",
+            message: "Registro actualizado correctamente",
             code: 200,
         });
 
-    }catch (err) {
-        console.error("Error en Registro:", err);
-        if (transaction) {
-            await transaction.rollback();
-        }
-        return res.status(500).json({ message: "Error al actualizar el registro", error: err.message });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error al guardar en BD" });
     }
 });
 
@@ -423,62 +414,69 @@ router.get("/getInstituciones", Midleware.verifyToken, async(req, res)=>{
     }
 })
 //consulta registros de tabla por distrito
-router.get("/getRegistroInstituciones", Midleware.verifyToken, async(req, res)=>{
-
+router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) => {
     const { id } = req.query;
 
-    if(!id){
-        return res.status(400).json({ message: "Datos requeridos"})
+    if (!id) {
+        return res.status(400).json({ message: "Se requiere el parámetro 'id'" });
     }
 
-    try{
-
+    try {
         const pool = await connectToDatabase();
         const result = await pool.request()
-        .input('id', sql.Int, id)
-        .query(`select 
-                ri.id as id_registro,
-                ri.demarcacion_territorial id_demarcacion,
-                dt.demarcacion_territorial  as demarcacion_territoral,
-                ri.nombre_completo,
-                ri.pueblo_originario as id_pueblo_originario,
-                cpo.pueblo_originario,
-                ri.pueblo as id_pueblo,
-                cp.pueblo,
-                ri.barrio as id_barrio,
-                cb.barrio,
-                ri.unidad_territorial as id_unidad_territorial,
-                ut.ut,
-                ri.otro,
-                ri.comunidad as id_comunidad,
-                c.comunidad,
-                ri.interes_profesional,
-                ri.domicilio,
-                ri.telefono,
-                ri.nombre_institucion,
-                ri.correo_electronico,
-                ri.cargo 
-                FROM  registro_instituciones ri
-                join demarcacion_territorial dt on ri.demarcacion_territorial = dt.id
-                join cat_pueblos_originarios cpo on ri.pueblo_originario = cpo.id 
-                join cat_pueblos cp on ri.pueblo = cp.id
-                join cat_barrios cb on ri.barrio = cb.id 
-                join unidad_territorial ut on ri.unidad_territorial = ut.id 
-                join comunidad c on ri.comunidad = c.id
-                where ri.id = @id;`);
+            .input('id', sql.Int, id)
+            .query(`
+                SELECT 
+                    ri.id AS id_registro,
+                    ri.fotografia,
+                    ri.demarcacion_territorial AS id_demarcacion,
+                    dt.demarcacion_territorial AS demarcacion_territorial,
+                    ri.nombre_completo,
+                    ri.pueblo_originario AS id_pueblo_originario,
+                    cpo.pueblo_originario,
+                    ri.pueblo AS id_pueblo,
+                    cp.pueblo,
+                    ri.barrio AS id_barrio,
+                    cb.barrio,
+                    ri.unidad_territorial AS id_unidad_territorial,
+                    ut.ut,
+                    ri.otro,
+                    ri.comunidad AS id_comunidad,
+                    c.comunidad,
+                    ri.interes_profesional,
+                    ri.domicilio,
+                    ri.telefono,
+                    ri.nombre_institucion,
+                    ri.correo_electronico,
+                    ri.cargo 
+                FROM registro_instituciones ri
+                JOIN demarcacion_territorial dt ON ri.demarcacion_territorial = dt.id
+                JOIN cat_pueblos_originarios cpo ON ri.pueblo_originario = cpo.id 
+                JOIN cat_pueblos cp ON ri.pueblo = cp.id
+                JOIN cat_barrios cb ON ri.barrio = cb.id 
+                JOIN unidad_territorial ut ON ri.unidad_territorial = ut.id 
+                JOIN comunidad c ON ri.comunidad = c.id
+                WHERE ri.id = @id;
+            `);
 
-        if (result.recordset.length > 0) {
-            return res.status(200).json({
-                getRegistroInstituciones: result.recordset
-            });
-        } else {
+        if (result.recordset.length === 0) {
             return res.status(404).json({ message: "No se encontraron datos" });
         }
+
+        const registro = result.recordset[0];
+
+        registro.fotografia_url = registro.fotografia
+            ? `${`http://145.0.46.49:4000/Services`}${registro.fotografia}`
+            : null;
+
+        return res.status(200).json({
+            getRegistroInstituciones: [registro],
+        });
 
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Error de servidor", error: error.message });
     }
-})
+});
 
 export default router;

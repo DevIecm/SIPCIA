@@ -39,6 +39,7 @@ export class FormularioComunitaria {
   id_usuario: number = 0;
   cabecera: number = 0;
   tipo_usuario: number = 0;
+  selectedFile: File | null = null;
 
   constructor(
     private catalogos: Catalogos,
@@ -47,6 +48,17 @@ export class FormularioComunitaria {
     private datePipe: DatePipe,
     private registerService: Reportes
   ) {}
+
+  onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file && file.name.endsWith(".kml")) {
+    this.selectedFile = file;
+  } else {
+    Swal.fire("Solo se permiten archivos .kml");
+    this.selectedFile = null;
+  }
+}
+
 
   saveForm(){
     try {
@@ -66,25 +78,26 @@ export class FormularioComunitaria {
           }
 
           if (result.isConfirmed) {
+            const formData = new FormData();
 
-            const datosFormularioCompletos = {
-              distrito_electoral: this.area,
-              distrito_cabecera: this.cabecera,
-              demarcacion_territorial: Number(this.formularioRegistro.get('demarcacion_territorial')?.value) || null,
-              denominacion_lugar: this.formularioRegistro.get('denominacion_lugar')?.value || null,
-              domicilio_lugar: this.formularioRegistro.get('domicilio_lugar')?.value || null,
-              foto: 0,
-              enlace_foto: "ruta/documento",
-              ubicacion: 0,
-              enlace_ubicacion: "ruta/ubicacion",
-              observaciones: this.formularioRegistro.get('observaciones')?.value || null,
-              usuario_registro: this.id_usuario,
-              modulo_registro: this.tipo_usuario,
-              estado_registro: 1,
-              tipo_usuario: this.tipo_usuario
-            };
+            if (this.selectedFile) {
+            formData.append("kmlFile", this.selectedFile);
+          }
 
-            this.registerService.insertaRegistro(datosFormularioCompletos, this.tokenSesion).subscribe({
+          formData.append("distrito_electoral", this.area.toString());
+          formData.append("distrito_cabecera", this.cabecera.toString());
+          formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion_territorial')?.value || "");
+          formData.append("denominacion_lugar", this.formularioRegistro.get('denominacion_lugar')?.value || "");
+          formData.append("domicilio_lugar", this.formularioRegistro.get('domicilio_lugar')?.value || "");
+          formData.append("foto", "0");
+          formData.append("enlace_foto", "ruta/documento");
+          formData.append("observaciones", this.formularioRegistro.get('observaciones')?.value || "");
+          formData.append("usuario_registro", this.id_usuario.toString());
+          formData.append("modulo_registro", this.tipo_usuario.toString());
+          formData.append("estado_registro", "1");
+          formData.append("tipo_usuario", this.tipo_usuario.toString());
+          console.log("formData", formData);
+          this.registerService.nuinsertaRegistro(formData, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
@@ -124,32 +137,39 @@ export class FormularioComunitaria {
           cancelButtonText: "Cancelar"
         }).then((result) => {
           if (result.isConfirmed) {
+              const formData = new FormData();
 
             if (!this.formularioRegistro) {
               return;
             }
 
-            const datosFormularioCompletos = {
-              id_registro: this.idRegistro,
-              distrito_electoral: this.area,
-              distrito_cabecera: this.cabecera,
-              demarcacion_territorial: this.formularioRegistro.get('demarcacion_territorial')?.value || null,
-              denominacion_lugar: this.formularioRegistro.get('denominacion_lugar')?.value || null,
-              domicilio_lugar: this.formularioRegistro.get('domicilio_lugar')?.value || null,
-              foto: 0,
-              enlace_foto: "ruta/documento",
-              ubicacion: 0,
-              enlace_ubicacion: "ruta/ubicacion",
-              observaciones: this.formularioRegistro.get('observaciones')?.value || null,
-              usuario_registro: this.id_usuario,
-              modulo_registro: this.tipo_usuario,
-              estado_registro: 1,
-              tipo_usuario: this.tipo_usuario
-            };
+            if (this.selectedFile) {
+            formData.append("kmlFile", this.selectedFile);          
+           }else if(this.infoUpdate.enlace_ubicacion){
+            formData.append("kmlFile", this.infoUpdate.enlace_ubicacion);
+            }
 
-            this.registerService.updateRegistro(datosFormularioCompletos, this.tokenSesion).subscribe({
+            if (this.idRegistro !== undefined) {
+              formData.append("id_registro", this.idRegistro.toString());
+            }
+
+          formData.append("distrito_electoral", this.area.toString());
+          formData.append("distrito_cabecera", this.cabecera.toString());
+          formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion_territorial')?.value || "");
+          formData.append("denominacion_lugar", this.formularioRegistro.get('denominacion_lugar')?.value || "");
+          formData.append("domicilio_lugar", this.formularioRegistro.get('domicilio_lugar')?.value || "");
+          formData.append("foto", "0");
+          formData.append("enlace_foto", "ruta/documento");
+          formData.append("observaciones", this.formularioRegistro.get('observaciones')?.value || "");
+          formData.append("usuario_registro", this.id_usuario.toString());
+          formData.append("modulo_registro", this.tipo_usuario.toString());
+          formData.append("estado_registro", "2");
+          formData.append("tipo_usuario", this.tipo_usuario.toString());
+
+            this.registerService.nuupdateRegistro(formData, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
+                  console.log("formData", formData);
                   Swal.fire({
                     title: "Se han guardado correctamentelos cambios.",
                     icon: "success",
@@ -198,6 +218,7 @@ export class FormularioComunitaria {
       denominacion_lugar: [''],
       domicilio_lugar: [''],
       observaciones: [''],
+      enlace_ubicacion: [''],
       fubicacion: [''],
       flugar: [{ value: '', disabled: true}]
     });
@@ -242,8 +263,7 @@ export class FormularioComunitaria {
               domicilio_lugar: data.getRegistroAfluencia[0].domicilio_lugar,
               foto: 0,
               enlace_foto: "ruta/documento",
-              ubicacion: 0,
-              enlace_ubicacion: "ruta/ubicacion",
+              enlace_ubicacion: data.getRegistroAfluencia[0].enlace_ubicacion,
               observaciones: data.getRegistroAfluencia[0].observaciones,
               usuario_registro: this.id_usuario,
               modulo_registro: this.tipo_usuario,
@@ -252,6 +272,8 @@ export class FormularioComunitaria {
             };
 
             this.formularioRegistro!.patchValue(datosFormularioCompletos);
+
+            console.log("datosFormularioCompletos", datosFormularioCompletos);
           
           } else {
             Swal.fire("No se encontraron registros");

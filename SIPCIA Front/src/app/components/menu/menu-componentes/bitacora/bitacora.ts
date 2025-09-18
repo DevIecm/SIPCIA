@@ -50,6 +50,7 @@ export class Bitacora implements OnInit {
   constructor(
     private router: Router,
     private getBitacoraComunidad: bitacoras,
+    private getbitacoraInstituciones: bitacoras,
     private getBitacoraAfluencia: bitacoras,
     private getbitacoraLugares: bitacoras,
     private service: Auth,
@@ -130,6 +131,28 @@ export class Bitacora implements OnInit {
 
           }
         });
+    } if (this.tipoBitacora === 'catInstituciones') {
+      this.getbitacoraInstituciones.getbitacoraInstituciones(this.idRegistro, this.tokenSesion).subscribe({
+        next: (data) => {
+          if (data.getbitacoraInstituciones.length > 0) {
+            this.dataTable = data.getbitacoraInstituciones;
+          } else {
+            Swal.fire("No se encontraron registros");
+          }
+        },
+        error: (err) => {
+
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+
+          if (err.error.code === 100) {
+            Swal.fire("No se encontraron registros")
+          }
+
+        }
+      });
+
     }
   }
 }

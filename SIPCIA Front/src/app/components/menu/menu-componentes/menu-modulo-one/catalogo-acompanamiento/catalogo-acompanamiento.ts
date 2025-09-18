@@ -56,6 +56,10 @@ export class CatalogoAcompanamiento implements OnInit {
     this.getRegister();
   }
 
+    goToBitacora(id: number, tipo: string) {
+    this.router.navigate(['/bitacora', id, tipo]);
+  }
+  
    getReporte(){
     this.descargarReporteInstitucion.descargarReporteInstitucion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
