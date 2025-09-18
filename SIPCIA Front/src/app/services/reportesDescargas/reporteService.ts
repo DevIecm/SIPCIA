@@ -62,7 +62,7 @@ export class reporteService {
       );
   }
 
-    descargarReporteInstitucion(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteInstitucion(distrito_electoral: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -79,7 +79,7 @@ export class reporteService {
   }
 
 
-   descargarReporteAtencion(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteAtencionAll(distrito_electoral: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -88,6 +88,23 @@ export class reporteService {
     .set('distrito_electoral', distrito_electoral)
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteAtencion', { headers, params, responseType: 'blob' })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  }
+
+  descargarReporteAtencion(distrito_electoral: number, id_registro: any, token: string): Observable<Blob> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+    .set('distrito_electoral', distrito_electoral)
+    .set('id_registro', id_registro);
+
+    return this.http.get(this.apiUrl + 'reportesDes/reporteAtencionById', { headers, params, responseType: 'blob' })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
@@ -111,7 +128,7 @@ export class reporteService {
       );
   }
 
-    descargarReporteAsamblea(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteAsamblea(distrito_electoral: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });

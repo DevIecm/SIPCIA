@@ -30,6 +30,7 @@ export class ReporteConsultas implements OnInit {
 
   dataTable: any = [];
   allDatable: any[] = [];
+  selectedIds: number[] = [];
 
   area_adscripcion: number = 0;
   tipo_usuario: number = 0;
@@ -44,6 +45,7 @@ export class ReporteConsultas implements OnInit {
 
   showModal = false;
   isRegistroC: boolean = false;
+  idSelected: number | undefined;
 
   ngOnInit(): void {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
@@ -56,14 +58,37 @@ export class ReporteConsultas implements OnInit {
     this.getRegister();
   }
 
+  selectRow(id: number, event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+
+    if (checkbox.checked) {
+      if (!this.selectedIds.includes(id)) {
+        this.selectedIds.push(id);
+      }
+    } else {
+      this.selectedIds = this.selectedIds.filter(selectedId => selectedId !== id);
+    }
+  }
+
+
   getReporte(){
-    this.descargarReporteAtencion.descargarReporteAtencion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
-      link.click();
-      window.URL.revokeObjectURL(link.href);
-    });
+    if(this.selectedIds.length === 0) {
+      this.descargarReporteAtencion.descargarReporteAtencionAll(this.area_adscripcion, this.tokenSesion).subscribe((blob: Blob) => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'reporte.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
+    } else{
+      this.descargarReporteAtencion.descargarReporteAtencion(this.area_adscripcion, this.selectedIds,  this.tokenSesion).subscribe((blob: Blob) => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'reporte.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
+    }
   }
 
   constructor(
