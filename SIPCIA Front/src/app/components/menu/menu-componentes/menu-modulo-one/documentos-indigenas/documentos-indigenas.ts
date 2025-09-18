@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
 import { FormularioDocumentos } from "../../formularios-modulos/formulario-documentos/formulario-documentos";
+import { DocumentosServices } from '../../../../../services/documentosService/documentos-services';
 @Component({
   selector: 'app-documentos-indigenas',
   imports: [
@@ -36,6 +37,7 @@ export class DocumentosIndigenas implements OnInit{
   area_adscripcion: number = 0;
   tipo_usuario: number = 0;
   idformIdSelected: number | undefined;
+  idform: number | undefined;
 
   dataTable: any = [];
   allDatable: any[] = [];
@@ -55,7 +57,7 @@ export class DocumentosIndigenas implements OnInit{
 
   constructor(
     private router: Router,
-    private reporteService: Reportes,
+    private reporteService: DocumentosServices,
     private service: Auth
   ) {}
   
@@ -67,10 +69,10 @@ export class DocumentosIndigenas implements OnInit{
     this.router.navigate(['/menu']);
   };
 
-  openModal(id: number | undefined) {
-    console.log("najnas")
+  openModal(id: number | undefined, idRegistro: number | undefined) {
     this.showModal = true;
     this.idformIdSelected = id;
+    this.idform = idRegistro;
   }
 
   closeModal() {
@@ -79,11 +81,11 @@ export class DocumentosIndigenas implements OnInit{
   }
 
   getRegister() {
-      this.reporteService.getRegisterDataTable(this.area_adscripcion, this.tokenSesion).subscribe({
+      this.reporteService.getRegisterfichaTecnicaTabla(this.area_adscripcion, this.tokenSesion).subscribe({
         next: (data) => {
-          if(data.getAfluencia.length > 0) {
-            this.dataTable = data.getAfluencia;
-            this.allDatable = data.getAfluencia;
+          if(data.getFichasInd.length > 0) {
+            this.dataTable = data.getFichasInd;
+            this.allDatable = data.getFichasInd;
           } else {
             Swal.fire("No se encontraron registros");
           }        

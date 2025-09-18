@@ -121,8 +121,6 @@ export class FormularioRegistroa {
               cv_enlace: "ruta/documento"
             }; 
 
-            console.log(datosFormularioCompletos);
-
             this.registerService.insertaRegistroAcompa(datosFormularioCompletos, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
@@ -409,7 +407,6 @@ export class FormularioRegistroa {
       this.registerService.getDataByIdAcompa(id, this.tokenSesion).subscribe({
         
         next: (data) => {
-          console.log(data)
 
           this.infoUpdate = data.getRegistroInstituciones[0];
           

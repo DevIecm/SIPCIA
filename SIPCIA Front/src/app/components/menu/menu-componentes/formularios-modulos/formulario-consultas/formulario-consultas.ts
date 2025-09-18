@@ -102,7 +102,6 @@ export class FormularioConsultas {
               modulo_registro: this.tipo_usuario,
               estado_registro: 1,
             };
-            console.log(datosFormularioCompletos)
 
             this.registerService.insertaRegistroConsultas(datosFormularioCompletos, this.tokenSesion).subscribe({
               next: (data) => {

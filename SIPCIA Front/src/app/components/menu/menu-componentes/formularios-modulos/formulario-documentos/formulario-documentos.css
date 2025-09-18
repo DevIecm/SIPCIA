@@ -103,12 +103,23 @@ textarea {
     font-weight: bold;
 }
 
-.btn-check {
+.btn-toggle {
     border: 1px solid black !important;
     background-color: #ffff;
     color: black;
+    border-radius: 0px;
+    width: 100%;
 }
 
-.btn-check:checked  + .btn-toggle{
+.btn-check:checked + .btn-toggle{
     background-color: #09883e;
+    color: white;
+}
+
+.button-add {
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 18px;
+    color: black;
+    width: 32px;
 }

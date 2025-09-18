@@ -39,7 +39,7 @@
                                             <label class="form-label me-2 mb-0">Fecha:</label>
                                             <input 
                                                 type="text"
-                                                formControlName="denominacion_lugar"
+                                                formControlName="fecha"
                                                 class="form-control input-fecha">
                                         </div>
                                     </div>
@@ -50,7 +50,7 @@
                                             <label style="text-align: end;" class="form-label me-2 mb-0">Dirección Distrital <br> Cabecera de Demarcación:</label>
                                             <input 
                                                 type="text"
-                                                formControlName="denominacion_lugar"
+                                                formControlName="ddemarcacion"
                                                 class="form-control input-d">
                                         </div>
                                     </div>
@@ -84,25 +84,25 @@
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="fechar"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="horarior"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="nasambler"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-4 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="lugarr"
                                                     class="form-control input-d-card">
                                             </div>
                                         </div>
@@ -113,62 +113,117 @@
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="fechaa"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="horarioa"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="nasambleaa"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-4 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="lugara"
                                                     class="form-control input-d-card">
                                             </div>
                                         </div>
                                         <div class="row mt-4">
                                             <div class="col-2">
-                                                <label class="form-label me-2 mb-0">Asamblea Comunitaria <br> Informativa:</label>
+                                                <label class="form-label me-2 mb-0">Asamblea Comunitaria <br> Consultiva:</label>
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="fechaaa"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="horarioaa"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="nasambleaaa"
                                                     class="form-control input-d-card">
                                             </div>
                                             <div class="col-4 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="denominacion_lugar"
+                                                    formControlName="lugaraa"
                                                     class="form-control input-d-card">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="container text-center mt-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-4">
+                                                <label class="form-label text-end">
+                                                    Periodo en que las instancias <br> 
+                                                    representativas formularán <br> 
+                                                    observaciones y/o propuestas:
+                                                </label>
+                                            </div>
+
+                                            <div class="col-2">
+                                                <div class="container text-center">
+                                                    <div class="row row-cols-1">
+                                                        <div class="col">
+                                                            <label class="form-label">del</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <input
+                                                            style="border-radius: 25px;"
+                                                            type="text"
+                                                            formControlName="defecha"
+                                                            class="form-control input-d-card">
+                                                        </div>
+                                                        <div class="col">
+                                                            <label class="form-label">al</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <input 
+                                                            style="border-radius: 25px;"
+                                                            type="text"
+                                                            formControlName="afecha"
+                                                            class="form-control input-d-card">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-4">
+                                            <label class="form-label text-end">
+                                                Número de lugares públicos de mayor afluencia de <br> 
+                                                la población de los pueblos y barrios y comunidades <br> 
+                                                indígenas residentes en la Demarcación:
+                                            </label>
+                                            </div>
+
+                                            <div class="col-2">
+                                            <input
+                                                style="height: 100%; border-radius: 25px;"
+                                                type="text"
+                                                formControlName="nlugares"
+                                                class="form-control input-d-card">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="containe text-center mt-4">
+                            <div class="container text-center mt-4">
                                 <div class="row">
                                     <div class="col-4">
                                         <div style="border: 1px black solid;">
@@ -183,7 +238,44 @@
                                 </div>
                             </div>
 
-                            <div class="containe text-center mt-4 mb-4">
+                            @if(formId === 2) {
+                                <div class="container text-center mt-4 mb-4">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div>
+                                                <label class="form-label">Plan de trabajo para la instrumentación <br> de la consulta Afromexicana 2025</label>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-8">
+                                            <div>
+                                                <input 
+                                                    type="text"
+                                                    formControlName="pafromexicana"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div>
+                                                <label class="form-label">Resumen del Acta de la(s) reunion(es) <br> con las Instancias Representativas</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-8">
+                                            <div>
+                                                <input 
+                                                    type="text"
+                                                    formControlName="rrepresentativas"
+                                                    class="form-control input-d-card">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @if(formId === 1) {
+                            <div class="container text-center mt-4 mb-4">
                                 <div class="row">
                                     <div class="col-4">
                                         <div>
@@ -194,27 +286,75 @@
                                         <div class="container text-center">
                                             <div class="row">
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-a" autocomplete="off">
-                                                    <label class="btn btn-primary btn-toggle" for="btn-check-a">Náhuatl</label>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-a"
+                                                        [value]="'1'" 
+                                                        data-group="lengua_tecnica_indigena"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'lengua_tecnica_indigena')"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-a">Náhuatl</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-b" autocomplete="off">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-b" 
+                                                        [value]="'2'" 
+                                                        data-group="lengua_tecnica_indigena"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'lengua_tecnica_indigena')"
+                                                        autocomplete="off">
                                                     <label class="btn btn-toggle" for="btn-check-b">Mazteco</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-c" autocomplete="off">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-c" 
+                                                        [value]="'3'" 
+                                                        data-group="lengua_tecnica_indigena"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'lengua_tecnica_indigena')"
+                                                        autocomplete="off">
                                                     <label class="btn btn-toggle" for="btn-check-c">Mixteco</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-d" autocomplete="off">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-d"
+                                                        [value]="'4'" 
+                                                        data-group="lengua_tecnica_indigena"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'lengua_tecnica_indigena')" 
+                                                        autocomplete="off">
                                                     <label class="btn btn-toggle" for="btn-check-d">Otomí</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-e" autocomplete="off">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-e" 
+                                                        [value]="'5'" 
+                                                        data-group="lengua_tecnica_indigena"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'lengua_tecnica_indigena')"
+                                                        autocomplete="off">
                                                     <label class="btn btn-toggle" for="btn-check-e">Mazahua</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-f" autocomplete="off">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-f" 
+                                                        [value]="'6'" 
+                                                        data-group="lengua_tecnica_indigena"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'lengua_tecnica_indigena')"
+                                                        autocomplete="off">
                                                     <label class="btn btn-toggle" for="btn-check-f">Zapoteco</label>
                                                 </div>
                                             </div>
@@ -222,11 +362,13 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div>
-                                            <label style="text-align: end;" class="form-label">Plan de trabajo para la instrumentación <br> de la consulta indígena 2025</label>
-                                        </div>
+                                <div class="row justify-content-center mb-4">
+                                    <div class="col-auto d-flex align-items-center mt-2">
+                                        <label class="form-label me-2 mb-0">Otro</label>
+                                        <input 
+                                        type="text"
+                                        formControlName="otroPlanTrabajo"
+                                        class="form-control input-d-card">
                                     </div>
                                 </div>
 
@@ -240,43 +382,184 @@
                                         <div class="container text-center">
                                             <div class="row">
                                                 <div class="col">
-                                                    <input type="checkbox input-check" class="btn-check" id="btn-check-a" autocomplete="off">
-                                                    <label class="btn btn-toggle" for="btn-check-a">Náhuatl</label>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-g" 
+                                                        [value]="'1'" 
+                                                        data-group="traduccion_resumen_acta"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'traduccion_resumen_acta')"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-g">Náhuatl</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-b" autocomplete="off">
-                                                    <label class="btn btn-toggle" for="btn-check-b">Mazteco</label>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-h" 
+                                                        [value]="'2'" 
+                                                        data-group="traduccion_resumen_acta"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'traduccion_resumen_acta')"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-h">Mazteco</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-c" autocomplete="off">
-                                                    <label class="btn btn-toggle" for="btn-check-c">Mixteco</label>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-i" 
+                                                        [value]="'3'" 
+                                                        data-group="traduccion_resumen_acta"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'traduccion_resumen_acta')"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-i">Mixteco</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-d" autocomplete="off">
-                                                    <label class="btn btn-toggle" for="btn-check-d">Otomí</label>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-j" 
+                                                        [value]="'4'" 
+                                                        data-group="traduccion_resumen_acta"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'traduccion_resumen_acta')"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-j">Otomí</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-e" autocomplete="off">
-                                                    <label class="btn btn-toggle" for="btn-check-e">Mazahua</label>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-k" 
+                                                        [value]="'5'" 
+                                                        data-group="traduccion_resumen_acta"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'traduccion_resumen_acta')"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-k">Mazahua</label>
                                                 </div>
                                                 <div class="col">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-f" autocomplete="off">
-                                                    <label class="btn btn-toggle" for="btn-check-f">Zapoteco</label>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="btn-check" 
+                                                        id="btn-check-l" 
+                                                        [value]="'6'" 
+                                                        data-group="traduccion_resumen_acta"
+                                                        [disabled]="checksDisabled"
+                                                        (change)="onCheckboxChange($event, 'traduccion_resumen_acta')"
+                                                        autocomplete="off">
+                                                    <label class="btn btn-toggle" for="btn-check-l">Zapoteco</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div>
-                                            <label style="text-align: end;" class="form-label">Plan de trabajo para la instrumentación <br> de la consulta indígena 2025</label>
+                                <div class="row justify-content-center mb-4">
+                                    <div class="col-auto d-flex align-items-center mt-2">
+                                        <label class="form-label me-2 mb-0">Otro</label>
+                                        <input 
+                                            type="text"
+                                            formControlName="otroResumenActa"
+                                            class="form-control input-d-card">
+                                    </div>
+                                </div>
+                            </div>
+                            }
+
+                            <div class="container text-start">
+                                <div class="col-12">
+                                    <label class="form-label">Persona responsable de proporcionar orientación y asesoría en las sedes de las Direcciones distritales</label>
+                                </div>
+                            </div>
+
+                            <div class="card card-size text-center fw-bold card-wrapper" style="border-radius: 0px; font-size: 14px;">
+                                <div class="card-body">
+                                    <div formArrayName="direccionesDistritales" class="container text-center">
+                                        <div  *ngFor="let control of direccionesDistritales.controls; let i = index" class="row align-items-center mb-2">
+                                            <div class="col-1">
+                                                <div class="row row-cols-1">
+                                                    <div class="col">
+                                                        <button 
+                                                            *ngIf="i === 0"
+                                                            [disabled]="checksDisabled"
+                                                            (click)="addInput()" 
+                                                            type="button" 
+                                                            class="button-add btn btn-sm btn-success add-btn">
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                    <div class="col">
+                                                        <button 
+                                                            *ngIf="i > 0"
+                                                            [disabled]="checksDisabled"
+                                                            (click)="removeInput(i)"
+                                                            type="button" 
+                                                            class="button-add btn btn-sm btn-danger remove-btn">
+                                                            -
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <label class="form-label text-align-end">Dirección Distrital <br> Cabecera de demarcación:</label>
+                                            </div>
+                                            <div class="col-7">
+                                                <input 
+                                                    style="border-radius: 25px;"
+                                                    type="text"
+                                                    class="form-control input-d-card"
+                                                    [disabled]="checksDisabled"
+                                                    [formControlName]="i"> 
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div formArrayName="direccionesDistritale" class="container text-center">
+                                        <div  *ngFor="let control of direccionesDistritale.controls; let i = index" class="row align-items-center mb-2">
+                                            <div class="col-1">
+                                                <div class="row row-cols-1">
+                                                    <div class="col">
+                                                        <button 
+                                                            *ngIf="i === 0"
+                                                            (click)="addInputD()" 
+                                                            [disabled]="checksDisabled"
+                                                            type="button" 
+                                                            class="button-add btn btn-sm btn-success add-btn">
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                    <div class="col">
+                                                        <button 
+                                                            *ngIf="i > 0"
+                                                            (click)="removeInputD(i)"
+                                                            [disabled]="checksDisabled"
+                                                            type="button" 
+                                                            class="button-add btn btn-sm btn-danger remove-btn">
+                                                            -
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <label class="form-label text-align-end">Dirección Distrital:</label>
+                                            </div>
+                                            <div class="col-7">
+                                                <input 
+                                                    style="border-radius: 25px;"
+                                                    type="text"
+                                                    class="form-control input-d-card"
+                                                    [disabled]="checksDisabled"
+                                                    [formControlName]="i"> 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="container text-center">
                                 <div class="row">
                                     <div class="col-7 d-flex align-items-center justify-content-center">
@@ -290,8 +573,9 @@
                                                     id="radioSi"
                                                     style="border: 1px solid black; width: 19px; height: 19px;" 
                                                     value="1" 
-                                                    formControlName="anterioridad" 
-                                                    class="form-check-input" 
+                                                    class="form-check-input"
+                                                    formControlName="cammbiosOrdenDia"
+                                                    [(ngModel)]="cammbiosOrdenDia"
                                                     type="radio">
                                                 <label class="form-check-label ms-1" for="radioSi">Sí</label>
                                             </div>
@@ -300,7 +584,8 @@
                                                     id="radioNo"
                                                     style="border: 1px solid black; width: 19px; height: 19px;" 
                                                     value="0" 
-                                                    formControlName="anterioridad" 
+                                                    formControlName="cammbiosOrdenDia"
+                                                    [(ngModel)]="cammbiosOrdenDia"
                                                     class="form-check-input" 
                                                     type="radio">
                                                 <label class="form-check-label ms-1" for="radioNo">No</label>
@@ -311,7 +596,7 @@
                                     <div class="col-5">
                                         <div class="mb-3">
                                             <label for="exampleFormControlTextarea1" class="form-label">¿Cuáles?</label>
-                                            <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1"></textarea>
+                                            <textarea formControlName="cuales" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -326,16 +611,18 @@
                                 </div>
                             </div>
 
-                            <div class="container text-center" style="margin-top: 15px;">
-                                <div class="row">
-                                <div class="col">
-                                    <button type="submit" class="btn button-register">Guardar</button>
+                            @if(idRegistroC === false){
+                                <div class="container text-center" style="margin-top: 15px;">
+                                    <div class="row">
+                                    <div class="col">
+                                        <button type="submit" class="btn button-register">Guardar</button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+                                    </div>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
-                                </div>
-                                </div>
-                            </div>
+                            }
                         </form>
                     </div>
                 </div>

@@ -185,7 +185,7 @@
                   </div>
                   <div class="col-3">
                       <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning text-white" style="width: 32px; height: 32px;">
-                        <i class="bi bi-plus-lg" (click)="openModal(1)"></i>
+                        <i class="bi bi-plus-lg" (click)="openModal(1, undefined)"></i>
                       </div>
                   </div>
                 </div>
@@ -205,10 +205,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- <tr *ngFor="let item of dataTable; let i = index" class="dual-row"> -->
-                  <tr  class="dual-row">
-                    <td>1</td>
-                    <td>15/05/2025</td>
+                  <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
+                    <td (click)="openModal(1, item.id) " style="cursor: pointer;">{{ item.nombre_ficha}}</td>
+                    <td>{{ item.fecha_registro | date: 'dd/MM/yyyy'}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -272,6 +271,7 @@
 @if(showModal) {
   <app-formulario-documentos
     [formId]="idformIdSelected"
+    [idSelected]="idform"
     [isOpen]="showModal"
     (close)="closeModal()"
   >
