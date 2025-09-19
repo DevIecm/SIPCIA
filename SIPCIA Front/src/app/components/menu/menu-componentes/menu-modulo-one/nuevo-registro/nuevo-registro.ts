@@ -140,7 +140,9 @@ export class NuevoRegistro implements OnInit{
         this.formularioRegistro.patchValue({
           pueblor: '',
           comunidadr: '',
+          comunidad: '',
           organizacion: '',
+          prelevante: '',
           otror: ''
         });
       };
@@ -156,7 +158,9 @@ export class NuevoRegistro implements OnInit{
           pueblo: '',
           barrio: '',
           uterritorial: '',
-          otro: ''
+          comunidad: '',
+          otro: '',
+          prelevante: ''
         });
       };
 
@@ -460,7 +464,52 @@ export class NuevoRegistro implements OnInit{
   
   resetData() {
     this.router.navigate(['nregistro']);
-    this.formularioRegistro?.reset();
+    // this.formularioRegistro?.reset();
+
+    if (this.formularioRegistro) {
+      this.formularioRegistro.patchValue({
+        nombre_completo: '',
+        seccion_electoral: '',
+        demarcacion: '',
+        scomunidad: '',
+        ncomunidad: '',
+
+        ooriginario: '',
+        pueblo: '',
+        barrio: '',
+        uterritorial: '',
+        comunidad: '',
+        otro: '',
+
+        pueblor: '',
+        comunidadr: '',
+        organizacion: '',
+        prelevante: '',
+        otror: '',
+
+        ninstancia: '',
+        cinstancia: '',
+        domicilio: '',
+        tfijo: '',
+        tcelular: '',
+        docs: '',
+        coficial: '',
+        cpersonal: '',
+      });
+
+      this.formularioRegistro.get('pueblor')?.enable();
+      this.formularioRegistro.get('comunidadr')?.enable();
+      this.formularioRegistro.get('organizacion')?.enable();
+      this.formularioRegistro.get('otror')?.enable();
+
+      this.formularioRegistro.get('ooriginario')?.enable();
+      this.formularioRegistro.get('pueblo')?.enable();
+      this.formularioRegistro.get('barrio')?.enable();
+      this.formularioRegistro.get('uterritorial')?.enable();
+      this.formularioRegistro.get('otro')?.enable();
+    }
+    
+
     this.liberaForm = false;
   };
 }
