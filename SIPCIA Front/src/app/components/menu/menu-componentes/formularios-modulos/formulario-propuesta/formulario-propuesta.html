@@ -72,6 +72,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">*Denominación del lugar o espacio</label>
                                             <input 
+                                                maxlength="200"
                                                 type="text"
                                                 formControlName="lugar_espacio"
                                                 class="form-control txt-input">
@@ -82,7 +83,8 @@
                                     <div class="col-12">
                                         <div class="mb-3">
                                             <label class="form-label">*Domiclio</label>
-                                            <input 
+                                            <input
+                                                maxlength="200"
                                                 type="text"
                                                 formControlName="domicilio"
                                                 class="form-control txt-input"
@@ -127,6 +129,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">*Institución propietaria, encargada o responsable del lugar o espacio</label>
                                             <input 
+                                                maxlength="200"
                                                 type="text"
                                                 formControlName="intitucion_propietaria"
                                                 class="form-control txt-input"
@@ -299,7 +302,9 @@
                                     <div class="col-12">
                                         <div class="mb-3">
                                             <label for="exampleFormControlTextarea1" class="form-label">Observaciones</label>
-                                            <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                            <textarea 
+                                                maxlength="200"
+                                                formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
                                         </div>
                                     </div>
                                 </div>

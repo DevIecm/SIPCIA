@@ -202,6 +202,7 @@ export class FormularioComunitaria {
   }
 
   resetData() {
+    this.onClose();
     this.formularioRegistro?.reset();
   };
 

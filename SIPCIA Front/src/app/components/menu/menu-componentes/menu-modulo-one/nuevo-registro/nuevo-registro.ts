@@ -96,10 +96,10 @@ export class NuevoRegistro implements OnInit{
       ninstancia: ['', Validators.required],
       cinstancia: ['', Validators.required],
       domicilio: ['', Validators.required],
-      tfijo: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      tfijo: ['', [Validators.pattern('^[0-9]+$')]],
       tcelular: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       docs: [{ value: '', disabled: true }],
-      coficial: ['', [Validators.required, Validators.email]],
+      coficial: ['', [Validators.email]],
       cpersonal: ['', [Validators.required, Validators.email]],
     });
 
@@ -501,7 +501,6 @@ export class NuevoRegistro implements OnInit{
       this.formularioRegistro.get('comunidadr')?.enable();
       this.formularioRegistro.get('organizacion')?.enable();
       this.formularioRegistro.get('otror')?.enable();
-
       this.formularioRegistro.get('ooriginario')?.enable();
       this.formularioRegistro.get('pueblo')?.enable();
       this.formularioRegistro.get('barrio')?.enable();
@@ -509,7 +508,6 @@ export class NuevoRegistro implements OnInit{
       this.formularioRegistro.get('otro')?.enable();
     }
     
-
     this.liberaForm = false;
   };
 }

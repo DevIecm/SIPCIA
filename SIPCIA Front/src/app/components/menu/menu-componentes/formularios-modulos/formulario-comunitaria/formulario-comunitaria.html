@@ -62,6 +62,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">*Denominación del Lugar</label>
                                             <input 
+                                                maxlength="200"
                                                 type="text"
                                                 formControlName="denominacion_lugar"
                                                 class="form-control">
@@ -73,6 +74,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">*Domiclio del Lugar</label>
                                             <input 
+                                                maxlength="200"
                                                 type="text"
                                                 formControlName="domicilio_lugar"
                                                 class="form-control"
@@ -133,7 +135,13 @@
                                                 <div class="cols">
                                                     <div class="mb-3">
                                                         <label for="exampleFormControlTextarea1" class="form-label">Observaciones</label>
-                                                        <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                                        <textarea
+                                                            maxlength="500" 
+                                                            formControlName="observaciones" 
+                                                            style="resize: none;" 
+                                                            rows="3" 
+                                                            class="form-control" 
+                                                            id="exampleFormControlTextarea1" ></textarea>
                                                     </div>
                                                 </div>
                                             </div>

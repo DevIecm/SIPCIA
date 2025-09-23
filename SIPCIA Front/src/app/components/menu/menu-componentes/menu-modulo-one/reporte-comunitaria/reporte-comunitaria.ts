@@ -35,18 +35,22 @@ export class ReporteComunitaria implements OnInit {
   tokenSesion: string = '';
   position: string = '';
   searchTerm: string = '';
+  sortColumn: string = '';
+
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   dataTable: any = [];
   allDatable: any[] = [];
 
   area_adscripcion: number = 0;
   tipo_usuario: number = 0;
+  
   idRegistroSeleccionado: number | undefined;
-
-  data: any = data;
   registroSeleccionadoId: number | null = null;
+  
+  data: any = data;
+  
   showModal = false;
-
   isRegistroC: boolean = false;
 
   ngOnInit(): void {
@@ -91,14 +95,53 @@ export class ReporteComunitaria implements OnInit {
 
     this.dataTable = this.allDatable.filter((val) => {
       const direccion_distrital = (val.direccion_distrital ?? '').toString().toLowerCase().trim();
+      const distrito = (val.distrito_cabecera ?? '').toString().toLowerCase().trim();
+      const demarcacion_territorial = (val.demarcacion_territorial ?? '').toString().toLowerCase().trim();
+      const denominacion_lugar = (val.denominacion_lugar ?? '').toLowerCase().trim();
       const domicilio_lugar = (val.domicilio_lugar ?? '').toLowerCase().trim();
+      const observaciones = (val.observaciones ?? '').toLowerCase().trim();
+      const fecha_registro = (val.fecha_registro ?? '').toString().toLowerCase().trim();
 
       return (
         direccion_distrital.includes(rawFilter) ||
-        domicilio_lugar.includes(rawFilter)
+        distrito.includes(rawFilter) ||
+        demarcacion_territorial.includes(rawFilter) ||
+        denominacion_lugar.includes(rawFilter) ||
+        domicilio_lugar.includes(rawFilter) ||
+        observaciones.includes(rawFilter) ||
+        fecha_registro.includes(rawFilter)
       );
     });
   };
+
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.dataTable.sort((a: any, b: any) => {
+      const valueA = a[column] ?? '';
+      const valueB = b[column] ?? '';
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return this.sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      } else {
+        return this.sortDirection === 'asc'
+          ? (valueA > valueB ? 1 : -1)
+          : (valueA < valueB ? 1 : -1);
+      }
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
+    return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+  }
 
   getRegister() {
     this.reporteService.getRegisterDataTable(this.area_adscripcion, this.tokenSesion).subscribe({

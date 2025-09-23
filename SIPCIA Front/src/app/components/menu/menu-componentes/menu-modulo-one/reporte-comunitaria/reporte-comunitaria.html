@@ -67,18 +67,99 @@
       <table class="table">
         <thead>
           <tr class="table-primary">
-            <th scope="col">No.</th>
+            <th 
+              scope="col"
+              (click)="sortData('id_registro')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>No.</span>
+                <i [ngClass]="getSortIcon('id_registro')"></i>
+              </div>
+            </th>
             <th scope="col">Editar</th>
             <th scope="col">Generar Bitácora</th>
-            <th scope="col">Dirección Distrital</th>
-            <th scope="col">Organo Desconcentrado <br> Cabecera de Demarcación</th>
-            <th scope="col">Demarcación Territorial</th>
-            <th scope="col">Denominación del <br> Lugar</th>
-            <th scope="col">Domicilio del Lugar</th>
-            <th scope="col">Ubicación <br> georreferenciada <br> (kml)</th>
-            <th scope="col">Foto del lugar <br> (fachada e interior)</th>
-            <th scope="col">Observaciones</th>
-            <th scope="col">Fecha de <br> Registro</th>
+            <th 
+              scope="col"
+              (click)="sortData('direccion_distrital')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Dirección Distrital</span>
+                <i [ngClass]="getSortIcon('direccion_distrital')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('distrito_cabecera')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Organo Desconcentrado <br> Cabecera de Demarcación</span>
+                <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('distrito_cabecera')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Demarcación Territorial</span>
+                <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('denominacion_lugar')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Denominación del <br> Lugar</span>
+                <i [ngClass]="getSortIcon('denominacion_lugar')"></i>
+              </div>
+
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('domicilio_lugar')"
+              style="cursor: pointer;">
+              <div>
+                <span>Domicilio del Lugar</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('domicilio_lugar')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('enlace_ubicacion')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Ubicación <br> georreferenciada <br> (kml)</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('enlace_ubicacion')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('enlace_foto')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Foto del lugar <br> (fachada e interior)</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('enlace_foto')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('observaciones')"
+              style="cursor: pointer;">
+              <div>
+                <span>Observaciones</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('observaciones')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('fecha_registro')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Fecha de <br> Registro</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('fecha_registro')"></i>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody>

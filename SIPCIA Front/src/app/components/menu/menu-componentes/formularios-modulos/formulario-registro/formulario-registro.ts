@@ -83,7 +83,7 @@ export class FormularioRegistro implements OnInit{
       seccion_electoral: ['', Validators.required],
       demarcacion: [''],
       duninominal: [{ value: '', disabled: true }],
-      scomunidad: [''],
+      scomunidad: [{ value: '', disabled: true }],
       ncomunidad: ['', Validators.required],
 
       ooriginario: [''],

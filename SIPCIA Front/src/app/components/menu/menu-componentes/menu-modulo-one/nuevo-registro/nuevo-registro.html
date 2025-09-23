@@ -56,6 +56,7 @@
             <div class="mb-3">
               <label class="form-label">*Nombre Completo:</label>
               <input
+                maxlength="200"
                 formControlName="nombre_completo"
                 type="text" 
                 class="form-control">
@@ -250,7 +251,8 @@
               <div class="col">
                 <div class="mb-3">
                   <label class="form-label">*Comunidad:</label>
-                  <input 
+                  <input
+                    maxlength="200"
                     formControlName="comunidadr"
                     type="text" 
                     class="form-control"
@@ -275,6 +277,7 @@
                 <div class="mb-3">
                   <label class="form-label">Persona Relevante:</label>
                   <input 
+                    maxlength="200"
                     formControlName="prelevante"
                     type="text" 
                     class="form-control">
@@ -333,6 +336,7 @@
             <div class="mb-3">
               <label class="form-label">*Domicilio:</label>
               <input
+                maxlength="200"
                 formControlName="domicilio"
                 type="text" 
                 class="form-control">
@@ -385,7 +389,8 @@
           <div class="col-6">
             <div class="mb-3">
               <label class="form-label">Correo electrónico oficial:</label>
-              <input 
+              <input
+                maxlength="200"
                 formControlName="coficial"
                 type="email" 
                 class="form-control">
@@ -394,7 +399,8 @@
           <div class="col-6">
             <div class="mb-3">
               <label class="form-label">*Correo electrónico no oficial (personal):</label>
-              <input 
+              <input
+                maxlength="200"
                 (blur)="liberaFormulario()" 
                 type="email"
                 formControlName="cpersonal"
@@ -442,9 +448,6 @@
 
       <div *ngIf="formularioRegistro?.get('coficial')?.invalid && 
           (formularioRegistro?.get('coficial')?.dirty || formularioRegistro?.get('coficial')?.touched)">
-        <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['required']">
-          El correo es requerido.
-        </div>
         <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['email']">
           Por favor, ingresa un correo electrónico válido.
         </div>
