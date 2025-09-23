@@ -18,6 +18,18 @@ export class Catalogos {
     
     return this.http.get(this.apiUrl + 'catalogos/' + cat_tipo, {headers}).pipe(catchError((error: HttpErrorResponse) => {return throwError(() => error);}));
   };
+
+  getCatalogoDemarcacion(id_distrito: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+      .set('id_distrito', id_distrito)
+
+    return this.http.get(this.apiUrl + 'catalogos/cat_demarcacion_territorial', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  }
   
   getSeccion(seccion_electoral: number, token: string): Observable<any> {
     const headers = new HttpHeaders({

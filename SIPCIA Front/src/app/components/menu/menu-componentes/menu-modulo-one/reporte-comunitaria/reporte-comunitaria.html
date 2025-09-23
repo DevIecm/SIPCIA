@@ -185,8 +185,16 @@
             <td>{{ item.distrito_cabecera ? item.distrito_cabecera : '-' }}</td>
             <td>{{ item.demarcacion_territorial ? item.demarcacion_territorial : '-' }}</td>
             <td>{{ item.denominacion_lugar ? item.denominacion_lugar : '-'}}</td>
-            <td>{{ item.domicilio_lugar ? item.domicilio_lugar : '-'}}</td>
-            <td>{{ item.enlace_ubicacion ? item.enlace_ubicacion : '-'}}</td>
+            <td>{{ item.domicilio_lugar ? item.domicilio_lugar : '-'}}</td>      
+            <td>
+              <span *ngIf="item.enlace_ubicacion; else noFile" 
+                    class="text-primary" 
+                    style="cursor: pointer;"
+                    (click)="descargar(item)">
+                {{ item.nombre_archivo }}
+              </span>
+              <ng-template #noFile>-</ng-template>
+            </td>
             <td>{{ item.enlace_foto ? item.enlace_foto : '-'}}</td>
             <td>{{ item.observaciones ? item.observaciones : '-'}}</td>
             <td>{{ item.fecha_registro | date:'dd/MM/yyyy'}}</td>  

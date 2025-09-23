@@ -35,15 +35,23 @@ router.get("/cat_distrito", Midleware.verifyToken, async (req, res) => {
 //catalogo barrios
 router.get("/cat_barrios", Midleware.verifyToken, async (req, res) => {
   try {
+     const { id_distrito } = req.query;
+
+    if (!id_distrito) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
     const pool = await connectToDatabase();
-    const result = await pool.request()
+    const result = await pool.request()    
+      .input('id_distrito', sql.Int, id_distrito)
         .query(`SELECT 
                     id,
                     barrio,
                     clave_ut,
                     distrito_local,
                     demarcacion_territorial
-                FROM cat_barrios;`);
+                FROM cat_barrios
+                where distrito_local = @id_distrito;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
@@ -61,15 +69,24 @@ router.get("/cat_barrios", Midleware.verifyToken, async (req, res) => {
 //catalogo pueblos
 router.get("/cat_pueblos", Midleware.verifyToken, async (req, res) => {
   try {
+    
+    const { id_distrito } = req.query;
+
+    if (!id_distrito) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
     const pool = await connectToDatabase();
-    const result = await pool.request()
+    const result = await pool.request()  
+        .input('id_distrito', sql.Int, id_distrito)
         .query(`SELECT 
                     id,
                     pueblo,
                     clave_ut,
                     distrito_local,
                     demarcacion_territorial
-                FROM cat_pueblos;`);
+                FROM cat_pueblos
+                where cp.distrito_local = @id_distrito;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
@@ -87,15 +104,24 @@ router.get("/cat_pueblos", Midleware.verifyToken, async (req, res) => {
 //catalogo pueblos originarios
 router.get("/cat_pueblos_originarios", Midleware.verifyToken, async (req, res) => {
   try {
+    
+    const { id_distrito } = req.query;
+
+    if (!id_distrito) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
     const pool = await connectToDatabase();
     const result = await pool.request()
+        .input('id_distrito', sql.Int, id_distrito)
         .query(`SELECT 
                     id,
                     pueblo_originario,
                     clave_ut,
                     distrito_local,
                     demarcacion_territorial
-                FROM cat_pueblos_originarios;`);
+                FROM cat_pueblos_originarios
+                where distrito_local =@id_distrito ;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
@@ -139,8 +165,14 @@ router.get("/cat_seccion", Midleware.verifyToken, async (req, res) => {
 //catalogo unidad territorial
 router.get("/cat_unidad_territorial", Midleware.verifyToken, async (req, res) => {
   try {
+    const { id_distrito } = req.query;
+
+    if (!id_distrito) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
     const pool = await connectToDatabase();
     const result = await pool.request()
+      .input('id_distrito', sql.Int, id_distrito)
         .query(`SELECT 
                     id,
                     clave_ut,
@@ -148,7 +180,8 @@ router.get("/cat_unidad_territorial", Midleware.verifyToken, async (req, res) =>
                     distrito,
                     tipo_ut,
                     demarcacion_territorial
-                FROM unidad_territorial;`);
+                FROM unidad_territorial
+                where distrito =@id_distrito;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
@@ -190,14 +223,15 @@ router.get("/cat_comunidad", Midleware.verifyToken, async (req, res) => {
 //catalogo Demacracion
 router.get("/cat_demarcacion_territorial", Midleware.verifyToken, async (req, res) => {
   try {
+    const { id_distrito } = req.query;
+
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .query(`SELECT 
-                    id,
-                    demarcacion_territorial,
-                    clave_dt
-                FROM demarcacion_territorial
-                where status = 1;`);
+        .input('id_distrito', sql.Int, id_distrito)
+        .query(`select DISTINCT dd.distrito, dt.demarcacion_territorial  
+                from distritos_demarcaciones dd 
+                join demarcacion_territorial dt on dt.id = dd.demarcacion_territorial
+                where  dd.distrito = @id_distrito;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({

@@ -320,55 +320,66 @@ router.patch("/updateAfluencia", Midleware.verifyToken, upload.single("kmlFile")
 });
 
 
-
 //consulta tabla registro afluencia
 router.get("/getAfluencia", Midleware.verifyToken, async (req, res) => {
+  const { distrito_electoral } = req.query;
 
-    const {
-        distrito_electoral
-    }= req.query
+  if (!distrito_electoral) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
 
-    if (!distrito_electoral){
-        return res.status(400).json({ message: "Datos requeridos"})
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('distrito_electoral', sql.Int, distrito_electoral)
+      .query(`select 
+                ra.id as id_registro,
+                cd.id as direccion_distrital,
+                ra.distrito_cabecera,
+                dt.demarcacion_territorial,
+                ra.denominacion_lugar,
+                ra.domicilio_lugar,
+                ra.ubicacion,
+                ra.enlace_ubicacion,
+                ra.foto,
+                ra.enlace_foto,
+                ra.observaciones,
+                ra.fecha_registro
+              from registro_afluencia ra 
+              join cat_distrito cd on ra.distrito_electoral = cd.id 
+              join demarcacion_territorial dt on ra.demarcacion_territorial = dt.id
+              where ra.distrito_electoral = @distrito_electoral;`);
+
+    if (result.recordset.length > 0) {
+      // 👉 Aquí se limpian los nombres de archivo
+      const data = result.recordset.map(item => {
+        const nombreArchivo = item.enlace_ubicacion
+          ? path.basename(item.enlace_ubicacion)
+          : null;
+
+        const guionIndex = nombreArchivo?.indexOf("-");
+        const nombreLimpio = guionIndex > -1
+          ? nombreArchivo.substring(guionIndex + 1)
+          : nombreArchivo;
+
+        return {
+          ...item,
+          enlace_ubicacion: nombreArchivo,
+          nombre_archivo: nombreLimpio
+        };
+      });
+
+      return res.status(200).json({ getAfluencia: data });
+    } else {
+      return res.status(404).json({ message: "No se encontraron datos" });
     }
-
-    try {
-
-        const pool = await connectToDatabase();
-        const result = await pool.request()
-        
-            .input('distrito_electoral', sql.Int, distrito_electoral)
-            .query(`select 
-                    ra.id as id_registro,
-                    cd.id as direccion_distrital,
-                    ra.distrito_cabecera,
-                    dt.demarcacion_territorial,
-                    ra.denominacion_lugar,
-                    ra.domicilio_lugar,
-                    ra.ubicacion,
-                    ra.enlace_ubicacion,
-                    ra.foto,
-                    ra.enlace_foto,
-                    ra.observaciones,
-                    ra.fecha_registro
-                    from registro_afluencia ra 
-                    join cat_distrito cd on ra.distrito_electoral = cd.id 
-                    join demarcacion_territorial dt on ra.demarcacion_territorial = dt.id
-                    where ra.distrito_electoral = @distrito_electoral;`);
-
-        if (result.recordset.length > 0) {
-            return res.status(200).json({
-                getAfluencia: result.recordset
-            });
-        } else {
-            return res.status(404).json({ message: "No se encontraron datos" });
-        }
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error de servidor", error: error.message });
-    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
 });
+
+
 
 
 //consulta de registro

@@ -119,8 +119,8 @@ export class ReporteRepresentativas implements OnInit{
   };
 
   OnChangeGetReporteIndigenas(id: number){
-
-    this.reportes.getRegisterData(id, this.opcionDermarcacionI, this.tokenSesion).subscribe({
+    if(this.opcionDermarcacionI==0){
+      this.reportes.getAllRegistrosInd(this.area, this.tokenSesion).subscribe({
       next: (data) => {
         this.reporteI = [data];
       }, error: (err) => {
@@ -132,10 +132,25 @@ export class ReporteRepresentativas implements OnInit{
         }
       }
     });
+    }else{
+      this.reportes.getRegisterData(1, this.area, this.opcionDermarcacionI, this.tokenSesion).subscribe({
+      next: (data) => {
+        this.reporteI = [data];
+      }, error: (err) => {
+
+        Swal.fire("Error al cargar la información");
+
+        if(err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+      }
+    });
+    }
   };
 
   OnChangeGetReporteAfro(id: number) {
-    this.reportes.getRegisterData(id, this.opcionDermarcacionA, this.tokenSesion).subscribe({
+    if(this.opcionDermarcacionA==0){
+      this.reportes.getAllRegistrosAfro(this.area,this.tokenSesion).subscribe({
       next: (data) => {
         this.reporteA = [data];
       }, error: (err) => {
@@ -147,5 +162,21 @@ export class ReporteRepresentativas implements OnInit{
         }
       }
     });
+
+    }else{
+      this.reportes.getRegisterData(2, this.area, this.opcionDermarcacionA, this.tokenSesion).subscribe({
+      next: (data) => {
+        this.reporteA = [data];
+      }, error: (err) => {
+
+        Swal.fire("Error al cargar la información");
+
+        if(err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+      }
+    });
+
+    }
   };
 }

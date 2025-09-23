@@ -24,9 +24,7 @@ router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
         nombre_comunidad == null || nombre_comunidad === '' ||
         nombre_instancia == null || nombre_instancia === '' ||
         cargo_instancia == null || cargo_instancia === '' ||
-        domicilio == null || domicilio === '' ||
-        telefono_particular == null || telefono_celular == null ||
-        correo_electronico_oficial == null || correo_electronico_oficial === '' ||
+        domicilio == null || domicilio === '' ||telefono_celular == null ||
         correo_electronico_personal == null || correo_electronico_personal === '' ||
         documentos == null ||
         usuario_registro == null ||
@@ -259,9 +257,7 @@ router.patch("/updateRegistro", Midleware.verifyToken, async (req, res) => {
             nombre_comunidad == null || nombre_comunidad === '' ||
             nombre_instancia == null || nombre_instancia === '' ||
             cargo_instancia == null || cargo_instancia === '' ||
-            domicilio == null || domicilio === '' ||
-            telefono_particular == null || telefono_celular == null ||
-            correo_electronico_oficial == null || correo_electronico_oficial === '' ||
+            domicilio == null || domicilio === '' || telefono_celular == null ||
             correo_electronico_personal == null || correo_electronico_personal === '' ||
             documentos == null || usuario_registro == null ||
             modulo_registro == null || estado_registro == null

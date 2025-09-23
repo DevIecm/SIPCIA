@@ -14,7 +14,7 @@ export class Reportes {
 
 
   
-  getRegisterData(tipo_comunidad: number, id_distrito: number, token: string): Observable<any> {
+  getRegisterData(tipo_comunidad: number, id_distrito: number, id_demarcacion: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -23,8 +23,35 @@ export class Reportes {
     const params = new HttpParams()
       .set('tipo_comunidad', tipo_comunidad)
       .set('id_distrito', id_distrito)
+      .set('id_demarcacion', id_demarcacion)
       
     return this.http.get(this.apiUrl + 'reportes/reporteInstancias', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+  getAllRegistrosInd(id_distrito: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+
+    const params = new HttpParams()
+      .set('id_distrito', id_distrito)
+      
+    return this.http.get(this.apiUrl + 'reportes/reporteInstanciasInd', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+  getAllRegistrosAfro(id_distrito: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+
+    const params = new HttpParams()
+      .set('id_distrito', id_distrito)
+      
+    return this.http.get(this.apiUrl + 'reportes/reporteInstanciasAfro', {headers, params})
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
@@ -90,6 +117,21 @@ export class Reportes {
       );
   };
 
+  //descarga de documentos
+  descargarDocumento(nombreFisico: string, token: string): Observable<Blob> {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.get(`${this.apiUrl}descargaDoc/download/${nombreFisico}`, {
+    headers,
+    responseType: 'blob'
+  }).pipe(
+    catchError((error: HttpErrorResponse) => throwError(() => error))
+  );
+}
+
+  ////
   getRegisterDataTable(area: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`

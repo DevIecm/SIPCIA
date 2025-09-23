@@ -1247,6 +1247,202 @@ router.get("/reporteAtencion", Midleware.verifyToken, async(req,res)=>{
 });
 
 
+// reporte atencion by id registros
+router.get("/reporteAtencionById", Midleware.verifyToken, async(req,res)=>{
+
+    const { distrito_electoral, id_registro } = req.query;
+
+  if (!distrito_electoral || !id_registro) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
+
+    // fecha y hora
+    const original = new Date();
+    const offsetInMs = original.getTimezoneOffset() * 60000;
+    const fechaLocal = new Date(original.getTime() - offsetInMs);
+
+    // convertir a DD/MM/YYYY
+    const fechaFormateada = fechaLocal.toLocaleDateString("es-MX", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    });
+
+  try {
+    const ids = id_registro.split(",").map(id => parseInt(id.trim())).filter(Number.isInteger);
+
+    if(ids.length === 0){
+      return res.status(400).json({ message: "Debes enviar al menos un id_registro válido" });
+    }
+
+    const idsString = ids.join(",");
+
+
+    const pool = await connectToDatabase();
+
+    const result = await pool.request()
+      .input("distrito_electoral", sql.Int, distrito_electoral)
+      .query(`
+            select ac.numero_consecutivo,
+            ac.fecha_consulta,
+            ac.nombre_completo,
+            cpo.pueblo_originario,
+            cp.pueblo,
+            cb.barrio,
+            ut.ut,
+            ac.otro,
+            ac.cargo,
+            ac.descripcion_consulta,
+            ac.forma_atendio,
+            ac.observaciones,
+            ac.enlace_documento 
+            from atencion_consultas ac 
+            left join cat_pueblos_originarios cpo on ac.pueblo_originario = cpo.id 
+            left join cat_pueblos cp on ac.pueblo = cp.id
+            left join cat_barrios cb on ac.barrio = cb.id 
+            left join unidad_territorial ut on ac.unidad_territorial = ut.id
+            where ac.distrito_electoral =  @distrito_electoral AND ac.id IN (${idsString})`);
+
+    const rows = result.recordset;
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("NombreDelReporte");
+
+    //inserta imgaen
+    const logoPath = path.join(__dirname, '../../assets/iecm.png');
+    const logoId = workbook.addImage({
+      filename: logoPath,
+      extension: "png",
+    });
+
+    worksheet.addImage(logoId, {
+      tl: { col: 0.1, row: 0.1 },
+      ext: { width: 150, height: 70 },
+    });
+
+
+    worksheet.mergeCells("B3:L3");
+    const titulo = worksheet.getCell("B3:L3");
+    titulo.value =
+    "Reporte de actividades sobre la atención en los Órganos Desconcentrados a las consultas que, en su caso, \n" +
+    "realicen las Instancias Representativas, Autoridades Tradicionales, así como la población indígena y/o afromexicana \n" +
+    "sobre temas de geografía, organización, mecanismos de participación ciudadana y otro tipo de ejercicios democráticos";
+    titulo.font = { size: 13, bold: true};
+    titulo.alignment = { 
+    vertical: "middle", 
+    horizontal: "center", 
+    wrapText: true 
+  };
+ 
+    worksheet.mergeCells("G1:G2");
+    const anexo = worksheet.getCell("G1");
+    anexo.value =
+      "ANEXO 6";
+    anexo.font = { 
+      size: 27, 
+      bold: true, 
+      color: { argb: "FF6F42C1" }
+    };
+    anexo.alignment = { vertical: "middle", horizontal: "center" };
+
+    const distrito = worksheet.getCell("B4");
+    distrito.value = {
+    richText: [
+        { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
+        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+    ]
+    };
+    distrito.alignment = { vertical: "middle", horizontal: "left" };
+
+    const numRep = worksheet.getCell("B5");
+    numRep.value = {
+    richText: [
+        { text: "Número de Reporte: ", font: { size: 12, bold: true } },
+        { text: String(""), font: { size: 12, bold: true, underline: true } }
+    ]
+    };
+    numRep.alignment = { vertical: "middle", horizontal: "left" };
+
+
+    const cellFecha = worksheet.getCell("B6");
+    cellFecha.value = {
+    richText: [
+        { text: "Fecha y período: ", font: { size: 12, bold: true } },
+        { text: String(fechaFormateada), font: { size: 12, bold: true, underline: true } }
+    ]
+    };
+    cellFecha.alignment = { vertical: "middle", horizontal: "left" };
+
+    // Ajustar alto
+    worksheet.getRow(3).height = 60;
+    
+    worksheet.addRow([]);
+
+  const headers = [
+  "Número consecutivo de Consulta", "Fecha de la consulta", "Nombre Completo", 
+  "Pueblo Originario", "Pueblo", "Barrio",
+  "Unidad Territorial", "Otro", 
+  "Cargo que ocupa", "Describa la consulta",
+  "Forma en la que se atendió la consulta", "Observaciones y/o precisiones","Solicitudes y documentos (en caso)"
+  ];
+
+  worksheet.addRow(headers);
+  worksheet.columns = headers.map(() => ({ width: 20 }));
+
+
+      worksheet.getRow(8).eachCell((cell) => {
+      cell.alignment = {
+        vertical: "middle",
+        horizontal: "center",
+        wrapText: true,
+      };
+     cell.border = {
+        top: { style: "thin", color: { argb: "FF000000" } },
+        left: { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right: { style: "thin", color: { argb: "FF000000" } },
+    };
+    });
+
+    // Filtros
+    worksheet.autoFilter = {
+      from: "A8",
+      to: "C8",
+    };
+ 
+    rows.forEach((row) => {
+      worksheet.addRow([
+        row.numero_consecutivo,
+        row.fecha_consulta,
+        row.nombre_completo,
+        row.pueblo_originario,
+        row.pueblo,
+        row.barrio,
+        row.ut,
+        row.otro,
+        row.cargo,
+        row.descripcion_consulta,
+        row.forma_atendio,
+        row.observaciones,
+        row.enlace_documento 
+      ]);
+    });
+
+
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", "attachment; filename=reporte.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  }catch (error) {
+    console.error(error);
+    res.status(500).send("Error al generar el reporte");
+  }
+
+});
+
+
+
 //Reporte asambleas comunitarias
 router.get("/reporteAsamblea", Midleware.verifyToken, async(req,res)=>{
 

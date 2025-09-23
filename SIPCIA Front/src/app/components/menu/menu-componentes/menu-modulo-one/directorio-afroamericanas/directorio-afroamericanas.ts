@@ -112,7 +112,7 @@ export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestro
   }
 
   getRegister() {
-    this.serviceRegister.getRegisterData(2, this.tokenSesion).subscribe({
+    this.serviceRegister.getRegisterData(2, this.area, this.tokenSesion).subscribe({
       next: (data) => {
         if(data.comunidades.length > 0) {
           this.dataTable = data.comunidades;
