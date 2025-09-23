@@ -85,7 +85,7 @@ export class ReporteRepresentativas implements OnInit{
   }
 
   catalogo_demarcacion() {
-    this.catalogos.getCatalogos("cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {
           this.catalogoDemarcacionI = data.cat_demarcacion_territorial;
@@ -102,7 +102,7 @@ export class ReporteRepresentativas implements OnInit{
   };
 
   catalogo_demarcacionA() {
-    this.catalogos.getCatalogos("cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {
           this.catalogoDemarcacionA = data.cat_demarcacion_territorial;

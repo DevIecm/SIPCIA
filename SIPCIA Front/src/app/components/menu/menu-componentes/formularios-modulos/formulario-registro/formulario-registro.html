@@ -1,427 +1,435 @@
-<div class="card text-center card-size fw-bold">
-
-  <div class="card-body">
-    <form [formGroup]="formularioRegistro!" (ngSubmit)="saveForm()">
-      <div class="container text-end">
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Campo Obligatorios</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="container text-start">
-        <div class="row">
-          <div class="col d-flex justify-content-end">
-            <div class="mb-3 text-center">
-              <label class="form-label">Folio único:</label>
-              <input
-                formControlName="folio"
-                type="text"
-                class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="container text-start" style="margin-bottom: 40px;">
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Nombre Completo:</label>
-              <input
-                formControlName="nombre_completo"
-                type="text" 
-                class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="container text-center">
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Sección Electoral:</label>
-              <input 
-                maxlength="4"
-                type="text"
-                formControlName="seccion_electoral"
-                class="form-control">
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">Demarcación:</label>
-              <select 
-                formControlName="demarcacion"
-                class="select-input form-select" 
-                aria-label="Default select example"
-                [(ngModel)]="opcionDemarcacion"  >
-                <option selected></option>
-                @for (item of catalogoDemarcacion; track item) {
-                  <option [value]="item.id">{{item.demarcacion_territorial}}</option>
-                }
-              </select>
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">Distrito Electoral Local Uninominal:</label>
-              <input 
-                type="text"
-                formControlName="duninominal"
-                class="form-control">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Seleccionar comunidad:</label>
-              <select 
-                formControlName="scomunidad"
-                class="select-input form-select" 
-                aria-label="Default select example"
-                [(ngModel)]="opcionComunidad"
-              >
-                <option selected></option>
-                @for (item of catalogoComunidad; track item) {
-                  <option [value]="item.id">{{item.comunidad}}</option>
-                }
-              </select>
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Nombre de la comunidad:</label>
-              <input
-                formControlName="ncomunidad"
-                type="text" 
-                class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="showIndigenas" class="card text-center" style="margin-top: 15px; margin-bottom: 10px; border: 1px solid black;">
-        <div class="card-body">
-          <div class="container text-center">
-            <div class="row">
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">*Pueblo Originario:</label>
-                  <select 
-                    formControlName="ooriginario" 
-                    class="select-input form-select" 
-                    aria-label="Default select example"
-                    [(ngModel)]="opcionPuebloOriginario"
-                    (change)="onChangePuebloOriginario()"
-                  >
-                    <option selected></option>
-                    @for (item of catalogoPueblor; track item) {
-                      <option [value]="item.id">{{item.pueblo_originario}}</option>
-                    }
-                  </select>
+<div class="modal show fade d-block" tabindex="-1" *ngIf="isOpen" (click)="onBackdropClick($event)" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog" style="width: auto; max-width: 60%;" (click)="$event.stopPropagation()">
+    <div class="modal-content" style="width: auto; height: auto;">
+      <div class="modal-body">
+        <div class="card text-center card-size fw-bold">
+          <div class="card-body">
+            <form [formGroup]="formularioRegistro!" (ngSubmit)="saveForm()">
+              <div class="container text-end">
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">*Campo Obligatorios</label>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">*Pueblo:</label>
-                  <select 
-                    formControlName="pueblo" 
-                    class="select-input form-select" 
-                    aria-label="Default select example"
-                    [(ngModel)]="opcionPueblo"
-                    (change)="onChangePueblo()"
-                  >
-                    <option value="non" selected></option>
-                    @for (item of catalogoPueblos; track item) {
-                      <option [value]="item.id">{{item.pueblo}}</option>
-                    }
-                  </select>
+
+              <label class="form-label">{{ labelText }}</label>
+
+              <div class="container text-start">
+                <div class="row">
+                  <div class="col d-flex justify-content-end">
+                    <div class="mb-3 text-center">
+                      <label class="form-label">Folio único:</label>
+                      <input
+                        formControlName="folio"
+                        type="text"
+                        class="form-control">
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">*Barrio:</label>
-                  <select 
-                    formControlName="barrio" 
-                    class="select-input form-select" 
-                    aria-label="Default select example"
-                    [(ngModel)]="opcionBarrio"
-                    (change)="onChangeBarrio()"
-                  >
-                    <option value="non" selected></option>
-                    @for (item of catalogoBarrios; track item) {
-                      <option [value]="item.id">{{item.barrio}}</option>
-                    }
-                  </select>
+
+
+              <div class="container text-start" style="margin-bottom: 40px;">
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">*Nombre Completo:</label>
+                      <input
+                        formControlName="nombre_completo"
+                        type="text" 
+                        class="form-control">
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">*Unidad Territorial:</label>
-                  <select 
-                    formControlName="uterritorial" 
-                    class="select-input form-select" 
-                    aria-label="Default select example"
-                    [(ngModel)]="opcionUnidadTerritorial"
-                    (change)="onChangeUnidadTerritorial()"
-                  >
-                    <option value="non" selected></option>
-                    @for (item of catalogoUnidadTerritorial; track item) {
-                      <option [value]="item.id">{{item.ut}}</option>
-                    }
-                  </select>
+
+              <div class="container text-center">
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">*Sección Electoral:</label>
+                      <input 
+                        maxlength="4"
+                        type="text"
+                        formControlName="seccion_electoral"
+                        class="form-control">
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">Demarcación:</label>
+                      <select 
+                        formControlName="demarcacion"
+                        class="select-input form-select" 
+                        aria-label="Default select example"
+                        [(ngModel)]="opcionDemarcacion"  >
+                        <option selected></option>
+                        @for (item of catalogoDemarcacion; track item) {
+                          <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                        }
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">Distrito Electoral Local Uninominal:</label>
+                      <input 
+                        type="text"
+                        formControlName="duninominal"
+                        class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">*Seleccionar comunidad:</label>
+                      <select 
+                        formControlName="scomunidad"
+                        class="select-input form-select" 
+                        aria-label="Default select example"
+                        [(ngModel)]="opcionComunidad"
+                      >
+                        <option selected></option>
+                        @for (item of catalogoComunidad; track item) {
+                          <option [value]="item.id">{{item.comunidad}}</option>
+                        }
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">*Nombre de la comunidad:</label>
+                      <input
+                        formControlName="ncomunidad"
+                        type="text" 
+                        class="form-control">
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">Comunidad:</label>
-                  <input 
-                    formControlName="comunidad"
-                    type="text" 
-                    class="form-control">
+
+              <div *ngIf="showIndigenas" class="card text-center" style="margin-top: 15px; margin-bottom: 10px; border: 1px solid black;">
+                <div class="card-body">
+                  <div class="container text-center">
+                    <div class="row">
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">*Pueblo Originario:</label>
+                          <select 
+                            formControlName="ooriginario" 
+                            class="select-input form-select" 
+                            aria-label="Default select example"
+                            [(ngModel)]="opcionPuebloOriginario"
+                            (change)="onChangePuebloOriginario()"
+                          >
+                            <option selected></option>
+                            @for (item of catalogoPueblor; track item) {
+                              <option [value]="item.id">{{item.pueblo_originario}}</option>
+                            }
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">*Pueblo:</label>
+                          <select 
+                            formControlName="pueblo" 
+                            class="select-input form-select" 
+                            aria-label="Default select example"
+                            [(ngModel)]="opcionPueblo"
+                            (change)="onChangePueblo()"
+                          >
+                            <option value="non" selected></option>
+                            @for (item of catalogoPueblos; track item) {
+                              <option [value]="item.id">{{item.pueblo}}</option>
+                            }
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">*Barrio:</label>
+                          <select 
+                            formControlName="barrio" 
+                            class="select-input form-select" 
+                            aria-label="Default select example"
+                            [(ngModel)]="opcionBarrio"
+                            (change)="onChangeBarrio()"
+                          >
+                            <option value="non" selected></option>
+                            @for (item of catalogoBarrios; track item) {
+                              <option [value]="item.id">{{item.barrio}}</option>
+                            }
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">*Unidad Territorial:</label>
+                          <select 
+                            formControlName="uterritorial" 
+                            class="select-input form-select" 
+                            aria-label="Default select example"
+                            [(ngModel)]="opcionUnidadTerritorial"
+                            (change)="onChangeUnidadTerritorial()"
+                          >
+                            <option value="non" selected></option>
+                            @for (item of catalogoUnidadTerritorial; track item) {
+                              <option [value]="item.id">{{item.ut}}</option>
+                            }
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">Comunidad:</label>
+                          <input 
+                            formControlName="comunidad"
+                            type="text" 
+                            class="form-control">
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">Otro:</label>
+                          <input 
+                            formControlName="otro"
+                            type="text" 
+                            class="form-control"
+                            (change)="onChangeOtro()"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">Otro:</label>
-                  <input 
-                    formControlName="otro"
-                    type="text" 
-                    class="form-control"
-                    (change)="onChangeOtro()"
-                  >
+
+              <div *ngIf="showAfromexicanos" class="card text-center" style="margin-top: 15px; border: 1px solid black; margin-bottom: 30px;">
+                <div class="card-body">
+                  <div class="container text-center">
+                    <div class="row">
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">*Pueblo:</label>
+                          <input 
+                            formControlName="pueblor"
+                            type="text" 
+                            class="form-control"
+                            (change)="onChangePuebloT()"
+                          >
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">*Comunidad:</label>
+                          <input 
+                            formControlName="comunidadr"
+                            type="text" 
+                            class="form-control"
+                            (change)="onChangeComunidadT()"
+                          >
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">*Organización:</label>
+                          <input 
+                            formControlName="organizacion"
+                            type="text" 
+                            class="form-control"
+                            (change)="onChangeOrganizacionT()"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">Persona Relevante:</label>
+                          <input 
+                            formControlName="prelevante"
+                            type="text" 
+                            class="form-control">
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <label class="form-label">Otro:</label>
+                          <input
+                            formControlName="otror"
+                            type="text" 
+                            class="form-control"
+                            (change)="onChangeOtroT()">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+
+              <div class="container text-start">
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">*Nombre de la instancia representativa o autoridad tradicional a la que pertenece:</label>
+                      <input 
+                        formControlName="ninstancia"
+                        type="text" 
+                        class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="container text-start" style="margin-bottom: 25px;">
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">*Cargo que ocupa en la instancia representativa o autoridad tradicional:</label>
+                      <input 
+                        formControlName="cinstancia"
+                        type="text" 
+                        class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="container text-start">
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label class="form-label">*Domicilio:</label>
+                      <input
+                        formControlName="domicilio"
+                        type="text" 
+                        class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="container text-center">
+                <div class="row">
+                  <div class="col-4">
+                    <div class="mb-3">
+                      <label class="form-label">Teléfono particular (fijo):</label>
+                      <input
+                        formControlName="tfijo"
+                        type="text" 
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="mb-3">
+                      <label class="form-label">*Teléfono celular:</label>
+                      <input
+                        formControlName="tcelular"
+                        type="text" 
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="mb-3">
+                      <label for="formFile" class="form-label">Documentos:</label>
+                      <input 
+                        formControlName="docs"
+                        class="form-control" 
+                        type="file" 
+                        id="formFile">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <label class="form-label">Correo electrónico oficial:</label>
+                      <input 
+                        formControlName="coficial"
+                        type="email" 
+                        class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <label class="form-label">*Correo electrónico no oficial (personal):</label>
+                      <input 
+                        type="email"
+                        formControlName="cpersonal"
+                        class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="container text-center">
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label">Fecha de registro:</label>
+                  </div>
+                  <div class="col">
+                    <label class="form-label">Hora de registro:</label>
+                  </div>
+                  <div class="col">
+                    <label class="form-label">Módulo de registro:</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <label class="form-label" style="color: #b7b5b8;">{{ today }}</label>
+                  </div>
+                  <div class="col">
+                    <label class="form-label" style="color: #b7b5b8;">{{ currentTime }}</label>
+                  </div>
+                  <div class="col">
+                    <label class="form-label" style="color: #b7b5b8;">Módulo 1 de Acceso Distrital</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="container text-center" style="margin-top: 15px;">
+                <div class="row">
+                  <div class="col">
+                    <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
+                  </div>
+                  <div class="col">
+                    <button type="button" (click)="resetData()" class="btn button-clean">{{data.btn2}}</button>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="formularioRegistro?.get('coficial')?.invalid && 
+                  (formularioRegistro?.get('coficial')?.dirty || formularioRegistro?.get('coficial')?.touched)">
+                <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['required']">
+                  El correo es requerido.
+                </div>
+                <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['email']">
+                  Por favor, ingresa un correo electrónico válido.
+                </div>
+              </div>
+
+              <div *ngIf="formularioRegistro?.get('cpersonal')?.invalid && 
+                  (formularioRegistro?.get('cpersonal')?.dirty || formularioRegistro?.get('cpersonal')?.touched)">
+                <div *ngIf="formularioRegistro?.get('cpersonal')?.errors?.['required']">
+                  El correo es requerido.
+                </div>
+                <div *ngIf="formularioRegistro?.get('cpersonal')?.errors?.['email']">
+                  Por favor, ingresa un correo electrónico válido.
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-
-      <div *ngIf="showAfromexicanos" class="card text-center" style="margin-top: 15px; border: 1px solid black; margin-bottom: 30px;">
-        <div class="card-body">
-          <div class="container text-center">
-            <div class="row">
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">*Pueblo:</label>
-                  <input 
-                    formControlName="pueblor"
-                    type="text" 
-                    class="form-control"
-                    (change)="onChangePuebloT()"
-                  >
-                </div>
-              </div>
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">*Comunidad:</label>
-                  <input 
-                    formControlName="comunidadr"
-                    type="text" 
-                    class="form-control"
-                    (change)="onChangeComunidadT()"
-                  >
-                </div>
-              </div>
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">*Organización:</label>
-                  <input 
-                    formControlName="organizacion"
-                    type="text" 
-                    class="form-control"
-                    (change)="onChangeOrganizacionT()"
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">Persona Relevante:</label>
-                  <input 
-                    formControlName="prelevante"
-                    type="text" 
-                    class="form-control">
-                </div>
-              </div>
-              <div class="col">
-                <div class="mb-3">
-                  <label class="form-label">Otro:</label>
-                  <input
-                    formControlName="otror"
-                    type="text" 
-                    class="form-control"
-                    (change)="onChangeOtroT()">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="container text-start">
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Nombre de la instancia representativa o autoridad tradicional a la que pertenece:</label>
-              <input 
-                formControlName="ninstancia"
-                type="text" 
-                class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="container text-start" style="margin-bottom: 25px;">
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Cargo que ocupa en la instancia representativa o autoridad tradicional:</label>
-              <input 
-                formControlName="cinstancia"
-                type="text" 
-                class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="container text-start">
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Domicilio:</label>
-              <input
-                formControlName="domicilio"
-                type="text" 
-                class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="container text-center">
-        <div class="row">
-          <div class="col-4">
-            <div class="mb-3">
-              <label class="form-label">Teléfono particular (fijo):</label>
-              <input
-                formControlName="tfijo"
-                type="text" 
-                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                class="form-control">
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="mb-3">
-              <label class="form-label">*Teléfono celular:</label>
-              <input
-                formControlName="tcelular"
-                type="text" 
-                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                class="form-control">
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="mb-3">
-              <label for="formFile" class="form-label">Documentos:</label>
-              <input 
-                formControlName="docs"
-                class="form-control" 
-                type="file" 
-                id="formFile">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-6">
-            <div class="mb-3">
-              <label class="form-label">Correo electrónico oficial:</label>
-              <input 
-                formControlName="coficial"
-                type="email" 
-                class="form-control">
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="mb-3">
-              <label class="form-label">*Correo electrónico no oficial (personal):</label>
-              <input 
-                type="email"
-                formControlName="cpersonal"
-                class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="container text-center">
-        <div class="row">
-          <div class="col">
-            <label class="form-label">Fecha de registro:</label>
-          </div>
-          <div class="col">
-            <label class="form-label">Hora de registro:</label>
-          </div>
-          <div class="col">
-            <label class="form-label">Módulo de registro:</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label class="form-label" style="color: #b7b5b8;">{{ today }}</label>
-          </div>
-          <div class="col">
-            <label class="form-label" style="color: #b7b5b8;">{{ currentTime }}</label>
-          </div>
-          <div class="col">
-            <label class="form-label" style="color: #b7b5b8;">Módulo 1 de Acceso Distrital</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="container text-center" style="margin-top: 15px;">
-        <div class="row">
-          <div class="col">
-            <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
-          </div>
-          <div class="col">
-            <button type="button" (click)="resetData()" class="btn button-clean">{{data.btn2}}</button>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="formularioRegistro?.get('coficial')?.invalid && 
-          (formularioRegistro?.get('coficial')?.dirty || formularioRegistro?.get('coficial')?.touched)">
-        <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['required']">
-          El correo es requerido.
-        </div>
-        <div *ngIf="formularioRegistro?.get('coficial')?.errors?.['email']">
-          Por favor, ingresa un correo electrónico válido.
-        </div>
-      </div>
-
-      <div *ngIf="formularioRegistro?.get('cpersonal')?.invalid && 
-          (formularioRegistro?.get('cpersonal')?.dirty || formularioRegistro?.get('cpersonal')?.touched)">
-        <div *ngIf="formularioRegistro?.get('cpersonal')?.errors?.['required']">
-          El correo es requerido.
-        </div>
-        <div *ngIf="formularioRegistro?.get('cpersonal')?.errors?.['email']">
-          Por favor, ingresa un correo electrónico válido.
-        </div>
-      </div>
-
-    </form>
+    </div>
   </div>
 </div>

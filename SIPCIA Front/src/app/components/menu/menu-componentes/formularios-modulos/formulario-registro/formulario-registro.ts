@@ -20,8 +20,11 @@ import { Catalogos } from '../../../../../services/catService/catalogos';
 })
 
 export class FormularioRegistro implements OnInit{
-  @Input() idRegistro! : number;
-  @Output() formSaved = new EventEmitter<void>();
+  
+  @Input() isOpen = false;
+  @Input() idRegistroC: any;
+  @Input() idRegistro : number | undefined;
+  @Output() close = new EventEmitter<void>();
 
   currentTime: string= '';
   today: string = '';
@@ -39,6 +42,7 @@ export class FormularioRegistro implements OnInit{
   nombreUser: string = '';
   cargoUser: string = '';
   position: string = '';
+  labelText: string = '';
 
   catalogoComunidad: any = [];
   catalogoPueblos: any = [];
@@ -120,6 +124,8 @@ export class FormularioRegistro implements OnInit{
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.area = sessionStorage.getItem('area')!;
 
+    console.log(this.area);
+
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.formularioRegistro?.get('duninominal')?.setValue(this.area);
     this.id_usuario =  Number(sessionStorage.getItem('id_usuario')!);
@@ -127,31 +133,26 @@ export class FormularioRegistro implements OnInit{
 
     if(this.moduloClicked === '1.2') {
       this.showAfromexicanos = false;
+      this.labelText = "Edición de Instancia Indígena";
       this.showIndigenas = true;
     } else if(this.moduloClicked === '1.3') {
       this.showAfromexicanos = true;
+      this.labelText = "Edición de Instancia Afromexicana";
       this.showIndigenas = false;
     }
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-
-    this.tokenSesion = sessionStorage.getItem('key')!;
-
-    if(changes['idRegistro'] && changes['idRegistro'].currentValue) {
-      this.getDataById();
-      this.catalogo_comunidad();
-      this.catalogo_demarcacion();
-      this.catalogo_barrios();
-      this.catalogo_pueblor();
-      this.catalogo_pueblos();
-      this.catalogo_unidad_territorial();
-    }
+    this.getDataById();
+    this.catalogo_comunidad();
+    this.catalogo_demarcacion();
+    this.catalogo_barrios();
+    this.catalogo_pueblor();
+    this.catalogo_pueblos();
+    this.catalogo_unidad_territorial();
   }
 
   getDataById() {
     try {
-      this.registerService.getDataById(this.idRegistro, this.tokenSesion).subscribe({
+      this.registerService.getDataById(this.idRegistro ?? 0, this.tokenSesion).subscribe({
         next: (data) => {
 
           this.infoUpdate = data.getRegistro[0];
@@ -231,15 +232,12 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_unidad_territorial() {
-    this.catalogos.getCatalogos("cat_unidad_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_unidad_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_unidad_territorial.length > 0) {
           this.catalogoUnidadTerritorial = data.cat_unidad_territorial;
         }
       }, error: (err) => {
-
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -248,15 +246,13 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_demarcacion() {
-    this.catalogos.getCatalogos("cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    console.log(this.area);
+    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {
           this.catalogoDemarcacion = data.cat_demarcacion_territorial;
         }
       }, error: (err) => {
-
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -265,15 +261,12 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_pueblos() {
-    this.catalogos.getCatalogos("cat_pueblos", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_pueblos.length > 0) {
           this.catalogoPueblos = data.cat_pueblos;
         }
       }, error: (err) => {
-
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -282,15 +275,12 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_pueblor() {
-    this.catalogos.getCatalogos("cat_pueblos_originarios", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos_originarios", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_pueblos_originarios.length > 0) {
           this.catalogoPueblor = data.cat_pueblos_originarios;
         }
       }, error: (err) => {
-
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -299,15 +289,12 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_barrios() {
-    this.catalogos.getCatalogos("cat_barrios", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_barrios", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_barrios.length > 0) {
           this.catalogoBarrios = data.cat_barrios;
         }
       }, error: (err) => {
-
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -316,15 +303,12 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_comunidad() {
-    this.catalogos.getCatalogos("cat_comunidad", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_comunidad", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_comunidad.length > 0) {
           this.catalogoComunidad = data.cat_comunidad;
         }
       }, error: (err) => {
-
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -334,7 +318,46 @@ export class FormularioRegistro implements OnInit{
   };
 
   resetData() {
-    this.formularioRegistro?.reset();
+    if (this.formularioRegistro) {
+      this.formularioRegistro.patchValue({
+        nombre_completo: '',
+        seccion_electoral: '',
+        demarcacion: '',
+        ncomunidad: '',
+
+        ooriginario: '',
+        pueblo: '',
+        barrio: '',
+        uterritorial: '',
+        comunidad: '',
+        otro: '',
+
+        pueblor: '',
+        comunidadr: '',
+        organizacion: '',
+        prelevante: '',
+        otror: '',
+
+        ninstancia: '',
+        cinstancia: '',
+        domicilio: '',
+        tfijo: '',
+        tcelular: '',
+        docs: '',
+        coficial: '',
+        cpersonal: '',
+      });
+
+      this.formularioRegistro.get('pueblor')?.enable();
+      this.formularioRegistro.get('comunidadr')?.enable();
+      this.formularioRegistro.get('organizacion')?.enable();
+      this.formularioRegistro.get('otror')?.enable();
+      this.formularioRegistro.get('ooriginario')?.enable();
+      this.formularioRegistro.get('pueblo')?.enable();
+      this.formularioRegistro.get('barrio')?.enable();
+      this.formularioRegistro.get('uterritorial')?.enable();
+      this.formularioRegistro.get('otro')?.enable();
+    }
   };
 
   resetFormulario() {
@@ -618,6 +641,14 @@ export class FormularioRegistro implements OnInit{
       this.formularioRegistro.get('comunidadr')?.disable();
       this.formularioRegistro.get('organizacion')?.disable();
     }
+  }
+
+  onClose() {
+    this.close.emit();
+  }
+
+  onBackdropClick(event: MouseEvent) {
+    this.onClose();
   }
 }
 

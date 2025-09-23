@@ -322,7 +322,7 @@ previewImage(): void {
   }
 
   catalogo_unidad_territorial() {
-    this.catalogos.getCatalogos("cat_unidad_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_unidad_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_unidad_territorial.length > 0) {
           this.catalogoUnidadTerritorial = data.cat_unidad_territorial;
@@ -339,7 +339,7 @@ previewImage(): void {
   };
     
   catalogo_pueblos() {
-    this.catalogos.getCatalogos("cat_pueblos", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_pueblos.length > 0) {
           this.catalogoPueblos = data.cat_pueblos;
@@ -356,7 +356,7 @@ previewImage(): void {
   };
   
   catalogo_pueblor() {
-    this.catalogos.getCatalogos("cat_pueblos_originarios", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos_originarios", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_pueblos_originarios.length > 0) {
           this.catalogoPueblor = data.cat_pueblos_originarios;
@@ -373,7 +373,7 @@ previewImage(): void {
   };
   
   catalogo_nreporte() {
-    this.catalogos.getCatalogos("cat_numero_reporte", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_numero_reporte", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_numero_reporte.length > 0) {
           this.catalogoReporte = data.cat_numero_reporte;
@@ -390,7 +390,7 @@ previewImage(): void {
   };
 
   catalogo_fecha() {
-    this.catalogos.getCatalogos("cat_fecha_periodo", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_fecha_periodo", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_fecha_periodo.length > 0) {
           this.catalogoFecha = data.cat_fecha_periodo;
@@ -407,7 +407,7 @@ previewImage(): void {
   };
 
   catalogo_barrios() {
-    this.catalogos.getCatalogos("cat_barrios", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_barrios", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_barrios.length > 0) {
           this.catalogoBarrios = data.cat_barrios;
@@ -424,7 +424,7 @@ previewImage(): void {
   };
 
   catalogo_comunidad() {
-    this.catalogos.getCatalogos("cat_comunidad", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_comunidad", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_comunidad.length > 0) {
           this.catalogoComunidad = data.cat_comunidad;
@@ -492,7 +492,7 @@ previewImage(): void {
   }
 
   catalogo_demarcacion() {
-    this.catalogos.getCatalogos("cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {
           this.catalogoDemarcacion = data.cat_demarcacion_territorial;

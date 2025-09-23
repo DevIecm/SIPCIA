@@ -87,7 +87,7 @@
                 class="btn button-table" 
                 data-bs-toggle="modal" 
                 data-bs-target="#miModal"
-                (click)="abrirModal(item.id_registro)"
+                (click)="openModal(item.id_registro)"
               >
                 <i class="bi bi-pencil-square"></i>
               </button>
@@ -112,17 +112,10 @@
   </div>
 </div>
 
-<div class="modal fade" id="miModal" #miModal tabindex="-1" aria-labelledby="miModal" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-body">
-        <app-formulario-registro
-          #formHijo
-          *ngIf="registroSeleccionadoId"
-          [idRegistro]="registroSeleccionadoId"
-          >
-        </app-formulario-registro>
-      </div>
-    </div>
-  </div>
-</div>
+@if(showModal) {
+  <app-formulario-registro
+    [idRegistro]="registroSeleccionadoId"
+    [isOpen]="showModal" 
+    (close)="closeModal()">
+  </app-formulario-registro>
+}

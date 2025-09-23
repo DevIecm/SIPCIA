@@ -23,19 +23,10 @@ import { reporteService } from '../../../../../services/reportesDescargas/report
   templateUrl: './directorio-afroamericanas.html',
   styleUrl: './directorio-afroamericanas.css'
 })
-export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestroy {
+export class DirectorioAfroamericanas implements OnInit {
   
-  @ViewChild('miModal', { static: false }) miModal!: ElementRef;
-  @ViewChild('formHijo', { static: false }) formHijo!: FormularioRegistro;
+  showModal = false;
 
-  ngAfterViewInit(): void {
-    const modalEl = this.miModal.nativeElement;
-    modalEl.addEventListener('hidden.bs.modal', this.onModalClosed);
-  }
-
-  ngOnDestroy(): void {
-    this.miModal.nativeElement.removeEventListener('hidden.bs.modal', this.onModalClosed);
-  }
   goToBitacora(id: number, tipo: string) {
     this.router.navigate(['/bitacora', id, tipo]);
   }
@@ -48,11 +39,6 @@ export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestro
       window.URL.revokeObjectURL(link.href);
     });
   }
-
-  onModalClosed = () => {
-    this.formHijo.resetFormulario();
-    this.getRegister();
-  };
 
   nombreUser: string = '';
   cargoUser: string = '';
@@ -135,8 +121,14 @@ export class DirectorioAfroamericanas implements OnInit, AfterViewInit, OnDestro
     });
   }
 
-  abrirModal(id: number) {
+  openModal(id: number | undefined) {
+    this.showModal = true;
     this.registroSeleccionadoId = id;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.getRegister();
   }
 
   onValidateInfo() {
