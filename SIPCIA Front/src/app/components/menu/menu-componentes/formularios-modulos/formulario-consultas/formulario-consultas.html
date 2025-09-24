@@ -62,6 +62,7 @@
                                                 class="form-check-input" 
                                                 type="checkbox" 
                                                 id="checkDefault"
+                                                formControlName="presento_caso"
                                                 [checked]="formularioRegistro?.get('presento_caso')?.value === 1"
                                                 (change)="onCheckboxChange($event)">
                                             <label class="form-check-label" for="checkDefault">
@@ -93,6 +94,7 @@
                                     <div class="mb-3">
                                         <label class="form-label">*Nombre Completo</label>
                                         <input 
+                                            maxlength="200"
                                             type="text"
                                             formControlName="ncompleto"
                                             class="form-control txt-input"
@@ -176,6 +178,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Otro:</label>
                                             <input 
+                                                maxlength="200"
                                                 formControlName="otro"
                                                 type="text" 
                                                 class="form-control txt-input"
@@ -191,6 +194,7 @@
                                         <label class="form-label">Cargo que ocupa:</label>
                                         <input 
                                             type="text"
+                                            maxlength="200"
                                             formControlName="cargo"
                                             class="form-control txt-input"
                                         >
@@ -203,7 +207,10 @@
                                     <div class="col-12">
                                         <div class="mb-3">
                                             <label for="exampleFormControlTextarea1" class="form-label">Describa la consulta:</label>
-                                            <textarea formControlName="consulta" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                            <textarea 
+                                                formControlName="consulta" 
+                                                maxlength="500"
+                                                style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -214,7 +221,9 @@
                                     <div class="col-12">
                                         <div class="mb-3">
                                             <label for="exampleFormControlTextarea1" class="form-label">Forma en la que se atendió la consulta:</label>
-                                            <textarea formControlName="forma" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                            <textarea 
+                                                maxlength="200"
+                                                formControlName="forma" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +234,8 @@
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label for="exampleFormControlTextarea1" class="form-label">Observaciones y/o precisiones:</label>
-                                            <textarea formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                            <textarea 
+                                                maxlength="200"formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
                                         </div>
                                     </div>
                                     <div class="col-6">

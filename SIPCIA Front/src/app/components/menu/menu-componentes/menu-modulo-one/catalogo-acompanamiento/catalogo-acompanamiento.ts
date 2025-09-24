@@ -31,6 +31,9 @@ export class CatalogoAcompanamiento implements OnInit {
   tokenSesion: string = '';
   position: string = '';
   searchTerm: string = '';
+  sortColumn: string = '';
+
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   dataTable: any = [];
   allDatable: any[] = [];
@@ -155,5 +158,34 @@ export class CatalogoAcompanamiento implements OnInit {
   closeModal() {
     this.showModal = false;
     this.getRegister();
+  }
+
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.dataTable.sort((a: any, b: any) => {
+      const valueA = a[column] ?? '';
+      const valueB = b[column] ?? '';
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return this.sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      } else {
+        return this.sortDirection === 'asc'
+          ? (valueA > valueB ? 1 : -1)
+          : (valueA < valueB ? 1 : -1);
+      }
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
+    return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
   }
 }

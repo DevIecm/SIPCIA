@@ -25,9 +25,6 @@ import { reporteService } from '../../../../../services/reportesDescargas/report
 })
 export class ReporteConsultas implements OnInit {
 
-  @ViewChild('miModal', { static: false }) miModal!: ElementRef;
-  @ViewChild('formHijo', { static: false }) formHijo!: FormularioConsultas;
-
   dataTable: any = [];
   allDatable: any[] = [];
   selectedIds: number[] = [];
@@ -42,9 +39,12 @@ export class ReporteConsultas implements OnInit {
   searchTerm: string = '';
   data: any = data;
   position: string = '';
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   showModal = false;
   isRegistroC: boolean = false;
+  
   idSelected: number | undefined;
 
   ngOnInit(): void {
@@ -69,7 +69,6 @@ export class ReporteConsultas implements OnInit {
       this.selectedIds = this.selectedIds.filter(selectedId => selectedId !== id);
     }
   }
-
 
   getReporte(){
     if(this.selectedIds.length === 0) {
@@ -163,14 +162,63 @@ export class ReporteConsultas implements OnInit {
     }
 
     this.dataTable = this.allDatable.filter((val) => {
-      const nombre_completo = (val.nombre_completo ?? '').toString().toLowerCase().trim();
+      const numero_consecutivo = (val.numero_consecutivo ?? '').toString().toLowerCase().trim();
       const fecha_consulta = (val.fecha_consulta ?? '').toLowerCase().trim();
-
+      const nombre_completo = (val.nombre_completo ?? '').toString().toLowerCase().trim();
+      const pueblo_originario = (val.pueblo_originario ?? '').toString().toLowerCase().trim();
+      const pueblo = (val.pueblo ?? '').toString().toLowerCase().trim();
+      const barrio = (val.barrio ?? '').toString().toLowerCase().trim();
+      const ut = (val.ut ?? '').toString().toLowerCase().trim();
+      const otro = (val.otro ?? '').toString().toLowerCase().trim();
+      const cargo = (val.cargo ?? '').toString().toLowerCase().trim();
+      const descripcion_consulta = (val.descripcion_consulta ?? '').toString().toLowerCase().trim();
+      const forma_atendio = (val.forma_atendio ?? '').toString().toLowerCase().trim();
+      const observaciones = (val.observaciones ?? '').toString().toLowerCase().trim();
+      
       return (
+        numero_consecutivo.includes(rawFilter) ||
         fecha_consulta.includes(rawFilter) ||
-        nombre_completo.includes(rawFilter)
+        nombre_completo.includes(rawFilter) ||
+        pueblo_originario.includes(rawFilter) ||
+        pueblo.includes(rawFilter) ||
+        barrio.includes(rawFilter) ||
+        ut.includes(rawFilter) ||
+        otro.includes(rawFilter) ||
+        cargo.includes(rawFilter) ||
+        descripcion_consulta.includes(rawFilter) ||
+        forma_atendio.includes(rawFilter) ||
+        observaciones.includes(rawFilter)
       );
     });
   };
+
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.dataTable.sort((a: any, b: any) => {
+      const valueA = a[column] ?? '';
+      const valueB = b[column] ?? '';
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return this.sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      } else {
+        return this.sortDirection === 'asc'
+          ? (valueA > valueB ? 1 : -1)
+          : (valueA < valueB ? 1 : -1);
+      }
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
+    return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+  }
 
 }

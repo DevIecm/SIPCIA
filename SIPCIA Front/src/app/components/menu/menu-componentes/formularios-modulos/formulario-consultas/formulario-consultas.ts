@@ -62,6 +62,7 @@ export class FormularioConsultas {
 
   saveForm(){
     try {
+      
       if(this.idRegistroC) {
         Swal.fire({
           title: "¿Está seguro que desea guardar estos cambios?",
@@ -83,7 +84,7 @@ export class FormularioConsultas {
               distrito_electoral: this.area,
               numero_reporte: Number(this.formularioRegistro.get('nreporte')?.value) || null,
               fecha_periodo: this.formularioRegistro.get('fyperiodo')?.value || null,  
-              presento_caso: Number(this.formularioRegistro.get('presento_caso')?.value) || null,
+              presento_caso: this.formularioRegistro.get('presento_caso')?.value == 1 ? 1 : 0,
               numero_consecutivo: this.idConsecutivo,
               fecha_consulta: this.formularioRegistro.get('fconsulta')?.value || null,
               nombre_completo: this.formularioRegistro.get('ncompleto')?.value || null,
@@ -102,6 +103,8 @@ export class FormularioConsultas {
               modulo_registro: this.tipo_usuario,
               estado_registro: 1,
             };
+
+            console.log(datosFormularioCompletos);
 
             this.registerService.insertaRegistroConsultas(datosFormularioCompletos, this.tokenSesion).subscribe({
               next: (data) => {
@@ -134,6 +137,7 @@ export class FormularioConsultas {
           }
         });
       } else {
+        
         Swal.fire({
           title: "¿Está seguro que desea guardar estos cambios?",
           icon: "warning",
@@ -154,7 +158,7 @@ export class FormularioConsultas {
               id_registro: this.idRegistro,
               numero_reporte: Number(this.formularioRegistro.get('nreporte')?.value) || null,
               fecha_periodo: this.formularioRegistro.get('fyperiodo')?.value || null,  
-              presento_caso: Number(this.formularioRegistro.get('presento_caso')?.value) || null,
+              presento_caso: this.formularioRegistro.get('presento_caso')?.value == 1 ? 1 : 0,
               numero_consecutivo: Number(this.formularioRegistro.get('consecutivo')?.value) || null,
               fecha_consulta: this.formularioRegistro.get('fconsulta')?.value || null,
               nombre_completo: this.formularioRegistro.get('ncompleto')?.value || null,
@@ -173,6 +177,8 @@ export class FormularioConsultas {
               modulo_registro: this.tipo_usuario,
               estado_registro: 1,
             };
+
+            console.log(datosFormularioCompletos);
 
             this.registerService.updateRegistroConsultas(datosFormularioCompletos, this.tokenSesion).subscribe({
               next: (data) => {
@@ -210,7 +216,7 @@ export class FormularioConsultas {
   }
 
   resetData() {
-    this.formularioRegistro?.reset();
+    this.onClose();
   };
 
   ngOnInit() {
@@ -255,6 +261,9 @@ export class FormularioConsultas {
     this.catalogo_unidad_territorial();
     this.catalogo_nreporte();
     this.catalogo_fecha();
+
+      this.onCheckboxChange({ target: { checked: false } });
+
   }
 
   catalogo_unidad_territorial() {
@@ -264,9 +273,6 @@ export class FormularioConsultas {
           this.catalogoUnidadTerritorial = data.cat_unidad_territorial;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -281,9 +287,6 @@ export class FormularioConsultas {
           this.catalogoPueblos = data.cat_pueblos;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -298,9 +301,6 @@ export class FormularioConsultas {
           this.catalogoPueblor = data.cat_pueblos_originarios;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -315,9 +315,6 @@ export class FormularioConsultas {
           this.catalogoReporte = data.cat_numero_reporte;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -332,9 +329,6 @@ export class FormularioConsultas {
           this.catalogoFecha = data.cat_fecha_periodo;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -349,9 +343,6 @@ export class FormularioConsultas {
           this.catalogoBarrios = data.cat_barrios;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -366,9 +357,6 @@ export class FormularioConsultas {
           this.catalogoComunidad = data.cat_comunidad;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -383,9 +371,6 @@ export class FormularioConsultas {
           this.catalogoDemarcacion = data.cat_demarcacion_territorial;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -414,9 +399,50 @@ export class FormularioConsultas {
   }
 
   onCheckboxChange(event: any) {
+    console.log(event);
     const checked = event.target.checked;
     this.formularioRegistro?.get('presento_caso')?.setValue(checked ? 1 : 0);
+
+    if(checked) {
+      this.formularioRegistro?.get('ncompleto')?.disable();
+      this.formularioRegistro?.get('ooriginario')?.disable();
+      this.formularioRegistro?.get('pueblo')?.disable();
+      this.formularioRegistro?.get('barrio')?.disable();
+      this.formularioRegistro?.get('uterritorial')?.disable();
+      this.formularioRegistro?.get('otro')?.disable();
+      this.formularioRegistro?.get('cargo')?.disable();
+      this.formularioRegistro?.get('consulta')?.disable();
+      this.formularioRegistro?.get('forma')?.disable();
+      this.formularioRegistro?.get('observaciones')?.disable();
+
+
+      this.formularioRegistro?.get('ncompleto')?.clearValidators();
+      this.formularioRegistro?.get('ooriginario')?.clearValidators();
+      this.formularioRegistro?.get('pueblo')?.clearValidators();
+      this.formularioRegistro?.get('barrio')?.clearValidators();
+      this.formularioRegistro?.get('uterritorial')?.clearValidators();
+
+    } else {
+
+      this.formularioRegistro?.get('ncompleto')?.setValidators([Validators.required]);
+      this.formularioRegistro?.get('ooriginario')?.clearValidators();
+      this.formularioRegistro?.get('pueblo')?.clearValidators();
+      this.formularioRegistro?.get('barrio')?.clearValidators();
+      this.formularioRegistro?.get('uterritorial')?.clearValidators();
+
+      this.formularioRegistro?.get('ncompleto')?.enable();
+      this.formularioRegistro?.get('ooriginario')?.enable();
+      this.formularioRegistro?.get('pueblo')?.enable();
+      this.formularioRegistro?.get('barrio')?.enable();
+      this.formularioRegistro?.get('uterritorial')?.enable();
+      this.formularioRegistro?.get('otro')?.enable();
+      this.formularioRegistro?.get('cargo')?.enable();
+      this.formularioRegistro?.get('consulta')?.enable();
+      this.formularioRegistro?.get('forma')?.enable();
+      this.formularioRegistro?.get('observaciones')?.enable();
+    }
   }
+  
 
   formatFecha(data: any) {
     const isoDate = data;
@@ -457,10 +483,14 @@ export class FormularioConsultas {
               consulta: this.infoUpdate.descripcion_consulta,
               forma: this.infoUpdate.forma_atendio,
               observaciones: this.infoUpdate.observaciones,
-              presento_caso: this.infoUpdate.presento_caso === false ? "0" : "1"
+              presento_caso: !!this.infoUpdate.presento_caso
             }
 
             this.formularioRegistro!.patchValue(datosFormulariosCompletos);
+
+            if (this.formularioRegistro?.get('presento_caso')?.value === true || this.formularioRegistro?.get('presento_caso')?.value === 1) {
+              this.onCheckboxChange({ target: { checked: true } });
+            }
           
           } else {
             Swal.fire("No se encontraron registros");
