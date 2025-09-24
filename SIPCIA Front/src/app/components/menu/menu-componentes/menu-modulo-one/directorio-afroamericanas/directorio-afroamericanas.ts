@@ -41,13 +41,17 @@ export class DirectorioAfroamericanas implements OnInit {
   }
 
   nombreUser: string = '';
-  cargoUser: string = '';
-  data: any = data;
-  dataTable: any = [];
+  sortColumn: string = '';
   tokenSesion: string = '';
   searchTerm: string = '';
+  position: string = '';  
+  sortDirection: 'asc' | 'desc' = 'asc';
+  cargoUser: string = '';
+
+  data: any = data;
+  dataTable: any = [];
   allDatable: any[] = [];
-  position: string = '';
+
   tipo_usuario: number = 0;
   registroSeleccionadoId: number | undefined;
   area: number = 0;
@@ -81,18 +85,34 @@ export class DirectorioAfroamericanas implements OnInit {
     }
 
     this.dataTable = this.allDatable.filter((val) => {
+      const id_registro = (val.id_registro ?? '').toString().toLowerCase().trim();
       const folio = (val.folio ?? '').toString().toLowerCase().trim();
-      const nombre = (val.nombre_completo ?? '').toLowerCase().trim();
+      const demarcacion_territorial = (val.demarcacion_territorial ?? '').toLowerCase().trim();
+      const nombre_completo = (val.nombre_completo ?? '').toLowerCase().trim();
+      const pueblo_originario = (val.pueblo_originario ?? '').toLowerCase().trim();
       const pueblo = (val.pueblo_afro ?? '').toLowerCase().trim();
-      const comunidad = (val.comunidad ?? '').toLowerCase().trim();
-      const organizacion = (val.organizacion_afro ?? '').toLowerCase().trim();
+      const barrio = (val.barrio ?? '').toLowerCase().trim();
+      const comunidad = (val.comunidad_afro ?? '').toLowerCase().trim();
+      const unidad_territorial = (val.unidad_territorial ?? '').toLowerCase().trim();
+      const nombre_comunidad = (val.nombre_comunidad ?? '').toLowerCase().trim();
+      const nombre_instancia = (val.nombre_instancia ?? '').toLowerCase().trim();
+      const cargo_instancia = (val.cargo_instancia ?? '').toLowerCase().trim();
+      const domicilio = (val.domicilio ?? '').toLowerCase().trim();
 
       return (
+        id_registro.includes(rawFilter) ||
         folio.includes(rawFilter) ||
-        nombre.includes(rawFilter) ||
+        demarcacion_territorial.includes(rawFilter) ||
+        nombre_completo.includes(rawFilter) ||
+        pueblo_originario.includes(rawFilter) ||
         pueblo.includes(rawFilter) ||
+        barrio.includes(rawFilter) ||
         comunidad.includes(rawFilter) ||
-        organizacion.includes(rawFilter)
+        unidad_territorial.includes(rawFilter) ||
+        nombre_comunidad.includes(rawFilter) ||
+        nombre_instancia.includes(rawFilter) ||
+        cargo_instancia.includes(rawFilter) ||
+        domicilio.includes(rawFilter)
       );
     });
   }
@@ -134,4 +154,33 @@ export class DirectorioAfroamericanas implements OnInit {
   onValidateInfo() {
     this.router.navigate(['/menu']);
   };
+
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.dataTable.sort((a: any, b: any) => {
+      const valueA = a[column] ?? '';
+      const valueB = b[column] ?? '';
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return this.sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      } else {
+        return this.sortDirection === 'asc'
+          ? (valueA > valueB ? 1 : -1)
+          : (valueA < valueB ? 1 : -1);
+      }
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
+    return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+  }
 }

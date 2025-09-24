@@ -124,8 +124,6 @@ export class FormularioRegistro implements OnInit{
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.area = sessionStorage.getItem('area')!;
 
-    console.log(this.area);
-
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.formularioRegistro?.get('duninominal')?.setValue(this.area);
     this.id_usuario =  Number(sessionStorage.getItem('id_usuario')!);
@@ -246,7 +244,6 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_demarcacion() {
-    console.log(this.area);
     this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {

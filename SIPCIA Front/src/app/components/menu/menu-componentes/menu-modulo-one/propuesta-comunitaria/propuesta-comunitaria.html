@@ -66,20 +66,91 @@
       <table class="table">
         <thead>
           <tr class="table-primary">
-            <th scope="col">No.</th>
+            <th 
+              scope="col"
+              (click)="sortData('id_registro')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>No.</span>
+                <i [ngClass]="getSortIcon('id_registro')"></i>
+              </div></th>
             <th scope="col">Edición</th>
             <th scope="col">Generar Bitácora</th>
-            <th scope="col">Fecha de <br>registro</th>
-            <th scope="col">Demarcación Territorial</th>
-            <th scope="col">Denominación del <br>lugar o espacio</th>
-            <th scope="col">Domicilio</th>
-            <th scope="col">Institución propietaria, <br>encargada o responsable <br>del lugar o espacio</th>
+            <th 
+              scope="col"
+              (click)="sortData('fecha_registro')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Fecha de <br>registro</span>
+                <i [ngClass]="getSortIcon('fecha_registro')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('demarcacion_territorial')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Demarcación Territorial</span>
+                <i [ngClass]="getSortIcon('demarcacion_territorial')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('lugar_espacio')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Denominación del <br>lugar o espacio</span>
+                <i [ngClass]="getSortIcon('lugar_espacio')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('domicilio')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Domicilio</span>
+                <i [ngClass]="getSortIcon('domicilio')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('intitucion_propietaria')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Institución propietaria, <br>encargada o responsable <br>del lugar o espacio</span>
+                <i [ngClass]="getSortIcon('intitucion_propietaria')"></i>
+              </div>
+            </th>
             <th scope="col">¿Ha sido facilitado <br> el préstamo al IECM <br>con anterioridad?</th>
             <th scope="col">¿Considera que sea <br>posible un nuevo <br>préstamo al IECM?</th>
-            <th scope="col">Superficie <br>aproximada en m2 <br>del lugar o espacio</th>
-            <th scope="col">Aforo <br>(Capacidad de sillas, <br>butacas o asientos)</th>
+            <th 
+              scope="col"
+              (click)="sortData('superficie_espacio')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Superficie <br>aproximada en m2 <br>del lugar o espacio</span>
+                <i [ngClass]="getSortIcon('superficie_espacio')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('aforo')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Aforo <br>(Capacidad de sillas, <br>butacas o asientos)</span>
+                <i [ngClass]="getSortIcon('aforo')"></i>
+              </div>
+            </th>
             <th scope="col">Suficiente ventilación <br>como medida <br>preventiva Sanitaria</th>
-            <th scope="col">Observaciones</th>
+            <th 
+              scope="col"
+              (click)="sortData('observaciones')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Observaciones</span>
+                <i [ngClass]="getSortIcon('observaciones')"></i>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody>

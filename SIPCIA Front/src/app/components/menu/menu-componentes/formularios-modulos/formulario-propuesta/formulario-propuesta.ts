@@ -1,5 +1,5 @@
 import { Input, Component, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import * as data from '../../../../labels/label.json';
 import Swal from 'sweetalert2';
@@ -42,10 +42,11 @@ export class FormularioPropuesta {
   id_usuario: number = 0;
   cabecera: number = 0;
   tipo_usuario: number = 0;
-  optionAnterioridad: number = 0;
-  optionPrestamo: number = 0;
-  optionMedida: number = 0;
   selectedFile: File | null = null;
+
+
+  selectedFileName: string | null = null;
+  fileUploaded: boolean = false;
 
   constructor(
     private catalogos: Catalogos,
@@ -69,12 +70,22 @@ export class FormularioPropuesta {
       lugar_espacio: ['', [Validators.required]],
       intitucion_propietaria: ['', [Validators.required]],
       domicilio: ['', [Validators.required]],
-      superficie_espacio: ['', [Validators.required]],
-      aforo: ['', [Validators.required]],
+      superficie_espacio: new FormControl('', [
+        Validators.required,
+        Validators.min(0),
+        Validators.max(1000),
+        Validators.pattern('^[0-9]+$')
+      ]),
+      aforo: new FormControl('', [
+        Validators.required,
+        Validators.min(0),
+        Validators.max(1000),
+        Validators.pattern('^[0-9]+$')
+      ]),
       observaciones: [''],
-      anterioridad: ['', [Validators.required]],
-      prestamo: ['', [Validators.required]],
-      ventilacion: ['', [Validators.required]],
+      anterioridad: new FormControl('0', []),
+      prestamo: new FormControl('0'),
+      ventilacion: new FormControl('0'),
       consecutivo: [{value: '', disabled: true}]
     });
 
@@ -94,10 +105,21 @@ export class FormularioPropuesta {
     const file = event.target.files[0];
     if (file && file.name.endsWith(".kml")) {
       this.selectedFile = file;
+      this.selectedFileName = file.name;
+      this.fileUploaded = true;
     } else {
       Swal.fire("Solo se permiten archivos .kml");
       this.selectedFile = null;
+      this.selectedFileName = null;
+      this.fileUploaded = false;
     }
+  }
+
+  removeFile(fileInput: HTMLInputElement): void {
+    fileInput.value = '';
+    this.selectedFileName = null;
+    this.fileUploaded = false;
+    this.selectedFile = null;
   }
 
   saveForm(){
@@ -132,11 +154,11 @@ export class FormularioPropuesta {
               formData.append("fotografia", "0");
               formData.append("enlace_fotografia", "ruta/documento");              
               formData.append("intitucion_propietaria", this.formularioRegistro.get('intitucion_propietaria')?.value || "");
-              formData.append("prestamo_iecm", this.optionAnterioridad.toString());
-              formData.append("nuevo_prestamo", this.optionPrestamo.toString());
+              formData.append("prestamo_iecm", this.formularioRegistro.get('anterioridad')?.value || "0");
+              formData.append("nuevo_prestamo", this.formularioRegistro.get('prestamo')?.value || "0");
               formData.append("superficie_espacio", this.formularioRegistro.get('superficie_espacio')?.value || "");
               formData.append("aforo", this.formularioRegistro.get('aforo')?.value || "");
-              formData.append("ventilacion", this.optionMedida.toString());
+              formData.append("ventilacion", this.formularioRegistro.get('ventilacion')?.value || "0");
               formData.append("observaciones", this.formularioRegistro.get('observaciones')?.value || "");
               formData.append("modulo_registro", this.tipo_usuario.toString());
               formData.append("estado_registro", "1");
@@ -205,11 +227,11 @@ export class FormularioPropuesta {
               formData.append("fotografia", "0");
               formData.append("enlace_fotografia", "ruta/documento");           
               formData.append("intitucion_propietaria", this.formularioRegistro.get('intitucion_propietaria')?.value || "");
-              formData.append("prestamo_iecm", this.optionAnterioridad.toString());
-              formData.append("nuevo_prestamo", this.optionPrestamo.toString());
+              formData.append("prestamo_iecm", this.formularioRegistro.get('anterioridad')?.value || "0");
+              formData.append("nuevo_prestamo", this.formularioRegistro.get('prestamo')?.value || "0");
               formData.append("superficie_espacio", this.formularioRegistro.get('superficie_espacio')?.value || "");
               formData.append("aforo", this.formularioRegistro.get('aforo')?.value || "");
-              formData.append("ventilacion", this.optionMedida.toString());
+              formData.append("ventilacion", this.formularioRegistro.get('ventilacion')?.value || "0");
               formData.append("observaciones", this.formularioRegistro.get('observaciones')?.value || "");
               formData.append("usuario_registro", this.id_usuario.toString());
               formData.append("modulo_registro", this.tipo_usuario.toString());
@@ -252,7 +274,7 @@ export class FormularioPropuesta {
   }
 
   resetData() {
-    this.formularioRegistro?.reset();
+    this.onClose();
   };
 
   getDataById(id: number) {

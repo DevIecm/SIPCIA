@@ -96,23 +96,38 @@
 
                             <div class="container text-center">
                                 <div class="row">
-                                    <div class="col-6">
+                                     <div class="col-6">
                                         <div class="mb-3">
-                                            <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Ubicación georreferenciada <br>(kml)</label>
+                                            <label class="col-sm-8 form-label" style="color: #b7b5b8;">
+                                            *Ubicación georreferenciada <br>(kml)
+                                            </label>
                                         </div>
 
-                                        <input 
-                                            class="form-control"
-                                            type="file"
-                                            id="formFile"
-                                            (change)="onFileSelected($event)" 
-                                            accept=".kml" />
+                                        <div class="input-group">
+                                            <input
+                                                class="form-control"
+                                                type="file"
+                                                id="formFile"
+                                                (change)="onFileSelected($event)"
+                                                accept=".kml"
+                                                [disabled]="fileUploaded"
+                                                #fileInputRef
+                                            />
+                                            <button
+                                                *ngIf="fileUploaded"
+                                                type="button"
+                                                class="btn btn-outline-danger"
+                                                (click)="removeFile(fileInputRef)"
+                                            >
+                                            🗑️
+                                            </button>
+                                        </div>
 
-                                            <div *ngIf="infoUpdate?.enlace_ubicacion">
-                                            <small>Archivo actual: {{ infoUpdate.enlace_ubicacion }}</small>
-                                            </div>
-
+                                        <div *ngIf="infoUpdate?.enlace_ubicacion || selectedFileName">
+                                            <small>Archivo actual: {{ selectedFileName || infoUpdate?.enlace_ubicacion }}</small>
+                                        </div>
                                     </div>
+                                    
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br> lo determine la DEOEyG</label>
@@ -154,8 +169,7 @@
                                                             value="1" 
                                                             formControlName="anterioridad" 
                                                             class="form-check-input" 
-                                                            type="radio"  
-                                                            [(ngModel)]="optionAnterioridad">
+                                                            type="radio">
                                                         <label class="form-check-label" for="reverseCheck1">
                                                             Si
                                                         </label>
@@ -169,7 +183,7 @@
                                                             formControlName="anterioridad" 
                                                             class="form-check-input" 
                                                             type="radio" 
-                                                            [(ngModel)]="optionAnterioridad">
+                                                            >
                                                         <label class="form-check-label" for="reverseCheck1">
                                                             No
                                                         </label>
@@ -189,7 +203,6 @@
                                                         <input 
                                                             value="1"
                                                             formControlName="prestamo"
-                                                            [(ngModel)]="optionPrestamo"
                                                             style="border: 1px solid black;" 
                                                             class="form-check-input" 
                                                             type="radio">
@@ -203,7 +216,6 @@
                                                         <input 
                                                             value="0"
                                                             formControlName="prestamo"
-                                                            [(ngModel)]="optionPrestamo"
                                                             style="border: 1px solid black;" 
                                                             class="form-check-input" 
                                                             type="radio">
@@ -227,10 +239,15 @@
                                                             type="text"
                                                             formControlName="superficie_espacio"
                                                             class="form-control txt-input"
-                                                            pattern="[0-9]*"
+                                                            min="0"
+                                                            max="1000"
                                                             inputmode="numeric" 
-                                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                         >
+                                                    </div>
+                                                    <div *ngIf="formularioRegistro?.get('superficie_espacio')?.errors && formularioRegistro?.get('superficie_espacio')?.touched" class="text-danger mt-1">
+                                                        <div *ngIf="formularioRegistro?.get('superficie_espacio')?.errors?.['required']">Campo requerido</div>
+                                                        <div *ngIf="formularioRegistro?.get('superficie_espacio')?.errors?.['max']">Máximo permitido: 1000</div>
+                                                        <div *ngIf="formularioRegistro?.get('superficie_espacio')?.errors?.['pattern']">Solo se permiten números</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -245,13 +262,18 @@
                                                 <div class="col-12">
                                                     <div>
                                                         <input 
-                                                            pattern="[0-9]*"
+                                                            min="0"
+                                                            max="1000"
                                                             inputmode="numeric" 
-                                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                             type="text"
                                                             formControlName="aforo"
                                                             class="form-control txt-input"
                                                         >
+                                                    </div>
+                                                    <div *ngIf="formularioRegistro?.get('aforo')?.errors && formularioRegistro?.get('aforo')?.touched" class="text-danger mt-1">
+                                                        <div *ngIf="formularioRegistro?.get('aforo')?.errors?.['required']">Campo requerido</div>
+                                                        <div *ngIf="formularioRegistro?.get('aforo')?.errors?.['max']">Máximo permitido: 1000</div>
+                                                        <div *ngIf="formularioRegistro?.get('aforo')?.errors?.['pattern']">Solo se permiten números</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -268,7 +290,6 @@
                                                         <input 
                                                             value="1"
                                                             formControlName="ventilacion"
-                                                            [(ngModel)]="optionMedida"
                                                             style="border: 1px solid black;" 
                                                             class="form-check-input" 
                                                             type="radio">
@@ -282,7 +303,6 @@
                                                         <input 
                                                             value="0"
                                                             formControlName="ventilacion"
-                                                            [(ngModel)]="optionMedida"
                                                             style="border: 1px solid black;" 
                                                             class="form-check-input" 
                                                             type="radio">

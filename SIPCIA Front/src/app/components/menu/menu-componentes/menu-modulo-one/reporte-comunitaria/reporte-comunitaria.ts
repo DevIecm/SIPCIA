@@ -27,9 +27,6 @@ import { reporteService } from '../../../../../services/reportesDescargas/report
 
 export class ReporteComunitaria implements OnInit {
   
-  @ViewChild('miModal', { static: false }) miModal!: ElementRef;
-  @ViewChild('formHijo', { static: false }) formHijo!: FormularioComunitaria;
-
   nombreUser: string = '';
   cargoUser: string = '';
   tokenSesion: string = '';
@@ -143,23 +140,22 @@ export class ReporteComunitaria implements OnInit {
     if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
     return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
   }
- 
-descargar(item: any): void {
-  this.miServicio.descargarDocumento(item.enlace_ubicacion, this.tokenSesion).subscribe({
-    next: (blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
+  
+  descargar(item: any): void {
+    this.miServicio.descargarDocumento(item.enlace_ubicacion, this.tokenSesion).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
 
-      //a.download ="Ubicación georreferenciada.kml"
-      a.download =item.nombre_archivo;
+        a.download =item.nombre_archivo;
 
-      a.click();
-      window.URL.revokeObjectURL(url);
-    },
-    error: (err) => console.error('Error al descargar archivo:', err)
-  });
-}
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
 
   getRegister() {
     this.reporteService.getRegisterDataTable(this.area_adscripcion, this.tokenSesion).subscribe({

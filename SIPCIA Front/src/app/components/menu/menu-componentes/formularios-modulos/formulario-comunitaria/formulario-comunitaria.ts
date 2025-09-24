@@ -29,7 +29,6 @@ export class FormularioComunitaria {
   catalogoDemarcacion: any = [];
   infoUpdate: any = [];
 
-  opcionDemarcacion: any = null;
 
   tokenSesion: string = '';
   today: string = '';
@@ -39,7 +38,12 @@ export class FormularioComunitaria {
   id_usuario: number = 0;
   cabecera: number = 0;
   tipo_usuario: number = 0;
+
+  selectedFileName: string | null = null;
+  fileUploaded: boolean = false;
   selectedFile: File | null = null;
+  opcionDemarcacion: any = null;
+
 
   constructor(
     private catalogos: Catalogos,
@@ -53,10 +57,21 @@ export class FormularioComunitaria {
     const file = event.target.files[0];
     if (file && file.name.endsWith(".kml")) {
       this.selectedFile = file;
+      this.selectedFileName = file.name;
+      this.fileUploaded = true;
     } else {
       Swal.fire("Solo se permiten archivos .kml");
       this.selectedFile = null;
+      this.selectedFileName = null;
+      this.fileUploaded = false;
     }
+  }
+
+  removeFile(fileInput: HTMLInputElement): void {
+    fileInput.value = '';
+    this.selectedFileName = null;
+    this.fileUploaded = false;
+    this.selectedFile = null;
   }
 
   saveForm(){
@@ -95,7 +110,7 @@ export class FormularioComunitaria {
           formData.append("modulo_registro", this.tipo_usuario.toString());
           formData.append("estado_registro", "1");
           formData.append("tipo_usuario", this.tipo_usuario.toString());
-          console.log("formData", formData);
+
           this.registerService.nuinsertaRegistro(formData, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
@@ -143,9 +158,9 @@ export class FormularioComunitaria {
             }
 
             if (this.selectedFile) {
-            formData.append("kmlFile", this.selectedFile);          
-           }else if(this.infoUpdate.enlace_ubicacion){
-            formData.append("kmlFile", this.infoUpdate.enlace_ubicacion);
+              formData.append("kmlFile", this.selectedFile);          
+            }else if(this.infoUpdate.enlace_ubicacion){
+              formData.append("kmlFile", this.infoUpdate.enlace_ubicacion);
             }
 
             if (this.idRegistro !== undefined) {
@@ -168,7 +183,7 @@ export class FormularioComunitaria {
             this.registerService.nuupdateRegistro(formData, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
-                  console.log("formData", formData);
+
                   Swal.fire({
                     title: "Se han guardado correctamentelos cambios.",
                     icon: "success",
@@ -272,8 +287,6 @@ export class FormularioComunitaria {
             };
 
             this.formularioRegistro!.patchValue(datosFormularioCompletos);
-
-            console.log("datosFormularioCompletos", datosFormularioCompletos);
           
           } else {
             Swal.fire("No se encontraron registros");

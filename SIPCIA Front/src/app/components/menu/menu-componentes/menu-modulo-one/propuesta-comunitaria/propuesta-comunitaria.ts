@@ -31,6 +31,8 @@ export class PropuestaComunitaria implements OnInit {
   cargoUser: string = '';
   tokenSesion: string = '';
   position: string = '';
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
   searchTerm: string = '';
 
   dataTable: any = [];
@@ -79,13 +81,29 @@ export class PropuestaComunitaria implements OnInit {
       return;
     }
 
+    console.log(this.allDatable)
+
     this.dataTable = this.allDatable.filter((val) => {
+      const id_registro = (val.id_registro ?? '').toString().toLowerCase().trim();
+      const fecha_registro = (val.fecha_registro ?? '').toString().toLowerCase().trim();
       const demarcacion_territorial = (val.demarcacion_territorial ?? '').toString().toLowerCase().trim();
+      const lugar_espacio = (val.lugar_espacio ?? '').toLowerCase().trim();
       const domicilio = (val.domicilio ?? '').toLowerCase().trim();
+      const intitucion_propietaria = (val.intitucion_propietaria ?? '').toLowerCase().trim();
+      const superficie_espacio = (val.superficie_espacio ?? '').toString().toLowerCase().trim();
+      const aforo = (val.aforo ?? '').toString().toLowerCase().trim();
+      const observaciones = (val.observaciones ?? '').toLowerCase().trim();
 
       return (
+        id_registro.includes(rawFilter) ||
+        fecha_registro.includes(rawFilter) ||
         demarcacion_territorial.includes(rawFilter) ||
-        domicilio.includes(rawFilter)
+        lugar_espacio.includes(rawFilter) ||
+        domicilio.includes(rawFilter) ||
+        intitucion_propietaria.includes(rawFilter) ||
+        superficie_espacio.includes(rawFilter) ||
+        aforo.includes(rawFilter) ||
+        observaciones.includes(rawFilter)
       );
     });
   };
@@ -137,5 +155,34 @@ export class PropuestaComunitaria implements OnInit {
   closeModal() {
     this.showModal = false;
     this.getRegister();
+  }
+
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.dataTable.sort((a: any, b: any) => {
+      const valueA = a[column] ?? '';
+      const valueB = b[column] ?? '';
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return this.sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      } else {
+        return this.sortDirection === 'asc'
+          ? (valueA > valueB ? 1 : -1)
+          : (valueA < valueB ? 1 : -1);
+      }
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
+    return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
   }
 }
