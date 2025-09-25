@@ -1,9 +1,7 @@
-import { Input, Component, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
+import { Input, Component, Output, EventEmitter, input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
-import * as data from '../../../../labels/label.json';
 import Swal from 'sweetalert2';
-import { Register } from '../../../../../services/registerService/register';
 import { Auth } from '../../../../../services/authService/auth';
 import { Catalogos } from '../../../../../services/catService/catalogos';
 import { Reportes } from '../../../../../services/reporteService/reportes';
@@ -21,7 +19,7 @@ import { Reportes } from '../../../../../services/reporteService/reportes';
 })
 export class FormularioRegistroa {
 
-  @Input() isOpen = false;
+  isOpen = input<boolean>();
   @Input() idRegistroC: any;
   @Input() idRegistro : number | undefined;
   @Output() close = new EventEmitter<void>();
@@ -37,9 +35,6 @@ export class FormularioRegistroa {
   catalogoReporte: any = [];
   catalogoFecha: any = [];
   infoUpdate: any = [];
-  selectedFoto: File | null = null;
-
-  opcionDemarcacion: any = null;
 
   tokenSesion: string = '';
   today: string = '';
@@ -50,6 +45,8 @@ export class FormularioRegistroa {
   cabecera: number = 0;
   tipo_usuario: number = 0;
 
+  selectedFoto: File | null = null;
+  opcionDemarcacion: any = null;
   selectedFile: File | null = null;
   imagePreviewUrl: string | null = null;
 
@@ -100,16 +97,40 @@ export class FormularioRegistroa {
               const formData = new FormData();
 
             if (this.selectedFoto) {
-              
               formData.append("fotografia", this.selectedFoto);
             }
+
+            // console.log("LLegeiuaas++++++")
+
+            // const pueblo_originario = this.formularioRegistro.get('ooriginario')?.value;
+            // console.log("+++++++++++++++++", pueblo_originario)
+            // if (pueblo_originario !== null && pueblo_originario !== undefined) {
+            //   formData.append("ooriginario", pueblo_originario);
+            // }
+
+            // const pueblo = this.formularioRegistro.get('pueblo')?.value;
+            // if (pueblo !== null && pueblo !== undefined) {
+            //   formData.append("pueblo", pueblo);
+            // }
+
+            // const unidad_territorial = this.formularioRegistro.get('uterritorial')?.value;
+            // if (unidad_territorial !== null && unidad_territorial !== undefined) {
+            //   formData.append("unidad_territorial", unidad_territorial);
+            // }
+
+            
+            //  const barrio = this.formularioRegistro.get('barrio')?.value;
+            // console.log("+++++++++++++++++", barrio)
+            // if (barrio !== null && barrio !== undefined) {
+            //   formData.append("barrio", barrio);
+            // }
 
             formData.append("distrito_electoral", this.area.toString());
             formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion')?.value || null);
             formData.append("nombre_completo", this.formularioRegistro.get('ncompleto')?.value || "");
-            formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || null);
-            formData.append("pueblo", this.formularioRegistro.get('pueblo')?.value || null);
-            formData.append("barrio", this.formularioRegistro.get('barrio')?.value || null);
+            formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || "");
+            formData.append("pueblo", this.formularioRegistro.get('pueblo')?.value || "");
+            formData.append("barrio", this.formularioRegistro.get('barrio')?.value || "");
             formData.append("unidad_territorial", this.formularioRegistro.get('uterritorial')?.value || "");
             formData.append("otro", this.formularioRegistro.get('otro')?.value || "");
             formData.append("comunidad", this.formularioRegistro.get('comunidad')?.value || "");
@@ -176,15 +197,36 @@ export class FormularioRegistroa {
               return;
             }
 
-              if (this.selectedFoto) {
-                formData.append("fotografia", this.selectedFoto);
-              } else if (this.infoUpdate.fotografia_url) {
-                formData.append("fotografia", this.infoUpdate.fotografia_url);
-              }
+            if (this.selectedFoto) {
+              formData.append("fotografia", this.selectedFoto);
+            } else if (this.infoUpdate.fotografia_url) {
+              formData.append("fotografia", this.infoUpdate.fotografia_url);
+            }
 
             if (this.idRegistro !== undefined) {
               formData.append("id_registro", this.idRegistro.toString());
             }
+
+            
+            // const pueblo_originario = this.formularioRegistro.get('ooriginario')?.value;
+            // if (pueblo_originario !== null && pueblo_originario !== undefined) {
+            //   formData.append("ooriginario", pueblo_originario);
+            // }
+
+            // const barrio = this.formularioRegistro.get('barrio')?.value;
+            // if (barrio !== null && barrio !== undefined) {
+            //   formData.append("barrio", barrio);
+            // }
+
+            // const pueblo = this.formularioRegistro.get('pueblo')?.value;
+            // if (pueblo !== null && barrio !== undefined) {
+            //   formData.append("pueblo", pueblo);
+            // }
+
+            // const unidad_territorial = this.formularioRegistro.get('unidad_territorial')?.value;
+            // if (unidad_territorial !== null && unidad_territorial !== undefined) {
+            //   formData.append("unidad_territorial", unidad_territorial);
+            // }
 
               formData.append("distrito_electoral", this.area.toString());
               formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion')?.value || "");
@@ -266,17 +308,17 @@ export class FormularioRegistroa {
       demarcacion: [''],
       ooriginario: [''],
       uterritorial: [''],
-      ncompleto: [''],
+      ncompleto: ['', [Validators.required]],
       pueblo: [''],
       barrio: [''],
       otro: [''],
-      comunidad: [''],
+      comunidad: ['', [Validators.required]],
       interes: [''],
       ninstitucion: [''],
       cargo: [''],
       domicilio: [''],
       telefono: [''],
-      correo: ['']
+      correo: ['', [Validators.required]],
     });
 
     if(!this.idRegistro){
@@ -407,7 +449,9 @@ export class FormularioRegistroa {
           this.infoUpdate = data.getRegistroInstituciones[0];
           
           if(data.getRegistroInstituciones.length > 0) {
+
             this.imagePreviewUrl = data.getRegistroInstituciones[0].fotografia_url;
+
             const datosFormularioCompletos = {
               demarcacion: this.infoUpdate.id_demarcacion,
               ooriginario: this.infoUpdate.id_pueblo_originario,

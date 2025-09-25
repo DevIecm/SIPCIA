@@ -132,7 +132,6 @@
                                                         formControlName="barrio"
                                                         class="select-input form-select" 
                                                         aria-label="Default select example"
-                                                        [(ngModel)]="opcionDemarcacion"
                                                     >
                                                         <option selected></option>
                                                         @for (item of catalogoBarrios; track item) {
@@ -209,7 +208,7 @@
                                             <div class="container text-center">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <button type="submit" class="btn button-register">Registrar</button>
+                                                        <button [disabled]="formularioRegistro?.invalid" type="submit" class="btn button-register">Registrar</button>
                                                     </div>
                                                     <div class="col-6">
                                                         <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>

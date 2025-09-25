@@ -252,7 +252,7 @@ export class FormularioDocumentos {
   }
 
   resetData(): void {
-    this.formularioRegistro?.reset();
+    this.onClose();
     while (this.direccionesDistritales.length > 1) {
       this.direccionesDistritales.removeAt(0);
     }
