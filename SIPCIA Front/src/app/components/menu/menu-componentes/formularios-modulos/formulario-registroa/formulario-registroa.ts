@@ -53,52 +53,23 @@ export class FormularioRegistroa {
   selectedFile: File | null = null;
   imagePreviewUrl: string | null = null;
 
-  /*onFileSelected(event: Event): void {
+  onFotoSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFoto = input.files[0];
       this.previewImage();
     }
   }
-   */
-   /*
 
-  onFotoSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    this.selectedFoto = input.files[0];
-    this.previewImage();
-  }
-  }
-
-  
   previewImage(): void {
-    if (this.selectedFile) {
+    if (this.selectedFoto) {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.imagePreviewUrl = e.target?.result as string;
       };
-      reader.readAsDataURL(this.selectedFile);
+      reader.readAsDataURL(this.selectedFoto);
     }
-  }  */
-
-  onFotoSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    this.selectedFoto = input.files[0];
-    this.previewImage();
   }
-}
-
-previewImage(): void {
-  if (this.selectedFoto) {
-    const reader = new FileReader();
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      this.imagePreviewUrl = e.target?.result as string;
-    };
-    reader.readAsDataURL(this.selectedFoto);
-  }
-}
 
   constructor(
     private catalogos: Catalogos,
@@ -129,29 +100,34 @@ previewImage(): void {
               const formData = new FormData();
 
             if (this.selectedFoto) {
+              
               formData.append("fotografia", this.selectedFoto);
             }
 
-              formData.append("distrito_electoral", this.area.toString());
-              formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion')?.value || "");
-              formData.append("nombre_completo", this.formularioRegistro.get('ncompleto')?.value || "");
-              formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || "");
-              formData.append("pueblo", this.formularioRegistro.get('pueblo')?.value || "");
-              formData.append("barrio", this.formularioRegistro.get('barrio')?.value || "");
-              formData.append("unidad_territorial", this.formularioRegistro.get('uterritorial')?.value || "");
-              formData.append("otro", this.formularioRegistro.get('otro')?.value || "");
-              formData.append("comunidad", this.formularioRegistro.get('comunidad')?.value || "");
-              formData.append("interes_profesional", this.formularioRegistro.get('interes')?.value || "");
-              formData.append("nombre_institucion", this.formularioRegistro.get('ninstitucion')?.value || "");
-              formData.append("cargo", this.formularioRegistro.get('cargo')?.value || "");
-              formData.append("domicilio", this.formularioRegistro.get('domicilio')?.value || "");
-              formData.append("telefono", this.formularioRegistro.get('telefono')?.value || "");
-              formData.append("correo_electronico", this.formularioRegistro.get('correo')?.value || "");
-              formData.append("usuario_registro", this.id_usuario.toString());
-              formData.append("modulo_registro", this.tipo_usuario.toString());
-              formData.append("estado_registro", "1");
-              formData.append("cv_documento", "0");
-              formData.append("cv_enlace", "ruta/documento");
+            formData.append("distrito_electoral", this.area.toString());
+            formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion')?.value || null);
+            formData.append("nombre_completo", this.formularioRegistro.get('ncompleto')?.value || "");
+            formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || null);
+            formData.append("pueblo", this.formularioRegistro.get('pueblo')?.value || null);
+            formData.append("barrio", this.formularioRegistro.get('barrio')?.value || null);
+            formData.append("unidad_territorial", this.formularioRegistro.get('uterritorial')?.value || "");
+            formData.append("otro", this.formularioRegistro.get('otro')?.value || "");
+            formData.append("comunidad", this.formularioRegistro.get('comunidad')?.value || "");
+            formData.append("interes_profesional", this.formularioRegistro.get('interes')?.value || "");
+            formData.append("nombre_institucion", this.formularioRegistro.get('ninstitucion')?.value || "");
+            formData.append("cargo", this.formularioRegistro.get('cargo')?.value || "");
+            formData.append("domicilio", this.formularioRegistro.get('domicilio')?.value || "");
+            formData.append("telefono", this.formularioRegistro.get('telefono')?.value || "");
+            formData.append("correo_electronico", this.formularioRegistro.get('correo')?.value || "");
+            formData.append("usuario_registro", this.id_usuario.toString());
+            formData.append("modulo_registro", this.tipo_usuario.toString());
+            formData.append("estado_registro", "1");
+            formData.append("cv_documento", "0");
+            formData.append("cv_enlace", "ruta/documento");
+
+            formData.forEach((value, key) => {
+              console.log(key + ': ' + value);
+            });
 
             this.registerService.nuinsertaRegistroAcompa(formData, this.tokenSesion).subscribe({
               next: (data) => {
@@ -183,6 +159,7 @@ previewImage(): void {
           }
         });
       } else {
+
         Swal.fire({
           title: "¿Está seguro que desea guardar estos cambios?",
           icon: "warning",
@@ -266,7 +243,7 @@ previewImage(): void {
   }
 
   resetData() {
-    this.formularioRegistro?.reset();
+    this.onClose();
   };
 
   onClose() {
@@ -328,9 +305,6 @@ previewImage(): void {
           this.catalogoUnidadTerritorial = data.cat_unidad_territorial;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -345,9 +319,6 @@ previewImage(): void {
           this.catalogoPueblos = data.cat_pueblos;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -362,9 +333,6 @@ previewImage(): void {
           this.catalogoPueblor = data.cat_pueblos_originarios;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -379,9 +347,6 @@ previewImage(): void {
           this.catalogoReporte = data.cat_numero_reporte;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -396,9 +361,6 @@ previewImage(): void {
           this.catalogoFecha = data.cat_fecha_periodo;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -413,9 +375,6 @@ previewImage(): void {
           this.catalogoBarrios = data.cat_barrios;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
@@ -430,9 +389,6 @@ previewImage(): void {
           this.catalogoComunidad = data.cat_comunidad;
         }
       }, error: (err) => {
-        
-        Swal.fire("Error al cargar catalogo");
-
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }

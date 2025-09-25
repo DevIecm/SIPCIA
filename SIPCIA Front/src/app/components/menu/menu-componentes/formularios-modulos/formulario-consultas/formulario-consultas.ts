@@ -104,8 +104,6 @@ export class FormularioConsultas {
               estado_registro: 1,
             };
 
-            console.log(datosFormularioCompletos);
-
             this.registerService.insertaRegistroConsultas(datosFormularioCompletos, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
@@ -177,8 +175,6 @@ export class FormularioConsultas {
               modulo_registro: this.tipo_usuario,
               estado_registro: 1,
             };
-
-            console.log(datosFormularioCompletos);
 
             this.registerService.updateRegistroConsultas(datosFormularioCompletos, this.tokenSesion).subscribe({
               next: (data) => {
@@ -399,7 +395,6 @@ export class FormularioConsultas {
   }
 
   onCheckboxChange(event: any) {
-    console.log(event);
     const checked = event.target.checked;
     this.formularioRegistro?.get('presento_caso')?.setValue(checked ? 1 : 0);
 

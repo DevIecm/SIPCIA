@@ -81,8 +81,6 @@ export class PropuestaComunitaria implements OnInit {
       return;
     }
 
-    console.log(this.allDatable)
-
     this.dataTable = this.allDatable.filter((val) => {
       const id_registro = (val.id_registro ?? '').toString().toLowerCase().trim();
       const fecha_registro = (val.fecha_registro ?? '').toString().toLowerCase().trim();

@@ -23,9 +23,6 @@ import { reporteService } from '../../../../../services/reportesDescargas/report
 })
 export class CatalogoAcompanamiento implements OnInit {
 
-  @ViewChild('miModal', { static: false }) miModal!: ElementRef;
-  @ViewChild('formHijo', { static: false }) formHijo!: FormularioRegistroa;
-  
   nombreUser: string = '';
   cargoUser: string = '';
   tokenSesion: string = '';
@@ -72,7 +69,6 @@ export class CatalogoAcompanamiento implements OnInit {
       window.URL.revokeObjectURL(link.href);
     });
   }
-
  
   search(): void {
     const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
@@ -83,10 +79,30 @@ export class CatalogoAcompanamiento implements OnInit {
     }
 
     this.dataTable = this.allDatable.filter((val) => {
+      const id_registro = (val.id_registro ?? '').toString().toLowerCase().trim();
       const nombre_completo = (val.nombre_completo ?? '').toString().toLowerCase().trim();
-
+      const pueblo_originario = (val.pueblo_originario ?? '').toString().toLowerCase().trim();
+      const pueblo = (val.pueblo ?? '').toString().toLowerCase().trim();
+      const barrio = (val.barrio ?? '').toString().toLowerCase().trim();
+      const ut = (val.ut ?? '').toString().toLowerCase().trim();
+      const otro  = (val.otro ?? '').toString().toLowerCase().trim();
+      const comunidad = (val.comunidad ?? '').toString().toLowerCase().trim();
+      const interes_profesional = (val.interes_profesional ?? '').toString().toLowerCase().trim();
+      const nombre_institucion = (val.nombre_institucion ?? '').toString().toLowerCase().trim();
+      const npueblo = (val.npueblo ?? '').toString().toLowerCase().trim();
+               
       return (
-        nombre_completo.includes(rawFilter)      
+        id_registro.includes(rawFilter) ||
+        nombre_completo.includes(rawFilter) ||
+        pueblo_originario.includes(rawFilter) ||
+        pueblo.includes(rawFilter) ||
+        barrio.includes(rawFilter) ||
+        ut.includes(rawFilter) ||
+        otro.includes(rawFilter) ||
+        comunidad.includes(rawFilter) ||
+        interes_profesional.includes(rawFilter) ||
+        nombre_institucion.includes(rawFilter) ||
+        npueblo.includes(rawFilter)
       );
     });
   };
@@ -137,7 +153,6 @@ export class CatalogoAcompanamiento implements OnInit {
         if(err.error.code === 100) {
           Swal.fire("No se encontraron registros")
         }
-
       }
     });
   }

@@ -103,6 +103,7 @@
                                                         <label class="form-label">*Nombre (s) y apellidos completos:</label>
                                                         <input 
                                                             type="text"
+                                                            maxlength="200"
                                                             formControlName="ncompleto"
                                                             class="form-control txt-input"
                                                         >
@@ -148,6 +149,7 @@
                                                         <label class="form-label">Otro</label>
                                                         <input 
                                                             type="text"
+                                                            maxlength="200"
                                                             formControlName="otro"
                                                             class="form-control txt-input"
                                                         >
@@ -178,6 +180,7 @@
                                                 <label class="form-label">Interés profesional como:</label>
                                                 <input 
                                                     type="text"
+                                                    maxlength="200"
                                                     formControlName="interes"
                                                     class="form-control txt-input"
                                                 >
@@ -188,6 +191,7 @@
                                                 <label class="form-label">Nombre de la institución:</label>
                                                 <input 
                                                     type="text"
+                                                    maxlength="200"
                                                     formControlName="ninstitucion"
                                                     class="form-control txt-input"
                                                 >
@@ -196,6 +200,7 @@
                                                 <label class="form-label">Cargo:</label>
                                                 <input 
                                                     type="text"
+                                                    maxlength="200"
                                                     formControlName="cargo"
                                                     class="form-control txt-input"
                                                 >
@@ -219,6 +224,7 @@
                                             <label class="form-label">Domicilio:</label>
                                             <input 
                                                 type="text"
+                                                maxlength="200"
                                                 formControlName="domicilio"
                                                 class="form-control txt-input"
                                             >
@@ -227,7 +233,11 @@
                                             <label class="form-label">Teléfono:</label>
                                             <input 
                                                 type="text"
+                                                maxlength="10"
+                                                inputmode="numeric" 
                                                 formControlName="telefono"
+                                                pattern="[0-9]*"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                 class="form-control txt-input"
                                             >
                                         </div>
@@ -236,6 +246,7 @@
                                             <input 
                                                 type="text"
                                                 formControlName="correo"
+                                                maxlength="200"
                                                 class="form-control txt-input"
                                             >
                                         </div>

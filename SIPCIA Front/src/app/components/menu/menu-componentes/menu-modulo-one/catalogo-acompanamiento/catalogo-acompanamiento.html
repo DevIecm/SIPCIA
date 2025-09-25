@@ -69,19 +69,107 @@
       <table class="table">
         <thead>
           <tr class="table-primary">
-            <th scope="col">No.</th>
+            <th 
+              scope="col"
+              (click)="sortData('id_registro')"
+              style="cursor: pointer;">
+              <div>
+                <span>No.</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('id_registro')"></i>
+              </div>
+            </th>
             <th scope="col">Edición</th>
             <th scope="col">Generar <br> Bitácora</th>
-            <th scope="col">Nombre (s) y apellidos completos</th>
-            <th scope="col">Pueblo Originario</th>
-            <th scope="col">Pueblo</th>
-            <th scope="col">Barrio</th>
-            <th scope="col">Unidad Territorial</th>
-            <th scope="col">Otro</th>
-            <th scope="col">Comunidad</th>
-            <th scope="col">Interés profesional</th>
-            <th scope="col">Nombre de la Institución</th>
-            <th scope="col">Cargo</th>
+            <th 
+              scope="col"
+              (click)="sortData('nombre_completo')"
+              style="cursor: pointer;">
+              <div>
+                <span>Nombre (s) y apellidos completos</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('nombre_completo')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('pueblo_originario')"
+              style="cursor: pointer;">
+              <div>
+                <span>Pueblo Originario</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('pueblo_originario')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('pueblo')"
+              style="cursor: pointer;">
+              <div>
+                <span>Pueblo</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('pueblo')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('barrio')"
+              style="cursor: pointer;">
+              <div>
+                <span>Barrio</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('barrio')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('ut')"
+              style="cursor: pointer;">
+              <div>
+                <span>Unidad Territorial</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('ut')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('otro')"
+              style="cursor: pointer;">
+              <div>
+                <span>Otro</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('otro')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('comunidad')"
+              style="cursor: pointer;">
+              <div>
+                <span>Comunidad</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('comunidad')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('interes_profesional')"
+              style="cursor: pointer;">
+              <div>
+                <span>Interés profesional</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('interes_profesional')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('nombre_institucion')"
+              style="cursor: pointer;">
+              <div>
+                <span>Nombre de la Institución</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('nombre_institucion')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('npueblo')"
+              style="cursor: pointer;">
+              <div>
+                <span>Cargo</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('npueblo')"></i>
+              </div>
+            </th>
             <th scope="col">Documentos / CV</th>
           </tr>
         </thead>
