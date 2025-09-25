@@ -86,7 +86,7 @@ router.get("/cat_pueblos", Midleware.verifyToken, async (req, res) => {
                     distrito_local,
                     demarcacion_territorial
                 FROM cat_pueblos
-                where cp.distrito_local = @id_distrito;`);
+                where distrito_local = @id_distrito;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
@@ -228,7 +228,9 @@ router.get("/cat_demarcacion_territorial", Midleware.verifyToken, async (req, re
     const pool = await connectToDatabase();
     const result = await pool.request()
         .input('id_distrito', sql.Int, id_distrito)
-        .query(`select DISTINCT dd.distrito, dt.demarcacion_territorial  
+        .query(`select DISTINCT dd.distrito, 
+                dd.demarcacion_territorial as id,
+                dt.demarcacion_territorial  
                 from distritos_demarcaciones dd 
                 join demarcacion_territorial dt on dt.id = dd.demarcacion_territorial
                 where  dd.distrito = @id_distrito;`);
@@ -315,6 +317,36 @@ router.get("/cat_lenguas_indigenas", Midleware.verifyToken, async (req, res) => 
       return res.status(404).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
+});
+
+router.get("/getCabezera", Midleware.verifyToken, async (req, res) => {
+  try{
+
+    const { id_distrito, demarcacion } = req.query;
+
+    if (!id_distrito || !demarcacion) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
+    const pool = await connectToDatabase();
+    const result = await pool.request()    
+      .input('id_distrito', sql.Int, id_distrito)
+      .input('demarcacion', sql.Int, demarcacion)
+      .query(`select distrito_cabecera 
+               from distritos_demarcaciones
+               where distrito = @id_distrito and demarcacion_territorial = @demarcacion;`);
+
+              if (result.recordset.length > 0) {
+            return res.status(200).json({
+                getCabezera: result.recordset
+            });
+        } else {
+            return res.status(404).json({ message: "No se encontraron registros", code: 100})
+        }
+  }catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error de servidor", error: error.message });
   }

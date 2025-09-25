@@ -64,17 +64,20 @@ router.post("/altaInstituciones", Midleware.verifyToken, uploadFoto.single("foto
         cv_documento,
         cv_enlace
     } = req.body
+   
+    const pueblo_originarioInt = pueblo_originario === "" ? null : parseInt(pueblo_originario, 10);
+    const puebloInt = pueblo === "" ? null : parseInt(pueblo, 10);
+    const barrioInt = barrio === "" ? null : parseInt(barrio, 10);
+    const unidad_territorialInt = unidad_territorial === "" ? null : parseInt(unidad_territorial, 10);
 
-    if(demarcacion_territorial == null || demarcacion_territorial === '' ||
-        nombre_completo ==  null || nombre_completo === '' ||
-        pueblo_originario == null || pueblo_originario === '' ||
-        barrio == null || barrio === '' ||
-        barrio == null || barrio === '' ||
-        unidad_territorial == null || unidad_territorial === '' ||
-        comunidad == null || comunidad === '' ||
-        usuario_registro ==  null || usuario_registro === '' ||
-        modulo_registro == null || modulo_registro === '' ||
-        estado_registro == null || estado_registro === ''
+            
+    if(!demarcacion_territorial ||
+        !nombre_completo ||
+        !unidad_territorial ||
+        !comunidad  ||
+        !usuario_registro  ||
+        !modulo_registro  ||
+        !estado_registro 
     ){
         return res.status(400).json({ message: "Datos requeridos"})
     }
@@ -109,10 +112,10 @@ router.post("/altaInstituciones", Midleware.verifyToken, uploadFoto.single("foto
         .input('fotografia', sql.VarChar, fotografia)
         .input('demarcacion_territorial', sql.Int, demarcacion_territorial)
         .input('nombre_completo', sql.VarChar, nombre_completo)
-        .input('pueblo_originario',sql.Int, pueblo_originario)
-        .input('pueblo',sql.Int, pueblo)
-        .input('barrio',sql.Int, barrio)
-        .input('unidad_territorial', sql.Int, unidad_territorial)
+        .input('pueblo_originario', sql.Int, pueblo_originarioInt)
+        .input('pueblo',sql.Int, puebloInt)
+        .input('barrio',sql.Int, barrioInt)
+        .input('unidad_territorial', sql.Int, unidad_territorialInt)
         .input('otro', sql.VarChar, otro)
         .input('comunidad',sql.Int, comunidad)
         .input('interes_profesional',sql.VarChar, interes_profesional)
@@ -224,17 +227,9 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
         cv_enlace
     } = req.body;
 
-    if (demarcacion_territorial == null || demarcacion_territorial === '' ||
-        nombre_completo == null || nombre_completo === '' ||
-        pueblo_originario == null || pueblo_originario === '' ||
-        barrio == null || barrio === '' ||
-        unidad_territorial == null || unidad_territorial === '' ||
-        comunidad == null || comunidad === '' ||
-        usuario_registro == null || usuario_registro === '' ||
-        modulo_registro == null || modulo_registro === '' ||
-        estado_registro == null || estado_registro === ''
-    ) {
-        return res.status(400).json({ message: "Datos requeridos" })
+    if (!demarcacion_territorial || !nombre_completo || !unidad_territorial || !comunidad ||
+        !usuario_registro || !modulo_registro || !estado_registro) {
+        return res.status(400).json({ message: "Datos requeridos" });
     }
 
     try {
@@ -242,6 +237,7 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
         const transaction = pool.transaction();
         await transaction.begin();
 
+        // Obtener registro anterior
         const resultAnterior = await transaction.request()
             .input('id', sql.Int, id_registro)
             .query('SELECT * FROM registro_instituciones WHERE id = @id');
@@ -251,12 +247,7 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
             return res.status(404).json({ message: "Registro no encontrado" });
         }
 
-        let fotografiaFinal;
-        if (req.file) {
-            fotografiaFinal = "/uploads/fotos/" + req.file.filename;
-        } else {
-            fotografiaFinal = registroAnterior.fotografia;
-        }
+        let fotografiaFinal = req.file ? "/uploads/fotos/" + req.file.filename : registroAnterior.fotografia;
 
         const nuevosDatos = {
             distrito_electoral,
@@ -282,22 +273,38 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
             cv_enlace
         };
 
-        const camposEditables = Object.keys(nuevosDatos);
+        // Campos que son enteros en la BD
+        const intFields = [
+            'pueblo_originario', 'pueblo', 'barrio', 'unidad_territorial'
+        ];
 
-        const cambios = {};
-        for (const campo of camposEditables) {
-            const valorAnterior = registroAnterior[campo];
-            const valorNuevo = nuevosDatos[campo];
-            if (valorAnterior != valorNuevo) {
-                cambios[campo] = valorNuevo;
+        for (const campo of intFields) {
+            if (nuevosDatos[campo] === "" || nuevosDatos[campo] == null) {
+                nuevosDatos[campo] = null;
+            } else {
+                nuevosDatos[campo] = parseInt(nuevosDatos[campo], 10);
             }
         }
 
+        // cambios
+        const cambios  = {};
+        for (const campo of Object.keys(nuevosDatos)) {
+            if (registroAnterior[campo] != nuevosDatos[campo]) {
+                cambios[campo] = nuevosDatos[campo];
+            }
+        }
+
+        // Actualizar solo si hay cambios
         if (Object.keys(cambios).length > 0) {
             const requestUpdate = transaction.request();
             requestUpdate.input('id_registro', sql.Int, id_registro);
+
             for (const [campo, valor] of Object.entries(nuevosDatos)) {
-                requestUpdate.input(campo, sql.VarChar, valor); // ajustar tipo según tu BD
+                if (intFields.includes(campo)) {
+                    requestUpdate.input(campo, sql.Int, valor);
+                } else {
+                    requestUpdate.input(campo, sql.VarChar, valor);
+                }
             }
 
             await requestUpdate.query(`
@@ -327,12 +334,11 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
             `);
         }
 
+        // Registrar log de cambios
         const original = new Date();
         const offsetInMs = original.getTimezoneOffset() * 60000;
         const fechaLocal = new Date(original.getTime() - offsetInMs);
         const horaActual = new Date().toTimeString().split(' ')[0];
-
-        const camposModificados = JSON.stringify(cambios);
 
         await transaction.request()
             .input('usuario', sql.Int, usuario_registro)
@@ -340,7 +346,7 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
             .input('fecha', sql.Date, fechaLocal)
             .input('hora', sql.VarChar, horaActual)
             .input('registro_id', sql.Int, id_registro)
-            .input('campos_modificados', sql.VarChar(sql.MAX), camposModificados)
+            .input('campos_modificados', sql.VarChar(sql.MAX), JSON.stringify(cambios))
             .query(`
                 INSERT INTO log_registro_instituciones (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
                 VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
@@ -358,6 +364,7 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
         res.status(500).json({ message: "Error al guardar en BD" });
     }
 });
+
 
 
 //consulta registros de tabla por distrito
@@ -451,10 +458,10 @@ router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) 
                     ri.cargo 
                 FROM registro_instituciones ri
                 JOIN demarcacion_territorial dt ON ri.demarcacion_territorial = dt.id
-                JOIN cat_pueblos_originarios cpo ON ri.pueblo_originario = cpo.id 
-                JOIN cat_pueblos cp ON ri.pueblo = cp.id
-                JOIN cat_barrios cb ON ri.barrio = cb.id 
-                JOIN unidad_territorial ut ON ri.unidad_territorial = ut.id 
+                left JOIN cat_pueblos_originarios cpo ON ri.pueblo_originario = cpo.id 
+                left JOIN cat_pueblos cp ON ri.pueblo = cp.id
+                left JOIN cat_barrios cb ON ri.barrio = cb.id 
+                left JOIN unidad_territorial ut ON ri.unidad_territorial = ut.id 
                 JOIN comunidad c ON ri.comunidad = c.id
                 WHERE ri.id = @id;
             `);

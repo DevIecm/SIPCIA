@@ -50,10 +50,12 @@ router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
         await transaction.begin();
 
         // Obtener folio
-        const resultadoFolio = await transaction.request().query(`
-            SELECT MAX(CAST(RIGHT(folio, 4) AS INT)) AS ultimoFolio
+       const resultadoFolio = await pool.request()
+      .input('distrito_electoral', sql.Int, distrito_electoral)
+      .query(`SELECT MAX(CAST(RIGHT(folio, 4) AS INT)) AS ultimoFolio
             FROM registro
-        `);
+            where distrito_electoral =@distrito_electoral
+      `);
 
         const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
         const siguienteFolio = ultimoFolio + 1;
@@ -163,7 +165,6 @@ router.get("/getRegistro", Midleware.verifyToken, async (req, res) => {
         if(!id){
             return res.status(400).json({ message: "Datos requeridos"})
         }
-//agregar los identificadores por si las dudas
         const pool = await connectToDatabase();
         const result = await pool.request()
             .input('id', sql.Int, id)

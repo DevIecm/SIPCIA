@@ -60,6 +60,27 @@ export class Bitacora implements OnInit {
     this.router.navigate(['']);
   }
 
+  formatFecha(data: any) {
+    const isoDate = data;
+    const date = new Date(isoDate);
+
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
+
+    return formattedDate;
+  }
+
+  formatHora(isoDate: string): string {
+  if (!isoDate) return "";
+
+  const hora = isoDate.split("T")[1].split(".")[0];
+  return hora;
+}
+
+
   onValidateInfo() {
     this.router.navigate(['/menu']);
   };

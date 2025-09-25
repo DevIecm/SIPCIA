@@ -61,7 +61,7 @@ export class FormularioDocumentos {
   
   area: number = 0;
   id_usuario: number = 0;
-  cabecera: number = 0;
+  cabecera: number | null = null;
   tipo_usuario: number = 0;
   cammbiosOrdenDia: number = 0;
 
@@ -69,6 +69,7 @@ export class FormularioDocumentos {
 
   constructor(
     private catalogos: Catalogos,
+    private Cabecera: Reportes,
     private service: Auth,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe,
@@ -120,7 +121,8 @@ export class FormularioDocumentos {
             if(this.formId === 1){
               const datosForm = {
                 demarcacion_territorial: Number(this.formularioRegistro.get('demarcacion_territorial')?.value) || null,
-                distrito_electoral: Number(this.formularioRegistro.get('ddemarcacion')?.value) || null,
+                distrito_electoral: this.area,
+                distrito_cabecera: this.cabecera,
                 fecha_reunion: this.formularioRegistro.get('fechar')?.value || null,
                 hora_reunion: this.formularioRegistro.get('horarior')?.value || null,
                 numero_asistentes_reunion: Number(this.formularioRegistro.get('nasambler')?.value) || 0,
@@ -156,7 +158,7 @@ export class FormularioDocumentos {
                 observaciones: this.formularioRegistro.get('observaciones')?.value || null,
                 usuario_registro: this.id_usuario,
                 modulo_registro: this.tipo_usuario,
-                estado_registro: 2,
+                estado_registro: 1,
               }
 
 
@@ -169,7 +171,6 @@ export class FormularioDocumentos {
                       confirmButtonText: "Aceptar",
                       confirmButtonColor: "#FBB03B",
                     });
-                    
                     setTimeout(() => {
                       this.onClose();
                       this.resetData();
@@ -186,7 +187,8 @@ export class FormularioDocumentos {
 
               const datosForm = {
                 demarcacion_territorial: Number(this.formularioRegistro.get('demarcacion_territorial')?.value) || null,
-                distrito_electoral: Number(this.formularioRegistro.get('ddemarcacion')?.value) || null,
+                distrito_electoral: this.area,
+                distrito_cabecera: this.cabecera,
                 fecha_reunion: this.formularioRegistro.get('fechar')?.value || null,
                 hora_reunion: this.formularioRegistro.get('horarior')?.value || null,
                 numero_asistentes_reunion: Number(this.formularioRegistro.get('nasambler')?.value) || 0,
@@ -263,13 +265,12 @@ export class FormularioDocumentos {
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
     this.area = Number(sessionStorage.getItem('area')!);
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
-    this.cabecera = Number(sessionStorage.getItem('cabecera'));
     this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
 
     this.formularioRegistro = this.formBuilder.group({
       demarcacion_territorial: [''],
       fecha: [''],
-      ddemarcacion: [''],
+      ddemarcacion: [{ value: '', disabled: true }],
       
       fechar: [''],
       horarior: [''],
@@ -342,6 +343,41 @@ export class FormularioDocumentos {
     this.cdRef.detectChanges();
   }
 
+  seccionDemarcacion(){
+    this.getCabezera();
+  }
+
+    //consulta cabezera
+  getCabezera() {
+    if (!this.formularioRegistro) {
+      return;
+    }
+  
+    const demarcacion = Number(this.formularioRegistro.get('demarcacion_territorial')?.value) || 0;
+  
+    this.Cabecera.getCabezera(this.area, demarcacion, this.tokenSesion).subscribe({
+      next: (data) => {
+        if (data.getCabezera.length > 0) {
+          this.cabecera = data.getCabezera.length > 0 
+          ? data.getCabezera[0].distrito_cabecera 
+          : null;
+        } else {
+          Swal.fire("No se encontraron registros");
+        }
+      },
+      error: (err) => {
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+  
+        if (err.error.code === 100) {
+          Swal.fire("No se encontraron registros");
+        }
+      }
+    });
+  }
+  
+
   onCheckboxChange(event: any, controlName: string) {
     const formArray: FormArray = this.formularioRegistro?.get(controlName) as FormArray;
     
@@ -354,6 +390,19 @@ export class FormularioDocumentos {
       }
     }
   }
+
+  private isoToDDMMYYYY(iso?: string): string {
+  if (!iso) return '';
+  const datePart = iso.split('T')[0];            
+  const [year, month, day] = datePart.split('-');
+  return `${day}/${month}/${year}`;              
+}
+
+private isoToDateInputValue(iso?: string): string {
+  if (!iso) return '';
+  return iso.split('T')[0];                     
+}
+
 
   getDataById() {
     try {
@@ -369,26 +418,26 @@ export class FormularioDocumentos {
 
             const datosCargados = {
               demarcacion_territorial: this.infoUpdate.id_demarcacion,
-              fecha: this.infoUpdate.fecha_registro ? this.datePipe.transform(this.infoUpdate.fecha_registro, 'dd/MM/yyyy') : '',
-              ddemarcacion: this.infoUpdate.distrito_electoral ? this.infoUpdate.distrito_electoral : '',
+              fecha: this.infoUpdate.fecha_registro ? this.isoToDDMMYYYY(this.infoUpdate.fecha_registro) : '',
+              ddemarcacion: this.infoUpdate.distrito_cabecera ? this.infoUpdate.distrito_cabecera : '',
               
-              fechar: this.infoUpdate.fecha_reunion ? this.datePipe.transform(this.infoUpdate.fecha_reunion, 'dd/MM/yyyy') : '',
+              fechar: this.infoUpdate.fecha_reunion ? this.isoToDDMMYYYY(this.infoUpdate.fecha_reunion) : '',
               horarior: this.infoUpdate.hora_reunion ? new Date(this.infoUpdate.hora_reunion).toISOString().substr(11, 5) : '',
               nasambler: this.infoUpdate.numero_asistentes_reunion ? this.infoUpdate.numero_asistentes_reunion : '',
               lugarr: this.infoUpdate.lugar_reunion ? this.infoUpdate.lugar_reunion : '',
 
-              fechaa: this.infoUpdate.fecha_asamblea_informativa ? this.datePipe.transform(this.infoUpdate.fecha_asamblea_informativa, 'dd/MM/yyyy') : '',
+              fechaa: this.infoUpdate.fecha_asamblea_informativa ? this.isoToDDMMYYYY(this.infoUpdate.fecha_asamblea_informativa) : '',
               horarioa: this.infoUpdate.hora_asamblea_informativa ? new Date(this.infoUpdate.hora_asamblea_informativa).toISOString().substr(11, 5) : '',
               nasambleaa: this.infoUpdate.numero_asistentes_informativa ? this.infoUpdate.numero_asistentes_informativa : '',
               lugara: this.infoUpdate.lugar_asamblea_informativa ? this.infoUpdate.lugar_asamblea_informativa : '',
 
-              fechaaa: this.infoUpdate.fecha_asamblea_consultiva ? this.datePipe.transform(this.infoUpdate.fecha_asamblea_consultiva, 'dd/MM/yyyy') : '',
+              fechaaa: this.infoUpdate.fecha_asamblea_consultiva ? this.isoToDDMMYYYY(this.infoUpdate.fecha_asamblea_consultiva) : '',
               horarioaa: new Date(this.infoUpdate.hora_asamblea_consultiva).toISOString().substr(11, 5),
               nasambleaaa: this.infoUpdate.numero_asistentes_consultiva,
               lugaraa: this.infoUpdate.lugar_asamblea_consultiva,
 
-              defecha: this.infoUpdate.periodo_del ? this.datePipe.transform(this.infoUpdate.periodo_del, 'dd/MM/yyyy') : '',
-              afecha: this.infoUpdate.periodo_al ? this.datePipe.transform(this.infoUpdate.periodo_al, 'dd/MM/yyyy') : '',
+              defecha: this.infoUpdate.periodo_del ? this.isoToDDMMYYYY(this.infoUpdate.periodo_del) : '',
+              afecha: this.infoUpdate.periodo_al ? this.isoToDDMMYYYY(this.infoUpdate.periodo_al) : '',
 
               nlugares: this.infoUpdate.numero_lugares_publicos ? this.infoUpdate.numero_lugares_publicos : '',
 
@@ -477,26 +526,26 @@ export class FormularioDocumentos {
 
             const datosFormularioCompletos = {
               demarcacion_territorial: this.infoUpdate.id_demarcacion,
-              fecha: this.infoUpdate.fecha_registro ? this.datePipe.transform(this.infoUpdate.fecha_registro, 'dd/MM/yyyy') : '',
-              ddemarcacion: this.infoUpdate.distrito_electoral ? this.infoUpdate.distrito_electoral : '',
+              fecha: this.infoUpdate.fecha_registro ? this.isoToDDMMYYYY(this.infoUpdate.fecha_registro) : '',
+              ddemarcacion: this.infoUpdate.distrito_cabecera ? this.infoUpdate.distrito_cabecera : '',
               
-              fechar: this.infoUpdate.fecha_reunion ? this.datePipe.transform(this.infoUpdate.fecha_reunion, 'dd/MM/yyyy') : '',
+              fechar: this.infoUpdate.fecha_reunion ? this.isoToDDMMYYYY(this.infoUpdate.fecha_reunion) : '',
               horarior: this.infoUpdate.hora_reunion ? new Date(this.infoUpdate.hora_reunion).toISOString().substr(11, 5) : '',
               nasambler: this.infoUpdate.numero_asistentes_reunion ? this.infoUpdate.numero_asistentes_reunion : '',
               lugarr: this.infoUpdate.lugar_reunion ? this.infoUpdate.lugar_reunion : '',
 
-              fechaa: this.infoUpdate.fecha_asamblea_informativa ? this.datePipe.transform(this.infoUpdate.fecha_asamblea_informativa, 'dd/MM/yyyy') : '',
+              fechaa: this.infoUpdate.fecha_asamblea_informativa ? this.isoToDDMMYYYY(this.infoUpdate.fecha_asamblea_informativa) : '',
               horarioa: this.infoUpdate.hora_asamblea_informativa ? new Date(this.infoUpdate.hora_asamblea_informativa).toISOString().substr(11, 5) : '',
               nasambleaa: this.infoUpdate.numero_asistentes_informativa ? this.infoUpdate.numero_asistentes_informativa : '',
               lugara: this.infoUpdate.lugar_asamblea_informativa ? this.infoUpdate.lugar_asamblea_informativa : '',
 
-              fechaaa: this.infoUpdate.fecha_asamblea_consultiva ? this.datePipe.transform(this.infoUpdate.fecha_asamblea_consultiva, 'dd/MM/yyyy') : '',
+              fechaaa: this.infoUpdate.fecha_asamblea_consultiva ? this.isoToDDMMYYYY(this.infoUpdate.fecha_asamblea_consultiva) : '',
               horarioaa: new Date(this.infoUpdate.hora_asamblea_consultiva).toISOString().substr(11, 5),
               nasambleaaa: this.infoUpdate.numero_asistentes_consultiva,
               lugaraa: this.infoUpdate.lugar_asamblea_consultiva,
 
-              defecha: this.infoUpdate.periodo_del ? this.datePipe.transform(this.infoUpdate.periodo_del, 'dd/MM/yyyy') : '',
-              afecha: this.infoUpdate.periodo_al ? this.datePipe.transform(this.infoUpdate.periodo_al, 'dd/MM/yyyy') : '',
+              defecha: this.infoUpdate.periodo_del ? this.isoToDDMMYYYY(this.infoUpdate.periodo_del) : '',
+              afecha: this.infoUpdate.periodo_al ? this.isoToDDMMYYYY(this.infoUpdate.periodo_al) : '',
 
               nlugares: this.infoUpdate.numero_lugares_publicos ? this.infoUpdate.numero_lugares_publicos : '',
 

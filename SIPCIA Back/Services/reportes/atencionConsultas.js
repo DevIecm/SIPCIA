@@ -71,13 +71,6 @@ router.post("/altaAtencion", Midleware.verifyToken, async(req,res)=>{
         numero_reporte  == null || numero_reporte === '' ||
         fecha_periodo  == null || fecha_periodo === '' ||
         fecha_consulta  == null || fecha_consulta === '' ||
-        nombre_completo  == null || nombre_completo === '' ||
-        pueblo_originario  == null || pueblo_originario === '' ||
-        pueblo  == null || pueblo === '' ||
-        barrio   == null || barrio === '' ||
-        unidad_territorial   == null || unidad_territorial === '' ||
-        documento  == null || documento === '' ||
-        enlace_documento  == null || enlace_documento === '' ||
         usuario_registro  == null || usuario_registro === '' ||
         modulo_registro  == null || modulo_registro === '' ||
         estado_registro  == null || estado_registro === ''
@@ -241,13 +234,6 @@ router.patch("/updateAntencion", Midleware.verifyToken, async (req, res) => {
         numero_reporte  == null || numero_reporte === '' ||
         fecha_periodo  == null || fecha_periodo === '' ||
         fecha_consulta  == null || fecha_consulta === '' ||
-        nombre_completo  == null || nombre_completo === '' ||
-        pueblo_originario  == null || pueblo_originario === '' ||
-        pueblo  == null || pueblo === '' ||
-        barrio   == null || barrio === '' ||
-        unidad_territorial   == null || unidad_territorial === '' ||
-        documento  == null || documento === '' ||
-        enlace_documento  == null || enlace_documento === '' ||
         usuario_registro  == null || usuario_registro === '' ||
         modulo_registro  == null || modulo_registro === '' ||
         estado_registro  == null || estado_registro === ''
@@ -453,10 +439,10 @@ router.get("/getAtencion", Midleware.verifyToken, async(req, res)=>{
                 ac.enlace_documento,
                 ac.documento
                 from atencion_consultas ac
-                join cat_pueblos_originarios cpo on ac.pueblo_originario = cpo.id 
-                join cat_pueblos cp on ac.pueblo = cp.id 
-                join cat_barrios cb on ac.barrio = cb.id 
-                join unidad_territorial ut on ac.unidad_territorial = ut.id
+                left join cat_pueblos_originarios cpo on ac.pueblo_originario = cpo.id 
+                left join cat_pueblos cp on ac.pueblo = cp.id 
+                left join cat_barrios cb on ac.barrio = cb.id 
+                left join unidad_territorial ut on ac.unidad_territorial = ut.id
                 where ac.distrito_electoral = @distrito_electoral;
             `);
 

@@ -60,7 +60,8 @@ export class DocumentosAfroamericanas implements OnInit{
     constructor(
       private router: Router,
       private reporteService: DocumentosServices,
-      private service: Auth
+      private service: Auth,
+      private miServicio: Reportes
     ) {}
     
     logout() {
@@ -76,11 +77,42 @@ export class DocumentosAfroamericanas implements OnInit{
       this.idformIdSelected = id;
       this.idform = idRegistro;
     }
+
+  descargar(){
+    this.miServicio.descargarDocNorma("1757703550661-purebaComunidadAfro.pdf", this.tokenSesion).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+///        a.download =item.nombre_archivo;
+          a.download = 'Documentos Normativos';
+
+
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
   
     closeModal() {
       this.showModal = false;
       this.getRegister();
     }
+  
+    formatFecha(data: any) {
+    const isoDate = data;
+    const date = new Date(isoDate);
+
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
+
+    return formattedDate;
+  }
   
     getRegister() {
         this.reporteService.getRegisterfichaTecnicaTablaAfro(this.area_adscripcion, this.tokenSesion).subscribe({

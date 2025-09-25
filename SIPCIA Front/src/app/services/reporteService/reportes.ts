@@ -131,6 +131,37 @@ export class Reportes {
   );
 }
 
+  //descarga de documentos normativos
+  descargarDocNorma(nombreFisico: string, token: string): Observable<Blob> {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.get(`${this.apiUrl}descargaDoc/downloadNorma/${nombreFisico}`, {
+    headers,
+    responseType: 'blob'
+  }).pipe(
+    catchError((error: HttpErrorResponse) => throwError(() => error))
+  );
+}
+
+  // consulta encabezado
+
+  getCabezera(id_distrito: number, demarcacion: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+
+    const params = new HttpParams()
+      .set('id_distrito', id_distrito)
+      .set('demarcacion', demarcacion)
+      
+    return this.http.get(this.apiUrl + 'catalogos/getCabezera', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+
   ////
   getRegisterDataTable(area: number, token: string): Observable<any> {
     const headers = new HttpHeaders({

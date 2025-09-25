@@ -27,6 +27,7 @@ export class FormularioComunitaria {
   formularioRegistro: FormGroup | undefined;
 
   catalogoDemarcacion: any = [];
+  allData: any[] = [];
   infoUpdate: any = [];
 
 
@@ -36,7 +37,8 @@ export class FormularioComunitaria {
   
   area: number = 0;
   id_usuario: number = 0;
-  cabecera: number = 0;
+  cabecera: number | null = null;
+
   tipo_usuario: number = 0;
 
   selectedFileName: string | null = null;
@@ -50,7 +52,8 @@ export class FormularioComunitaria {
     private service: Auth,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe,
-    private registerService: Reportes
+    private registerService: Reportes,
+    private Cabezera: Reportes
   ) {}
 
   onFileSelected(event: any) {
@@ -99,7 +102,7 @@ export class FormularioComunitaria {
           }
 
           formData.append("distrito_electoral", this.area.toString());
-          formData.append("distrito_cabecera", this.cabecera.toString());
+          formData.append("distrito_cabecera", (this.cabecera ?? "").toString());
           formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion_territorial')?.value || "");
           formData.append("denominacion_lugar", this.formularioRegistro.get('denominacion_lugar')?.value || "");
           formData.append("domicilio_lugar", this.formularioRegistro.get('domicilio_lugar')?.value || "");
@@ -111,6 +114,8 @@ export class FormularioComunitaria {
           formData.append("estado_registro", "1");
           formData.append("tipo_usuario", this.tipo_usuario.toString());
 
+
+          console.log("muestrame", formData)
           this.registerService.nuinsertaRegistro(formData, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
@@ -168,7 +173,7 @@ export class FormularioComunitaria {
             }
 
           formData.append("distrito_electoral", this.area.toString());
-          formData.append("distrito_cabecera", this.cabecera.toString());
+          formData.append("distrito_cabecera", (this.cabecera ?? "").toString());
           formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion_territorial')?.value || "");
           formData.append("denominacion_lugar", this.formularioRegistro.get('denominacion_lugar')?.value || "");
           formData.append("domicilio_lugar", this.formularioRegistro.get('domicilio_lugar')?.value || "");
@@ -225,11 +230,13 @@ export class FormularioComunitaria {
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
     this.area = Number(sessionStorage.getItem('area')!);
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
-    this.cabecera = Number(sessionStorage.getItem('cabecera'));
+    
+    
     this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
 
     this.formularioRegistro = this.formBuilder.group({
       demarcacion_territorial: [''],
+      distrito_cabecera: [''],
       denominacion_lugar: [''],
       domicilio_lugar: [''],
       observaciones: [''],
@@ -258,6 +265,42 @@ export class FormularioComunitaria {
     this.onClose();
   }
 
+  seccionDemarcacion(){
+    this.getCabezera();
+  }
+
+  //consulta cabezera
+getCabezera() {
+  if (!this.formularioRegistro) {
+    return;
+  }
+
+  const demarcacion = Number(this.formularioRegistro.get('demarcacion_territorial')?.value) || 0;
+
+  this.Cabezera.getCabezera(this.area, demarcacion, this.tokenSesion).subscribe({
+    next: (data) => {
+      if (data.getCabezera.length > 0) {
+        this.allData = data.getCabezera;
+        this.cabecera = data.getCabezera.length > 0 
+        ? data.getCabezera[0].distrito_cabecera 
+        : null;
+      } else {
+        Swal.fire("No se encontraron registros");
+      }
+    },
+    error: (err) => {
+      if (err.error.code === 160) {
+        this.service.cerrarSesionByToken();
+      }
+
+      if (err.error.code === 100) {
+        Swal.fire("No se encontraron registros");
+      }
+    }
+  });
+}
+
+
   getDataById(id: number) {
     try {
       if (!this.idRegistro) return;
@@ -269,10 +312,11 @@ export class FormularioComunitaria {
           this.infoUpdate = data.getRegistroAfluencia[0];
           
           if(data.getRegistroAfluencia.length > 0) {
+             this.cabecera = data.getRegistroAfluencia[0].distrito_cabecera ?? null;
 
             const datosFormularioCompletos = {
               distrito_electoral: this.area,
-              distrito_cabecera: this.cabecera,
+              distrito_cabecera: data.getRegistroAfluencia[0].distrito_cabecera,
               demarcacion_territorial: data.getRegistroAfluencia[0].demarcacion_territorial,
               denominacion_lugar: data.getRegistroAfluencia[0].denominacion_lugar,
               domicilio_lugar: data.getRegistroAfluencia[0].domicilio_lugar,

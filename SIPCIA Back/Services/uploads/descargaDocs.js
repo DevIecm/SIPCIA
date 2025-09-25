@@ -35,4 +35,28 @@ router.get("/download/:filename", Midleware.verifyToken , async(req, res) => {
   });
 });
 
+//normativa descarga 
+router.get("/downloadNorma/:filename", Midleware.verifyToken , async(req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(__dirname, "../uploads/pdf", filename);
+
+  if (!fs.existsSync(filePath)) {
+    console.error("Archivo no encontrado:", filePath);
+    return res.status(404).json({ message: "Archivo no encontrado" });
+  }
+
+  let nombreOriginal = filename;
+  const guionIndex = filename.indexOf("-");
+  if (guionIndex > -1) {
+    nombreOriginal = filename.substring(guionIndex + 1);
+  }
+
+  res.download(filePath, nombreOriginal, (err) => {
+    if (err) {
+      console.error("Error al descargar:", err);
+      res.status(500).json({ message: "Error al descargar archivo" });
+    }
+  });
+});
+
 export default router;

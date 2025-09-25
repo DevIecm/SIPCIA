@@ -196,7 +196,7 @@
             </td>
             <td>{{ item.enlace_foto ? item.enlace_foto : '-'}}</td>
             <td>{{ item.observaciones ? item.observaciones : '-'}}</td>
-            <td>{{ item.fecha_registro | date:'dd/MM/yyyy'}}</td>  
+            <td>{{ formatFecha(item.fecha_registro) }}</td>
           </tr>
         </tbody>
       </table>

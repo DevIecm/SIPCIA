@@ -146,9 +146,6 @@ export class FormularioRegistroa {
             formData.append("cv_documento", "0");
             formData.append("cv_enlace", "ruta/documento");
 
-            formData.forEach((value, key) => {
-              console.log(key + ': ' + value);
-            });
 
             this.registerService.nuinsertaRegistroAcompa(formData, this.tokenSesion).subscribe({
               next: (data) => {

@@ -32,7 +32,9 @@
                                         <label class="form-label" style="color: #b7b5b8;">{{ area }}</label>
                                     </div>
                                     <div class="col">
-                                        <label class="form-label" style="color: #b7b5b8;">{{ cabecera }}</label>
+                                    <label class="form-label" style="color: #b7b5b8;">
+                                        {{ cabecera ?? '' }}
+                                    </label>
                                     </div>
                                     <div class="col">
                                         <label class="form-label" style="color: #b7b5b8;" >{{ today }}</label>
@@ -50,6 +52,7 @@
                                                 class="select-input form-select" 
                                                 aria-label="Default select example"
                                                 [(ngModel)]="opcionDemarcacion"
+                                                (change)="seccionDemarcacion()" 
                                             >
                                                 <option selected></option>
                                                 @for (item of catalogoDemarcacion; track item) {

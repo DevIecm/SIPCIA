@@ -34,7 +34,8 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
         observaciones,
         usuario_registro,
         modulo_registro,
-        estado_registro
+        estado_registro,
+        distrito_cabecera
     } = req.body;
 
     const { lengua_tecnica_indigena, traduccion_resumen_acta, persona_responsable_fti } = req.body; // Pedir los id en forma de lenguas Array 
@@ -47,6 +48,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
         !hora_reunion ||
         !usuario_registro ||
         !modulo_registro ||
+        !distrito_cabecera ||
         !estado_registro
     ) {
         return res.status(400).json({ message: "Datos requeridos" })
@@ -67,15 +69,17 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
         const request = new sql.Request(transaction);
 
 
-        const resultadoFolio = await pool.request().query(`
-        SELECT MAX(CAST(RIGHT(nombre_ficha, 5) AS INT)) AS ultimoFolio
+       // Obtener nombre
+       const resultadoFolio = await pool.request()
+      .input('distrito_electoral', sql.Int, distrito_electoral)
+      .query(`SELECT MAX(CAST(RIGHT(nombre_ficha, 5) AS INT)) AS ultimoFolio
         FROM ficha_tecnica_indigena
-        WHERE ISNUMERIC(RIGHT(nombre_ficha, 5)) = 1;
-            `);
+        WHERE distrito_electoral =@distrito_electoral and ISNUMERIC(RIGHT(nombre_ficha, 5)) = 1;
+      `);
          
         const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
         const siguienteFolio = ultimoFolio + 1;
-        const nombre_ficha = `FICHATECNICA_IR_DD00_${siguienteFolio.toString().padStart(5, '0')}`;
+        const nombre_ficha = `FICHATECNICA_IR_DD${distrito_electoral}_${siguienteFolio.toString().padStart(5, '0')}`;
 
 
         // 1. Insertar en ficha_tecnica_indigena
@@ -108,6 +112,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
             .input('modulo_registro', sql.Int, modulo_registro)
             .input('estado_registro', sql.Int, estado_registro)
             .input('nombre_ficha', sql.VarChar, nombre_ficha)
+            .input('distrito_cabecera', sql.Int, distrito_cabecera)
             .query(`
                 INSERT INTO ficha_tecnica_indigena                     
                     (demarcacion_territorial, distrito_electoral, fecha_reunion,
@@ -116,7 +121,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
                     hora_asamblea_consultiva, numero_asistentes_consultiva, lugar_asamblea_consultiva, periodo_del,
                     periodo_al, numero_lugares_publicos, otro_plan_trabajo, otro_resumen_acta,
                     solicitud_cambios, cambios_solicitados, observaciones, fecha_registro,
-                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha)
+                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha, distrito_cabecera)
                 OUTPUT INSERTED.id
                 VALUES (@demarcacion_territorial, @distrito_electoral, @fecha_reunion,
                     @hora_reunion, @numero_asistentes_reunion, @lugar_reunion, @fecha_asamblea_informativa,
@@ -124,7 +129,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
                     @hora_asamblea_consultiva, @numero_asistentes_consultiva, @lugar_asamblea_consultiva, @periodo_del,
                     @periodo_al, @numero_lugares_publicos, @otro_plan_trabajo, @otro_resumen_acta,
                     @solicitud_cambios, @cambios_solicitados, @observaciones, @fecha_registro,
-                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha)
+                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha, @distrito_cabecera)
             `);
 
         const idRegistro = result.recordset[0].id;
@@ -262,6 +267,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
         const campos = {
             demarcacion_territorial,
             distrito_electoral,
+            distrito_cabecera,
             fecha_reunion,
             hora_reunion,
             numero_asistentes_reunion,
@@ -390,6 +396,7 @@ router.get("/getRegistroFichaInd", Midleware.verifyToken, async (req, res) => {
                     fi.id,
                     fi.demarcacion_territorial AS id_demarcacion,
                     dt.demarcacion_territorial,
+                    fi.distrito_cabecera,
                     fi.distrito_electoral,
                     fi.fecha_registro,
                     fi.fecha_reunion,

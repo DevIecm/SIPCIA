@@ -55,9 +55,9 @@
                 <tbody *ngIf="this.tipoBitacora==='directorio'">
                     <tr *ngFor="let item of dataTable; index as i" class="dual-row">
                         <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
-                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
-                        <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
-                        <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
+                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td> 
+                        <td>{{ formatFecha(item.fecha) }}</td>
+                        <td>{{ formatHora(item.hora) }}</td>
                         <td style="text-align: justify;">
                             <div *ngIf="item.Datos?.nombre_completo">
                                 Nombre Completo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.nombre_completo }}
@@ -126,9 +126,9 @@
                 <tbody *ngIf="this.tipoBitacora==='mayorAfluencia'">
                     <tr *ngFor="let item of dataTable; index as i" class="dual-row">
                         <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
-                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
-                        <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
-                        <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
+                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td> 
+                        <td>{{ formatFecha(item.fecha) }}</td>
+                        <td>{{ formatHora(item.hora) }}</td>
                         <td style="text-align: justify;">
                             <div *ngIf="item.Datos?.distrito_electoral">
                                 Distrito Electoral Local Uninominal:&nbsp;&nbsp;&nbsp;&nbsp;{{
@@ -167,9 +167,9 @@
                 <tbody *ngIf="this.tipoBitacora==='lugaresAsambleas'">
                     <tr *ngFor="let item of dataTable; index as i" class="dual-row">
                         <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
-                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
-                        <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
-                        <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
+                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td> 
+                        <td>{{ formatFecha(item.fecha) }}</td>
+                        <td>{{ formatHora(item.hora) }}</td>
                         <td style="text-align: justify;">
                             <div *ngIf="item.Datos?.distrito_electoral">
                                 Distrito Electoral Local Uninominal:&nbsp;&nbsp;&nbsp;&nbsp;{{
@@ -217,9 +217,9 @@
                 <tbody *ngIf="this.tipoBitacora==='catInstituciones'">
                     <tr *ngFor="let item of dataTable; index as i" class="dual-row">
                         <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
-                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td>  
-                        <td>{{ item.fecha | date:'dd/MM/yyyy'}}</td>
-                        <td>{{ item.hora | date: 'HH:mm:ss' }}</td> 
+                        <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td> 
+                        <td>{{ formatFecha(item.fecha) }}</td>
+                        <td>{{ formatHora(item.hora) }}</td>
                         <td style="text-align: justify;">
                             <div *ngIf="item.Datos?.nombre_completo">
                                 Nombre Completo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.nombre_completo }}
