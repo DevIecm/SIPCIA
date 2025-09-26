@@ -123,40 +123,45 @@ router.get("/reporteInstanciasAfro", Midleware.verifyToken, async (req, res) => 
         const todasInstancias = await pool.request()
             .input('id_distrito', sql.Int, id_distrito)
             .query(`
-                SELECT 'tlPuebloAfro' AS categoria, COUNT(*) AS total
+                SELECT 'tlPuebloAfro' AS categoria, COUNT(Distinct r.pueblo_afro) AS total
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =2 and cd.id =@id_distrito AND r.pueblo_afro IS NOT NULL
+                    WHERE c.id =2 and cd.id =@id_distrito
+                    GROUP by dt.demarcacion_territorial
                     UNION ALL
-                    SELECT 'tlComunidadAfro' AS categoria, COUNT(*) AS total
+                    SELECT 'tlComunidadAfro' AS categoria, COUNT(Distinct r.comunidad_afro) AS total
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =2 and cd.id =@id_distrito AND r.comunidad_afro IS NOT NULL
+                    WHERE c.id =2 and cd.id =@id_distrito
+                    GROUP by dt.demarcacion_territorial
                     UNION ALL
-                    SELECT 'tlOrganizaciones' AS categoria, COUNT(*) AS total
+                    SELECT 'tlOrganizaciones' AS categoria, COUNT(Distinct r.organizacion_afro) AS total
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =2 and cd.id =@id_distrito AND r.organizacion_afro IS NOT NULL
+                    WHERE c.id =2 and cd.id =@id_distrito
+                    GROUP by dt.demarcacion_territorial
                     UNION ALL
-                    SELECT 'tlPersoRelevantes' AS categoria, COUNT(*) AS total
+                    SELECT 'tlPersoRelevantes' AS categoria, COUNT(Distinct r.persona_relevante_afro) AS total
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =2 and cd.id =@id_distrito AND r.persona_relevante_afro IS NOT NULL
+                    WHERE c.id =2 and cd.id =@id_distrito
+                    GROUP by dt.demarcacion_territorial
                     UNION ALL
-                    SELECT 'tlOtroAfro' AS categoria, COUNT(*) AS total
+                    SELECT 'tlOtroAfro' AS categoria, COUNT(Distinct r.otro_afro) AS total 
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =2 and cd.id =@id_distrito AND r.otro_afro IS NOT NULL`);
+                    WHERE c.id =2 and cd.id =@id_distrito
+                    GROUP by dt.demarcacion_territorial`);
 
         if (todasInstancias.recordset.length > 0) {
             const response = {
@@ -253,11 +258,12 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
             .input('id_distrito', sql.Int, id_distrito)
             .input('id_demarcacion', sql.Int, id_demarcacion)
             .query(`
-                select COUNT(*) AS total FROM registro r
+                select COUNT(Distinct r.comunidad_pbl) AS total FROM registro r
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito AND r.comunidad_pbl IS NOT NULL and dt.id =@id_demarcacion
+                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito and dt.id =@id_demarcacion
+                    GROUP by dt.demarcacion_territorial
             `);
 
         const unidad_territorial = await pool.request()
@@ -278,11 +284,12 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
             .input('id_distrito', sql.Int, id_distrito)
             .input('id_demarcacion', sql.Int, id_demarcacion)
             .query(`
-                SELECT COUNT(*) AS total FROM registro r  
+                SELECT COUNT(Distinct r.otro_pbl) AS total FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito AND r.otro_pbl IS NOT NULL and dt.id =@id_demarcacion
+                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito and dt.id =@id_demarcacion
+                    GROUP by dt.demarcacion_territorial
             `);
 
         // Comunidad Afro
@@ -292,11 +299,12 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
             .input('id_distrito', sql.Int, id_distrito)
             .input('id_demarcacion', sql.Int, id_demarcacion)
             .query(`
-                SELECT COUNT(*) AS total FROM registro r  
+                SELECT COUNT(Distinct r.pueblo_afro) AS total FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito AND r.pueblo_afro IS NOT NULL and dt.id =@id_demarcacion
+                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito and dt.id =@id_demarcacion
+                    GROUP by dt.demarcacion_territorial
             `);
 
          const comunidad_afro = await pool.request()
@@ -304,11 +312,12 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
             .input('id_distrito', sql.Int, id_distrito)
             .input('id_demarcacion', sql.Int, id_demarcacion)
             .query(`
-                SELECT COUNT(*) AS total FROM registro r  
+                SELECT COUNT(Distinct r.comunidad_afro) AS total FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito AND r.comunidad_afro IS NOT NULL and dt.id =@id_demarcacion
+                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito and dt.id =@id_demarcacion
+                    GROUP by dt.demarcacion_territorial
             `);
 
         const organizacion_afro = await pool.request()
@@ -316,11 +325,12 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
             .input('id_distrito', sql.Int, id_distrito)
             .input('id_demarcacion', sql.Int, id_demarcacion)
             .query(`
-                SELECT COUNT(*) AS total FROM registro r  
+                SELECT COUNT(Distinct r.organizacion_afro) AS total FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito AND r.organizacion_afro IS NOT NULL and dt.id =@id_demarcacion
+                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito and dt.id =@id_demarcacion
+                    GROUP by dt.demarcacion_territorial
             `);
 
         const personas_relev = await pool.request()
@@ -328,11 +338,12 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
             .input('id_distrito', sql.Int, id_distrito)
             .input('id_demarcacion', sql.Int, id_demarcacion)
             .query(`
-                SELECT COUNT(*) AS total FROM registro r  
+               Select COUNT(Distinct r.persona_relevante_afro ) AS total FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito AND r.persona_relevante_afro IS NOT NULL and dt.id =@id_demarcacion
+                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito and dt.id =@id_demarcacion
+                    GROUP by dt.demarcacion_territorial 
             `);
         
         const otro_afro = await pool.request()
@@ -340,11 +351,12 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
             .input('id_distrito', sql.Int, id_distrito)
             .input('id_demarcacion', sql.Int, id_demarcacion)
             .query(`
-                SELECT COUNT(*) AS total FROM registro r  
+                SELECT COUNT(Distinct r.otro_afro) AS total FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito AND r.otro_afro IS NOT NULL and dt.id =@id_demarcacion
+                    WHERE c.id =@tipo_comunidad and cd.id =@id_distrito and dt.id =@id_demarcacion
+                    GROUP by dt.demarcacion_territorial
             `);
 
         //datos

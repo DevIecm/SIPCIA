@@ -40,6 +40,7 @@
                       <input
                         formControlName="nombre_completo"
                         type="text" 
+                        maxlength="200"
                         class="form-control">
                     </div>
                   </div>
@@ -107,6 +108,7 @@
                       <input
                         formControlName="ncomunidad"
                         type="text" 
+                        maxlength="200"
                         class="form-control">
                     </div>
                   </div>
@@ -193,6 +195,7 @@
                           <input 
                             formControlName="comunidad"
                             type="text" 
+                            maxlength="200"
                             class="form-control">
                         </div>
                       </div>
@@ -203,6 +206,7 @@
                             formControlName="otro"
                             type="text" 
                             class="form-control"
+                            maxlength="200"
                             (change)="onChangeOtro()"
                           >
                         </div>
@@ -223,7 +227,6 @@
                             formControlName="pueblor"
                             type="text" 
                             class="form-control"
-                            (change)="onChangePuebloT()"
                           >
                         </div>
                       </div>
@@ -234,7 +237,7 @@
                             formControlName="comunidadr"
                             type="text" 
                             class="form-control"
-                            (change)="onChangeComunidadT()"
+                            maxlength="200"
                           >
                         </div>
                       </div>
@@ -245,7 +248,6 @@
                             formControlName="organizacion"
                             type="text" 
                             class="form-control"
-                            (change)="onChangeOrganizacionT()"
                           >
                         </div>
                       </div>
@@ -267,6 +269,7 @@
                             formControlName="otror"
                             type="text" 
                             class="form-control"
+                            maxlength="200"
                             (change)="onChangeOtroT()">
                         </div>
                       </div>
@@ -283,6 +286,7 @@
                       <input 
                         formControlName="ninstancia"
                         type="text" 
+                        maxlength="200"
                         class="form-control">
                     </div>
                   </div>
@@ -297,6 +301,7 @@
                       <input 
                         formControlName="cinstancia"
                         type="text" 
+                        maxlength="200"
                         class="form-control">
                     </div>
                   </div>
@@ -311,6 +316,7 @@
                       <input
                         formControlName="domicilio"
                         type="text" 
+                        maxlength="200"
                         class="form-control">
                     </div>
                   </div>
@@ -325,6 +331,7 @@
                       <input
                         formControlName="tfijo"
                         type="text" 
+                        maxlength="10"
                         oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="form-control">
                     </div>
@@ -335,6 +342,7 @@
                       <input
                         formControlName="tcelular"
                         type="text" 
+                        maxlength="10"
                         oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="form-control">
                     </div>
@@ -357,6 +365,7 @@
                       <input 
                         formControlName="coficial"
                         type="email" 
+                        maxlength="200"
                         class="form-control">
                     </div>
                   </div>
@@ -366,6 +375,7 @@
                       <input 
                         type="email"
                         formControlName="cpersonal"
+                        maxlength="200"
                         class="form-control">
                     </div>
                   </div>
@@ -403,7 +413,7 @@
                     <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
                   </div>
                   <div class="col">
-                    <button type="button" (click)="resetData()" class="btn button-clean">{{data.btn2}}</button>
+                    <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
                   </div>
                 </div>
               </div>

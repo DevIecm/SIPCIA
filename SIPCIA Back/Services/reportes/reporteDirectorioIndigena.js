@@ -460,7 +460,6 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                 join demarcacion_territorial dt on r.demarcacion = dt.id 
                 join cat_distrito cd on r.distrito_electoral = cd.id 
                 where r.distrito_electoral = @distrito_electoral and r.comunidad = 1
-                GROUP BY dt.demarcacion_territorial
                 ORDER BY dt.demarcacion_territorial;`);
     const tabla1 = result1.recordset;
 

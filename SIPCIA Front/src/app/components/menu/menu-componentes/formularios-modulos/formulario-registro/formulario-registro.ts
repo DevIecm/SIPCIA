@@ -106,10 +106,10 @@ export class FormularioRegistro implements OnInit{
       ninstancia: ['', Validators.required],
       cinstancia: ['', Validators.required],
       domicilio: ['', Validators.required],
-      tfijo: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      tfijo: ['', [Validators.pattern('^[0-9]+$')]],
       tcelular: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       docs: [{ value: '', disabled: true }],
-      coficial: ['', [Validators.required, Validators.email]],
+      coficial: ['', [Validators.email]],
       cpersonal: ['', [Validators.required, Validators.email]],
     });
 
@@ -315,46 +315,7 @@ export class FormularioRegistro implements OnInit{
   };
 
   resetData() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.patchValue({
-        nombre_completo: '',
-        seccion_electoral: '',
-        demarcacion: '',
-        ncomunidad: '',
-
-        ooriginario: '',
-        pueblo: '',
-        barrio: '',
-        uterritorial: '',
-        comunidad: '',
-        otro: '',
-
-        pueblor: '',
-        comunidadr: '',
-        organizacion: '',
-        prelevante: '',
-        otror: '',
-
-        ninstancia: '',
-        cinstancia: '',
-        domicilio: '',
-        tfijo: '',
-        tcelular: '',
-        docs: '',
-        coficial: '',
-        cpersonal: '',
-      });
-
-      this.formularioRegistro.get('pueblor')?.enable();
-      this.formularioRegistro.get('comunidadr')?.enable();
-      this.formularioRegistro.get('organizacion')?.enable();
-      this.formularioRegistro.get('otror')?.enable();
-      this.formularioRegistro.get('ooriginario')?.enable();
-      this.formularioRegistro.get('pueblo')?.enable();
-      this.formularioRegistro.get('barrio')?.enable();
-      this.formularioRegistro.get('uterritorial')?.enable();
-      this.formularioRegistro.get('otro')?.enable();
-    }
+    this.onClose();
   };
 
   resetFormulario() {
@@ -469,10 +430,11 @@ export class FormularioRegistro implements OnInit{
                 icon: "success",
                 confirmButtonText: "Aceptar",
                 confirmButtonColor: "#FBB03B",
-              }).then(() => {
-                this.getDataById();
-                this.hayCambios = true;
-              })
+              });
+              setTimeout(() => {
+              this.onClose();
+              this.resetData();
+            }, 3000);
             }
           }, error: (err) => {
             
