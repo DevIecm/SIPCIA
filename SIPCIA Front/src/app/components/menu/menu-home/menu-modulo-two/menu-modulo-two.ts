@@ -93,4 +93,53 @@ export class MenuModuloTwo implements OnInit{
     this.router.navigate(['dnafroamericanas']);
   }
 
+  //Modulo 2 
+
+  goToRegistroTwo() {
+    this.router.navigate(['nregistrotwo']);
+  }
+  
+  goToDIndigenasTwo() {
+    this.router.navigate(['dirndigenastwo']);
+  }
+
+  goToDAfroTwo() {
+    this.router.navigate(['dafroamericanastwo']);
+  }
+
+  goToCTecinas() {
+    this.router.navigate(['ctecnicas']);
+  }
+
+  goToCAfro() {
+    this.router.navigate(['cafro']);
+  }
+  
+  goToRRepre() {
+    this.router.navigate(['rrepresentativastwo']);
+  }
+
+  goToRComunitaria() {
+    this.router.navigate(['rcomunitariatwo']);
+  }
+  
+  goToPCom() {
+    this.router.navigate(['pcomunitariastwo']);
+  }
+  
+  goToRC() {
+    this.router.navigate(['rconsultastwo']);
+  }
+  
+  goToCA() {
+    this.router.navigate(['cacmpatwo']);
+  }
+
+  goToDI() {
+    this.router.navigate(['dindigenastwo']);
+  }
+
+  goToDAf() {
+    this.router.navigate(['dafrotwo']);
+  }
 }

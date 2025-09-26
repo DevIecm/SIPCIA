@@ -46,6 +46,8 @@ export class Login implements OnInit {
       password: ['', Validators.required]
     });
 
+    this.tipoUsuario = Number(localStorage.getItem("modulo"));
+    
     sessionStorage.removeItem('key');
     sessionStorage.removeItem('dir');
     sessionStorage.removeItem('tipoUsuario');
@@ -55,8 +57,6 @@ export class Login implements OnInit {
   constructor(private router: Router, private formBuilder: FormBuilder, private auth: Auth) {}
 
   onSubmit() {
-    this.tipoUsuario = Number(localStorage.getItem("modulo"));
-    
     try {
       if(this.formularioLogin?.valid){
         
@@ -70,7 +70,13 @@ export class Login implements OnInit {
              sessionStorage.setItem("id_usuario", res.userData[0].id);
              sessionStorage.setItem("area", res.userData[0].area_adscripcion);
              sessionStorage.setItem("cabecera", res.userData[0].distrito);
-             this.router.navigate(['/menu']);
+             
+            if(this.tipoUsuario === 1) {
+              this.router.navigate(['/menu']);
+            } else if(this.tipoUsuario === 2) {
+              this.router.navigate(['/menutwo']);
+            }
+             
            },
            error: (err) => {
              if(err.error.code === 401){

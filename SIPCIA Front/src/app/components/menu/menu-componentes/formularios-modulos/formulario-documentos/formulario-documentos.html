@@ -27,7 +27,7 @@
                                                 (change)="seccionDemarcacion()"
                                                 [(ngModel)]="opcionDemarcacion"
                                             >
-                                                <option selected></option>
+                                                <option value="" disabled selected>Seleccione una opción</option>
                                                 @for (item of catalogoDemarcacion; track item) {
                                                 <option [value]="item.id">{{item.demarcacion_territorial}}</option>
                                                 }

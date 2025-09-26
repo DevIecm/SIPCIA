@@ -1,0 +1,225 @@
+<app-navbar></app-navbar>
+
+<nav class="navbar bg-body-tertiary" style="display: inline;">
+  <div class="container-fluid" style="padding: 0px;">
+    <a class="navbar-brand">
+      <div class="row row-cols-1">
+        <div class="col">
+          <div class="div-redondeado-right">
+            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">DEOEyG</h3>
+          </div>
+        </div>
+        <div class="container div-redondeado-right-home text-center">
+          <div class="row"> 
+            <div class="col" style=" margin: -4px;">
+              <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
+            </div>
+            <div class="col">
+              <h3 style="font-size: 12px; margin: 0px;">2.3 Directorio general de Instancias Representativas, Organizaciones y <br> Personas Relevantes de Pueblos y Comunidades Afromexicanas (33 DD)</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <div class="row row-cols-1">
+        <div class="col">
+            <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+                <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+            </button>
+        </div>
+
+        <div class="col">
+            <div class="div-redondeado-left">
+              <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+            </div>
+        </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container justify-content-center mt-4">
+  <div class="row">
+    <div class="col-6 d-flex">
+      <div class="box-search container justify-content-center">
+        <label>Buscar:</label>
+      </div>
+      <input 
+        type="text" 
+        class="form-control" 
+        name="searchTerm" 
+        [(ngModel)]="searchTerm"
+        (input)="search()">
+    </div>
+    <div class="col-6 d-flex justify-content-end">
+      <button class="btn button" (click)="getReporte()">Descarga Directorio</button>
+    </div>
+  </div>
+
+  <div class="row back-table" style="margin-top: 8px;">
+    <div class="col-12">
+      <table class="table">
+        <thead>
+          <tr class="table-primary">
+            <th 
+              scope="col"
+              (click)="sortData('id_registro')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>No.</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('id_registro')"></i>
+              </div>
+            </th>
+            <th scope="col">Editar</th>
+            <th scope="col">Generar Bitácora</th>
+            <th 
+              scope="col"
+              (click)="sortData('folio')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Folio único</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('folio')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('demarcacion_territorial')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Demarcación</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('demarcacion_territorial')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('nombre_completo')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Nombre Completo</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('nombre_completo')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('pueblo_afro')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Pueblo</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('pueblo_afro')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('comunidad')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Comunidad</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('comunidad')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('organizacion_afro')"
+              style="cursor: pointer;">
+              <div style="gap: 5px;">
+                <span>Organización</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('organizacion_afro')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('persona_relevante_afro')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Persona Relevante</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('persona_relevante_afro')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('otro_afro')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Otro</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('otro_afro')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('nombre_comunidad')"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Nombre de la <br> Comunidad <br> Afromexicana</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('nombre_comunidad')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('nombre_instancia')"
+              style="cursor: pointer;">
+              <div>
+                <span>Nombre de la Instancia <br> Representativa a la <br> que pertenece</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('nombre_instancia')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('cargo_instancia')"
+              style="cursor: pointer;">
+              <div>
+                <span>Cargo que ocupa en la <br> Instancia Representativa</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('cargo_instancia')"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('domicilio')"
+              style="cursor: pointer;">
+              <div style=" gap: 5px;">
+                <span>Domicilio</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('domicilio')"></i>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dataTable; index as i" class="dual-row">
+            <td>{{ item.id_registro ? item.id_registro : '-'}}</td>
+            <td> 
+              <button 
+                type="button" 
+                class="btn button-table" 
+                data-bs-toggle="modal" 
+                data-bs-target="#miModal"
+                (click)="openModal(item.id_registro)"
+              >
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </td>
+            <td><i (click)="goToBitacora(item.id_registro, 'directorio')" class="bi bi-journal-text"></i></td>
+            <td>{{ item.folio ? item.folio : '-'}}</td>
+            <td>{{ item.demarcacion_territorial ? item.demarcacion_territorial : '-' }}</td>
+            <td>{{ item.nombre_completo ? item.nombre_completo : '-' }}</td>
+            <td>{{ item.pueblo_afro ? item.pueblo_afro : '-'}}</td>
+            <td>{{ item.comunidad ? item.comunidad : '-'}}</td>
+            <td>{{ item.organizacion_afro ? item.organizacion_afro : '-'}}</td>
+            <td>{{ item.persona_relevante_afro ? item.persona_relevante_afro : '-'}}</td>
+            <td>{{ item.otro_afro ? item.otro_afro : '-'}}</td>
+            <td>{{ item.nombre_comunidad ? item.nombre_comunidad : '-'}}</td>
+            <td>{{ item.nombre_instancia ? item.nombre_instancia : '-'}}</td>
+            <td>{{ item.cargo_instancia ? item.cargo_instancia : '-'}}</td>
+            <td>{{ item.domicilio ? item.domicilio : '-'}}</td>      
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+@if(showModal) {
+  <app-formulario-registro
+    [idRegistro]="registroSeleccionadoId"
+    [isOpen]="showModal" 
+    (close)="closeModal()">
+  </app-formulario-registro>
+}

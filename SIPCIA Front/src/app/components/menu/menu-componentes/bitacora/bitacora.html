@@ -54,7 +54,7 @@
                 </thead>
                 <tbody *ngIf="this.tipoBitacora==='directorio'">
                     <tr *ngFor="let item of dataTable; index as i" class="dual-row">
-                        <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
+                        <td>{{ i + 1 }}</td>
                         <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td> 
                         <td>{{ formatFecha(item.fecha) }}</td>
                         <td>{{ formatHora(item.hora) }}</td>
@@ -125,7 +125,7 @@
 
                 <tbody *ngIf="this.tipoBitacora==='mayorAfluencia'">
                     <tr *ngFor="let item of dataTable; index as i" class="dual-row">
-                        <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
+                        <td>{{ i + 1 }}</td>
                         <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td> 
                         <td>{{ formatFecha(item.fecha) }}</td>
                         <td>{{ formatHora(item.hora) }}</td>
@@ -166,7 +166,7 @@
 
                 <tbody *ngIf="this.tipoBitacora==='lugaresAsambleas'">
                     <tr *ngFor="let item of dataTable; index as i" class="dual-row">
-                        <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
+                        <td>{{ i + 1 }}</td>
                         <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td> 
                         <td>{{ formatFecha(item.fecha) }}</td>
                         <td>{{ formatHora(item.hora) }}</td>
@@ -216,7 +216,7 @@
                 </tbody>
                 <tbody *ngIf="this.tipoBitacora==='catInstituciones'">
                     <tr *ngFor="let item of dataTable; index as i" class="dual-row">
-                        <td>{{ item.id_usuario ? item.id_usuario : '-'}}</td>
+                        <td>{{ i + 1 }}</td>
                         <td>{{ item.nombre_usuario ? item.nombre_usuario : '-'}}</td> 
                         <td>{{ formatFecha(item.fecha) }}</td>
                         <td>{{ formatHora(item.hora) }}</td>

@@ -16,6 +16,9 @@ export class Home implements OnInit{
     sessionStorage.removeItem("tipoUsuario");
     sessionStorage.removeItem("nameUsuario");
     sessionStorage.removeItem("cargo_usuario");
+    sessionStorage.removeItem('area');
+    sessionStorage.removeItem('cabecera');
+    sessionStorage.removeItem('id_usuario');
   }
 
   constructor(private router: Router) {}

@@ -65,8 +65,9 @@
                         formControlName="demarcacion"
                         class="select-input form-select" 
                         aria-label="Default select example"
-                        [(ngModel)]="opcionDemarcacion"  >
-                        <option selected></option>
+                        [(ngModel)]="opcionDemarcacion"  
+                      >
+                        <option value="" disabled selected>Seleccione una opción</option>
                         @for (item of catalogoDemarcacion; track item) {
                           <option [value]="item.id">{{item.demarcacion_territorial}}</option>
                         }
@@ -93,7 +94,7 @@
                         aria-label="Default select example"
                         [(ngModel)]="opcionComunidad"
                       >
-                        <option selected></option>
+                        <option value="" disabled selected>Seleccione una opción</option>
                         @for (item of catalogoComunidad; track item) {
                           <option [value]="item.id">{{item.comunidad}}</option>
                         }
@@ -143,7 +144,7 @@
                             [(ngModel)]="opcionPueblo"
                             (change)="onChangePueblo()"
                           >
-                            <option value="non" selected></option>
+                            <option value="" disabled selected>Seleccione una opción</option>
                             @for (item of catalogoPueblos; track item) {
                               <option [value]="item.id">{{item.pueblo}}</option>
                             }
@@ -160,7 +161,7 @@
                             [(ngModel)]="opcionBarrio"
                             (change)="onChangeBarrio()"
                           >
-                            <option value="non" selected></option>
+                            <option value="" disabled selected>Seleccione una opción</option>
                             @for (item of catalogoBarrios; track item) {
                               <option [value]="item.id">{{item.barrio}}</option>
                             }
@@ -179,7 +180,7 @@
                             [(ngModel)]="opcionUnidadTerritorial"
                             (change)="onChangeUnidadTerritorial()"
                           >
-                            <option value="non" selected></option>
+                            <option value="" disabled selected>Seleccione una opción</option>
                             @for (item of catalogoUnidadTerritorial; track item) {
                               <option [value]="item.id">{{item.ut}}</option>
                             }

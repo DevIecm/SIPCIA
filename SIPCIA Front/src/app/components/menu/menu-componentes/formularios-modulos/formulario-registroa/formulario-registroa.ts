@@ -100,31 +100,6 @@ export class FormularioRegistroa {
               formData.append("fotografia", this.selectedFoto);
             }
 
-            // console.log("LLegeiuaas++++++")
-
-            // const pueblo_originario = this.formularioRegistro.get('ooriginario')?.value;
-            // console.log("+++++++++++++++++", pueblo_originario)
-            // if (pueblo_originario !== null && pueblo_originario !== undefined) {
-            //   formData.append("ooriginario", pueblo_originario);
-            // }
-
-            // const pueblo = this.formularioRegistro.get('pueblo')?.value;
-            // if (pueblo !== null && pueblo !== undefined) {
-            //   formData.append("pueblo", pueblo);
-            // }
-
-            // const unidad_territorial = this.formularioRegistro.get('uterritorial')?.value;
-            // if (unidad_territorial !== null && unidad_territorial !== undefined) {
-            //   formData.append("unidad_territorial", unidad_territorial);
-            // }
-
-            
-            //  const barrio = this.formularioRegistro.get('barrio')?.value;
-            // console.log("+++++++++++++++++", barrio)
-            // if (barrio !== null && barrio !== undefined) {
-            //   formData.append("barrio", barrio);
-            // }
-
             formData.append("distrito_electoral", this.area.toString());
             formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion')?.value || null);
             formData.append("nombre_completo", this.formularioRegistro.get('ncompleto')?.value || "");
@@ -145,7 +120,6 @@ export class FormularioRegistroa {
             formData.append("estado_registro", "1");
             formData.append("cv_documento", "0");
             formData.append("cv_enlace", "ruta/documento");
-
 
             this.registerService.nuinsertaRegistroAcompa(formData, this.tokenSesion).subscribe({
               next: (data) => {
@@ -204,27 +178,6 @@ export class FormularioRegistroa {
               formData.append("id_registro", this.idRegistro.toString());
             }
 
-            
-            // const pueblo_originario = this.formularioRegistro.get('ooriginario')?.value;
-            // if (pueblo_originario !== null && pueblo_originario !== undefined) {
-            //   formData.append("ooriginario", pueblo_originario);
-            // }
-
-            // const barrio = this.formularioRegistro.get('barrio')?.value;
-            // if (barrio !== null && barrio !== undefined) {
-            //   formData.append("barrio", barrio);
-            // }
-
-            // const pueblo = this.formularioRegistro.get('pueblo')?.value;
-            // if (pueblo !== null && barrio !== undefined) {
-            //   formData.append("pueblo", pueblo);
-            // }
-
-            // const unidad_territorial = this.formularioRegistro.get('unidad_territorial')?.value;
-            // if (unidad_territorial !== null && unidad_territorial !== undefined) {
-            //   formData.append("unidad_territorial", unidad_territorial);
-            // }
-
               formData.append("distrito_electoral", this.area.toString());
               formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion')?.value || "");
               formData.append("nombre_completo", this.formularioRegistro.get('ncompleto')?.value || "");
@@ -246,6 +199,10 @@ export class FormularioRegistroa {
               formData.append("cv_documento", "0");
               formData.append("cv_enlace", "ruta/documento");
 
+
+formData.forEach((value, key) => {
+              console.log(key + ': ' + value);
+            });
 
             this.registerService.nuupdateRegistroAcompa(formData, this.tokenSesion).subscribe({
               next: (data) => {

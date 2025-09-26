@@ -59,7 +59,7 @@
                                                             class="select-input form-select" 
                                                             aria-label="Default select example" 
                                                         >
-                                                            <option selected></option>
+                                                            <option value="" disabled selected>Seleccione una opción</option>
                                                             @for (item of catalogoDemarcacion; track item) {
                                                             <option [value]="item.id">{{item.demarcacion_territorial}}</option>
                                                             }
@@ -72,7 +72,7 @@
                                                             class="select-input form-select" 
                                                             aria-label="Default select example"
                                                         >
-                                                            <option selected></option>
+                                                            <option value="" disabled selected>Seleccione una opción</option>
                                                             @for (item of catalogoPueblor; track item) {
                                                             <option [value]="item.id">{{item.pueblo_originario}}</option>
                                                             }
@@ -85,7 +85,7 @@
                                                             class="select-input form-select" 
                                                             aria-label="Default select example"
                                                         >
-                                                            <option selected></option>
+                                                            <option value="" disabled selected>Seleccione una opción</option>
                                                             @for (item of catalogoUnidadTerritorial; track item) {
                                                             <option [value]="item.id">{{item.ut}}</option>
                                                             }
@@ -120,7 +120,7 @@
                                                         class="select-input form-select" 
                                                         aria-label="Default select example"
                                                     >
-                                                        <option selected></option>
+                                                        <option value="" disabled selected>Seleccione una opción</option>
                                                         @for (item of catalogoPueblos; track item) {
                                                         <option [value]="item.id">{{item.pueblo}}</option>
                                                         }
@@ -133,7 +133,7 @@
                                                         class="select-input form-select" 
                                                         aria-label="Default select example"
                                                     >
-                                                        <option selected></option>
+                                                        <option value="" disabled selected>Seleccione una opción</option>
                                                         @for (item of catalogoBarrios; track item) {
                                                         <option [value]="item.id">{{item.barrio}}</option>
                                                         }
@@ -169,7 +169,7 @@
                                                     aria-label="Default select example"
                                                     [(ngModel)]="opcionDemarcacion"
                                                 >
-                                                    <option selected></option>
+                                                    <option value="" disabled selected>Seleccione una opción</option>
                                                     @for (item of catalogoComunidad; track item) {
                                                     <option [value]="item.id">{{item.comunidad}}</option>
                                                     }

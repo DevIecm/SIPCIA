@@ -60,22 +60,22 @@
 
     <div class="row">
       <div class="col-12 d-flex justify-content-end">
-       <div>
-      <label class="form-label label-dem">*Demarcación:</label>
-      <select 
-        formControlName="demarcacionI"
-        class="select-input form-select" 
-        aria-label="Default select example"
-        [(ngModel)]="opcionDermarcacionI"
-        (change)="OnChangeGetReporteIndigenas(1)"
-      >
-        <option value="" disabled selected>Seleccione una opción</option>
-        <option value="0">Todos</option>
-        @for (item of catalogoDemarcacionI; track item) {
-          <option [value]="item.id">{{item.demarcacion_territorial}}</option>
-        }
-      </select>
-    </div>
+        <div>
+          <label class="form-label label-dem">*Demarcación:</label>
+          <select 
+            formControlName="demarcacionI"
+            class="select-input form-select" 
+            aria-label="Default select example"
+            [(ngModel)]="opcionDermarcacionI"
+            (change)="OnChangeGetReporteIndigenas(1)"
+          >
+            <option value="" disabled selected>Seleccione una opción</option>
+            <option value="0">Todos</option>
+            @for (item of catalogoDemarcacionI; track item) {
+              <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+            }
+          </select>
+        </div>
       </div>
     </div>
 

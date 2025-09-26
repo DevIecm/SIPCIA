@@ -184,7 +184,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of dataTable; index as i" class="dual-row">
-            <td>{{ item.id_registro ? item.id_registro : '-'}}</td>
+            <td>{{ i + 1 }}</td>
             <td> 
               <button 
                 type="button" 

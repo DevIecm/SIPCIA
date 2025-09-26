@@ -8,6 +8,7 @@ export const routes: Routes = [
     { path: '', loadComponent: () => import('./components/home/home').then(m => m.Home) },
     { path: 'login', loadComponent: () => import('./components/login/login').then(m => m.Login) },
     { path: 'menu', loadComponent: () => import('./components/menu/menu-home/menu-home').then(m => m.MenuHome), canActivate: [AuthGuard] },
+    { path: 'menutwo', loadComponent: () => import('./components/menu/menu-home/menu-modulo-two/menu-modulo-two').then(m => m.MenuModuloTwo), canActivate: [AuthGuard] },
 
     //Modulo 1
 
@@ -21,9 +22,24 @@ export const routes: Routes = [
     { path: 'cacompanamiento', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-one/catalogo-acompanamiento/catalogo-acompanamiento').then(m => m.CatalogoAcompanamiento), canActivate: [AuthGuard] },
     { path: 'dnindigenas', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-one/documentos-indigenas/documentos-indigenas').then(m => m.DocumentosIndigenas), canActivate: [AuthGuard] },
     { path: 'dnafroamericanas', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-one/documentos-afroamericanas/documentos-afroamericanas').then(m => m.DocumentosAfroamericanas), canActivate: [AuthGuard] },
-    { path: 'bitacora/:id/:tipo', loadComponent: () => import('./components/menu/menu-componentes/bitacora/bitacora').then(m => m.Bitacora), canActivate: [AuthGuard] }
+    { path: 'bitacora/:id/:tipo', loadComponent: () => import('./components/menu/menu-componentes/bitacora/bitacora').then(m => m.Bitacora), canActivate: [AuthGuard] },
 
     //Modulo2
+
+    { path: 'nregistrotwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/nregistro/nregistro').then(m => m.Nregistro), canActivate: [AuthGuard] },
+    { path: 'dirndigenastwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/directorio-indigenas-two/directorio-indigenas-two').then(m => m.DirectorioIndigenasTwo), canActivate: [AuthGuard] },
+    { path: 'dafroamericanastwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/directorio-afromexicanas-two/directorio-afromexicanas-two').then(m => m.DirectorioAfromexicanasTwo), canActivate: [AuthGuard] },
+    { path: 'ctecnicas', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/consulta-tecnicas/consulta-tecnicas').then(m => m.ConsultaTecnicas), canActivate: [AuthGuard] },
+    { path: 'cafro', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/consulta-afromexicana/consulta-afromexicana').then(m => m.ConsultaAfromexicana), canActivate: [AuthGuard] },
+    { path: 'rrepresentativastwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/reporte-representativa-two/reporte-representativa-two').then(m => m.ReporteRepresentativaTwo), canActivate: [AuthGuard] },
+    { path: 'rcomunitariatwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/registro-comunitaria/registro-comunitaria').then(m => m.RegistroComunitaria), canActivate: [AuthGuard] },
+    { path: 'pcomunitariastwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/propuesta-comunitaria/propuesta-comunitaria').then(m => m.PropuestaComunitaria), canActivate: [AuthGuard] },
+    { path: 'rconsultastwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/reporte-consultas/reporte-consultas').then(m => m.ReporteConsultas), canActivate: [AuthGuard] },
+    { path: 'cacmpatwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/catalogo-acompa/catalogo-acompa').then(m => m.CatalogoAcompa), canActivate: [AuthGuard] },
+    { path: 'dindigenastwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/documentos-indigenas-two/documentos-indigenas-two').then(m => m.DocumentosIndigenasTwo), canActivate: [AuthGuard] },
+    { path: 'dafrotwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/documentos-afro-two/documentos-afro-two').then(m => m.DocumentosAfroTwo), canActivate: [AuthGuard] },
+    { path: 'bitacora/:id/:tipo', loadComponent: () => import('./components/menu/menu-componentes/bitacora/bitacora').then(m => m.Bitacora), canActivate: [AuthGuard] }
+    
 
     //Modulo3
 ];

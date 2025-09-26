@@ -1,0 +1,170 @@
+<app-navbar></app-navbar>
+
+<nav class="navbar bg-body-tertiary" style="display: inline;">
+  <div class="container-fluid" style="padding: 0px;">
+    <a class="navbar-brand">
+      <div class="row row-cols-1">
+        <div class="col">
+          <div class="div-redondeado-right">
+            <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">DEOEyG</h3>
+          </div>
+        </div>
+        <div class="container div-redondeado-right-home text-center">
+          <div class="row"> 
+            <div class="col" style=" margin: -4px;">
+              <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
+            </div>
+            <div class="col">
+              <h3 style="font-size: 12px; margin: 0px;">1.6 Reporte del número de instancias <br> representativas</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <div class="row row-cols-1">
+        <div class="col">
+            <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+                <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+            </button>
+        </div>
+
+        <div class="col">
+            <div class="div-redondeado-left">
+              <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+            </div>
+        </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container text-center mt-4" style="z-index: 1;">
+  <div class="row">
+    <div class="col d-flex justify-content-end">
+      <button class="btn button " (click)="getReporte()">Generar y Descarga de Reporte</button>
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="formularioRegistro!">
+
+  <div class="container back-table justify-content-center mt-4" style="z-index: 2;">
+
+
+    <div class="row mt-6">
+      <div class="col-12 d-flex justify-content-center mb-3">
+        <label class="label-title">Número de instancias representativas de pueblos, barrios y comunidades indígenas</label>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-12 d-flex justify-content-end">
+        <div>
+          <label class="form-label label-dem">*Demarcación:</label>
+          <select 
+            formControlName="demarcacionI"
+            class="select-input form-select" 
+            aria-label="Default select example"
+            [(ngModel)]="opcionDermarcacionI"
+            (change)="OnChangeGetReporteIndigenas(1)"
+          >
+            <option value="" disabled selected>Seleccione una opción</option>
+            <option value="0">Todos</option>
+            @for (item of catalogoDemarcacionI; track item) {
+              <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <table class="table">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col">Pueblos <br> Originarios</th>
+              <th scope="col">Pueblos</th>
+              <th scope="col">Barrios</th>
+              <th scope="col">Comiunidades <br> Indígenas</th>
+              <th scope="col">UT*</th>
+              <th scope="col">Otros</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of reporteI; let i = index">
+              <td>{{ item.tlPueblosOriginarios}}</td>
+              <td>{{ item.tlPueblos}}</td>
+              <td>{{ item.tlBarrios}}</td>
+              <td>{{ item.tlComunidadInd}}</td>
+              <td>{{ item.tlUt}}</td>
+              <td>{{ item.tlOtros_pbl}}</td>
+              <td>{{ item.sumaTotalesInd}}</td>      
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container back-table-home justify-content-center mt-4">
+
+    <div class="row">
+      <div class="col-12 d-flex justify-content-center mb-3">
+        <label class="label-title">Número de instancias representativas, organizaciones y personas relevantes <br> pertenecientes a pueblos y comunidades afromexicanas</label>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-12 d-flex justify-content-end">
+        <div>
+          <label class="form-label label-dem">*Demarcación:</label>
+          <select 
+            formControlName="demarcacionA"
+            class="select-input form-select" 
+            aria-label="Default select example"
+            [(ngModel)]="opcionDermarcacionA"
+            (change)="OnChangeGetReporteAfro(2)"
+          >        
+            <option value="" disabled selected>Seleccione una opción</option>
+            <option value="0">Todos</option>
+            @for (item of catalogoDemarcacionA; track item) {
+              <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <table class="table">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col">Pueblos</th>
+              <th scope="col">Comunidades</th>
+              <th scope="col">Organizaciones</th>
+              <th scope="col">Personas <br> Relevantes</th>
+              <th scope="col">Otros</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of reporteA; let i = index">
+              <td>{{ item.tlPuebloAfro}}</td>
+              <td>{{ item.tlComunidadAfro}}</td>
+              <td>{{ item.tlOrganizaciones}}</td>
+              <td>{{ item.tlPersoRelevantes}}</td>
+              <td>{{ item.tlOtroAfro}}</td>
+              <td>{{ item.sumaTotalesAfro}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</form>

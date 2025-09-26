@@ -268,8 +268,8 @@ export class FormularioComunitaria {
   }
 
   //consulta cabezera
-getCabezera() {
-  if (!this.formularioRegistro) {
+  getCabezera() {
+    if (!this.formularioRegistro) {
     return;
   }
 

@@ -4,7 +4,7 @@
     <div class="container-fluid" style="padding: 0px;">
         <a class="navbar-brand">
             <div class="div-redondeado-right">
-                <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
+                <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">DEOEyG</h3>
             </div>
         </a>
         <form class="d-flex" role="search">
@@ -46,20 +46,20 @@
             </div>
             <div class="row" style="text-align: justify;" *ngIf="showModulo2">
                 <div class="col">
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.1 Ingresar nuevo registro</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.2 Directorio general de Instancias Representativas de <br> Pueblos, Barrios y Comunidades Indígenas (33DD)</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.3 Directorio general de Instancias Representativas de <br> Pueblos, Barrios y Comunidades Afromexicanas <br> (33 DD)</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.4 Consulta de datos inscritos por las áreas <br> ejecutivas y técnicas</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.5 Consulta de datos inscritos por instancias <br> representativas y autoridades tradicionales <br> indígenas y afromexicanas</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.6 Reporte del número de instancias representativas</h3>
+                    <h3 (click)="goToRegistroTwo()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.1 Ingresar nuevo registro</h3>
+                    <h3 (click)="goToDIndigenasTwo()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.2 Directorio general de Instancias Representativas de <br> Pueblos, Barrios y Comunidades Indígenas (33DD)</h3>
+                    <h3 (click)="goToDAfroTwo()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.3 Directorio general de Instancias Representativas de <br> Pueblos, Barrios y Comunidades Afromexicanas <br> (33 DD)</h3>
+                    <h3 (click)="goToCTecinas()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.4 Consulta de datos inscritos por las áreas <br> ejecutivas y técnicas</h3>
+                    <h3 (click)="goToCAfro()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.5 Consulta de datos inscritos por instancias <br> representativas y autoridades tradicionales <br> indígenas y afromexicanas</h3>
+                    <h3 (click)="goToRRepre()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.6 Reporte del número de instancias representativas</h3>
                 </div>
                 <div class="col">
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.7 Registro de lugares de mayor afluencia comunitaria</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.8 Propuesta de lugares y espacios para <br> asambleas comunitarias</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.9 Reporte de la atención distrital a consultas</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.10 Catálogo de instituciones y personas <br> para acompañamiento</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.11 Documentos normativos y técnicos (DEOEyG) <br> para documentar las consultas Indigenas</h3>
-                    <h3 (click)="logout()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.12 Documentos normativos y técnicos (DEOEyG) <br> para documentar las consultas Afromexicanas</h3>
+                    <h3 (click)="goToRComunitaria()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.7 Registro de lugares de mayor afluencia comunitaria</h3>
+                    <h3 (click)="goToPCom()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.8 Propuesta de lugares y espacios para <br> asambleas comunitarias</h3>
+                    <h3 (click)="goToRC()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.9 Reporte de la atención distrital a consultas</h3>
+                    <h3 (click)="goToCA()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.10 Catálogo de instituciones y personas <br> para acompañamiento</h3>
+                    <h3 (click)="goToDI()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.11 Documentos normativos y técnicos (DEOEyG) <br> para documentar las consultas Indigenas</h3>
+                    <h3 (click)="goToDAf()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.12 Documentos normativos y técnicos (DEOEyG) <br> para documentar las consultas Afromexicanas</h3>
                 </div>
             </div>
             <div class="row" *ngIf="showModulo3">
