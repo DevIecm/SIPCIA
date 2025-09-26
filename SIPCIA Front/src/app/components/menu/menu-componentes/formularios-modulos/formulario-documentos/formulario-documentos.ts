@@ -120,6 +120,7 @@ export class FormularioDocumentos {
 
             if(this.formId === 1){
               const datosForm = {
+                fecha_ficha: this.formularioRegistro.get('fecha')?.value || "",
                 demarcacion_territorial: Number(this.formularioRegistro.get('demarcacion_territorial')?.value) || null,
                 distrito_electoral: this.area,
                 distrito_cabecera: this.cabecera,
@@ -186,6 +187,7 @@ export class FormularioDocumentos {
             } else {
 
               const datosForm = {
+                fecha_ficha: this.formularioRegistro.get('fecha')?.value || "",
                 demarcacion_territorial: Number(this.formularioRegistro.get('demarcacion_territorial')?.value) || null,
                 distrito_electoral: this.area,
                 distrito_cabecera: this.cabecera,
@@ -268,27 +270,27 @@ export class FormularioDocumentos {
     this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
 
     this.formularioRegistro = this.formBuilder.group({
-      demarcacion_territorial: [''],
-      fecha: [''],
+      demarcacion_territorial: ['', [Validators.required]],
+      fecha: ['', [Validators.required]],
       ddemarcacion: [{ value: '', disabled: true }],
       
-      fechar: [''],
-      horarior: [''],
+      fechar: ['', [Validators.required]],
+      horarior: ['', [Validators.required]],
       nasambler: [''],
       lugarr: [''],
 
-      fechaa: [''],
-      horarioa: [''],
+      fechaa: ['', [Validators.required]],
+      horarioa: ['', [Validators.required]],
       nasambleaa: [''],
       lugara: [''],
 
-      fechaaa: [''],
-      horarioaa: [''],
+      fechaaa: ['', [Validators.required]],
+      horarioaa: ['', [Validators.required]],
       nasambleaaa: [''],
       lugaraa: [''],
 
-      defecha: [''],
-      afecha: [''],
+      defecha: ['', [Validators.required]],
+      afecha: ['', [Validators.required]],
 
       nlugares: [''],
 
@@ -392,11 +394,11 @@ export class FormularioDocumentos {
   }
 
   private isoToDDMMYYYY(iso?: string): string {
-  if (!iso) return '';
-  const datePart = iso.split('T')[0];            
-  const [year, month, day] = datePart.split('-');
-  return `${day}/${month}/${year}`;              
-}
+    if (!iso) return '';
+    const datePart = iso.split('T')[0];            
+    const [year, month, day] = datePart.split('-');
+    return `${day}/${month}/${year}`;              
+  }
 
 private isoToDateInputValue(iso?: string): string {
   if (!iso) return '';
@@ -417,27 +419,27 @@ private isoToDateInputValue(iso?: string): string {
           if(data.getRegistroFichaInd.length > 0) {
 
             const datosCargados = {
+              fecha: this.infoUpdate.fecha_asamblea_informativa ? new Date(this.infoUpdate.fecha_ficha).toISOString().split('T')[0] : '',
               demarcacion_territorial: this.infoUpdate.id_demarcacion,
-              fecha: this.infoUpdate.fecha_registro ? this.isoToDDMMYYYY(this.infoUpdate.fecha_registro) : '',
               ddemarcacion: this.infoUpdate.distrito_cabecera ? this.infoUpdate.distrito_cabecera : '',
               
-              fechar: this.infoUpdate.fecha_reunion ? this.isoToDDMMYYYY(this.infoUpdate.fecha_reunion) : '',
+              fechar: this.infoUpdate.fecha_reunion ? new Date(this.infoUpdate.fecha_reunion).toISOString().split('T')[0] : '',
               horarior: this.infoUpdate.hora_reunion ? new Date(this.infoUpdate.hora_reunion).toISOString().substr(11, 5) : '',
               nasambler: this.infoUpdate.numero_asistentes_reunion ? this.infoUpdate.numero_asistentes_reunion : '',
               lugarr: this.infoUpdate.lugar_reunion ? this.infoUpdate.lugar_reunion : '',
 
-              fechaa: this.infoUpdate.fecha_asamblea_informativa ? this.isoToDDMMYYYY(this.infoUpdate.fecha_asamblea_informativa) : '',
+              fechaa: this.infoUpdate.fecha_asamblea_informativa ? new Date(this.infoUpdate.fecha_asamblea_informativa).toISOString().split('T')[0] : '',
               horarioa: this.infoUpdate.hora_asamblea_informativa ? new Date(this.infoUpdate.hora_asamblea_informativa).toISOString().substr(11, 5) : '',
               nasambleaa: this.infoUpdate.numero_asistentes_informativa ? this.infoUpdate.numero_asistentes_informativa : '',
               lugara: this.infoUpdate.lugar_asamblea_informativa ? this.infoUpdate.lugar_asamblea_informativa : '',
 
-              fechaaa: this.infoUpdate.fecha_asamblea_consultiva ? this.isoToDDMMYYYY(this.infoUpdate.fecha_asamblea_consultiva) : '',
+              fechaaa: this.infoUpdate.fecha_asamblea_consultiva ? new Date(this.infoUpdate.fecha_asamblea_consultiva).toISOString().split('T')[0] : '',
               horarioaa: new Date(this.infoUpdate.hora_asamblea_consultiva).toISOString().substr(11, 5),
               nasambleaaa: this.infoUpdate.numero_asistentes_consultiva,
               lugaraa: this.infoUpdate.lugar_asamblea_consultiva,
 
-              defecha: this.infoUpdate.periodo_del ? this.isoToDDMMYYYY(this.infoUpdate.periodo_del) : '',
-              afecha: this.infoUpdate.periodo_al ? this.isoToDDMMYYYY(this.infoUpdate.periodo_al) : '',
+              defecha: this.infoUpdate.periodo_del ? new Date(this.infoUpdate.periodo_del).toISOString().split('T')[0] : '',
+              afecha: this.infoUpdate.periodo_al ? new Date(this.infoUpdate.periodo_al).toISOString().split('T')[0] : '',
 
               nlugares: this.infoUpdate.numero_lugares_publicos ? this.infoUpdate.numero_lugares_publicos : '',
 
@@ -526,31 +528,28 @@ private isoToDateInputValue(iso?: string): string {
 
             const datosFormularioCompletos = {
               demarcacion_territorial: this.infoUpdate.id_demarcacion,
-              fecha: this.infoUpdate.fecha_registro ? this.isoToDDMMYYYY(this.infoUpdate.fecha_registro) : '',
+              fecha: this.infoUpdate.fecha_asamblea_informativa ? new Date(this.infoUpdate.fecha_ficha).toISOString().split('T')[0] : '',
               ddemarcacion: this.infoUpdate.distrito_cabecera ? this.infoUpdate.distrito_cabecera : '',
               
-              fechar: this.infoUpdate.fecha_reunion ? this.isoToDDMMYYYY(this.infoUpdate.fecha_reunion) : '',
+              fechar: this.infoUpdate.fecha_reunion ? new Date(this.infoUpdate.fecha_reunion).toISOString().split('T')[0] : '',
               horarior: this.infoUpdate.hora_reunion ? new Date(this.infoUpdate.hora_reunion).toISOString().substr(11, 5) : '',
               nasambler: this.infoUpdate.numero_asistentes_reunion ? this.infoUpdate.numero_asistentes_reunion : '',
               lugarr: this.infoUpdate.lugar_reunion ? this.infoUpdate.lugar_reunion : '',
 
-              fechaa: this.infoUpdate.fecha_asamblea_informativa ? this.isoToDDMMYYYY(this.infoUpdate.fecha_asamblea_informativa) : '',
+              fechaa: this.infoUpdate.fecha_asamblea_informativa ? new Date(this.infoUpdate.fecha_asamblea_informativa).toISOString().split('T')[0] : '',
               horarioa: this.infoUpdate.hora_asamblea_informativa ? new Date(this.infoUpdate.hora_asamblea_informativa).toISOString().substr(11, 5) : '',
               nasambleaa: this.infoUpdate.numero_asistentes_informativa ? this.infoUpdate.numero_asistentes_informativa : '',
               lugara: this.infoUpdate.lugar_asamblea_informativa ? this.infoUpdate.lugar_asamblea_informativa : '',
 
-              fechaaa: this.infoUpdate.fecha_asamblea_consultiva ? this.isoToDDMMYYYY(this.infoUpdate.fecha_asamblea_consultiva) : '',
+              fechaaa: this.infoUpdate.fecha_asamblea_consultiva ? new Date(this.infoUpdate.fecha_asamblea_consultiva).toISOString().split('T')[0] : '',
               horarioaa: new Date(this.infoUpdate.hora_asamblea_consultiva).toISOString().substr(11, 5),
               nasambleaaa: this.infoUpdate.numero_asistentes_consultiva,
               lugaraa: this.infoUpdate.lugar_asamblea_consultiva,
 
-              defecha: this.infoUpdate.periodo_del ? this.isoToDDMMYYYY(this.infoUpdate.periodo_del) : '',
-              afecha: this.infoUpdate.periodo_al ? this.isoToDDMMYYYY(this.infoUpdate.periodo_al) : '',
+              defecha: this.infoUpdate.periodo_del ? new Date(this.infoUpdate.periodo_del).toISOString().split('T')[0] : '',
+              afecha: this.infoUpdate.periodo_al ? new Date(this.infoUpdate.periodo_al).toISOString().split('T')[0] : '',
 
               nlugares: this.infoUpdate.numero_lugares_publicos ? this.infoUpdate.numero_lugares_publicos : '',
-
-              // pafromexicana: [''],
-              // rrepresentativas: [''],
 
               cammbiosOrdenDia: this.infoUpdate.solicitud_cambios === false ? "0" : "1",
               observaciones: this.infoUpdate.observaciones ? this.infoUpdate.observaciones : '',

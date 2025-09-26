@@ -80,11 +80,7 @@
                                     </div>
                                     <div class="col-4">
                                         <label class="form-label">*Fecha de la consulta:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="dd/mm/yyyy"
-                                            formControlName="fconsulta"
-                                            class="form-control txt-input">
+                                        <input id="startDate" min="2025-01-01" formControlName="fconsulta" class="txt-input form-control" type="date" />
                                     </div>
                                 </div>
                             </div>
@@ -113,6 +109,7 @@
                                                 class="select-input form-select" 
                                                 aria-label="Default select example"
                                                 [(ngModel)]="opcionPuebloOriginario"
+                                                (change)="onChangePuebloOriginario();"
                                             >
                                                 <option value="" disabled selected>Seleccione una opción</option>
                                                 @for (item of catalogoPueblor; track item) {
@@ -129,6 +126,7 @@
                                                 class="select-input form-select" 
                                                 aria-label="Default select example"
                                                 [(ngModel)]="opcionPueblo"
+                                                (change)="onChangePueblo()"
                                             >
                                                 <option value="" disabled selected>Seleccione una opción</option>
                                                 @for (item of catalogoPueblos; track item) {
@@ -145,6 +143,7 @@
                                                 class="select-input form-select" 
                                                 aria-label="Default select example"
                                                 [(ngModel)]="opcionBarrio"
+                                                (change)="onChangeBarrio()"
                                             >
                                                 <option value="" disabled selected>Seleccione una opción</option>
                                                 @for (item of catalogoBarrios; track item) {
@@ -166,6 +165,7 @@
                                                 class="select-input form-select" 
                                                 aria-label="Default select example"
                                                 [(ngModel)]="opcionUnidadTerritorial"
+                                                (change)="onChangeUnidadTerritorial()"
                                             >
                                                 <option value="" disabled selected>Seleccione una opción</option>
                                                 @for (item of catalogoUnidadTerritorial; track item) {
@@ -222,7 +222,7 @@
                                         <div class="mb-3">
                                             <label for="exampleFormControlTextarea1" class="form-label">Forma en la que se atendió la consulta:</label>
                                             <textarea 
-                                                maxlength="200"
+                                                maxlength="500"
                                                 formControlName="forma" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
                                         </div>
                                     </div>
@@ -235,7 +235,7 @@
                                         <div class="mb-3">
                                             <label for="exampleFormControlTextarea1" class="form-label">Observaciones y/o precisiones:</label>
                                             <textarea 
-                                                maxlength="200"formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
+                                                maxlength="500"formControlName="observaciones" style="resize: none;" rows="3" class="form-control" id="exampleFormControlTextarea1" ></textarea>
                                         </div>
                                     </div>
                                     <div class="col-6">

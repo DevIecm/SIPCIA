@@ -394,6 +394,51 @@ export class FormularioConsultas {
     })
   }
 
+  onChangePuebloOriginario() {
+    if (this.formularioRegistro) {
+      this.formularioRegistro.get('pueblo')?.disable();
+      this.formularioRegistro.get('barrio')?.disable();
+      this.formularioRegistro.get('uterritorial')?.disable();
+      this.formularioRegistro.get('otro')?.disable();
+    }
+  }
+
+  onChangePueblo() {
+    if (this.formularioRegistro) {
+      this.formularioRegistro.get('ooriginario')?.disable();
+      this.formularioRegistro.get('barrio')?.disable();
+      this.formularioRegistro.get('uterritorial')?.disable();
+      this.formularioRegistro.get('otro')?.disable();
+    }
+  }
+
+  onChangeBarrio() {
+    if (this.formularioRegistro) {
+      this.formularioRegistro.get('ooriginario')?.disable();
+      this.formularioRegistro.get('pueblo')?.disable();
+      this.formularioRegistro.get('uterritorial')?.disable();
+      this.formularioRegistro.get('otro')?.disable();
+    }
+  }
+
+  onChangeUnidadTerritorial() {
+    if (this.formularioRegistro) {
+      this.formularioRegistro.get('ooriginario')?.disable();
+      this.formularioRegistro.get('pueblo')?.disable();
+      this.formularioRegistro.get('barrio')?.disable();
+      this.formularioRegistro.get('otro')?.disable();
+    }
+  }
+
+  onChangeOtro() {
+    if (this.formularioRegistro) {
+      this.formularioRegistro.get('ooriginario')?.disable();
+      this.formularioRegistro.get('pueblo')?.disable();
+      this.formularioRegistro.get('barrio')?.disable();
+      this.formularioRegistro.get('uterritorial')?.disable();
+    }
+  }
+
   onCheckboxChange(event: any) {
     const checked = event.target.checked;
     this.formularioRegistro?.get('presento_caso')?.setValue(checked ? 1 : 0);

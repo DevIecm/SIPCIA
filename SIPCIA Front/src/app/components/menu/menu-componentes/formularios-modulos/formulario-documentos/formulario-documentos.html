@@ -38,10 +38,13 @@
                                     <div class="col-4">
                                         <div class="mb-3 d-flex align-items-center">
                                             <label class="form-label me-2 mb-0">Fecha:</label>
+                                  
                                             <input 
-                                                type="text"
-                                                formControlName="fecha"
-                                                class="form-control input-fecha">
+                                                id="startDate" 
+                                                min="2025-01-01" 
+                                                formControlName="fecha" 
+                                                class="form-control input-fecha" 
+                                                type="date" >
                                         </div>
                                     </div>
                                 </div>
@@ -86,19 +89,24 @@
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
-                                                    type="text"
-                                                    formControlName="fechar"
-                                                    class="form-control input-d-card">
+                                                    min="2025-01-01" 
+                                                    formControlName="fechar" 
+                                                    class="form-control input-d-card"
+                                                    type="date"
+                                                >
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
-                                                    type="text"
-                                                    formControlName="horarior"
-                                                    class="form-control input-d-card">
+                                                    type="time" 
+                                                    formControlName="horarior" 
+                                                    class="form-control input-d-card"
+                                                >
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
-                                                    type="text"
+                                                    pattern="[0-9]*"
+                                                    inputmode="numeric" 
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                     formControlName="nasambler"
                                                     class="form-control input-d-card">
                                             </div>
@@ -115,19 +123,25 @@
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
-                                                    type="text"
-                                                    formControlName="fechaa"
-                                                    class="form-control input-d-card">
+                                                    min="2025-01-01" 
+                                                    formControlName="fechaa" 
+                                                    class="form-control input-d-card"
+                                                    type="date"
+                                                >
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="time" 
+                                                    formControlName="horarioa" 
+                                                    class="form-control input-d-card"
+                                                >
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="horarioa"
-                                                    class="form-control input-d-card">
-                                            </div>
-                                            <div class="col-2 mt-2">
-                                                <input 
-                                                    type="text"
+                                                    pattern="[0-9]*"
+                                                    inputmode="numeric" 
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                     formControlName="nasambleaa"
                                                     class="form-control input-d-card">
                                             </div>
@@ -144,19 +158,25 @@
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
-                                                    type="text"
-                                                    formControlName="fechaaa"
-                                                    class="form-control input-d-card">
+                                                    min="2025-01-01" 
+                                                    formControlName="fechaaa" 
+                                                    class="form-control input-d-card"
+                                                    type="date"
+                                                >
+                                            </div>
+                                            <div class="col-2 mt-2">
+                                                <input 
+                                                    type="time" 
+                                                    formControlName="horarioaa" 
+                                                    class="form-control input-d-card"
+                                                >
                                             </div>
                                             <div class="col-2 mt-2">
                                                 <input 
                                                     type="text"
-                                                    formControlName="horarioaa"
-                                                    class="form-control input-d-card">
-                                            </div>
-                                            <div class="col-2 mt-2">
-                                                <input 
-                                                    type="text"
+                                                    pattern="[0-9]*"
+                                                    inputmode="numeric" 
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                     formControlName="nasambleaaa"
                                                     class="form-control input-d-card">
                                             </div>
@@ -186,21 +206,26 @@
                                                             <label class="form-label">del</label>
                                                         </div>
                                                         <div class="col">
-                                                            <input
-                                                            style="border-radius: 25px;"
-                                                            type="text"
-                                                            formControlName="defecha"
-                                                            class="form-control input-d-card">
+                                                            <input 
+                                                                min="2025-01-01" 
+                                                                style="border-radius: 25px;"
+                                                                formControlName="defecha" 
+                                                                class="form-control input-d-card"
+                                                                type="date"
+                                                            >
                                                         </div>
                                                         <div class="col">
                                                             <label class="form-label">al</label>
                                                         </div>
                                                         <div class="col">
+
                                                             <input 
-                                                            style="border-radius: 25px;"
-                                                            type="text"
-                                                            formControlName="afecha"
-                                                            class="form-control input-d-card">
+                                                                min="2025-01-01" 
+                                                                style="border-radius: 25px;"
+                                                                formControlName="afecha" 
+                                                                class="form-control input-d-card"
+                                                                type="date"
+                                                            >
                                                         </div>
                                                     </div>
                                                 </div>
@@ -218,6 +243,9 @@
                                             <input
                                                 style="height: 100%; border-radius: 25px;"
                                                 type="text"
+                                                pattern="[0-9]*"
+                                                inputmode="numeric" 
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                 formControlName="nlugares"
                                                 class="form-control input-d-card">
                                             </div>

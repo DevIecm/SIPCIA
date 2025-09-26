@@ -71,6 +71,7 @@
                                                             formControlName="ooriginario"
                                                             class="select-input form-select" 
                                                             aria-label="Default select example"
+                                                            (change)="onChangePuebloOriginario()"
                                                         >
                                                             <option value="" disabled selected>Seleccione una opción</option>
                                                             @for (item of catalogoPueblor; track item) {
@@ -84,6 +85,7 @@
                                                             formControlName="uterritorial"
                                                             class="select-input form-select" 
                                                             aria-label="Default select example"
+                                                            (change)="onChangeUnidadTerritorial()"
                                                         >
                                                             <option value="" disabled selected>Seleccione una opción</option>
                                                             @for (item of catalogoUnidadTerritorial; track item) {
@@ -119,6 +121,7 @@
                                                         formControlName="pueblo"
                                                         class="select-input form-select" 
                                                         aria-label="Default select example"
+                                                        (change)="onChangePueblo()"
                                                     >
                                                         <option value="" disabled selected>Seleccione una opción</option>
                                                         @for (item of catalogoPueblos; track item) {
@@ -132,6 +135,7 @@
                                                         formControlName="barrio"
                                                         class="select-input form-select" 
                                                         aria-label="Default select example"
+                                                        (change)="onChangeBarrio()"
                                                     >
                                                         <option value="" disabled selected>Seleccione una opción</option>
                                                         @for (item of catalogoBarrios; track item) {
@@ -151,6 +155,7 @@
                                                             maxlength="200"
                                                             formControlName="otro"
                                                             class="form-control txt-input"
+                                                            (change)="onChangeOtro()"
                                                         >
                                                     </div>
                                                 </div>

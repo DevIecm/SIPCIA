@@ -73,7 +73,7 @@
               scope="col"
               (click)="sortData('numero_consecutivo')"
               style="cursor: pointer;">
-              <div style="display: flex; align-items: center; gap: 5px;">
+              <div>
                 <span>Número consecutivo <br> de Consulta</span>
                 <i style="margin-left: 5px;" [ngClass]="getSortIcon('numero_consecutivo')"></i>
               </div>
@@ -167,15 +167,7 @@
                 <i style="margin-left: 5px;" [ngClass]="getSortIcon('forma_atendio')"></i>
               </div>
             </th>
-            <th 
-              scope="col"
-              (click)="sortData('observaciones')"
-              style="cursor: pointer;">
-              <div style="display: flex; align-items: center; gap: 5px;">
-                <span>Observaciones y/o precisiones</span>
-                <i style="margin-left: 5px;" [ngClass]="getSortIcon('observaciones')"></i>
-              </div>
-            </th>
+            <th scope="col">Observaciones y/o precisiones</th>
             <th scope="col">Solicitudes y/o <br> documentos</th>
           </tr>
         </thead>
