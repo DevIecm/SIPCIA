@@ -114,8 +114,6 @@ export class FormularioComunitaria {
           formData.append("estado_registro", "1");
           formData.append("tipo_usuario", this.tipo_usuario.toString());
 
-
-          console.log("muestrame", formData)
           this.registerService.nuinsertaRegistro(formData, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
