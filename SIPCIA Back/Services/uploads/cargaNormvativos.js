@@ -1,0 +1,158 @@
+import { connectToDatabase, sql } from "../../Config/Configuracion.js";
+import Midleware from "../../Config/Midleware.js";
+import express from 'express';
+import dotenv from 'dotenv';
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+
+dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const router = express.Router();
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../uploads/zip");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/zip" || file.mimetype === "application/x-zip-compressed") {
+      cb(null, true);
+    } else {
+      cb(new Error("Solo se permiten archivos .zip"));
+    }
+  }
+});
+
+// guardar documentos .zip
+router.post("/subirDocumentoNormativo", Midleware.verifyToken, upload.single("archivoZip"), async (req, res) => {
+  const { distrito, tipo_comunidad } = req.body;
+
+  if (!distrito || !tipo_comunidad) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ message: "No se subió ningún archivo" });
+  }
+
+  const nombreDocumento = req.file.originalname;
+  const rutaDocumento = `/uploads/zip/${req.file.filename}`;
+
+  // Fecha y hora
+  const now = new Date();
+  const offsetInMs = now.getTimezoneOffset() * 60000;
+  const fechaLocal = new Date(now.getTime() - offsetInMs);
+  const horaActual = now.toTimeString().split(' ')[0];
+
+  const pool = await connectToDatabase();
+  const transaction = pool.transaction();
+
+  try {
+    await transaction.begin(); 
+
+    const request = transaction.request();
+    await request
+      .input('distrito', sql.Int, distrito)
+      .input('nombre_documento', sql.VarChar, nombreDocumento)
+      .input('direccion_documento', sql.VarChar, rutaDocumento)
+      .input('tipo_comunidad', sql.Int, tipo_comunidad)
+      .input('fecha_carga', sql.Date, fechaLocal)
+      .input('hora_carga', sql.VarChar, horaActual)
+      .query(`
+        INSERT INTO documentos_normativos 
+          (distrito, nombre_documento, direccion_documento, tipo_comunidad, fecha_carga, hora_carga)
+        VALUES
+          (@distrito, @nombre_documento, @direccion_documento, @tipo_comunidad, @fecha_carga, @hora_carga)
+      `);
+
+    const idResult = await request.query("SELECT SCOPE_IDENTITY() AS id");
+    const insertedId = idResult.recordset[0].id;
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      message: "Documento guardado correctamente",
+      id: insertedId,
+      ruta: rutaDocumento
+    });
+
+  } catch (err) {
+    await transaction.rollback();
+    console.error(err);
+    res.status(500).json({ message: "Error al guardar documento" });
+  }
+});
+
+//getNormativos front
+router.get("/getOtrosDocumentos", Midleware.verifyToken, async (req, res) => {
+    const {
+        distrito_electoral, tipo_comunidad
+    }= req.query
+
+    if (!distrito_electoral || !tipo_comunidad){
+        return res.status(400).json({ message: "Datos requeridos"})
+    }
+
+    try {
+
+        const pool = await connectToDatabase();
+        const result = await pool.request()
+        
+            .input('distrito_electoral', sql.Int, distrito_electoral)
+            .input('tipo_comunidad', sql.Int, tipo_comunidad)
+            .query(`select nombre_documento, fecha_carga, direccion_documento
+                from documentos_normativos
+                WHERE distrito = @distrito_electoral and tipo_comunidad= @tipo_comunidad;`);
+
+        if (result.recordset.length > 0) {
+
+           const data = result.recordset.map(item => {
+                  const nombreArchivo = item.direccion_documento
+                    ? path.basename(item.direccion_documento)
+                    : null;
+          
+                  const guionIndex = nombreArchivo?.indexOf("-");
+                  const nombreLimpio = guionIndex > -1
+                    ? nombreArchivo.substring(guionIndex + 1)
+                    : nombreArchivo;
+          
+                  return {
+                    ...item,
+                    direccion_documento: nombreArchivo,
+                    nombre_documento: nombreLimpio
+                  };
+                });
+
+            return res.status(200).json({
+                getOtrosDocumentos: data,
+                code: 200
+            });
+        } else {
+            return res.status(404).json({ message: "No se encontraron datos" });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error de servidor", error: error.message });
+    }
+});
+
+
+
+
+export default router;

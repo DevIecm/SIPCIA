@@ -73,7 +73,6 @@ router.post("/altaInstituciones", Midleware.verifyToken, uploadFoto.single("foto
             
     if(!demarcacion_territorial ||
         !nombre_completo ||
-        !unidad_territorial ||
         !comunidad  ||
         !usuario_registro  ||
         !modulo_registro  ||
@@ -227,7 +226,7 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
         cv_enlace
     } = req.body;
 
-    if (!demarcacion_territorial || !nombre_completo || !unidad_territorial || !comunidad ||
+    if (!demarcacion_territorial || !nombre_completo ||  !comunidad ||
         !usuario_registro || !modulo_registro || !estado_registro) {
         return res.status(400).json({ message: "Datos requeridos" });
     }
@@ -420,70 +419,76 @@ router.get("/getInstituciones", Midleware.verifyToken, async(req, res)=>{
         return res.status(500).json({ message: "Error de servidor", error: error.message });
     }
 })
-//consulta registros de tabla por distrito
+
 router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) => {
-    const { id } = req.query;
+  const { id } = req.query;
 
-    if (!id) {
-        return res.status(400).json({ message: "Se requiere el parámetro 'id'" });
+  if (!id) {
+    return res.status(400).json({ message: "Se requiere el parámetro 'id'" });
+  }
+
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input("id", sql.Int, id)
+      .query(`
+        SELECT 
+          ri.id AS id_registro,
+          ri.fotografia,
+          ri.demarcacion_territorial AS id_demarcacion,
+          dt.demarcacion_territorial AS demarcacion_territorial,
+          ri.nombre_completo,
+          ri.pueblo_originario AS id_pueblo_originario,
+          cpo.pueblo_originario,
+          ri.pueblo AS id_pueblo,
+          cp.pueblo,
+          ri.barrio AS id_barrio,
+          cb.barrio,
+          ri.unidad_territorial AS id_unidad_territorial,
+          ut.ut,
+          ri.otro,
+          ri.comunidad AS id_comunidad,
+          c.comunidad,
+          ri.interes_profesional,
+          ri.domicilio,
+          ri.telefono,
+          ri.nombre_institucion,
+          ri.correo_electronico,
+          ri.cargo 
+        FROM registro_instituciones ri
+        JOIN demarcacion_territorial dt ON ri.demarcacion_territorial = dt.id
+        LEFT JOIN cat_pueblos_originarios cpo ON ri.pueblo_originario = cpo.id 
+        LEFT JOIN cat_pueblos cp ON ri.pueblo = cp.id
+        LEFT JOIN cat_barrios cb ON ri.barrio = cb.id 
+        LEFT JOIN unidad_territorial ut ON ri.unidad_territorial = ut.id 
+        JOIN comunidad c ON ri.comunidad = c.id
+        WHERE ri.id = @id;
+      `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "No se encontraron datos" });
     }
 
-    try {
-        const pool = await connectToDatabase();
-        const result = await pool.request()
-            .input('id', sql.Int, id)
-            .query(`
-                SELECT 
-                    ri.id AS id_registro,
-                    ri.fotografia,
-                    ri.demarcacion_territorial AS id_demarcacion,
-                    dt.demarcacion_territorial AS demarcacion_territorial,
-                    ri.nombre_completo,
-                    ri.pueblo_originario AS id_pueblo_originario,
-                    cpo.pueblo_originario,
-                    ri.pueblo AS id_pueblo,
-                    cp.pueblo,
-                    ri.barrio AS id_barrio,
-                    cb.barrio,
-                    ri.unidad_territorial AS id_unidad_territorial,
-                    ut.ut,
-                    ri.otro,
-                    ri.comunidad AS id_comunidad,
-                    c.comunidad,
-                    ri.interes_profesional,
-                    ri.domicilio,
-                    ri.telefono,
-                    ri.nombre_institucion,
-                    ri.correo_electronico,
-                    ri.cargo 
-                FROM registro_instituciones ri
-                JOIN demarcacion_territorial dt ON ri.demarcacion_territorial = dt.id
-                left JOIN cat_pueblos_originarios cpo ON ri.pueblo_originario = cpo.id 
-                left JOIN cat_pueblos cp ON ri.pueblo = cp.id
-                left JOIN cat_barrios cb ON ri.barrio = cb.id 
-                left JOIN unidad_territorial ut ON ri.unidad_territorial = ut.id 
-                JOIN comunidad c ON ri.comunidad = c.id
-                WHERE ri.id = @id;
-            `);
+    const registro = result.recordset[0];
 
-        if (result.recordset.length === 0) {
-            return res.status(404).json({ message: "No se encontraron datos" });
-        }
+    if (registro.fotografia) {
+      const dirname = path.dirname(registro.fotografia).replace(/\\/g, "/");
+      const basename = path.basename(registro.fotografia);
 
-        const registro = result.recordset[0];
-
-        registro.fotografia_url = registro.fotografia
-            ? `${`http://145.0.46.49:4000/Services`}${registro.fotografia}`
-            : null;
-
-        return res.status(200).json({
-            getRegistroInstituciones: [registro],
-        });
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error de servidor", error: error.message });
+      registro.fotografia_url =
+        `http://145.0.46.49:4000/Services${dirname}/${encodeURIComponent(basename)}`;
+    } else {
+      registro.fotografia_url = null;
     }
+
+    return res.status(200).json({
+      getRegistroInstituciones: [registro],
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
 });
 
 export default router;

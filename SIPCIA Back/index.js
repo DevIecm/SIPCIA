@@ -28,6 +28,7 @@ import fichas from './Services/fichas/fichaInd.js';
 import fichasAfro from './Services/fichas/fichaAfro.js';
 import reportesDes from './Services/reportes/reporteDirectorioIndigena.js';
 import descargaDoc from './Services/uploads/descargaDocs.js';
+import cargaNormativo from './Services/uploads/cargaNormvativos.js';
 
 app.use('/api/login', login);
 app.use('/api/registro', registro);
@@ -43,7 +44,7 @@ app.use('/api/fichas', fichas);
 app.use('/api/fichasAfro', fichasAfro);
 app.use('/api/reportesDes', reportesDes);
 app.use('/api/descargaDoc', descargaDoc);
-
+app.use('/api/cargaNormativo', cargaNormativo);
 
 app.use(
   '/Services/uploads',

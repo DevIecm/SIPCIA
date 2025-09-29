@@ -161,6 +161,7 @@ export class FormularioDocumentos {
                 modulo_registro: this.tipo_usuario,
                 estado_registro: 1,
               }
+              console.log("datosForm", datosForm);
 
 
               this.registerService.insertaFichaTecnica(datosForm, this.tokenSesion).subscribe({

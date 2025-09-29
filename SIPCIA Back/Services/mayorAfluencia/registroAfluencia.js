@@ -54,7 +54,6 @@ router.post("/altaAfluencia", Midleware.verifyToken, upload.single("kmlFile"), a
         demarcacion_territorial == null || 
         denominacion_lugar == null || 
         domicilio_lugar == null || 
-        foto == null || 
         usuario_registro == null || 
         modulo_registro == null || 
         estado_registro == null) {
@@ -177,7 +176,6 @@ router.patch("/updateAfluencia", Midleware.verifyToken, upload.single("kmlFile")
     demarcacion_territorial == null ||
     denominacion_lugar == null ||
     domicilio_lugar == null ||
-    foto == null ||
     usuario_registro == null ||
     modulo_registro == null ||
     estado_registro == null

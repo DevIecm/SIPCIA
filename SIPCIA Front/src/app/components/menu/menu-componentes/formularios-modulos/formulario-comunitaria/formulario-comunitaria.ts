@@ -107,7 +107,7 @@ export class FormularioComunitaria {
           formData.append("denominacion_lugar", this.formularioRegistro.get('denominacion_lugar')?.value || "");
           formData.append("domicilio_lugar", this.formularioRegistro.get('domicilio_lugar')?.value || "");
           formData.append("foto", "0");
-          formData.append("enlace_foto", "ruta/documento");
+          formData.append("enlace_foto", "");
           formData.append("observaciones", this.formularioRegistro.get('observaciones')?.value || "");
           formData.append("usuario_registro", this.id_usuario.toString());
           formData.append("modulo_registro", this.tipo_usuario.toString());
@@ -176,7 +176,7 @@ export class FormularioComunitaria {
           formData.append("denominacion_lugar", this.formularioRegistro.get('denominacion_lugar')?.value || "");
           formData.append("domicilio_lugar", this.formularioRegistro.get('domicilio_lugar')?.value || "");
           formData.append("foto", "0");
-          formData.append("enlace_foto", "ruta/documento");
+          formData.append("enlace_foto", "");
           formData.append("observaciones", this.formularioRegistro.get('observaciones')?.value || "");
           formData.append("usuario_registro", this.id_usuario.toString());
           formData.append("modulo_registro", this.tipo_usuario.toString());
@@ -319,7 +319,7 @@ getCabezera() {
               denominacion_lugar: data.getRegistroAfluencia[0].denominacion_lugar,
               domicilio_lugar: data.getRegistroAfluencia[0].domicilio_lugar,
               foto: 0,
-              enlace_foto: "ruta/documento",
+              enlace_foto: "",
               enlace_ubicacion: data.getRegistroAfluencia[0].enlace_ubicacion,
               observaciones: data.getRegistroAfluencia[0].observaciones,
               usuario_registro: this.id_usuario,

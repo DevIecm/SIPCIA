@@ -33,6 +33,7 @@ export class DocumentosIndigenas implements OnInit{
   ombreUser: string = '';
   tokenSesion: string = '';
   searchTerm: string = '';
+  nombreOtrosDocumentos: string= '';
 
   area_adscripcion: number = 0;
   tipo_usuario: number = 0;
@@ -42,7 +43,14 @@ export class DocumentosIndigenas implements OnInit{
   dataTable: any = [];
   allDatable: any[] = [];
 
+  dataTableD: any = [];
+  allDatableD: any[] = [];
+
   showModal = false;
+  
+  selectedFile: File | null = null;
+  selectedFileName: string | null = null;
+  fileUploaded: boolean = false;
 
   ngOnInit(): void {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
@@ -53,18 +61,80 @@ export class DocumentosIndigenas implements OnInit{
     this.area_adscripcion = Number(sessionStorage.getItem('area'));
 
     this.getRegister();
+    this.getdata();
   }
 
   constructor(
     private router: Router,
     private reporteService: DocumentosServices,
     private service: Auth,
-    private miServicio: Reportes
+    private miServicio: Reportes,
+    private docService: Reportes,
+    private serviceRegister: Reportes
   ) {}
   
   logout() {
     this.router.navigate(['']);
   };
+
+
+
+triggerFileInput() {
+  const input = document.getElementById('fileInputZip') as HTMLInputElement;
+  input.click();
+}
+
+onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    this.selectedFile = input.files[0];
+    this.uploadZip();
+  }
+}
+
+uploadZip() {
+  if (!this.selectedFile) return;
+
+  const formData = new FormData();
+  formData.append('archivoZip', this.selectedFile);
+  formData.append('distrito', this.area_adscripcion.toString());
+  formData.append('tipo_comunidad', "1");
+
+  this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
+    next: (res) => {
+      alert('Documento subido correctamente');
+    },
+    error: (err) => {
+      console.error('Error al subir documento', err);
+      alert('Error al subir documento');
+    }
+  });
+}
+
+getdata(){
+this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.getOtrosDocumentos.length > 0) {
+          this.dataTableD = data.getOtrosDocumentos;
+          this.allDatableD = data.getOtrosDocumentos;           
+        } else {
+          Swal.fire("No se encontraron registros");
+        }
+      },
+      error: (err) => {
+
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros")
+        }
+
+      }
+    });
+  }
+
 
   onValidateInfo() {
     this.router.navigate(['/menu']);
@@ -83,6 +153,25 @@ export class DocumentosIndigenas implements OnInit{
 
   descargar(){
     this.miServicio.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf", this.tokenSesion).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+///        a.download =item.nombre_archivo;
+          a.download = 'Documentos Normativos';
+
+
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
+
+  descargarOtros(nameArchivo: any){
+    this.miServicio.descargarOtrosNorma(nameArchivo, this.tokenSesion).subscribe({
+
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

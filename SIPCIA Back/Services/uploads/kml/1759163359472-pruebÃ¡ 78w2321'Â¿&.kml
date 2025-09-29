@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Libia - Archivo de prueba</name>
+    <description>Pequeño KML de ejemplo con 3 placemarks y un polígono aproximado para pruebas.</description>
+
+    <Style id="placemarkStyle">
+      <IconStyle>
+        <scale>1.2</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/red-circle.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1.0</scale>
+      </LabelStyle>
+    </Style>
+
+    <!-- Placemark: Trípoli -->
+    <Placemark>
+      <name>Trípoli</name>
+      <description>Trípoli, capital de Libia</description>
+      <styleUrl>#placemarkStyle</styleUrl>
+      <Point>
+        <coordinates>13.1913,32.8872,0</coordinates>
+      </Point>
+    </Placemark>
+
+    <!-- Placemark: Bengasi -->
+    <Placemark>
+      <name>Bengasi</name>
+      <description>Bengasi</description>
+      <styleUrl>#placemarkStyle</styleUrl>
+      <Point>
+        <coordinates>20.0667,32.1167,0</coordinates>
+      </Point>
+    </Placemark>
+
+    <!-- Placemark: Sabha -->
+    <Placemark>
+      <name>Sabha</name>
+      <description>Sabha (centro-sur de Libia)</description>
+      <styleUrl>#placemarkStyle</styleUrl>
+      <Point>
+        <coordinates>14.4333,27.0333,0</coordinates>
+      </Point>
+    </Placemark>
+
+    <!-- Polígono aproximado que conecta las tres ciudades -->
+    <Placemark>
+      <name>Polígono de ejemplo</name>
+      <description>Polígono simple que conecta las 3 ciudades (solo para pruebas)</description>
+      <Style>
+        <LineStyle>
+          <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>7dff0000</color>
+        </PolyStyle>
+      </Style>
+      <Polygon>
+        <extrude>0</extrude>
+        <altitudeMode>clampToGround</altitudeMode>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>
+              13.1913,32.8872,0
+              20.0667,32.1167,0
+              14.4333,27.0333,0
+              13.1913,32.8872,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+
+  </Document>
+</kml>

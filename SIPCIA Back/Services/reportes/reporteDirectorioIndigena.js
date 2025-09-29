@@ -32,7 +32,7 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
           cpo.pueblo_originario,
           cp.pueblo,
           cb.barrio,
-          r.nombre_comunidad,
+          r.comunidad_pbl,
           CASE 
               WHEN r.otro_pbl IS NOT NULL THEN r.otro_pbl 
               ELSE ut.ut 
@@ -162,7 +162,7 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
         row.pueblo_originario,
         row.pueblo,
         row.barrio,
-        row.nombre_comunidad,
+        row.comunidad_pbl,
         row.utotro,
         row.nombre_instancia,
         row.cargo_instancia,
@@ -228,7 +228,7 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
           dt.demarcacion_territorial AS demarcacion,
           r.nombre_completo,
           r.pueblo_afro,
-          r.nombre_comunidad,
+          r.comunidad_afro,
           r.organizacion_afro,
           r.persona_relevante_afro,
           r.otro_afro,
@@ -380,7 +380,7 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
         row.demarcacion,
         row.nombre_completo,
         row.pueblo_afro,
-        row.nombre_comunidad,
+        row.comunidad_afro,
         row.organizacion_afro,
         row.persona_relevante_afro,
         row.otro_afro,
@@ -460,6 +460,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                 join demarcacion_territorial dt on r.demarcacion = dt.id 
                 join cat_distrito cd on r.distrito_electoral = cd.id 
                 where r.distrito_electoral = @distrito_electoral and r.comunidad = 1
+                GROUP BY dt.demarcacion_territorial
                 ORDER BY dt.demarcacion_territorial;`);
     const tabla1 = result1.recordset;
 

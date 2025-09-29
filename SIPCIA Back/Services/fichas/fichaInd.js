@@ -13,6 +13,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
         demarcacion_territorial,
         distrito_electoral,
         fecha_reunion,
+        fecha_ficha,
         hora_reunion,
         numero_asistentes_reunion,
         lugar_reunion,
@@ -39,11 +40,12 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
     } = req.body;
 
     const { lengua_tecnica_indigena, traduccion_resumen_acta, persona_responsable_fti } = req.body; // Pedir los id en forma de lenguas Array 
-        
+        console.log("persona_responsable_fti", persona_responsable_fti)
 
     if (
         !demarcacion_territorial ||
         !distrito_electoral ||
+        !fecha_ficha ||
         !fecha_reunion ||
         !hora_reunion ||
         !usuario_registro ||
@@ -113,6 +115,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
             .input('estado_registro', sql.Int, estado_registro)
             .input('nombre_ficha', sql.VarChar, nombre_ficha)
             .input('distrito_cabecera', sql.Int, distrito_cabecera)
+            .input('fecha_ficha', sql.DateTime, fecha_ficha) 
             .query(`
                 INSERT INTO ficha_tecnica_indigena                     
                     (demarcacion_territorial, distrito_electoral, fecha_reunion,
@@ -121,7 +124,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
                     hora_asamblea_consultiva, numero_asistentes_consultiva, lugar_asamblea_consultiva, periodo_del,
                     periodo_al, numero_lugares_publicos, otro_plan_trabajo, otro_resumen_acta,
                     solicitud_cambios, cambios_solicitados, observaciones, fecha_registro,
-                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha, distrito_cabecera)
+                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha, distrito_cabecera, fecha_ficha)
                 OUTPUT INSERTED.id
                 VALUES (@demarcacion_territorial, @distrito_electoral, @fecha_reunion,
                     @hora_reunion, @numero_asistentes_reunion, @lugar_reunion, @fecha_asamblea_informativa,
@@ -129,7 +132,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
                     @hora_asamblea_consultiva, @numero_asistentes_consultiva, @lugar_asamblea_consultiva, @periodo_del,
                     @periodo_al, @numero_lugares_publicos, @otro_plan_trabajo, @otro_resumen_acta,
                     @solicitud_cambios, @cambios_solicitados, @observaciones, @fecha_registro,
-                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha, @distrito_cabecera)
+                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha, @distrito_cabecera, @fecha_ficha)
             `);
 
         const idRegistro = result.recordset[0].id;
@@ -269,6 +272,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
             distrito_electoral,
             distrito_cabecera,
             fecha_reunion,
+            fecha_ficha,
             hora_reunion,
             numero_asistentes_reunion,
             lugar_reunion,
@@ -357,9 +361,20 @@ router.get("/getFichasInd", Midleware.verifyToken, async (req, res) => {
         const result = await pool.request()
         
             .input('distrito_electoral', sql.Int, distrito_electoral)
-            .query(`select id, nombre_ficha, fecha_registro  
-                from ficha_tecnica_indigena
-                where distrito_electoral = @distrito_electoral;`);
+            .query(`SELECT 
+                id,
+                nombre_ficha,
+                fecha_registro,
+                RIGHT('0' + CAST(
+                    CASE 
+                        WHEN DATEPART(HOUR, hora_registro) % 12 = 0 THEN 12 
+                        ELSE DATEPART(HOUR, hora_registro) % 12 
+                    END AS VARCHAR), 2) 
+                + ':' + RIGHT('0' + CAST(DATEPART(MINUTE, hora_registro) AS VARCHAR), 2) 
+                + ' ' + CASE WHEN DATEPART(HOUR, hora_registro) >= 12 THEN 'PM' ELSE 'AM' END 
+                AS hora_registro
+            FROM ficha_tecnica_indigena
+            WHERE distrito_electoral = @distrito_electoral;`);
 
         if (result.recordset.length > 0) {
             return res.status(200).json({
@@ -399,6 +414,7 @@ router.get("/getRegistroFichaInd", Midleware.verifyToken, async (req, res) => {
                     fi.distrito_cabecera,
                     fi.distrito_electoral,
                     fi.fecha_registro,
+                    fi.fecha_ficha,
                     fi.fecha_reunion,
                     fi.fecha_asamblea_informativa,
                     fi.fecha_asamblea_consultiva,

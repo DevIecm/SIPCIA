@@ -131,6 +131,32 @@ export class Reportes {
   );
 }
 
+subirDocumentoNormativo(formData: FormData, token: string): Observable<any> {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.post(`${this.apiUrl}cargaNormativo/subirDocumentoNormativo`, formData, { headers })
+    .pipe(
+      catchError((error: HttpErrorResponse) => throwError(() => error))
+    );
+}
+
+getOtrosDocumentos(distrito_electoral:number, tipo_comunidad:number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+
+    const params = new HttpParams()
+      .set('distrito_electoral', distrito_electoral)
+      .set('tipo_comunidad', tipo_comunidad)
+      
+    return this.http.get(this.apiUrl + 'cargaNormativo/getOtrosDocumentos', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+
   //descarga de documentos normativos
   descargarDocNorma(nombreFisico: string, token: string): Observable<Blob> {
   const headers = new HttpHeaders({
@@ -144,6 +170,25 @@ export class Reportes {
     catchError((error: HttpErrorResponse) => throwError(() => error))
   );
 }
+
+  //descarga de otros documentos normativos -zip
+descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  const url = this.apiUrl + 'descargaDoc/downloadOtrosNorma/' + encodeURIComponent(nombreFisico);
+
+  return this.http.get(url, {
+    headers,
+    responseType: 'blob'
+  }).pipe(
+    catchError((error: HttpErrorResponse) => {
+      return throwError(() => error);
+    })
+  );
+}
+
 
   // consulta encabezado
 

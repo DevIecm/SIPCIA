@@ -119,7 +119,7 @@ export class FormularioRegistroa {
             formData.append("modulo_registro", this.tipo_usuario.toString());
             formData.append("estado_registro", "1");
             formData.append("cv_documento", "0");
-            formData.append("cv_enlace", "ruta/documento");
+            formData.append("cv_enlace", "");
 
             this.registerService.nuinsertaRegistroAcompa(formData, this.tokenSesion).subscribe({
               next: (data) => {
@@ -198,6 +198,7 @@ export class FormularioRegistroa {
               formData.append("estado_registro", "2");
               formData.append("cv_documento", "0");
               formData.append("cv_enlace", "ruta/documento");
+              formData.append("cv_enlace", "");
 
             this.registerService.nuupdateRegistroAcompa(formData, this.tokenSesion).subscribe({
               next: (data) => {

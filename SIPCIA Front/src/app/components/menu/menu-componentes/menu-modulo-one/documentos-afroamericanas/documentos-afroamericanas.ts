@@ -43,6 +43,15 @@ export class DocumentosAfroamericanas implements OnInit{
 
   dataTable: any = [];
   allDatable: any[] = [];
+  selectedFile: File | null = null;
+  selectedFileName: string | null = null;
+  fileUploaded: boolean = false;
+
+  dataTableD: any = [];
+  allDatableD: any[] = [];
+
+  nombreOtrosDocumentos: string= '';
+  
 
   showModal = false;
 
@@ -55,18 +64,45 @@ export class DocumentosAfroamericanas implements OnInit{
       this.area_adscripcion = Number(sessionStorage.getItem('area'));
   
       this.getRegister();
+      this.getdata();
     }
   
     constructor(
       private router: Router,
       private reporteService: DocumentosServices,
       private service: Auth,
-      private miServicio: Reportes
+      private miServicio: Reportes,
+      private docService: Reportes,
+      private serviceRegister: Reportes
     ) {}
     
     logout() {
       this.router.navigate(['']);
     };
+
+    getdata(){
+    this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 2, this.tokenSesion).subscribe({
+          next: (data) => {
+            if(data.getOtrosDocumentos.length > 0) {
+              this.dataTableD = data.getOtrosDocumentos;
+              this.allDatableD = data.getOtrosDocumentos;           
+            } else {
+              Swal.fire("No se encontraron registros");
+            }
+          },
+          error: (err) => {
+    
+            if (err.error.code === 160) {
+              this.service.cerrarSesionByToken();
+            }
+    
+            if(err.error.code === 100) {
+              Swal.fire("No se encontraron registros")
+            }
+    
+          }
+        });
+      }
   
     onValidateInfo() {
       this.router.navigate(['/menu']);
@@ -77,6 +113,52 @@ export class DocumentosAfroamericanas implements OnInit{
       this.idformIdSelected = id;
       this.idform = idRegistro;
     }
+
+    onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    this.selectedFile = input.files[0];
+    this.uploadZip();
+  }
+}
+
+uploadZip() {
+  if (!this.selectedFile) return;
+
+  const formData = new FormData();
+  formData.append('archivoZip', this.selectedFile);
+  formData.append('distrito', this.area_adscripcion.toString());
+  formData.append('tipo_comunidad', "2");
+
+  this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
+    next: (res) => {
+      alert('Documento subido correctamente');
+    },
+    error: (err) => {
+      console.error('Error al subir documento', err);
+      alert('Error al subir documento');
+    }
+  });
+}
+
+  descargarOtros(nameArchivo: any){
+    this.miServicio.descargarOtrosNorma(nameArchivo, this.tokenSesion).subscribe({
+
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+///        a.download =item.nombre_archivo;
+          a.download = 'Documentos Normativos';
+
+
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
 
   descargar(){
     this.miServicio.descargarDocNorma("1757703550661-purebaComunidadAfro.pdf", this.tokenSesion).subscribe({
