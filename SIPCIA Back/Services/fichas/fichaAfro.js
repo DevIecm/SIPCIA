@@ -41,7 +41,6 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
 
   const { persona_responsable_fta } = req.body
 
-  console.log("persona_responsable_fta", persona_responsable_fta)
   
 
   if (!demarcacion_territorial || !distrito_electoral || !usuario_registro || !fecha_ficha ||
@@ -152,7 +151,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
             `);
       }
     }
-
+/* // guardar por si, se ocupa
     // Demarcación territorial
     const resultDemarcacion = await transaction.request()
       .input('id', sql.Int, demarcacion_territorial)
@@ -253,7 +252,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
                 VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
             `);
 
-
+ */
 
     // Confirmar la transacción
     await transaction.commit();

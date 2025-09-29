@@ -40,7 +40,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
     } = req.body;
 
     const { lengua_tecnica_indigena, traduccion_resumen_acta, persona_responsable_fti } = req.body; // Pedir los id en forma de lenguas Array 
-        console.log("persona_responsable_fti", persona_responsable_fti)
+        
 
     if (
         !demarcacion_territorial ||
@@ -214,19 +214,22 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
             const { dd_cabecera_demarcacion, direccion_distrital } = persona;
 
             await request
-            .input('ficha_tecnica_indigena', sql.Int, idRegistro)
-            .input('dd_cabecera_demarcacion', sql.VarChar, dd_cabecera_demarcacion)
-            .input('direccion_distrital', sql.VarChar, direccion_distrital)
-            .query(`
-                INSERT INTO persona_responsable_fti (
-                ficha_tecnica_indigena, dd_cabecera_demarcacion, direccion_distrital
-                )
-                VALUES (
-                @ficha_tecnica_indigena, @dd_cabecera_demarcacion, @direccion_distrital
-                )
-            `);
+                .input('ficha_tecnica_indigena', sql.Int, idRegistro)
+                .input('dd_cabecera_demarcacion', sql.VarChar, dd_cabecera_demarcacion)
+                .input('direccion_distrital', sql.VarChar, direccion_distrital)
+                .query(`
+                    INSERT INTO persona_responsable_fti (
+                        ficha_tecnica_indigena, dd_cabecera_demarcacion, direccion_distrital
+                    )
+                    VALUES (
+                        @ficha_tecnica_indigena, @dd_cabecera_demarcacion, @direccion_distrital
+                    )
+                `);
+
         }
         }
+
+        /* //bitacora pendiente por si se llega a ocupar
 
         // Demarcación territorial
         const resultDemarcacion = await transaction.request()
@@ -331,7 +334,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
                 VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
             `);
 
-
+/* */
 
         // Confirmar la transacción
         await transaction.commit();

@@ -115,7 +115,17 @@ router.get("/getOtrosDocumentos", Midleware.verifyToken, async (req, res) => {
         
             .input('distrito_electoral', sql.Int, distrito_electoral)
             .input('tipo_comunidad', sql.Int, tipo_comunidad)
-            .query(`select nombre_documento, fecha_carga, direccion_documento
+            .query(`select nombre_documento, 
+                fecha_carga, 
+                direccion_documento, 
+                RIGHT('0' + CAST(
+                    CASE 
+                        WHEN DATEPART(HOUR, hora_carga) % 12 = 0 THEN 12 
+                        ELSE DATEPART(HOUR, hora_carga) % 12 
+                    END AS VARCHAR), 2) 
+                + ':' + RIGHT('0' + CAST(DATEPART(MINUTE, hora_carga) AS VARCHAR), 2) 
+                + ' ' + CASE WHEN DATEPART(HOUR, hora_carga) >= 12 THEN 'PM' ELSE 'AM' END 
+                AS hora_carga
                 from documentos_normativos
                 WHERE distrito = @distrito_electoral and tipo_comunidad= @tipo_comunidad;`);
 
