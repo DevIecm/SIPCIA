@@ -35,6 +35,7 @@ export class DocumentosAfroamericanas implements OnInit{
   ombreUser: string = '';
   tokenSesion: string = '';
   searchTerm: string = '';
+  nombreOtrosDocumentos: string= '';
 
   area_adscripcion: number = 0;
   tipo_usuario: number = 0;
@@ -50,96 +51,94 @@ export class DocumentosAfroamericanas implements OnInit{
   dataTableD: any = [];
   allDatableD: any[] = [];
 
-  nombreOtrosDocumentos: string= '';
-  
-
   showModal = false;
 
-    ngOnInit(): void {
-      this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
-      this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
-      this.nombreUser = sessionStorage.getItem('nameUsuario')!;
-      this.position = sessionStorage.getItem('dir')!;
-      this.tokenSesion = sessionStorage.getItem('key')!;
-      this.area_adscripcion = Number(sessionStorage.getItem('area'));
-  
-      this.getRegister();
-      this.getdata();
-    }
-  
-    constructor(
-      private router: Router,
-      private reporteService: DocumentosServices,
-      private service: Auth,
-      private miServicio: Reportes,
-      private docService: Reportes,
-      private serviceRegister: Reportes
-    ) {}
-    
-    logout() {
-      this.router.navigate(['']);
-    };
+  ngOnInit(): void {
+    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
+    this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
+    this.nombreUser = sessionStorage.getItem('nameUsuario')!;
+    this.position = sessionStorage.getItem('dir')!;
+    this.tokenSesion = sessionStorage.getItem('key')!;
+    this.area_adscripcion = Number(sessionStorage.getItem('area'));
 
-    getdata(){
-    this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 2, this.tokenSesion).subscribe({
-          next: (data) => {
-            if(data.getOtrosDocumentos.length > 0) {
-              this.dataTableD = data.getOtrosDocumentos;
-              this.allDatableD = data.getOtrosDocumentos;           
-            } else {
-              Swal.fire("No se encontraron registros");
-            }
-          },
-          error: (err) => {
-    
-            if (err.error.code === 160) {
-              this.service.cerrarSesionByToken();
-            }
-    
-            if(err.error.code === 100) {
-              Swal.fire("No se encontraron registros")
-            }
-    
-          }
-        });
-      }
-  
-    onValidateInfo() {
-      this.router.navigate(['/menu']);
-    };
-  
-    openModal(id: number | undefined, idRegistro: number | undefined) {
-      this.showModal = true;
-      this.idformIdSelected = id;
-      this.idform = idRegistro;
-    }
-
-    onFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    this.selectedFile = input.files[0];
-    this.uploadZip();
+    this.getRegister();
+    this.getdata();
   }
-}
+  
+  constructor(
+    private router: Router,
+    private reporteService: DocumentosServices,
+    private service: Auth,
+    private miServicio: Reportes,
+    private docService: Reportes,
+    private serviceRegister: Reportes
+  ) {}
+  
+  logout() {
+    this.router.navigate(['']);
+  };
 
-uploadZip() {
-  if (!this.selectedFile) return;
+  getdata(){
+    this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 2, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.getOtrosDocumentos.length > 0) {
+          this.dataTableD = data.getOtrosDocumentos;
+          this.allDatableD = data.getOtrosDocumentos;           
+        } else {
+          Swal.fire("No se encontraron registros");
+        }
+      },
+      error: (err) => {
 
-  const formData = new FormData();
-  formData.append('archivoZip', this.selectedFile);
-  formData.append('distrito', this.area_adscripcion.toString());
-  formData.append('tipo_comunidad', "2");
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
 
-  this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
-    next: (res) => {
-      alert('Documento subido correctamente');
-    },
-    error: (err) => {
-      console.error('Error al subir documento', err);
-      alert('Error al subir documento');
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros")
+        }
+
+      }
+    });
+  }
+  
+  onValidateInfo() {
+    this.router.navigate(['/menu']);
+  };
+
+  openModal(id: number | undefined, idRegistro: number | undefined) {
+    this.showModal = true;
+    this.idformIdSelected = id;
+    this.idform = idRegistro;
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.uploadZip();
     }
-  });
-}
+  }
+
+  uploadZip() {
+    if (!this.selectedFile) return;
+
+    const formData = new FormData();
+    formData.append('archivoZip', this.selectedFile);
+    formData.append('distrito', this.area_adscripcion.toString());
+    formData.append('tipo_comunidad', "2");
+
+    this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
+      next: (res) => {
+        alert('Documento subido correctamente');
+        this.getdata();
+      },
+      error: (err) => {
+        console.error('Error al subir documento', err);
+        alert('Error al subir documento');
+      }
+    });
+  }
 
   descargarOtros(nameArchivo: any){
     this.miServicio.descargarOtrosNorma(nameArchivo, this.tokenSesion).subscribe({
@@ -148,11 +147,7 @@ uploadZip() {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-
-///        a.download =item.nombre_archivo;
-          a.download = 'Documentos Normativos';
-
-
+        a.download = 'Documentos Normativos';
         a.click();
         window.URL.revokeObjectURL(url);
       },
@@ -166,11 +161,7 @@ uploadZip() {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-
-///        a.download =item.nombre_archivo;
-          a.download = 'Documentos Normativos';
-
-
+        a.download = 'Documentos Normativos';
         a.click();
         window.URL.revokeObjectURL(url);
       },
@@ -178,12 +169,12 @@ uploadZip() {
     });
   }
   
-    closeModal() {
-      this.showModal = false;
-      this.getRegister();
-    }
+  closeModal() {
+    this.showModal = false;
+    this.getRegister();
+  }
   
-    formatFecha(data: any) {
+  formatFecha(data: any) {
     const isoDate = data;
     const date = new Date(isoDate);
 
@@ -196,27 +187,27 @@ uploadZip() {
     return formattedDate;
   }
   
-    getRegister() {
-        this.reporteService.getRegisterfichaTecnicaTablaAfro(this.area_adscripcion, this.tokenSesion).subscribe({
-          next: (data) => {
-            if(data.getFichasAfro.length > 0) {
-              this.dataTable = data.getFichasAfro;
-              this.allDatable = data.getFichasAfro;
-            } else {
-              Swal.fire("No se encontraron registros");
-            }        
-          },
-          error: (err) => {
-    
-            if (err.error.code === 160) {
-              this.service.cerrarSesionByToken();
-            }
-    
-            if(err.error.code === 100) {
-              Swal.fire("No se encontraron registros")
-            }
-    
+  getRegister() {
+    this.reporteService.getRegisterfichaTecnicaTablaAfro(this.area_adscripcion, this.tokenSesion).subscribe({
+        next: (data) => {
+          if(data.getFichasAfro.length > 0) {
+            this.dataTable = data.getFichasAfro;
+            this.allDatable = data.getFichasAfro;
+          } else {
+            Swal.fire("No se encontraron registros");
+          }        
+        },
+        error: (err) => {
+  
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
           }
-        });
-      }
+  
+          if(err.error.code === 100) {
+            Swal.fire("No se encontraron registros")
+          }
+  
+        }
+      });
+    }
   }

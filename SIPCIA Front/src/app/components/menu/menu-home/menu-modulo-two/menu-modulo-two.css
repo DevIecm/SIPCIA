@@ -55,23 +55,6 @@
     font-size: 11pt;
 }
 
-.div-redondeado-right-home {
-    margin: 0px;
-    padding: 26px;
-    width: 484px;
-    height: 1px;
-    color: #f4f4f4!important;
-    background-color: #BF90DD!important;
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 7pt;
-}
-
-
 .div-redondeado-right {
     padding: 20px;
     width: 230px;
@@ -88,11 +71,11 @@
 }
 
 .div-redondeado-right-control {
-    padding: 20px;
-    width: 230px;
-    height: 52px;
+    padding: 13px;
+    width: 350px;
+    height: 1px;
     color: #f4f4f4!important;
-    background-color: #9B3BCA!important;
+    background-color: #ef9200!important;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     display: flex;
@@ -100,6 +83,21 @@
     align-items: center;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute;
+}
+
+.div-redondeado-right-home {
+    padding: 13px;
+    width: 484px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #FBB03B!important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 7pt;
 }
 
 .div-redondeado-left {

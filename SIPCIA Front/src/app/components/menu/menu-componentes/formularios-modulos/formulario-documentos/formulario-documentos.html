@@ -113,6 +113,7 @@
                                             <div class="col-4 mt-2">
                                                 <input 
                                                     type="text"
+                                                    maxlength="200"
                                                     formControlName="lugarr"
                                                     class="form-control input-d-card">
                                             </div>
@@ -148,6 +149,7 @@
                                             <div class="col-4 mt-2">
                                                 <input 
                                                     type="text"
+                                                    maxlength="200"
                                                     formControlName="lugara"
                                                     class="form-control input-d-card">
                                             </div>
@@ -183,6 +185,7 @@
                                             <div class="col-4 mt-2">
                                                 <input 
                                                     type="text"
+                                                    maxlength="200"
                                                     formControlName="lugaraa"
                                                     class="form-control input-d-card">
                                             </div>
@@ -669,7 +672,7 @@
                                 <div class="container text-center" style="margin-top: 15px;">
                                     <div class="row">
                                     <div class="col">
-                                        <button type="submit" class="btn button-register">Guardar</button>
+                                        <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">Guardar</button>
                                     </div>
                                     <div class="col">
                                         <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>

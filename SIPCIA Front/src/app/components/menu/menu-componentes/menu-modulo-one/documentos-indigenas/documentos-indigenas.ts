@@ -77,42 +77,41 @@ export class DocumentosIndigenas implements OnInit{
     this.router.navigate(['']);
   };
 
-
-
-triggerFileInput() {
-  const input = document.getElementById('fileInputZip') as HTMLInputElement;
-  input.click();
-}
-
-onFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    this.selectedFile = input.files[0];
-    this.uploadZip();
+  triggerFileInput() {
+    const input = document.getElementById('fileInputZip') as HTMLInputElement;
+    input.click();
   }
-}
 
-uploadZip() {
-  if (!this.selectedFile) return;
-
-  const formData = new FormData();
-  formData.append('archivoZip', this.selectedFile);
-  formData.append('distrito', this.area_adscripcion.toString());
-  formData.append('tipo_comunidad', "1");
-
-  this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
-    next: (res) => {
-      alert('Documento subido correctamente');
-    },
-    error: (err) => {
-      console.error('Error al subir documento', err);
-      alert('Error al subir documento');
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.uploadZip();
     }
-  });
-}
+  }
 
-getdata(){
-this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesion).subscribe({
+  uploadZip() {
+    if (!this.selectedFile) return;
+
+    const formData = new FormData();
+    formData.append('archivoZip', this.selectedFile);
+    formData.append('distrito', this.area_adscripcion.toString());
+    formData.append('tipo_comunidad', "1");
+
+    this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
+      next: (res) => {
+        alert('Documento subido correctamente');
+        this.getdata();
+      },
+      error: (err) => {
+        console.error('Error al subir documento', err);
+        alert('Error al subir documento');
+      }
+    });
+  }
+
+  getdata(){
+    this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesion).subscribe({
       next: (data) => {
         if(data.getOtrosDocumentos.length > 0) {
           this.dataTableD = data.getOtrosDocumentos;
@@ -135,7 +134,6 @@ this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesi
     });
   }
 
-
   onValidateInfo() {
     this.router.navigate(['/menu']);
   };
@@ -157,11 +155,7 @@ this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesi
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-
-///        a.download =item.nombre_archivo;
-          a.download = 'Documentos Normativos';
-
-
+        a.download = 'Documentos Normativos';
         a.click();
         window.URL.revokeObjectURL(url);
       },
@@ -176,11 +170,7 @@ this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesi
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-
-///        a.download =item.nombre_archivo;
-          a.download = 'Documentos Normativos';
-
-
+        a.download = 'Documentos Normativos';
         a.click();
         window.URL.revokeObjectURL(url);
       },
@@ -192,37 +182,34 @@ this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesi
   formatFecha(data: any) {
     const isoDate = data;
     const date = new Date(isoDate);
-
     const day = String(date.getUTCDate()).padStart(2, '0');
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
     const year = date.getUTCFullYear();
-
     const formattedDate = `${day}/${month}/${year}`;
-
     return formattedDate;
   }
 
   getRegister() {
-      this.reporteService.getRegisterfichaTecnicaTabla(this.area_adscripcion, this.tokenSesion).subscribe({
-        next: (data) => {
-          if(data.getFichasInd.length > 0) {
-            this.dataTable = data.getFichasInd;
-            this.allDatable = data.getFichasInd;
-          } else {
-            Swal.fire("No se encontraron registros");
-          }        
-        },
-        error: (err) => {
-  
-          if (err.error.code === 160) {
-            this.service.cerrarSesionByToken();
-          }
-  
-          if(err.error.code === 100) {
-            Swal.fire("No se encontraron registros")
-          }
-  
+    this.reporteService.getRegisterfichaTecnicaTabla(this.area_adscripcion, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.getFichasInd.length > 0) {
+          this.dataTable = data.getFichasInd;
+          this.allDatable = data.getFichasInd;
+        } else {
+          Swal.fire("No se encontraron registros");
+        }        
+      },
+      error: (err) => {
+
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
         }
-      });
-    }
+
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros")
+        }
+
+      }
+    });
+  }
 }
