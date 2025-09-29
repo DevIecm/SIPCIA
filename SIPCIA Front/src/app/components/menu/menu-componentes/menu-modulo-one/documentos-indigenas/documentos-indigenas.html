@@ -267,7 +267,7 @@
                 <tbody>
                   <tr *ngFor="let item of dataTableD; index as i" class="dual-row">
                     <td (click)="descargarOtros(item.direccion_documento) " style="cursor: pointer;">{{ item.nombre_documento ? item.nombre_documento : '-' }}</td>
-                    <td>{{ formatFecha(item.fecha_carga) }}</td>
+                    <td>{{ formatFecha(item.fecha_carga) }} {{item.hora_carga}}</td>
                   </tr>
                 </tbody>
               </table>

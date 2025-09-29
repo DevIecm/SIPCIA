@@ -2,42 +2,21 @@
 
 <nav class="navbar bg-body-tertiary" style="display: inline;">
     <div class="container-fluid" style="padding: 0px;">
-
         <a class="navbar-brand">
             <div class="div-redondeado-right">
                 <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">DEOEyG</h3>
             </div>
         </a>
-
         <div class="d-flex" role="search">
             <div class="row row-cols-1">
-                <div class="col" style="position: relative;">
-                    <div class="div-redondeado-right-control">
-                        <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">Centro de Control</h3>
-                    </div>
-                </div>
+                <div class="col d-flex justify-content-end">
+                    <button (click)="goControl()" class="btn div-redondeado-left-home sin-margen-derecho">
+                        <h3 style="font-size: 0.9rem; margin: 0px;">Centro de Control</h3>
+                    </button>
 
-                <div class="col">
-                    <div class="div-redondeado-right-home">
-                        <h3 (click)="logout()" style="cursor: pointer; font-size: 14px; margin: 0px;">
-                            {{ data.csesion }}
-                        </h3>
-                    </div>
-                </div>
-
-                <div class="col">
-
-                    <div class="div-redondeado-left">
-                        <button (click)="logout()" class="btn">
-                            <h3 style="font-size: 0.9rem; margin: 0px;">Centro de Control</h3>
-                        </button>
-                    </div>
-
-                    <div class="col div-redondeado-left-home">
-                        <button (click)="logout()" class="btn ">
+                    <button (click)="logout()" class="btn div-redondeado-left-sesion sin-margen-izquierdo">
                         <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
                     </button>
-                    </div>
                 </div>
 
                 <div class="col">
@@ -87,7 +66,6 @@
                     <h3 (click)="goToDAf()" class="title-menu"><img src="assets/icono-menu.png" class="inline-icon" />2.12 Documentos normativos y técnicos (DEOEyG) <br> para documentar las consultas Afromexicanas</h3>
                 </div>
             </div>
-           
         </div>
     </div>
 </div>

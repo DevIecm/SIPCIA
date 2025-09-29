@@ -38,8 +38,8 @@ export const routes: Routes = [
     { path: 'cacmpatwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/catalogo-acompa/catalogo-acompa').then(m => m.CatalogoAcompa), canActivate: [AuthGuard] },
     { path: 'dindigenastwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/documentos-indigenas-two/documentos-indigenas-two').then(m => m.DocumentosIndigenasTwo), canActivate: [AuthGuard] },
     { path: 'dafrotwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/documentos-afro-two/documentos-afro-two').then(m => m.DocumentosAfroTwo), canActivate: [AuthGuard] },
-    { path: 'bitacora/:id/:tipo', loadComponent: () => import('./components/menu/menu-componentes/bitacora/bitacora').then(m => m.Bitacora), canActivate: [AuthGuard] }
-    
+    { path: 'bitacora/:id/:tipo', loadComponent: () => import('./components/menu/menu-componentes/bitacora/bitacora').then(m => m.Bitacora), canActivate: [AuthGuard] },
+    { path: 'ccontrol', loadComponent: () => import('./components/menu/centro-control/centro-control').then(m => m.CentroControl), canActivate: [AuthGuard] }
 
     //Modulo3
 ];

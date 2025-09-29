@@ -51,6 +51,10 @@ export class MenuModuloTwo implements OnInit{
     this.router.navigate(['']);
   }
 
+  goControl() {
+    this.router.navigate(['ccontrol'])
+  }
+
   goToRegistro(){
     this.router.navigate(['nregistro']);
   }
