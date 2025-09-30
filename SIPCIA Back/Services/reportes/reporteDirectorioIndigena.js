@@ -845,7 +845,7 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async(req,res)=>{
     // Filtros
     worksheet.autoFilter = {
       from: "A6",
-      to: "D6",
+      to: "R6",
     };
  
     rows.forEach((row) => {
@@ -1013,7 +1013,7 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async(req,res)=>{
   worksheet.columns = headers.map(() => ({ width: 20 }));
 
 
-      worksheet.getRow(8).eachCell((cell) => {
+      worksheet.getRow(7).eachCell((cell) => {
       cell.alignment = {
         vertical: "middle",
         horizontal: "center",
@@ -1029,8 +1029,8 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async(req,res)=>{
 
     // Filtros
     worksheet.autoFilter = {
-      from: "A8",
-      to: "C8",
+      from: "A7",
+      to: "G7",
     };
  
     rows.forEach((row) => {
@@ -1212,7 +1212,7 @@ router.get("/reporteAtencion", Midleware.verifyToken, async(req,res)=>{
     // Filtros
     worksheet.autoFilter = {
       from: "A8",
-      to: "C8",
+      to: "M8",
     };
  
     rows.forEach((row) => {
@@ -1407,7 +1407,7 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async(req,res)=>{
     // Filtros
     worksheet.autoFilter = {
       from: "A8",
-      to: "C8",
+      to: "M8",
     };
  
     rows.forEach((row) => {
@@ -1558,8 +1558,8 @@ router.get("/reporteAsamblea", Midleware.verifyToken, async(req,res)=>{
 
     // Filtros
     worksheet.autoFilter = {
-      from: "A6",
-      to: "E6",
+      from: "A7",
+      to: "Q7",
     };
     
       worksheet.mergeCells("A6:A7");

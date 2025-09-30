@@ -402,7 +402,7 @@ router.get("/getInstituciones", Midleware.verifyToken, async(req, res)=>{
                 left join cat_pueblos_originarios cpo on ri.pueblo_originario = cpo.id 
                 left join cat_pueblos cp on ri.pueblo  = cp.id
                 left join cat_barrios cb  on ri.barrio = cb.id
-                join unidad_territorial ut  on ri.unidad_territorial = ut.id
+                left join unidad_territorial ut  on ri.unidad_territorial = ut.id
                 join comunidad c on ri.comunidad = c.id
                 where ri.distrito_electoral = @distrito_electoral;`);
 
@@ -476,7 +476,7 @@ router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) 
       const basename = path.basename(registro.fotografia);
 
       registro.fotografia_url =
-        `http://145.0.46.49:4000/Services${dirname}/${encodeURIComponent(basename)}`;
+        `http://145.0.40.23:4002/Services${dirname}/${encodeURIComponent(basename)}`;
     } else {
       registro.fotografia_url = null;
     }
