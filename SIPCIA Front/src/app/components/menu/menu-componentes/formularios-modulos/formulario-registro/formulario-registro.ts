@@ -540,13 +540,13 @@ export class FormularioRegistro implements OnInit{
     if (this.formularioRegistro) {
 
       this.formularioRegistro.patchValue({
-        pueblor: '',
+        // pueblor: '',
         comunidadr: '',
         organizacion: '',
         otror: ''
       });
 
-      this.formularioRegistro.get('pueblor')?.disable();
+      // this.formularioRegistro.get('pueblor')?.disable();
       this.formularioRegistro.get('comunidadr')?.disable();
       this.formularioRegistro.get('organizacion')?.disable();
       this.formularioRegistro.get('otror')?.disable();
@@ -558,13 +558,13 @@ export class FormularioRegistro implements OnInit{
 
       this.formularioRegistro.patchValue({
         pueblor: '',
-        comunidadr: '',
+        // comunidadr: '',
         organizacion: '',
         otror: ''
       });
 
       this.formularioRegistro.get('pueblor')?.disable();
-      this.formularioRegistro.get('comunidadr')?.disable();
+      //this.formularioRegistro.get('comunidadr')?.disable();
       this.formularioRegistro.get('organizacion')?.disable();
       this.formularioRegistro.get('otror')?.disable();
     }
@@ -576,13 +576,13 @@ export class FormularioRegistro implements OnInit{
       this.formularioRegistro.patchValue({
         pueblor: '',
         comunidadr: '',
-        organizacion: '',
+        // organizacion: '',
         otror: ''
       });
       
       this.formularioRegistro.get('pueblor')?.disable();
       this.formularioRegistro.get('comunidadr')?.disable();
-      this.formularioRegistro.get('organizacion')?.disable();
+      // this.formularioRegistro.get('organizacion')?.disable();
       this.formularioRegistro.get('otror')?.disable();
     }
   }

@@ -113,16 +113,47 @@
                 <table class="table">
                   <thead>
                     <tr class="table-primary">
-                      <th scope="col">No.</th>
-                      <th scope="col">Nombre del Documento</th>
-                      <th scope="col">Fecha de Carga</th>
-                      <th scope="col">Descarga</th>
+                      <th 
+                        scope="col"
+                        (click)="sortData('distrito_cabecera')"
+                        style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                          <span>No.</span>
+                          <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                        </div>
+                      </th>
+                      <th 
+                        scope="col"
+                        (click)="sortData('distrito_cabecera')"
+                        style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                          <span>Nombre del Documento</span>
+                          <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                        </div>
+                      </th>
+                      <th 
+                        scope="col"
+                        (click)="sortData('distrito_cabecera')"
+                        style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                          <span>Fecha de Carga</span>
+                          <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                        </div>
+                      </th>
+                      <th
+                        scope="col" 
+                        (click)="sortData('distrito_cabecera')"
+                        style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                          <span>Descarga</span>
+                          <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                        </div>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     <!-- <tr *ngFor="let item of dataTable; let i = index" class="dual-row"> -->
                     <tr  class="dual-row">
-
                       <td>1</td>
                       <td>Normativa 1</td>
                       <td>15/05/2025</td>
@@ -145,10 +176,42 @@
                 <table class="table">
                   <thead>
                     <tr class="table-primary">
-                      <th scope="col">No.</th>
-                      <th scope="col">Nombre del Documento</th>
-                      <th scope="col">Fecha de Carga</th>
-                      <th scope="col">Descarga</th>
+                      <th 
+                        scope="col"
+                        (click)="sortData('distrito_cabecera')"
+                        style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                          <span>No.</span>
+                          <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                        </div>
+                      </th>
+                      <th 
+                        scope="col"
+                        (click)="sortData('distrito_cabecera')"
+                        style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                          <span>Nombre del Documento</span>
+                          <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                        </div>
+                      </th>
+                      <th 
+                        scope="col"
+                        (click)="sortData('distrito_cabecera')"
+                        style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                          <span>Fecha de Carga</span>
+                          <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                        </div>
+                      </th>
+                      <th 
+                        scope="col"
+                        (click)="sortData('distrito_cabecera')"
+                        style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                          <span>Descarga</span>
+                          <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                        </div>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -200,8 +263,24 @@
               <table class="table">
                 <thead>
                   <tr class="table-primary">
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Fecha</th>
+                    <th 
+                      scope="col"
+                      (click)="sortData('id')"
+                      style="cursor: pointer;">
+                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                        <span>Nombre</span>
+                        <i [ngClass]="getSortIcon('id')"></i>
+                      </div>
+                    </th>
+                    <th 
+                      scope="col"
+                      (click)="sortData('fecha_registro')"
+                      style="cursor: pointer;">
+                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                        <span>Fecha</span>
+                        <i [ngClass]="getSortIcon('fecha_registro')"></i>
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -260,8 +339,24 @@
               <table class="table">
                 <thead>
                   <tr class="table-primary">
-                    <th>  Nombre</th>
-                    <th scope="col">Fecha</th>
+                    <th 
+                      scope="col"
+                      (click)="sortData('direccion_documento')"
+                      style="cursor: pointer;">
+                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                        <span>Nombre</span>
+                        <i [ngClass]="getSortIcon('direccion_documento')"></i>
+                      </div>
+                    </th>
+                    <th 
+                      scope="col"
+                      (click)="sortData('fecha_carga')"
+                      style="cursor: pointer;">
+                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                        <span>Fecha</span>
+                        <i [ngClass]="getSortIcon('fecha_carga')"></i>
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

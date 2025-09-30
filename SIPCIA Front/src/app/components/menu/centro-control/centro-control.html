@@ -1,1 +1,37 @@
-<p>centro-control works!</p>
+<app-navbar></app-navbar>
+
+<nav class="navbar bg-body-tertiary" style="display: inline;">
+  <div class="container-fluid" style="padding: 0px;">
+      <a class="navbar-brand">
+        <div class="row row-cols-1">
+          <div class="col">
+            <div class="div-redondeado-right">
+              <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
+            </div>
+          </div>
+
+          <div class="col div-redondeado-right-home">
+              <h3 style="font-size: 14px; margin: 0px;">
+                <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
+                Centro de Control
+              </h3>
+          </div>
+        </div>
+      </a>
+      <form class="d-flex" role="search">
+          <div class="row row-cols-1">
+              <div class="col">
+                  <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+                      <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+                  </button>
+              </div>
+
+              <div class="col">
+                  <div class="div-redondeado-left">
+                    <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+                  </div>
+              </div>
+          </div>
+      </form>
+  </div>
+</nav>

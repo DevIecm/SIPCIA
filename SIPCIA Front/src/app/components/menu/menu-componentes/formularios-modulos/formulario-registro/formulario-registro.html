@@ -223,7 +223,8 @@
                       <div class="col">
                         <div class="mb-3">
                           <label class="form-label">*Pueblo:</label>
-                          <input 
+                          <input
+                            (change)="onChangePuebloT()"
                             formControlName="pueblor"
                             type="text" 
                             class="form-control"
@@ -234,6 +235,7 @@
                         <div class="mb-3">
                           <label class="form-label">*Comunidad:</label>
                           <input 
+                            (change)="onChangeComunidadT()"
                             formControlName="comunidadr"
                             type="text" 
                             class="form-control"
@@ -244,7 +246,8 @@
                       <div class="col">
                         <div class="mb-3">
                           <label class="form-label">*Organización:</label>
-                          <input 
+                          <input
+                           (change)="onChangeOrganizacionT()"
                             formControlName="organizacion"
                             type="text" 
                             class="form-control"

@@ -36,6 +36,9 @@ export class DocumentosAfroamericanas implements OnInit{
   tokenSesion: string = '';
   searchTerm: string = '';
   nombreOtrosDocumentos: string= '';
+  sortColumn: string = '';
+
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   area_adscripcion: number = 0;
   tipo_usuario: number = 0;
@@ -188,26 +191,55 @@ export class DocumentosAfroamericanas implements OnInit{
   }
   
   getRegister() {
-    this.reporteService.getRegisterfichaTecnicaTablaAfro(this.area_adscripcion, this.tokenSesion).subscribe({
-        next: (data) => {
-          if(data.getFichasAfro.length > 0) {
-            this.dataTable = data.getFichasAfro;
-            this.allDatable = data.getFichasAfro;
-          } else {
-            Swal.fire("No se encontraron registros");
-          }        
-        },
-        error: (err) => {
-  
-          if (err.error.code === 160) {
-            this.service.cerrarSesionByToken();
-          }
-  
-          if(err.error.code === 100) {
-            Swal.fire("No se encontraron registros")
-          }
-  
+  this.reporteService.getRegisterfichaTecnicaTablaAfro(this.area_adscripcion, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.getFichasAfro.length > 0) {
+          this.dataTable = data.getFichasAfro;
+          this.allDatable = data.getFichasAfro;
+        } else {
+          Swal.fire("No se encontraron registros");
+        }        
+      },
+      error: (err) => {
+
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
         }
-      });
-    }
+
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros")
+        }
+
+      }
+    });
   }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
+    return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+  }
+
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.dataTable.sort((a: any, b: any) => {
+      const valueA = a[column] ?? '';
+      const valueB = b[column] ?? '';
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return this.sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      } else {
+        return this.sortDirection === 'asc'
+          ? (valueA > valueB ? 1 : -1)
+          : (valueA < valueB ? 1 : -1);
+      }
+    });
+  }
+}
