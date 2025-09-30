@@ -546,6 +546,9 @@ export class FormularioDocumentos {
 
               nlugares: this.infoUpdate.numero_lugares_publicos ? this.infoUpdate.numero_lugares_publicos : '',
 
+              pafromexicana: this.infoUpdate.plan_trabajo ? this.infoUpdate.plan_trabajo : '',
+              rrepresentativas: this.infoUpdate.resumen_acta ? this.infoUpdate.resumen_acta : '',
+              
               cammbiosOrdenDia: this.infoUpdate.solicitud_cambios === false ? "0" : "1",
               observaciones: this.infoUpdate.observaciones ? this.infoUpdate.observaciones : '',
               cuales: this.infoUpdate.cambios_solicitados ? this.infoUpdate.cambios_solicitados : '',
