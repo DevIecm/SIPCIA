@@ -41,6 +41,8 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
 
   const { persona_responsable_fta } = req.body
 
+  console.log("plan_trabajo", plan_trabajo,
+    resumen_acta)
   
 
   if (!demarcacion_territorial || !distrito_electoral || !usuario_registro || !fecha_ficha ||
@@ -352,6 +354,10 @@ router.get("/getRegistroFichaAfro", Midleware.verifyToken, async (req, res) => {
                     fi.lugar_asamblea_informativa,
                     fi.lugar_asamblea_consultiva,
                     fi.periodo_del,
+                    fi.plan_trabajo,
+                    fi.resumen_acta,
+                    fi.observaciones,
+                    fi.cambios_solicitados,
                     fi.periodo_al,
                     fi.numero_lugares_publicos,
                     (
@@ -369,10 +375,21 @@ router.get("/getRegistroFichaAfro", Midleware.verifyToken, async (req, res) => {
                 `)
         
         if (result.recordset.length > 0) {
-            return res.status(200).json({
-                getRegistroFichaAfro: result.recordset,
-                code: 200
-            });
+
+          const parsedResults = result.recordset.map(item => {
+            try {
+              return {
+                ...item,
+                personaRes: JSON.parse(item.personaRes)
+              };
+            } catch (error) {
+              return item;
+            }
+          });
+          return res.status(200).json({
+            getRegistroFichaAfro: parsedResults,
+            code: 200
+          });
         } else {
             return res.status(404).json({ message: "No se encontraron registros", code: 100})
         }

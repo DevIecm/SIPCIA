@@ -231,6 +231,7 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
         return res.status(400).json({ message: "Datos requeridos" });
     }
 
+
     try {
         const pool = await connectToDatabase();
         const transaction = pool.transaction();
@@ -476,7 +477,7 @@ router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) 
       const basename = path.basename(registro.fotografia);
 
       registro.fotografia_url =
-        `http://145.0.40.23:4002/Services${dirname}/${encodeURIComponent(basename)}`;
+        `http://145.0.46.49:4000/Services${dirname}/${encodeURIComponent(basename)}`;
     } else {
       registro.fotografia_url = null;
     }
