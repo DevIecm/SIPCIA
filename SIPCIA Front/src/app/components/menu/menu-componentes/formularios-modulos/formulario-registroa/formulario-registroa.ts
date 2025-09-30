@@ -268,7 +268,7 @@ export class FormularioRegistroa {
       cargo: [''],
       domicilio: [''],
       telefono: [''],
-      correo: ['', [Validators.required]],
+      correo: [''],
     });
 
     if(!this.idRegistro){
