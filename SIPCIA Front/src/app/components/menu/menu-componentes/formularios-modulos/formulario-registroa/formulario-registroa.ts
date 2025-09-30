@@ -197,7 +197,6 @@ export class FormularioRegistroa {
               formData.append("modulo_registro", this.tipo_usuario.toString());
               formData.append("estado_registro", "2");
               formData.append("cv_documento", "0");
-              formData.append("cv_enlace", "ruta/documento");
               formData.append("cv_enlace", "");
 
             this.registerService.nuupdateRegistroAcompa(formData, this.tokenSesion).subscribe({
@@ -277,6 +276,7 @@ export class FormularioRegistroa {
     } else {
       this.labelTitle = 'Edición - Instituciones y personas para acompañamiento';
       this.idRegistroC = false
+      this.formularioRegistro.get('comunidad')?.disable();
       this.getDataById(this.idRegistro);
     }
 
@@ -460,6 +460,14 @@ export class FormularioRegistroa {
 
   onChangePuebloOriginario() {
     if (this.formularioRegistro) {
+
+      this.formularioRegistro.patchValue({
+        pueblo: null,
+        barrio: null,
+        uterritorial: null,
+        otro: ''
+      });
+
       this.formularioRegistro.get('pueblo')?.disable();
       this.formularioRegistro.get('barrio')?.disable();
       this.formularioRegistro.get('uterritorial')?.disable();
@@ -469,6 +477,14 @@ export class FormularioRegistroa {
 
   onChangePueblo() {
     if (this.formularioRegistro) {
+      
+      this.formularioRegistro.patchValue({
+        ooriginario: null,
+        barrio: null,
+        uterritorial: null,
+        otro: ''
+      });
+
       this.formularioRegistro.get('ooriginario')?.disable();
       this.formularioRegistro.get('barrio')?.disable();
       this.formularioRegistro.get('uterritorial')?.disable();
@@ -478,6 +494,14 @@ export class FormularioRegistroa {
 
   onChangeBarrio() {
     if (this.formularioRegistro) {
+
+      this.formularioRegistro.patchValue({
+        ooriginario: null,
+        pueblo: null,
+        uterritorial: null,
+        otro: ''
+      });
+
       this.formularioRegistro.get('ooriginario')?.disable();
       this.formularioRegistro.get('pueblo')?.disable();
       this.formularioRegistro.get('uterritorial')?.disable();
@@ -487,6 +511,14 @@ export class FormularioRegistroa {
 
   onChangeUnidadTerritorial() {
     if (this.formularioRegistro) {
+
+      this.formularioRegistro.patchValue({
+        ooriginario: null,
+        pueblo: null,
+        barrio: null,
+        otro: ''
+      });
+
       this.formularioRegistro.get('ooriginario')?.disable();
       this.formularioRegistro.get('pueblo')?.disable();
       this.formularioRegistro.get('barrio')?.disable();
@@ -496,6 +528,14 @@ export class FormularioRegistroa {
 
   onChangeOtro() {
     if (this.formularioRegistro) {
+
+      this.formularioRegistro.patchValue({
+        ooriginario: null,
+        pueblo: null,
+        uterritorial: null,
+        barrio: null
+      });
+
       this.formularioRegistro.get('ooriginario')?.disable();
       this.formularioRegistro.get('pueblo')?.disable();
       this.formularioRegistro.get('barrio')?.disable();
