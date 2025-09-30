@@ -4,6 +4,8 @@ import { MatCardModule } from '@angular/material/card';
 import { Navbar } from '../../navbar/navbar';
 import * as data from '../../../..//app/components/labels/label.json';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-centro-control',
   imports: [
@@ -34,7 +36,8 @@ export class CentroControl {
   id_usuario: number = 0; 
 
   constructor(
-    private formBuilder: FormBuilder, 
+    private formBuilder: FormBuilder,
+    private router: Router,
   ) {}  
 
 
@@ -82,24 +85,27 @@ export class CentroControl {
 
   
   onValidateInfo() {
-    // if (this.formularioRegistro?.dirty){
-    //   Swal.fire({
-    //     title: "Seguro que desea salir?",
-    //     icon: "warning",
-    //     confirmButtonText: "Aceptar",
-    //     cancelButtonText: "Cancelar",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#FBB03B",
-    //     cancelButtonColor: "#9D75CA",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.router.navigate(['/menu']);
-    //     }
-    //   });
-    // } else {
-    //   this.router.navigate(['/menu']);
-    // }
+    if (this.formularioRegistro?.dirty){
+      Swal.fire({
+        title: "Seguro que desea salir?",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar",
+        showCancelButton: true,
+        confirmButtonColor: "#FBB03B",
+        cancelButtonColor: "#9D75CA",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/menu']);
+        }
+      });
+    } else {
+      this.router.navigate(['/menutwo']);
+    }
   };
 
-  logout() {};
+  logout() {
+    this.router.navigate(['']);
+  };
+
 }

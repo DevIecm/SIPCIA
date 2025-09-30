@@ -6,6 +6,7 @@ import { Auth } from '../../../../../services/authService/auth';
 import { Reportes } from '../../../../../services/reporteService/reportes';
 import Swal from 'sweetalert2';
 import { DocumentosServices } from '../../../../../services/documentosService/documentos-services';
+import { CdkColumnDef } from "@angular/cdk/table";
 
 @Component({
   selector: 'app-formulario-documentos',
@@ -13,7 +14,8 @@ import { DocumentosServices } from '../../../../../services/documentosService/do
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-  ],
+    CdkColumnDef
+],
   providers: [DatePipe],
   templateUrl: './formulario-documentos.html',
   styleUrl: './formulario-documentos.css'
@@ -214,7 +216,7 @@ export class FormularioDocumentos {
                 plan_trabajo: this.formularioRegistro.get('pafromexicana')?.value || '',
                 resumen_acta: this.formularioRegistro.get('rrepresentativas')?.value || '',
 
-                persona_responsable_fti: this.direccionesDistritales.controls.map((ctrl, index) => ({
+                persona_responsable_fta: this.direccionesDistritales.controls.map((ctrl, index) => ({
                   dd_cabecera_demarcacion: ctrl.value,
                   direccion_distrital: this.direccionesDistritale.at(index)?.value
                 })),
@@ -350,7 +352,6 @@ export class FormularioDocumentos {
     this.getCabezera();
   }
 
-    //consulta cabezera
   getCabezera() {
     if (!this.formularioRegistro) {
       return;
@@ -380,7 +381,6 @@ export class FormularioDocumentos {
     });
   }
   
-
   onCheckboxChange(event: any, controlName: string) {
     const formArray: FormArray = this.formularioRegistro?.get(controlName) as FormArray;
     
@@ -400,12 +400,6 @@ export class FormularioDocumentos {
     const [year, month, day] = datePart.split('-');
     return `${day}/${month}/${year}`;              
   }
-
-private isoToDateInputValue(iso?: string): string {
-  if (!iso) return '';
-  return iso.split('T')[0];                     
-}
-
 
   getDataById() {
     try {
