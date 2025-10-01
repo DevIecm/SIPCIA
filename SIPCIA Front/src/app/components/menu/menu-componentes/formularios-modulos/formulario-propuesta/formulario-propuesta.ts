@@ -44,6 +44,10 @@ export class FormularioPropuesta {
   tipo_usuario: number = 0;
   selectedFile: File | null = null;
 
+  
+  selectedKmlFile: File | null = null;
+  selectedZipFile: File | null = null;
+
 
   selectedFileName: string | null = null;
   fileUploaded: boolean = false;
@@ -101,19 +105,16 @@ export class FormularioPropuesta {
     }
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file && file.name.endsWith(".kml")) {
-      this.selectedFile = file;
-      this.selectedFileName = file.name;
-      this.fileUploaded = true;
-    } else {
-      Swal.fire("Solo se permiten archivos .kml");
-      this.selectedFile = null;
-      this.selectedFileName = null;
-      this.fileUploaded = false;
+  onFileSelect(event: any, type: string) {
+  if (event.target.files.length > 0) {
+    if (type === "kml") {
+      this.selectedKmlFile = event.target.files[0];
+    } else if (type === "zip") {
+      this.selectedZipFile = event.target.files[0];
     }
   }
+}
+
 
   removeFile(fileInput: HTMLInputElement): void {
     fileInput.value = '';
@@ -142,9 +143,13 @@ export class FormularioPropuesta {
           if (result.isConfirmed) {
             const formData = new FormData();
 
-             if (this.selectedFile) {
-            formData.append("kmlFile", this.selectedFile);
-          }
+          if (this.selectedKmlFile) {
+              formData.append("kmlFile", this.selectedKmlFile);
+            }
+
+            if (this.selectedZipFile) {
+              formData.append("otroFile", this.selectedZipFile);
+            }
 
               formData.append("usuario_registro", this.id_usuario.toString());
               formData.append("distrito_electoral", this.area.toString());
@@ -210,11 +215,19 @@ export class FormularioPropuesta {
             if (!this.formularioRegistro) {
               return;
             }
-             if (this.selectedFile) {
-            formData.append("kmlFile", this.selectedFile);          
-           }else if(this.infoUpdate.enlace_ubicacion){
-            formData.append("kmlFile", this.infoUpdate.enlace_ubicacion);
+
+            if (this.selectedKmlFile) {
+              formData.append("kmlFile", this.selectedKmlFile);          
+            }else if(this.infoUpdate.enlace_ubicacion){
+              formData.append("kmlFile", this.infoUpdate.enlace_ubicacion);
             }
+
+            if (this.selectedZipFile) {
+              formData.append("otroFile", this.selectedZipFile);          
+            }else if(this.infoUpdate.enlace_foto){
+              formData.append("otroFile", this.infoUpdate.enlace_foto);
+            }
+
 
             if (this.idRegistro !== undefined) {
               formData.append("id_registro", this.idRegistro.toString());
@@ -291,6 +304,7 @@ export class FormularioPropuesta {
 
             const datosFormularioCompletos = {
               usuario_registro: this.id_usuario,
+              enlace_fotografia: data.getRegistroLugares[0].enlace_fotografia,
               consecutivo: data.getRegistroLugares[0].consecutivo,
               distrito_electoral: this.area,
               demarcacion: data.getRegistroLugares[0].id_demarcacion,

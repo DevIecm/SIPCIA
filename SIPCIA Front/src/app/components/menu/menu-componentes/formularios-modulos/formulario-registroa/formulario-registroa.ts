@@ -35,6 +35,8 @@ export class FormularioRegistroa {
   catalogoReporte: any = [];
   catalogoFecha: any = [];
   infoUpdate: any = [];
+  
+  selectedKmlFile: File | null = null;
 
   tokenSesion: string = '';
   today: string = '';
@@ -100,6 +102,10 @@ export class FormularioRegistroa {
               formData.append("fotografia", this.selectedFoto);
             }
 
+            if (this.selectedKmlFile) {
+              formData.append("kmlFile", this.selectedKmlFile);
+            }
+
             formData.append("distrito_electoral", this.area.toString());
             formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion')?.value || null);
             formData.append("nombre_completo", this.formularioRegistro.get('ncompleto')?.value || "");
@@ -118,8 +124,6 @@ export class FormularioRegistroa {
             formData.append("usuario_registro", this.id_usuario.toString());
             formData.append("modulo_registro", this.tipo_usuario.toString());
             formData.append("estado_registro", "1");
-            formData.append("cv_documento", "0");
-            formData.append("cv_enlace", "");
 
             this.registerService.nuinsertaRegistroAcompa(formData, this.tokenSesion).subscribe({
               next: (data) => {
@@ -174,6 +178,12 @@ export class FormularioRegistroa {
               formData.append("fotografia", this.infoUpdate.fotografia_url);
             }
 
+            if (this.selectedKmlFile) {
+              formData.append("kmlFile", this.selectedKmlFile);          
+            }else if(this.infoUpdate.cv_enlace){
+              formData.append("kmlFile", this.infoUpdate.cv_enlace);
+            }
+
             if (this.idRegistro !== undefined) {
               formData.append("id_registro", this.idRegistro.toString());
             }
@@ -196,8 +206,6 @@ export class FormularioRegistroa {
               formData.append("usuario_registro", this.id_usuario.toString());
               formData.append("modulo_registro", this.tipo_usuario.toString());
               formData.append("estado_registro", "2");
-              formData.append("cv_documento", "0");
-              formData.append("cv_enlace", "");
 
             this.registerService.nuupdateRegistroAcompa(formData, this.tokenSesion).subscribe({
               next: (data) => {
@@ -346,6 +354,12 @@ export class FormularioRegistroa {
     });
   };
 
+   onFileSelect(event: any, type: string) {
+  if (event.target.files.length > 0) {
+      this.selectedKmlFile = event.target.files[0];
+  }
+}
+
   catalogo_fecha() {
     this.catalogos.getCatalogos(Number(this.area), "cat_fecha_periodo", this.tokenSesion).subscribe({
       next: (data) => {
@@ -403,6 +417,7 @@ export class FormularioRegistroa {
             this.imagePreviewUrl = data.getRegistroInstituciones[0].fotografia_url;
 
             const datosFormularioCompletos = {
+              cv_enlace: this.infoUpdate.cv_enlace,
               demarcacion: this.infoUpdate.id_demarcacion,
               ooriginario: this.infoUpdate.id_pueblo_originario,
               uterritorial: this.infoUpdate.id_unidad_territorial,

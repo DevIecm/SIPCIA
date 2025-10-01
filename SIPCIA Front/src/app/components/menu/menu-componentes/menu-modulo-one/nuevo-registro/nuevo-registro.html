@@ -379,11 +379,23 @@
           <div class="col-4">
             <div class="mb-3">
               <label for="formFile" class="form-label">Documentos:</label>
-              <input 
-                formControlName="docs"
-                class="form-control" 
-                type="file" 
-                id="formFile">
+              <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  (change)="onFileSelected($event)"
+                  accept=".zip"
+                  [disabled]="fileUploaded"
+                  #fileInputRef
+              />
+              <button
+                  *ngIf="fileUploaded"
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="removeFile(fileInputRef)"
+              >
+              🗑️
+              </button>
             </div>
           </div>
         </div>

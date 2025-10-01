@@ -7,18 +7,31 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 
-dotenv.config();
+dotenv.config();    
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-const storageFotos = multer.diskStorage({
+
+const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads/fotos");
+    let uploadPath;
+
+    if (file.fieldname === "fotografia") {
+      uploadPath = path.join(__dirname, "../uploads/fotos");
+    } else if (file.fieldname === "kmlFile") {
+      uploadPath = path.join(__dirname, "../uploads/kml");
+    } else if (file.fieldname === "zipFile") {
+      uploadPath = path.join(__dirname, "../uploads/zip");
+    } else {
+      return cb(new Error("Campo no permitido"), null);
+    }
+
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -26,23 +39,34 @@ const storageFotos = multer.diskStorage({
   }
 });
 
-const fileFilterFotos = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif/;
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (allowedTypes.test(ext)) {
-    cb(null, true);
+// 🔹 Filtro dinámico según campo
+const fileFilter = (req, file, cb) => {
+  if (file.fieldname === "fotografia") {
+    const allowedTypes = /jpeg|jpg|png|gif/;
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.test(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Solo se permiten imágenes PNG, JPG o GIF"));
+    }
+  } else if (file.fieldname === "kmlFile") {
+    if (file.originalname.toLowerCase().endsWith(".zip")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Solo se permite archivo ZIP"));
+    }
   } else {
-    cb(new Error("Solo se permiten imágenes PNG, JPG o GIF"));
+    cb(new Error("Campo no permitido"));
   }
 };
 
-const uploadFoto = multer({ storage: storageFotos, fileFilter: fileFilterFotos });
+const upload = multer({ storage, fileFilter });
 
 
 // registro de Instituciones
-router.post("/altaInstituciones", Midleware.verifyToken, uploadFoto.single("fotografia"), async(req, res)=>{
+router.post("/altaInstituciones", Midleware.verifyToken, upload.fields([{ name: "fotografia", maxCount: 1 },{ name: "kmlFile", maxCount: 1 }]), async (req, res) => {
 
-    const {
+    let {
         distrito_electoral,
         demarcacion_territorial,
         nombre_completo,
@@ -81,6 +105,13 @@ router.post("/altaInstituciones", Midleware.verifyToken, uploadFoto.single("foto
         return res.status(400).json({ message: "Datos requeridos"})
     }
 
+    const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;    
+
+    cv_documento = kmlFile ? 1 : 0;
+    cv_enlace = kmlFile ? `/uploads/zip/${kmlFile.filename}` : null;
+
+
+
     // fecha y hora
     const original = new Date();
     const offsetInMs = original.getTimezoneOffset() * 60000;
@@ -88,12 +119,8 @@ router.post("/altaInstituciones", Midleware.verifyToken, uploadFoto.single("foto
     const ahora = new Date();
     const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
 
-
-  let fotografia = null;
-
-  if (req.file) {
-    fotografia = `/uploads/fotos/${req.file.filename}`;
-  }
+     const fotografia = req.files?.fotografia ? `/uploads/fotos/${req.files.fotografia[0].filename}` : null;
+     
 
 
     let transaction;
@@ -201,7 +228,8 @@ router.post("/altaInstituciones", Midleware.verifyToken, uploadFoto.single("foto
 });
 
 //update instituciones
-router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("fotografia"), async (req, res) => {
+router.patch("/updateInstituciones", Midleware.verifyToken, upload.fields([{ name: "fotografia", maxCount: 1 },{ name: "kmlFile", maxCount: 1 }]), async (req, res) => {
+
     let {
         id_registro,
         distrito_electoral,
@@ -231,7 +259,6 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
         return res.status(400).json({ message: "Datos requeridos" });
     }
 
-
     try {
         const pool = await connectToDatabase();
         const transaction = pool.transaction();
@@ -247,7 +274,20 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
             return res.status(404).json({ message: "Registro no encontrado" });
         }
 
-        let fotografiaFinal = req.file ? "/uploads/fotos/" + req.file.filename : registroAnterior.fotografia;
+
+        if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
+        cv_enlace = `/uploads/zip/${req.files.kmlFile[0].filename}`;
+        cv_documento = 1;
+        } else {
+        cv_enlace = registroAnterior.cv_enlace;
+        cv_documento = registroAnterior.cv_enlace ? 1 : 0;
+        }
+
+        cv_documento = cv_documento ? 1 : 0;
+
+        const fotografiaFinal = req.files?.fotografia?.[0]
+        ? `/uploads/fotos/${req.files.fotografia[0].filename}`
+        : registroAnterior.fotografia || null;
 
         const nuevosDatos = {
             distrito_electoral,
@@ -300,11 +340,11 @@ router.patch("/updateInstituciones", Midleware.verifyToken, uploadFoto.single("f
             requestUpdate.input('id_registro', sql.Int, id_registro);
 
             for (const [campo, valor] of Object.entries(nuevosDatos)) {
-                if (intFields.includes(campo)) {
-                    requestUpdate.input(campo, sql.Int, valor);
-                } else {
-                    requestUpdate.input(campo, sql.VarChar, valor);
-                }
+            if (intFields.includes(campo) || campo === "cv_documento") {
+                requestUpdate.input(campo, sql.Int, valor);
+            } else {
+                requestUpdate.input(campo, sql.VarChar, valor ?? "");
+            }
             }
 
             await requestUpdate.query(`
@@ -436,6 +476,7 @@ router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) 
         SELECT 
           ri.id AS id_registro,
           ri.fotografia,
+          ri.cv_enlace,
           ri.demarcacion_territorial AS id_demarcacion,
           dt.demarcacion_territorial AS demarcacion_territorial,
           ri.nombre_completo,

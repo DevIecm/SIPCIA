@@ -2,10 +2,43 @@ import { connectToDatabase, sql } from "../../Config/Configuracion.js";
 import Midleware from "../../Config/Midleware.js";
 import express from 'express';
 import dotenv from 'dotenv';
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let uploadPath;
+
+    if (file.originalname.toLowerCase().endsWith(".kml")) {
+      uploadPath = path.join(__dirname, "../uploads/kml");
+    } else if (file.originalname.toLowerCase().endsWith(".zip")) {
+      uploadPath = path.join(__dirname, "../uploads/zip");
+    } else {
+      return cb(new Error("Tipo de archivo no permitido"), null);
+    }
+
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
+
+
 
 router.get("/getConsCon", Midleware.verifyToken, async (req, res) => {
   const { distrito_electoral } = req.query;
@@ -40,9 +73,9 @@ router.get("/getConsCon", Midleware.verifyToken, async (req, res) => {
 
 
 //insert registro
-router.post("/altaAtencion", Midleware.verifyToken, async(req,res)=>{
+router.post("/altaAtencion", Midleware.verifyToken, upload.fields([ { name: "kmlFile", maxCount: 1 }]), async (req, res) => {
 
-    const {
+    let {
         distrito_electoral,
         numero_reporte,
         fecha_periodo,
@@ -65,6 +98,11 @@ router.post("/altaAtencion", Midleware.verifyToken, async(req,res)=>{
         estado_registro
     } = req.body
 
+    const pueblo_originarioInt = pueblo_originario === "" ? null : parseInt(pueblo_originario, 10);
+    const puebloInt = pueblo === "" ? null : parseInt(pueblo, 10);
+    const barrioInt = barrio === "" ? null : parseInt(barrio, 10);
+    const unidad_territorialInt = unidad_territorial === "" ? null : parseInt(unidad_territorial, 10);
+
     if (
         distrito_electoral  == null || distrito_electoral === '' ||
         presento_caso ==  null || presento_caso === ''||
@@ -77,6 +115,12 @@ router.post("/altaAtencion", Midleware.verifyToken, async(req,res)=>{
     ){
         return res.status(400).json({ message: "Datos requeridos"})
     }
+
+     const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;
+
+    documento = kmlFile ? 1 : 0;
+    enlace_documento = kmlFile ? `/uploads/zip/${kmlFile.filename}` : null;
+
 
     // Fecha y hora
     const original = new Date();
@@ -114,10 +158,10 @@ router.post("/altaAtencion", Midleware.verifyToken, async(req,res)=>{
             .input('numero_consecutivo', sql.Numeric, numero_consecutivo)
             .input('fecha_consulta', sql.DateTime, fecha_consulta)
             .input('nombre_completo', sql.VarChar, nombre_completo)
-            .input('pueblo_originario', sql.Int, pueblo_originario)
-            .input('pueblo', sql.Int, pueblo)
-            .input('barrio', sql.Int, barrio)
-            .input('unidad_territorial', sql.Int, unidad_territorial)
+            .input('pueblo_originario', sql.Int, pueblo_originarioInt)
+            .input('pueblo', sql.Int, puebloInt)
+            .input('barrio', sql.Int, barrioInt)
+            .input('unidad_territorial', sql.Int, unidad_territorialInt)
             .input('otro', sql.VarChar, otro)
             .input('cargo', sql.VarChar, cargo)
             .input('descripcion_consulta',sql.VarChar, descripcion_consulta)
@@ -201,9 +245,9 @@ router.post("/altaAtencion", Midleware.verifyToken, async(req,res)=>{
 
 
 //update del registro
-router.patch("/updateAntencion", Midleware.verifyToken, async (req, res) => {
+router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([ { name: "kmlFile", maxCount: 1 }]), async (req, res) => {
 
-    const {
+    let {
         id_registro,
         distrito_electoral,
         numero_reporte,
@@ -226,7 +270,6 @@ router.patch("/updateAntencion", Midleware.verifyToken, async (req, res) => {
         modulo_registro,
         estado_registro
     } = req.body;
-
 
      if (
         distrito_electoral  == null || distrito_electoral === '' ||
@@ -260,6 +303,17 @@ router.patch("/updateAntencion", Midleware.verifyToken, async (req, res) => {
         if (!registroAnterior) {
             return res.status(404).json({ message: "Registro no encontrado" });
         }
+
+        if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
+        enlace_documento = `/uploads/zip/${req.files.kmlFile[0].filename}`;
+        documento = 1;
+        } else {
+        enlace_documento = registroAnterior.enlace_documento;
+        documento = registroAnterior.enlace_documento ? 1 : 0;
+        }
+
+        documento = documento ? 1 : 0;
+
 
         //comparar
 
@@ -310,13 +364,24 @@ router.patch("/updateAntencion", Midleware.verifyToken, async (req, res) => {
             estado_registro
         };
 
-        const cambios = {};
-        for (const campo of camposEditables) {
-            const valorAnterior = registroAnterior[campo];
-            const valorNuevo = nuevosDatos[campo];
+        // Campos que son enteros en la BD
+        const intFields = [
+            'pueblo_originario', 'pueblo', 'barrio', 'unidad_territorial'
+        ];
 
-            if (valorAnterior != valorNuevo) {
-                cambios[campo] = valorNuevo;
+        for (const campo of intFields) {
+            if (nuevosDatos[campo] === "" || nuevosDatos[campo] == null) {
+                nuevosDatos[campo] = null;
+            } else {
+                nuevosDatos[campo] = parseInt(nuevosDatos[campo], 10);
+            }
+        }
+
+        // cambios
+        const cambios  = {};
+        for (const campo of Object.keys(nuevosDatos)) {
+            if (registroAnterior[campo] != nuevosDatos[campo]) {
+                cambios[campo] = nuevosDatos[campo];
             }
         }
 

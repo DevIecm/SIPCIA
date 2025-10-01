@@ -8,7 +8,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 
 
-dotenv.config();
+dotenv.config();    
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,10 +16,20 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads/kml");
+    let uploadPath;
+
+    if (file.originalname.toLowerCase().endsWith(".kml")) {
+      uploadPath = path.join(__dirname, "../uploads/kml");
+    } else if (file.originalname.toLowerCase().endsWith(".zip")) {
+      uploadPath = path.join(__dirname, "../uploads/zip");
+    } else {
+      return cb(new Error("Tipo de archivo no permitido"), null);
+    }
+
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -30,8 +40,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 //insert de registro 
-router.post("/altaAfluencia", Midleware.verifyToken, upload.single("kmlFile"), async (req, res) => {
-
+router.post("/altaAfluencia", Midleware.verifyToken, upload.fields([ { name: "kmlFile", maxCount: 1 },{ name: "otroFile", maxCount: 1 }]), async (req, res) => {
 
     let {
         distrito_electoral,
@@ -60,15 +69,27 @@ router.post("/altaAfluencia", Midleware.verifyToken, upload.single("kmlFile"), a
         return res.status(400).json({ message: "Datos requeridos" })
     }
 
-     ubicacion = req.file ? 1 : 0;
-     enlace_ubicacion = req.file ? `/uploads/kml/${req.file.filename}` : null;
+
+    const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;
+    const zipFile = req.files["otroFile"] ? req.files["otroFile"][0] : null;
+
+    //foto zip    
+    foto = zipFile ? 1 : 0;
+    enlace_foto = zipFile ? `/uploads/zip/${zipFile.filename}` : null;
+
+    //kml ubicacion
+    ubicacion = kmlFile ? 1 : 0;
+    enlace_ubicacion = kmlFile ? `/uploads/kml/${kmlFile.filename}` : null;
+
+
+
 
     // Fecha y hora
     const original = new Date();
     const offsetInMs = original.getTimezoneOffset() * 60000;
     const fechaLocal = new Date(original.getTime() - offsetInMs);
     const ahora = new Date();
-    const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
+    const horaActual = ahora.toTimeString().split(' ')[0];
 
     try {
 
@@ -151,7 +172,7 @@ router.post("/altaAfluencia", Midleware.verifyToken, upload.single("kmlFile"), a
 
 
 //update del registro
-router.patch("/updateAfluencia", Midleware.verifyToken, upload.single("kmlFile"), async (req, res) => {
+router.patch("/updateAfluencia", Midleware.verifyToken, upload.fields([{ name: "kmlFile", maxCount: 1 }, { name: "otroFile", maxCount: 1 }]), async (req, res) => {
   let {
     id_registro,
     distrito_electoral,
@@ -199,13 +220,21 @@ router.patch("/updateAfluencia", Midleware.verifyToken, upload.single("kmlFile")
       return res.status(404).json({ message: "Registro no encontrado" });
     }
 
-    if (req.file) {
-      enlace_ubicacion = `/uploads/kml/${req.file.filename}`;
-      ubicacion = 1;
-    } else {
-      enlace_ubicacion = registroAnterior.enlace_ubicacion;
-      ubicacion = registroAnterior.enlace_ubicacion ? 1 : 0;
-    }
+  if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
+    enlace_ubicacion = `/uploads/kml/${req.files.kmlFile[0].filename}`;
+    ubicacion = 1;
+  } else {
+    enlace_ubicacion = registroAnterior.enlace_ubicacion;
+    ubicacion = registroAnterior.enlace_ubicacion ? 1 : 0;
+  }
+
+  let enlace_foto;
+  if (req.files && req.files.otroFile && req.files.otroFile[0]) {
+    enlace_foto = `/uploads/zip/${req.files.otroFile[0].filename}`;
+  } else {
+    enlace_foto = registroAnterior.enlace_foto;
+  }
+
 
     const camposEditables = [
       "distrito_electoral",

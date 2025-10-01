@@ -46,6 +46,8 @@ export class FormularioComunitaria {
   selectedFile: File | null = null;
   opcionDemarcacion: any = null;
 
+  selectedKmlFile: File | null = null;
+  selectedZipFile: File | null = null;
 
   constructor(
     private catalogos: Catalogos,
@@ -56,25 +58,21 @@ export class FormularioComunitaria {
     private Cabezera: Reportes
   ) {}
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file && file.name.endsWith(".kml")) {
-      this.selectedFile = file;
-      this.selectedFileName = file.name;
-      this.fileUploaded = true;
-    } else {
-      Swal.fire("Solo se permiten archivos .kml");
-      this.selectedFile = null;
-      this.selectedFileName = null;
-      this.fileUploaded = false;
+onFileSelect(event: any, type: string) {
+  if (event.target.files.length > 0) {
+    if (type === "kml") {
+      this.selectedKmlFile = event.target.files[0];
+    } else if (type === "zip") {
+      this.selectedZipFile = event.target.files[0];
     }
   }
+}
 
   removeFile(fileInput: HTMLInputElement): void {
     fileInput.value = '';
-    this.selectedFileName = null;
+    this.selectedKmlFile = null;
     this.fileUploaded = false;
-    this.selectedFile = null;
+    this.selectedKmlFile = null;
   }
 
   saveForm(){
@@ -97,9 +95,13 @@ export class FormularioComunitaria {
           if (result.isConfirmed) {
             const formData = new FormData();
 
-            if (this.selectedFile) {
-            formData.append("kmlFile", this.selectedFile);
-          }
+          if (this.selectedKmlFile) {
+              formData.append("kmlFile", this.selectedKmlFile);
+            }
+
+            if (this.selectedZipFile) {
+              formData.append("otroFile", this.selectedZipFile);
+            }
 
           formData.append("distrito_electoral", this.area.toString());
           formData.append("distrito_cabecera", (this.cabecera ?? "").toString());
@@ -160,11 +162,19 @@ export class FormularioComunitaria {
               return;
             }
 
-            if (this.selectedFile) {
-              formData.append("kmlFile", this.selectedFile);          
+            if (this.selectedKmlFile) {
+              formData.append("kmlFile", this.selectedKmlFile);          
             }else if(this.infoUpdate.enlace_ubicacion){
               formData.append("kmlFile", this.infoUpdate.enlace_ubicacion);
             }
+
+            if (this.selectedZipFile) {
+              formData.append("otroFile", this.selectedZipFile);          
+            }else if(this.infoUpdate.enlace_fotografia){
+              formData.append("otroFile", this.infoUpdate.enlace_fotografia);
+            }
+            
+
 
             if (this.idRegistro !== undefined) {
               formData.append("id_registro", this.idRegistro.toString());
@@ -314,12 +324,12 @@ getCabezera() {
 
             const datosFormularioCompletos = {
               distrito_electoral: this.area,
+              enlace_documento: data.getRegistroAfluencia[0].enlace_documento,
               distrito_cabecera: data.getRegistroAfluencia[0].distrito_cabecera,
               demarcacion_territorial: data.getRegistroAfluencia[0].demarcacion_territorial,
               denominacion_lugar: data.getRegistroAfluencia[0].denominacion_lugar,
               domicilio_lugar: data.getRegistroAfluencia[0].domicilio_lugar,
-              foto: 0,
-              enlace_foto: "",
+              enlace_foto: data.getRegistroAfluencia[0].enlace_foto,
               enlace_ubicacion: data.getRegistroAfluencia[0].enlace_ubicacion,
               observaciones: data.getRegistroAfluencia[0].observaciones,
               usuario_registro: this.id_usuario,

@@ -50,7 +50,9 @@ export class FormularioConsultas {
   labelTitle: string = '';
 
   tipo_usuario: number = 0;
+  id_usuario: number = 0;
   idConsecutivo: number = 0;
+  selectedKmlFile: File | null = null;
 
   constructor(
     private catalogos: Catalogos,
@@ -59,6 +61,13 @@ export class FormularioConsultas {
     private datePipe: DatePipe,
     private registerService: Reportes
   ) {}
+
+
+   onFileSelect(event: any, type: string) {
+  if (event.target.files.length > 0) {
+      this.selectedKmlFile = event.target.files[0];
+   }
+}
 
   saveForm(){
     try {
@@ -79,32 +88,35 @@ export class FormularioConsultas {
           }
 
           if (result.isConfirmed) {
+            const formData = new FormData();
 
-            const datosFormularioCompletos = {
-              distrito_electoral: this.area,
-              numero_reporte: Number(this.formularioRegistro.get('nreporte')?.value) || null,
-              fecha_periodo: this.formularioRegistro.get('fyperiodo')?.value || null,  
-              presento_caso: this.formularioRegistro.get('presento_caso')?.value == 1 ? 1 : 0,
-              numero_consecutivo: this.idConsecutivo,
-              fecha_consulta: this.formularioRegistro.get('fconsulta')?.value || null,
-              nombre_completo: this.formularioRegistro.get('ncompleto')?.value || null,
-              pueblo_originario: Number(this.formularioRegistro.get('ooriginario')?.value) || null,
-              pueblo: Number(this.formularioRegistro.get('pueblo')?.value) || null,
-              barrio: Number(this.formularioRegistro.get('barrio')?.value) || null,
-              unidad_territorial: Number(this.formularioRegistro.get('uterritorial')?.value) || null,
-              otro: this.formularioRegistro.get('otro')?.value || null,
-              cargo: this.formularioRegistro.get('cargo')?.value || null,
-              descripcion_consulta: this.formularioRegistro.get('consulta')?.value || null,
-              forma_atendio: this.formularioRegistro.get('forma')?.value || null,
-              observaciones: this.formularioRegistro.get('observaciones')?.value || null,
-              documento: 0,
-              enlace_documento: "",
-              usuario_registro: 1,
-              modulo_registro: this.tipo_usuario,
-              estado_registro: 1,
-            };
+            if (this.selectedKmlFile) {
+              formData.append("kmlFile", this.selectedKmlFile);
+            }
 
-            this.registerService.insertaRegistroConsultas(datosFormularioCompletos, this.tokenSesion).subscribe({
+
+              formData.append("distrito_electoral", this.area.toString());
+              formData.append("numero_reporte", this.formularioRegistro.get('nreporte')?.value || "");
+              formData.append("fecha_periodo", this.formularioRegistro.get('fyperiodo')?.value || "");  
+              formData.append("presento_caso", this.formularioRegistro.get('presento_caso')?.value);
+              formData.append("numero_consecutivo", this.idConsecutivo.toString());
+              formData.append("fecha_consulta", this.formularioRegistro.get('fconsulta')?.value || "");
+              formData.append("nombre_completo", this.formularioRegistro.get('ncompleto')?.value || "");
+              formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || "");
+              formData.append("pueblo", this.formularioRegistro.get('pueblo')?.value || "");
+              formData.append("barrio", this.formularioRegistro.get('barrio')?.value || "");
+              formData.append("unidad_territorial", this.formularioRegistro.get('uterritorial')?.value || "");
+              formData.append("otro", this.formularioRegistro.get('otro')?.value || "");
+              formData.append("cargo", this.formularioRegistro.get('cargo')?.value || "");
+              formData.append("descripcion_consulta", this.formularioRegistro.get('consulta')?.value || "");
+              formData.append("forma_atendio", this.formularioRegistro.get('forma')?.value || "");
+              formData.append("observaciones", this.formularioRegistro.get('observaciones')?.value || "");
+              formData.append("usuario_registro", this.id_usuario.toString());
+              formData.append("modulo_registro", this.tipo_usuario.toString());
+              formData.append("estado_registro", "1");
+            
+
+            this.registerService.insertaRegistroConsultas(formData, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
@@ -146,37 +158,45 @@ export class FormularioConsultas {
           cancelButtonText: "Cancelar"
         }).then((result) => {
           if (result.isConfirmed) {
+             const formData = new FormData();
+
 
             if (!this.formularioRegistro) {
               return;
             }
 
-            const datosFormularioCompletos = {
-              distrito_electoral: this.area,
-              id_registro: this.idRegistro,
-              numero_reporte: Number(this.formularioRegistro.get('nreporte')?.value) || null,
-              fecha_periodo: this.formularioRegistro.get('fyperiodo')?.value || null,  
-              presento_caso: this.formularioRegistro.get('presento_caso')?.value == 1 ? 1 : 0,
-              numero_consecutivo: Number(this.formularioRegistro.get('consecutivo')?.value) || null,
-              fecha_consulta: this.formularioRegistro.get('fconsulta')?.value || null,
-              nombre_completo: this.formularioRegistro.get('ncompleto')?.value || null,
-              pueblo_originario: Number(this.formularioRegistro.get('ooriginario')?.value) || null,
-              pueblo: Number(this.formularioRegistro.get('pueblo')?.value) || null,
-              barrio: Number(this.formularioRegistro.get('barrio')?.value) || null,
-              unidad_territorial: Number(this.formularioRegistro.get('uterritorial')?.value) || null,
-              otro: this.formularioRegistro.get('otro')?.value || null,
-              cargo: this.formularioRegistro.get('cargo')?.value || null,
-              descripcion_consulta: this.formularioRegistro.get('consulta')?.value || null,
-              forma_atendio: this.formularioRegistro.get('forma')?.value || null,
-              observaciones: this.formularioRegistro.get('observaciones')?.value || null,
-              documento: 0,
-              enlace_documento: "",
-              usuario_registro: 1,
-              modulo_registro: this.tipo_usuario,
-              estado_registro: 1,
-            };
+            if (this.selectedKmlFile) {
+              formData.append("kmlFile", this.selectedKmlFile);          
+            }else if(this.infoUpdate.enlace_documento){
+              formData.append("kmlFile", this.infoUpdate.enlace_documento);
+            }
 
-            this.registerService.updateRegistroConsultas(datosFormularioCompletos, this.tokenSesion).subscribe({
+            if (this.idRegistro !== undefined) {
+              formData.append("id_registro", this.idRegistro.toString());
+            }
+             formData.append("distrito_electoral", this.area.toString());
+              formData.append("numero_reporte", this.formularioRegistro.get('nreporte')?.value || "");
+              formData.append("fecha_periodo", this.formularioRegistro.get('fyperiodo')?.value || "");  
+              formData.append("presento_caso", this.formularioRegistro.get('presento_caso')?.value);
+              formData.append("numero_consecutivo", this.idConsecutivo.toString());
+              formData.append("fecha_consulta", this.formularioRegistro.get('fconsulta')?.value || "");
+              formData.append("nombre_completo", this.formularioRegistro.get('ncompleto')?.value || "");
+              formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || "");
+              formData.append("pueblo", this.formularioRegistro.get('pueblo')?.value || "");
+              formData.append("barrio", this.formularioRegistro.get('barrio')?.value || "");
+              formData.append("unidad_territorial", this.formularioRegistro.get('uterritorial')?.value || "");
+              formData.append("otro", this.formularioRegistro.get('otro')?.value || "");
+              formData.append("cargo", this.formularioRegistro.get('cargo')?.value || "");
+              formData.append("descripcion_consulta", this.formularioRegistro.get('consulta')?.value || "");
+              formData.append("forma_atendio", this.formularioRegistro.get('forma')?.value || "");
+              formData.append("observaciones", this.formularioRegistro.get('observaciones')?.value || "");
+              formData.append("usuario_registro", this.id_usuario.toString());
+              formData.append("modulo_registro", this.tipo_usuario.toString());
+              formData.append("estado_registro", "1");
+            
+              
+
+            this.registerService.updateRegistroConsultas(formData, this.tokenSesion).subscribe({
               next: (data) => {
                 if(data.code === 200) {
                   Swal.fire({
@@ -221,6 +241,7 @@ export class FormularioConsultas {
     this.area = sessionStorage.getItem('area')!;
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.position = sessionStorage.getItem('dir')!;
+    this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
 
     this.formularioRegistro = this.formBuilder.group({
       nreporte: ['', [Validators.required]],

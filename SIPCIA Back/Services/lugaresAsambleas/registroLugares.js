@@ -29,8 +29,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/altaLugar", Midleware.verifyToken, upload.single("kmlFile"),async (req, res) => {
-
+router.post("/altaLugar", Midleware.verifyToken, upload.fields([ { name: "kmlFile", maxCount: 1 },{ name: "otroFile", maxCount: 1 }]), async (req, res) => {
     let {
         distrito_electoral,
         estado_registro,
@@ -68,8 +67,17 @@ router.post("/altaLugar", Midleware.verifyToken, upload.single("kmlFile"),async 
         return res.status(400).json({ message: "Datos requeridos" })
     } 
 
-     ubicacion_kml = req.file ? 1 : 0;
-     enlace_ubicacion = req.file ? `/uploads/kml/${req.file.filename}` : null;
+    const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;
+    const zipFile = req.files["otroFile"] ? req.files["otroFile"][0] : null;
+
+    //foto zip    
+    fotografia = zipFile ? 1 : 0;
+    enlace_fotografia = zipFile ? `/uploads/zip/${zipFile.filename}` : null;
+
+    //kml ubicacion
+    ubicacion_kml = kmlFile ? 1 : 0;
+    enlace_ubicacion = kmlFile ? `/uploads/kml/${kmlFile.filename}` : null;
+
 
     // fecha y hora
     const original = new Date();
@@ -247,13 +255,20 @@ router.patch("/updateLugar", Midleware.verifyToken, upload.single("kmlFile"),asy
             return res.status(404).json({ message: "Registro no encontrado" });
         }
 
-      if (req.file) {
-      enlace_ubicacion = `/uploads/kml/${req.file.filename}`;
-      ubicacion_kml = 1;
-    } else {
-      enlace_ubicacion = registroAnterior.enlace_ubicacion;
-      ubicacion_kml = registroAnterior.enlace_ubicacion ? 1 : 0;
-    }
+  if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
+    enlace_ubicacion = `/uploads/kml/${req.files.kmlFile[0].filename}`;
+    ubicacion_kml = 1;
+  } else {
+    enlace_ubicacion = registroAnterior.enlace_ubicacion;
+    ubicacion_kml = registroAnterior.enlace_ubicacion ? 1 : 0;
+  }
+
+  let enlace_fotografia;
+  if (req.files && req.files.otroFile && req.files.otroFile[0]) {
+    enlace_fotografia = `/uploads/zip/${req.files.otroFile[0].filename}`;
+  } else {
+    enlace_fotografia = registroAnterior.enlace_fotografia;
+  }
 
                 //comparar
         const camposEditables = [
@@ -467,6 +482,7 @@ router.get("/getRegistroLugares", Midleware.verifyToken, async(req, res)=>{
                     rl.lugar_espacio,
                     rl.domicilio,
                     rl.ubicacion_kml,
+                    rl.enlace_fotografia,
                     rl.enlace_ubicacion,
                     rl.intitucion_propietaria,
                     rl.prestamo_iecm,

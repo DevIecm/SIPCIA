@@ -2,13 +2,36 @@ import { connectToDatabase, sql } from '../Config/Configuracion.js';
 import Midleware from '../Config/Midleware.js';
 import express from 'express';
 import dotenv from 'dotenv';
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = express.Router();
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../uploads/zip");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
+
 //insert de registro
-router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
-    const {
+router.post("/altaRegistro", Midleware.verifyToken, upload.single("kmlFile"), async (req, res) => {
+    let {
         nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad,
         pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl, pueblo_afro,
         comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia,
@@ -17,22 +40,34 @@ router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
     } = req.body;
 
     // Validación de campos requeridos
+
     if (
-        nombre_completo == null || nombre_completo === '' ||
-        seccion_electoral == null || demarcacion == null ||
-        distrito_electoral == null || comunidad == null ||
-        nombre_comunidad == null || nombre_comunidad === '' ||
-        nombre_instancia == null || nombre_instancia === '' ||
-        cargo_instancia == null || cargo_instancia === '' ||
-        domicilio == null || domicilio === '' || telefono_celular == null || telefono_celular === '' ||
-        correo_electronico_personal == null || correo_electronico_personal === '' ||
-        documentos == null ||
-        usuario_registro == null ||
-        modulo_registro == null ||
-        estado_registro == null
+        !nombre_completo ||
+        !seccion_electoral || 
+        !demarcacion  ||
+        !distrito_electoral || 
+        !comunidad ||
+        !nombre_comunidad  ||
+        !nombre_instancia ||
+        !cargo_instancia||
+        !domicilio || 
+        !telefono_celular  ||
+        !correo_electronico_personal ||
+        !usuario_registro ||
+        !modulo_registro ||
+        !estado_registro 
     ) {
         return res.status(400).json({ message: "Datos requeridos" });
     }
+    
+
+    const pueblo_originarioInt = pueblo_originario === "" ? null : parseInt(pueblo_originario, 10);
+    const puebloInt = pueblo_pbl === "" ? null : parseInt(pueblo_pbl, 10);
+    const barrioInt = barrio_pbl === "" ? null : parseInt(barrio_pbl, 10);
+    const unidad_territorialInt = unidad_territorial_pbl === "" ? null : parseInt(unidad_territorial_pbl, 10);
+    const telefono_particularInt = telefono_particular === "" ? null : parseInt(telefono_particular, 10)
+     documentos = req.file ? 1 : 0;
+     enlace_documentos = req.file ? `/uploads/zip/${req.file.filename}` : null;
 
     // Fecha y hora
     const original = new Date();
@@ -77,10 +112,10 @@ router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
             .input('distrito_electoral', sql.Int, distrito_electoral)
             .input('comunidad', sql.Int, comunidad)
             .input('nombre_comunidad', sql.VarChar, nombre_comunidad)
-            .input('pueblo_originario', sql.Int, pueblo_originario)
-            .input('pueblo_pbl', sql.Int, pueblo_pbl)
-            .input('barrio_pbl', sql.Int, barrio_pbl)
-            .input('unidad_territorial_pbl', sql.Int, unidad_territorial_pbl)
+            .input('pueblo_originario', sql.Int, pueblo_originarioInt)
+            .input('pueblo_pbl', sql.Int, puebloInt)
+            .input('barrio_pbl', sql.Int, barrioInt)
+            .input('unidad_territorial_pbl', sql.Int, unidad_territorialInt)
             .input('comunidad_pbl', sql.VarChar, comunidad_pbl)
             .input('otro_pbl', sql.VarChar, otro_pbl)
             .input('pueblo_afro', sql.VarChar, pueblo_afro)
@@ -91,7 +126,7 @@ router.post("/altaRegistro", Midleware.verifyToken, async (req, res) => {
             .input('nombre_instancia', sql.VarChar, nombre_instancia)
             .input('cargo_instancia', sql.VarChar, cargo_instancia)
             .input('domicilio', sql.VarChar, domicilio)
-            .input('telefono_particular', sql.Numeric, telefono_particular)
+            .input('telefono_particular', sql.Numeric, telefono_particularInt)
             .input('telefono_celular', sql.Numeric, telefono_celular)
             .input('correo_electronico_oficial', sql.VarChar, correo_electronico_oficial)
             .input('correo_electronico_personal', sql.VarChar, correo_electronico_personal)

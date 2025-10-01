@@ -323,16 +323,14 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
 
   //Reporte consultas
 
-  insertaRegistroConsultas(data: any, token: string): Observable<any> {
+  insertaRegistroConsultas(data: FormData, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
-    const body = {
-      ...data,
-    };
 
-    return this.http.post(this.apiUrl + 'atencion/altaAtencion', body, { headers })
+
+    return this.http.post(this.apiUrl + 'atencion/altaAtencion', data, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
@@ -340,16 +338,13 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
       );
   };
 
-  updateRegistroConsultas(data: any, token: string): Observable<any> {
+  updateRegistroConsultas(data: FormData, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
-    const body = {
-      ...data
-    };
 
-    return this.http.patch(this.apiUrl + 'atencion/updateAntencion', body, { headers })
+    return this.http.patch(this.apiUrl + 'atencion/updateAntencion', data, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           return throwError(() => error);
