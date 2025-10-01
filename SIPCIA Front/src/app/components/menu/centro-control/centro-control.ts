@@ -35,6 +35,8 @@ export class CentroControl {
   area: string = '';
   id_usuario: number = 0; 
 
+  isClosed: boolean = true;
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,

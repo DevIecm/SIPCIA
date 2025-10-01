@@ -14,7 +14,6 @@ import { CdkColumnDef } from "@angular/cdk/table";
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CdkColumnDef
 ],
   providers: [DatePipe],
   templateUrl: './formulario-documentos.html',

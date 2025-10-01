@@ -42,11 +42,14 @@ export class FormularioConsultas {
   opcionPueblo: any = null;
   opcionBarrio: any = null;
   opcionUnidadTerritorial: any = null;
+
+  fileUploaded: boolean = false;
   
   tokenSesion: string = '';
   today: string = '';
   area: string = '';
   position: string = '';
+  selectedFileName: string | null = null;
   labelTitle: string = '';
 
   tipo_usuario: number = 0;
@@ -64,10 +67,14 @@ export class FormularioConsultas {
 
 
    onFileSelect(event: any, type: string) {
-  if (event.target.files.length > 0) {
+
+    if (event.target.files.length > 0) {
       this.selectedKmlFile = event.target.files[0];
-   }
-}
+      this.selectedFileName = this.selectedKmlFile?.name ?? null;
+      this.fileUploaded = true;
+    }
+
+  }
 
   saveForm(){
     try {
@@ -533,7 +540,7 @@ export class FormularioConsultas {
               nreporte: this.infoUpdate.numero_reporte,
               fyperiodo: this.infoUpdate.fecha_periodo,
               consecutivo: this.infoUpdate.numero_consecutivo,
-              fconsulta: this.formatFecha(this.infoUpdate.fecha_consulta),
+              fconsulta: this.infoUpdate.fecha_consulta ? new Date(this.infoUpdate.fecha_consulta).toISOString().split('T')[0] : '',
               ncompleto: this.infoUpdate.nombre_completo,
               ooriginario: this.infoUpdate.pueblo_originario,
               pueblo: this.infoUpdate.pueblo,
@@ -576,6 +583,13 @@ export class FormularioConsultas {
 
   onClose() {
     this.close.emit();
+  }
+
+  removeFile(fileInput: HTMLInputElement): void {
+    fileInput.value = '';
+    this.selectedFileName = null;
+    this.fileUploaded = false;
+    this.selectedKmlFile = null;
   }
 
   onBackdropClick(event: MouseEvent) {
