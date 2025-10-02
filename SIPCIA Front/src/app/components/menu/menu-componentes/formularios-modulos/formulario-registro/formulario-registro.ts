@@ -108,7 +108,7 @@ export class FormularioRegistro implements OnInit{
       domicilio: ['', Validators.required],
       tfijo: ['', [Validators.pattern('^[0-9]+$')]],
       tcelular: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      docs: [{ value: '', disabled: true }],
+      docs: [{ value: '' }],
       coficial: ['', [Validators.email]],
       cpersonal: ['', [Validators.required, Validators.email]],
     });
@@ -176,7 +176,8 @@ export class FormularioRegistro implements OnInit{
             tfijo: data.getRegistro[0].telefono_particular,
             tcelular: data.getRegistro[0].telefono_celular,
             coficial: data.getRegistro[0].correo_electronico_oficial,
-            cpersonal: data.getRegistro[0].correo_electronico_personal
+            cpersonal: data.getRegistro[0].correo_electronico_personal,
+            docs: data.getRegistro[0].enlace_documentos
           };
 
           const userDataAfro = {
@@ -200,8 +201,8 @@ export class FormularioRegistro implements OnInit{
             tfijo: data.getRegistro[0].telefono_particular,
             tcelular: data.getRegistro[0].telefono_celular,
             coficial: data.getRegistro[0].correo_electronico_oficial,
-            cpersonal: data.getRegistro[0].correo_electronico_personal
-
+            cpersonal: data.getRegistro[0].correo_electronico_personal,
+            docs: data.getRegistro[0].enlace_documentos
           };
 
           if(this.moduloClicked === '1.2') {

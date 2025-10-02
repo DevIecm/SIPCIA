@@ -355,10 +355,15 @@
                       <label for="formFile" class="form-label">Documentos:</label>
                       <input 
                         formControlName="docs"
-                        class="form-control" 
+                        class="form-control"
                         type="file" 
                         id="formFile">
                     </div>
+
+                    <div *ngIf="infoUpdate?.enlace_documentos">
+                      <small>Archivo actual: {{ infoUpdate.enlace_documentos }}</small>
+                    </div>
+                    
                   </div>
                 </div>
                 <div class="row">

@@ -97,6 +97,8 @@ export class NuevoRegistro implements OnInit{
       prelevante: [''],
       otror: [''],
 
+      documentos: [''],
+
       ninstancia: ['', Validators.required],
       cinstancia: ['', Validators.required],
       domicilio: ['', Validators.required],
@@ -503,6 +505,7 @@ export class NuevoRegistro implements OnInit{
         docs: '',
         coficial: '',
         cpersonal: '',
+        documentos: ''
       });
 
       this.formularioRegistro.get('pueblor')?.enable();
