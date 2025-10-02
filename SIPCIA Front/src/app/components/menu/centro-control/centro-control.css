@@ -150,6 +150,14 @@ table {
     font-family: Arial, Helvetica, sans-serif;
     width: 100%;
     height: 100%;
+    word-wrap: break-word;
+    table-layout: fixed;
+}
+
+.tables {
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    height: 100%;
     table-layout: fixed;
     word-wrap: break-word;
 }
@@ -157,13 +165,6 @@ table {
 th {
     color: #ffff;
     background-color: #9B3BCA !important;
-}   
-
-
-.back-table {
-    border-radius: 10px;
-    padding: 14px;
-    background-color: #bf90dd;
 }
 
 .button {
@@ -180,7 +181,7 @@ th {
 th,
 td {
     
-    font-size: 9px!important;
+    font-size: 12px!important;
     text-align: center;
     border: 1px solid white;
     padding: 8px;
@@ -207,3 +208,66 @@ i{
     display: flex;
     font-size: 14px;
 }
+
+.btn-abrir {
+    border-radius: 19px;
+    border: 1px solid black;
+    font-size: 10px;
+    background-color: #b9ffb6;
+    width: 126px;
+    height: 21px;
+    font-weight: bold;
+    padding: 0px;   
+}
+
+.btn-cerrar {
+    border-radius: 19px;
+    border: 1px solid black;
+    font-size: 10px;
+    background-color: #f88686;
+    width: 126px;
+    height: 21px;
+    font-weight: bold;
+    padding: 0px;
+}
+
+.closed-true {
+    border-radius: 19px;
+    border: none;
+    font-size: 10px;
+    background-color: #034d13;
+    width: 90px;
+    color: #ffff;
+    display: inline-block;
+    height: 21px;
+    padding: 3px;
+}
+
+.closed-false {
+    border-radius: 19px;
+    border: none;
+    font-size: 10px;
+    padding: 3px;
+    color: #ffff;
+    display: inline-block;
+    background-color: #e85050;
+    width: 90px;
+    height: 21px;
+}
+
+.btn-clean {
+    border-radius: 15px;
+    border: transparent;
+    color: white;
+    background-color: #FBB03B;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+    width: 77%;
+    height: 27px;
+    padding: 0px;
+}
+
+.col-modulo { width: 15%; }
+.col-estado { width: 25%; }
+.col-botones { width: 40%; }
+.col-checkbox { width: 20%; }
