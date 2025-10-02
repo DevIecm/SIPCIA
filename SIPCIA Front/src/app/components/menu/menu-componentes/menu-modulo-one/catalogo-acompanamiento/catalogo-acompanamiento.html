@@ -196,7 +196,12 @@
             <td>{{ item.interes_profesional ? item.interes_profesional : '-'}}</td>
             <td>{{ item.nombre_institucion ? item.nombre_institucion : '-'}}</td>
             <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
-            <td>{{ item.cv_enlace ? item.cv_enlace : '-'}}</td>
+            <td><span *ngIf="item.nombre_archivo" 
+                    class="text-primary" 
+                    style="cursor: pointer;"
+                    (click)="descargar2(item)">
+                {{ item.nombre_archivo }}
+              </span></td>
           </tr>
         </tbody>
       </table>

@@ -111,6 +111,7 @@ export class CatalogoAcompanamiento implements OnInit {
     private router: Router,
     private reporteService: Reportes,
     private descargarReporteInstitucion: reporteService,
+    private miServicio: Reportes,
     private service: Auth) {}
 
   onSubmit() {
@@ -133,6 +134,22 @@ export class CatalogoAcompanamiento implements OnInit {
       }
     });
   };
+
+   descargar2(item: any): void {
+    this.miServicio.descargarOtrosNorma(item.cv_enlace, this.tokenSesion).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        a.download =item.nombre_archivo;
+
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
 
   getRegister() {
     this.reporteService.getRegisterDataTableAcompa(this.area_adscripcion, this.tokenSesion).subscribe({

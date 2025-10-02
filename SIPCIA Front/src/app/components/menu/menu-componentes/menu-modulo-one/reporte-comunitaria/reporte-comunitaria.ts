@@ -170,6 +170,22 @@ export class ReporteComunitaria implements OnInit {
     });
   }
 
+  descargar2(item: any): void {
+    this.miServicio.descargarOtrosNorma(item.enlace_foto, this.tokenSesion).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        a.download =item.nombre_foto;
+
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
+
   getRegister() {
     this.reporteService.getRegisterDataTable(this.area_adscripcion, this.tokenSesion).subscribe({
       next: (data) => {

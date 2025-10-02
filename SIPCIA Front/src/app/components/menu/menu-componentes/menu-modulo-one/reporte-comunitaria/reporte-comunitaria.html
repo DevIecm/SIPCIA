@@ -194,7 +194,13 @@
               </span>
               <ng-template #noFile>-</ng-template>
             </td>
-            <td>{{ item.enlace_foto ? item.enlace_foto : '-'}}</td>
+            <td>
+              <span *ngIf="item.enlace_foto; else noFile" 
+                    class="text-primary" 
+                    style="cursor: pointer;"
+                    (click)="descargar2(item)">
+                {{ item.nombre_foto }}
+              </span>
             <td>{{ item.observaciones ? item.observaciones : '-'}}</td>
             <td>{{ formatFecha(item.fecha_registro) }}</td>
           </tr>

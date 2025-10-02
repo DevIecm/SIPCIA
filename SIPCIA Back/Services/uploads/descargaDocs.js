@@ -71,7 +71,6 @@ router.get("/downloadOtrosNorma/:filename", Midleware.verifyToken, async (req, r
   try {
     // decodificamos por si trae espacios o caracteres especiales
     const filename = decodeURIComponent(req.params.filename);
-
     const filePath = path.join(__dirname, "../uploads/zip", filename);
 
     if (!fs.existsSync(filePath)) {

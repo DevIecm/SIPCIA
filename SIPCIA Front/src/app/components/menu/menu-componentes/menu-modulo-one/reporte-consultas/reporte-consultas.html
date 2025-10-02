@@ -204,7 +204,12 @@
             <td>{{ item.descripcion_consulta ? item.descripcion_consulta : '-'}}</td>
             <td>{{ item.forma_atendio ? item.forma_atendio : '-'}}</td>
             <td>{{ item.observaciones ? item.observaciones : '-'}}</td>
-            <td>{{ item.enlace_documento ? item.enlace_documento : '-'}}</td>
+            <td><span *ngIf="item.nombre_archivo" 
+                    class="text-primary" 
+                    style="cursor: pointer;"
+                    (click)="descargar2(item)">
+                {{ item.nombre_archivo }}
+              </span></td>
           </tr>
         </tbody>
       </table>

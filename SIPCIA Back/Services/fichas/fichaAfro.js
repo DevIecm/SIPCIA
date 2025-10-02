@@ -41,8 +41,6 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
 
   const { persona_responsable_fta } = req.body
 
-  console.log("plan_trabajo", plan_trabajo,
-    resumen_acta)
   
 
   if (!demarcacion_territorial || !distrito_electoral || !usuario_registro || !fecha_ficha ||

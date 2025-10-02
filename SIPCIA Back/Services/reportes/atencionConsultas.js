@@ -315,32 +315,6 @@ router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([ { name: 
         documento = documento ? 1 : 0;
 
 
-        //comparar
-
-        const camposEditables = [
-            "distrito_electoral",
-            "numero_reporte",
-            "fecha_periodo",
-            "presento_caso",
-            "fecha_consulta",
-            "nombre_completo",
-            "pueblo_originario",
-            "pueblo",
-            "barrio",
-            "unidad_territorial",
-            "otro",
-            "cargo",
-            "descripcion_consulta",
-            "forma_atendio",
-            "observaciones",
-            "documento",
-            "enlace_documento",
-            "usuario_registro",
-            "modulo_registro",
-            "estado_registro"
-        ];
-
-
         const nuevosDatos = {
             distrito_electoral,
             numero_reporte,
@@ -385,30 +359,20 @@ router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([ { name: 
             }
         }
 
+        // Actualizar solo si hay cambios
         if (Object.keys(cambios).length > 0) {
-            await transaction.request()
-                .input('id_registro', sql.Int, id_registro)
-                .input('distrito_electoral', sql.Int, distrito_electoral)
-                .input('numero_reporte',sql.Int, numero_reporte)
-                .input('fecha_periodo',sql.Int, fecha_periodo)
-                .input('presento_caso',sql.Int, presento_caso)
-                .input('fecha_consulta', sql.DateTime, fecha_consulta)
-                .input('nombre_completo', sql.VarChar, nombre_completo)
-                .input('pueblo_originario', sql.Int, pueblo_originario)
-                .input('pueblo', sql.Int, pueblo)
-                .input('barrio', sql.Int, barrio)
-                .input('unidad_territorial', sql.Int, unidad_territorial)
-                .input('otro', sql.VarChar, otro)
-                .input('cargo', sql.VarChar, cargo)
-                .input('descripcion_consulta',sql.VarChar, descripcion_consulta)
-                .input('forma_atendio',sql.VarChar, forma_atendio)
-                .input('observaciones', sql.VarChar, observaciones)
-                .input('documento', sql.Int, documento)
-                .input('enlace_documento', sql.VarChar, enlace_documento)
-                .input('usuario_registro', sql.Int, usuario_registro)
-                .input('modulo_registro', sql.Int, modulo_registro)
-                .input('estado_registro', sql.Int, estado_registro)
-                .query(`UPDATE atencion_consultas SET
+            const requestUpdate = transaction.request();
+            requestUpdate.input('id_registro', sql.Int, id_registro);
+
+            for (const [campo, valor] of Object.entries(nuevosDatos)) {
+            if (intFields.includes(campo) || campo === "documento") {
+                requestUpdate.input(campo, sql.Int, valor);
+            } else {
+                requestUpdate.input(campo, sql.VarChar, valor ?? "");
+            }
+            }
+
+            await requestUpdate.query(`UPDATE atencion_consultas SET
                         distrito_electoral = @distrito_electoral,
                         numero_reporte = @numero_reporte,
                         fecha_periodo = @fecha_periodo,
@@ -511,11 +475,28 @@ router.get("/getAtencion", Midleware.verifyToken, async(req, res)=>{
                 where ac.distrito_electoral = @distrito_electoral;
             `);
 
-        if (result.recordset.length > 0) {
-            return res.status(200).json({
-                getAtencion: result.recordset
-            });
-        } else {
+      if (result.recordset.length > 0) {
+        const data = result.recordset.map(item => {
+          let nombreUbicacion = null;
+          let nombreUbicacionLimpio = null;
+
+          if (item.enlace_documento) {
+            nombreUbicacion = path.basename(item.enlace_documento);
+            const guionIndex = nombreUbicacion.indexOf("-");
+            nombreUbicacionLimpio = guionIndex > -1
+              ? nombreUbicacion.substring(guionIndex + 1)
+              : nombreUbicacion;
+          }
+
+          return {
+            ...item,
+            enlace_documento: nombreUbicacion,
+            nombre_archivo: nombreUbicacionLimpio
+          };
+        });
+
+        return res.status(200).json({ getAtencion: data });
+      } else {
             return res.status(404).json({ message: "No se encontraron datos" });
         }
 

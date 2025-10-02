@@ -70,6 +70,22 @@ export class ReporteConsultas implements OnInit {
     }
   }
 
+    descargar2(item: any): void {
+    this.miServicio.descargarOtrosNorma(item.enlace_documento, this.tokenSesion).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        a.download =item.nombre_archivo;
+
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
+
   getReporte(){
     if(this.selectedIds.length === 0) {
       this.descargarReporteAtencion.descargarReporteAtencionAll(this.area_adscripcion, this.tokenSesion).subscribe((blob: Blob) => {
@@ -94,7 +110,8 @@ export class ReporteConsultas implements OnInit {
     private router: Router, 
     private reporteService: Reportes, 
     private descargarReporteAtencion: reporteService,
-    private service: Auth
+    private service: Auth,
+    private miServicio: Reportes
   ) {}
   
   logout() {

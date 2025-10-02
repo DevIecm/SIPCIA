@@ -377,27 +377,41 @@ router.get("/getAfluencia", Midleware.verifyToken, async (req, res) => {
               join demarcacion_territorial dt on ra.demarcacion_territorial = dt.id
               where ra.distrito_electoral = @distrito_electoral;`);
 
-    if (result.recordset.length > 0) {
-      // 👉 Aquí se limpian los nombres de archivo
-      const data = result.recordset.map(item => {
-        const nombreArchivo = item.enlace_ubicacion
-          ? path.basename(item.enlace_ubicacion)
-          : null;
+      if (result.recordset.length > 0) {
+        const data = result.recordset.map(item => {
+          let nombreUbicacion = null;
+          let nombreUbicacionLimpio = null;
 
-        const guionIndex = nombreArchivo?.indexOf("-");
-        const nombreLimpio = guionIndex > -1
-          ? nombreArchivo.substring(guionIndex + 1)
-          : nombreArchivo;
+          if (item.enlace_ubicacion) {
+            nombreUbicacion = path.basename(item.enlace_ubicacion);
+            const guionIndex = nombreUbicacion.indexOf("-");
+            nombreUbicacionLimpio = guionIndex > -1
+              ? nombreUbicacion.substring(guionIndex + 1)
+              : nombreUbicacion;
+          }
 
-        return {
-          ...item,
-          enlace_ubicacion: nombreArchivo,
-          nombre_archivo: nombreLimpio
-        };
-      });
+          let nombreFoto = null;
+          let nombreFotoLimpio = null;
 
-      return res.status(200).json({ getAfluencia: data });
-    } else {
+          if (item.enlace_foto) {
+            nombreFoto = path.basename(item.enlace_foto);
+            const guionIndexFoto = nombreFoto.indexOf("-");
+            nombreFotoLimpio = guionIndexFoto > -1
+              ? nombreFoto.substring(guionIndexFoto + 1)
+              : nombreFoto;
+          }
+
+          return {
+            ...item,
+            enlace_ubicacion: nombreUbicacion,
+            nombre_archivo: nombreUbicacionLimpio,
+            enlace_foto: nombreFoto,
+            nombre_foto: nombreFotoLimpio
+          };
+        });
+
+        return res.status(200).json({ getAfluencia: data });
+      } else {
       return res.status(404).json({ message: "No se encontraron datos" });
     }
   } catch (error) {

@@ -21,8 +21,6 @@ const storage = multer.diskStorage({
     if (file.fieldname === "fotografia") {
       uploadPath = path.join(__dirname, "../uploads/fotos");
     } else if (file.fieldname === "kmlFile") {
-      uploadPath = path.join(__dirname, "../uploads/kml");
-    } else if (file.fieldname === "zipFile") {
       uploadPath = path.join(__dirname, "../uploads/zip");
     } else {
       return cb(new Error("Campo no permitido"), null);
@@ -447,11 +445,28 @@ router.get("/getInstituciones", Midleware.verifyToken, async(req, res)=>{
                 join comunidad c on ri.comunidad = c.id
                 where ri.distrito_electoral = @distrito_electoral;`);
 
-        if (result.recordset.length > 0) {
-            return res.status(200).json({
-                getInstituciones: result.recordset
-            });
-        } else {
+ if (result.recordset.length > 0) {
+        const data = result.recordset.map(item => {
+          let nombreUbicacion = null;
+          let nombreUbicacionLimpio = null;
+
+          if (item.cv_enlace) {
+            nombreUbicacion = path.basename(item.cv_enlace);
+            const guionIndex = nombreUbicacion.indexOf("-");
+            nombreUbicacionLimpio = guionIndex > -1
+              ? nombreUbicacion.substring(guionIndex + 1)
+              : nombreUbicacion;
+          }
+
+          return {
+            ...item,
+            cv_enlace: nombreUbicacion,
+            nombre_archivo: nombreUbicacionLimpio
+          };
+        });
+
+        return res.status(200).json({ getInstituciones: data });
+      } else {
             return res.status(404).json({ message: "No se encontraron datos" });
         }
 
