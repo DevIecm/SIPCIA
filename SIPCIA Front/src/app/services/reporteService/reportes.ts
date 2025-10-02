@@ -11,14 +11,11 @@ export class Reportes {
   private apiUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) { }
-
-
   
   getRegisterData(tipo_comunidad: number, id_distrito: number, id_demarcacion: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
 
     const params = new HttpParams()
       .set('tipo_comunidad', tipo_comunidad)
@@ -34,7 +31,6 @@ export class Reportes {
       Authorization: `Bearer ${token}`
     });
 
-
     const params = new HttpParams()
       .set('id_distrito', id_distrito)
       
@@ -47,14 +43,12 @@ export class Reportes {
       Authorization: `Bearer ${token}`
     });
 
-
     const params = new HttpParams()
       .set('id_distrito', id_distrito)
       
     return this.http.get(this.apiUrl + 'reportes/reporteInstanciasAfro', {headers, params})
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
-
   
   insertaRegistro(data: any, token: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -74,18 +68,17 @@ export class Reportes {
   };
 
   nuinsertaRegistro(data: FormData, token: string): Observable<any> {
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
 
-  return this.http.post(this.apiUrl + 'afluencia/altaAfluencia', data, { headers })
-    .pipe(
-      catchError((error: HttpErrorResponse) => {
-        return throwError(() => error);
-      })
-    );
+    return this.http.post(this.apiUrl + 'afluencia/altaAfluencia', data, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
   }
-
 
   updateRegistro(data: any, token: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -104,7 +97,7 @@ export class Reportes {
       );
   };
 
-    nuupdateRegistro(data: FormData, token: string): Observable<any> {
+  nuupdateRegistro(data: FormData, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -117,32 +110,31 @@ export class Reportes {
       );
   };
 
-  //descarga de documentos
   descargarDocumento(nombreFisico: string, token: string): Observable<Blob> {
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
 
-  return this.http.get(`${this.apiUrl}descargaDoc/download/${nombreFisico}`, {
-    headers,
-    responseType: 'blob'
-  }).pipe(
-    catchError((error: HttpErrorResponse) => throwError(() => error))
-  );
-}
-
-subirDocumentoNormativo(formData: FormData, token: string): Observable<any> {
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  return this.http.post(`${this.apiUrl}cargaNormativo/subirDocumentoNormativo`, formData, { headers })
-    .pipe(
+    return this.http.get(`${this.apiUrl}descargaDoc/download/${nombreFisico}`, {
+      headers,
+      responseType: 'blob'
+    }).pipe(
       catchError((error: HttpErrorResponse) => throwError(() => error))
     );
-}
+  }
 
-getOtrosDocumentos(distrito_electoral:number, tipo_comunidad:number, token: string): Observable<any> {
+  subirDocumentoNormativo(formData: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post(`${this.apiUrl}cargaNormativo/subirDocumentoNormativo`, formData, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => throwError(() => error))
+      );
+  }
+
+  getOtrosDocumentos(distrito_electoral:number, tipo_comunidad:number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -156,47 +148,40 @@ getOtrosDocumentos(distrito_electoral:number, tipo_comunidad:number, token: stri
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-
-  //descarga de documentos normativos
   descargarDocNorma(nombreFisico: string, token: string): Observable<Blob> {
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
 
-  return this.http.get(`${this.apiUrl}descargaDoc/downloadNorma/${nombreFisico}`, {
-    headers,
-    responseType: 'blob'
-  }).pipe(
-    catchError((error: HttpErrorResponse) => throwError(() => error))
-  );
-}
+    return this.http.get(`${this.apiUrl}descargaDoc/downloadNorma/${nombreFisico}`, {
+      headers,
+      responseType: 'blob'
+    }).pipe(
+      catchError((error: HttpErrorResponse) => throwError(() => error))
+    );
+  }
 
-  //descarga de otros documentos normativos -zip
-descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+  descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
 
-  const url = this.apiUrl + 'descargaDoc/downloadOtrosNorma/' + encodeURIComponent(nombreFisico);
+    const url = this.apiUrl + 'descargaDoc/downloadOtrosNorma/' + encodeURIComponent(nombreFisico);
 
-  return this.http.get(url, {
-    headers,
-    responseType: 'blob'
-  }).pipe(
-    catchError((error: HttpErrorResponse) => {
-      return throwError(() => error);
-    })
-  );
-}
-
-
-  // consulta encabezado
+    return this.http.get(url, {
+      headers,
+      responseType: 'blob'
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error);
+      })
+    );
+  }
 
   getCabezera(id_distrito: number, demarcacion: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
 
     const params = new HttpParams()
       .set('id_distrito', id_distrito)
@@ -206,13 +191,10 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-
-  ////
   getRegisterDataTable(area: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
 
     const params = new HttpParams()
       .set('distrito_electoral', area)
@@ -233,8 +215,6 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-  //propuesta comunitaria
-
   insertaRegistroComunitaria(data: any, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -251,7 +231,6 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
         })
       );
   };
-
   
   nuinsertaRegistroComunitaria(data: FormData, token: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -301,7 +280,6 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
       Authorization: `Bearer ${token}`
     });
 
-
     const params = new HttpParams()
       .set('distrito_electoral', area)
       
@@ -321,14 +299,10 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-  //Reporte consultas
-
   insertaRegistroConsultas(data: FormData, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
-
 
     return this.http.post(this.apiUrl + 'atencion/altaAtencion', data, { headers })
       .pipe(
@@ -343,7 +317,6 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
       Authorization: `Bearer ${token}`
     });
 
-
     return this.http.patch(this.apiUrl + 'atencion/updateAntencion', data, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
@@ -357,7 +330,6 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
       Authorization: `Bearer ${token}`
     });
 
-
     const params = new HttpParams()
       .set('distrito_electoral', area)
       
@@ -369,7 +341,6 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
 
     const params = new HttpParams()
       .set('distrito_electoral', area)
@@ -389,8 +360,6 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
     return this.http.get(this.apiUrl + 'atencion/getRegistroAtencion', {headers, params})
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
-
- //Reporte acompañamiento
 
   insertaRegistroAcompa(data: any, token: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -439,7 +408,7 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
       );
   };
 
-    nuupdateRegistroAcompa(data: FormData, token: string): Observable<any> {
+  nuupdateRegistroAcompa(data: FormData, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -456,7 +425,6 @@ descargarOtrosNorma(nombreFisico: string, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
 
     const params = new HttpParams()
       .set('distrito_electoral', area)

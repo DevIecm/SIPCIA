@@ -6,6 +6,7 @@ import * as data from '../../../..//app/components/labels/label.json';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Control } from '../../../services/modulo-two-services/controlServices/control';
 @Component({
   selector: 'app-centro-control',
   imports: [
@@ -35,11 +36,14 @@ export class CentroControl {
   area: string = '';
   id_usuario: number = 0; 
 
+  distritos: any = [];
+
   isClosed: boolean = true;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private serviceControl: Control
   ) {}  
 
 
@@ -83,9 +87,20 @@ export class CentroControl {
     this.area = sessionStorage.getItem('area')!;
     this.id_usuario = Number(sessionStorage.getItem('id_usuario')!);
 
+    this.cargaDistritos();
   }
 
-  
+  cargaDistritos() {
+    this.serviceControl.getAllDistritos(this.tokenSesion)
+      .subscribe({
+        next: (data) => {
+
+        }, error: (error) => {
+          Swal.fire("No se encontraron registros!")
+        }
+      });
+  }
+
   onValidateInfo() {
     if (this.formularioRegistro?.dirty){
       Swal.fire({

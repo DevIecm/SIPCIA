@@ -29,7 +29,7 @@ export class reporteService {
       );
   }
 
-    descargarReporteAfro(tipo_comunidad: number, distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteAfro(tipo_comunidad: number, distrito_electoral: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -46,7 +46,7 @@ export class reporteService {
       );
   }
 
-    descargarReporteInstancias(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteInstancias(distrito_electoral: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -77,7 +77,6 @@ export class reporteService {
         })
       );
   }
-
 
   descargarReporteAtencionAll(distrito_electoral: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({

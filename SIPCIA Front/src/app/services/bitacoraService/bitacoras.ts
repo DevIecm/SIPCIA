@@ -12,7 +12,7 @@ export class bitacoras {
 
   constructor(private http: HttpClient) { }
 
-    getBitacoraComunidad(id_registro: number, token: string): Observable<any> {
+  getBitacoraComunidad(id_registro: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -24,8 +24,7 @@ export class bitacoras {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-
-     getBitacoraAfluencia(id_registro: number, token: string): Observable<any> {
+  getBitacoraAfluencia(id_registro: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -37,8 +36,7 @@ export class bitacoras {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   }
 
-  
-     getbitacoraLugares(id_registro: number, token: string): Observable<any> {
+  getbitacoraLugares(id_registro: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -50,7 +48,7 @@ export class bitacoras {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   }
 
-    getbitacoraInstituciones(id_registro: number, token: string): Observable<any> {
+  getbitacoraInstituciones(id_registro: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });

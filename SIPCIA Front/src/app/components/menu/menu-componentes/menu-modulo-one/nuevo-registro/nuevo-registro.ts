@@ -518,7 +518,7 @@ export class NuevoRegistro implements OnInit{
       this.formularioRegistro.get('uterritorial')?.enable();
       this.formularioRegistro.get('otro')?.enable();
     }
-    
+    this.fileUploaded = false;
     this.liberaForm = false;
   };
 }
