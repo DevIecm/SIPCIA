@@ -474,8 +474,7 @@ export class NuevoRegistro implements OnInit{
   
   resetData() {
     this.router.navigate(['nregistro']);
-    // this.formularioRegistro?.reset();
-
+    
     if (this.formularioRegistro) {
       this.formularioRegistro.patchValue({
         nombre_completo: '',

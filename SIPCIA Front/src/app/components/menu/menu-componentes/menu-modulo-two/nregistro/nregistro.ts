@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Navbar } from '../../../../navbar/navbar';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
 import * as data from '../../../../labels/label.json';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { Catalogos } from '../../../../../services/catService/catalogos';
+import { FormularioRegistroa } from '../../formularios-modulos/formulario-registroa/formulario-registroa';
+import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
-import { Register } from '../../../../../services/registerService/register';
+import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
 
 @Component({
   selector: 'app-nregistro',
@@ -17,357 +17,106 @@ import { Register } from '../../../../../services/registerService/register';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    FormularioRegistroa
   ],
   providers: [DatePipe],
   templateUrl: './nregistro.html',
   styleUrl: './nregistro.css'
 })
-export class Nregistro implements OnInit{
+export class Nregistro implements OnInit {
 
   nombreUser: string = '';
   cargoUser: string = '';
-  currentTime: string= '';
-  today: string = '';
-
-  data: any = data;
-  formularioRegistro: FormGroup | undefined;
-  seleccionado: any;
-  myDate: string | number | Date | undefined;
   tokenSesion: string = '';
   position: string = '';
+  searchTerm: string = '';
+  sortColumn: string = '';
 
-  catalogoComunidad: any = [];
-  catalogoPueblos: any = [];
-  catalogoPueblor: any = [];
-  catalogoBarrios: any = [];
-  catalogoUnidadTerritorial: any = [];
-  catalogoDemarcacion: any = [];
+  sortDirection: 'asc' | 'desc' = 'asc';
 
-  showIndigenas: boolean = false;
-  showAfromexicanos: boolean = false;
-  liberaForm: boolean = false;
+  dataTable: any = [];
+  allDatable: any[] = [];
 
-  opcionComunidad: any = null;
-  opcionPuebloOriginario: any = null;
-  opcionPueblo: any = null;
-  opcionBarrio: any = null;
-  opcionUnidadTerritorial: any = null;
-  opcionDemarcacion: any = null;
-
-  originalFormData: any = {};
-  demarcacion: number = 0;
-  distrito: number = 0;
+  area_adscripcion: number = 0;
   tipo_usuario: number = 0;
-  area: string = '';
-  id_usuario: number = 0;  
 
-  constructor(
-    private service: Auth, 
-    private router: Router, 
-    private catalogos: Catalogos, 
-    private formBuilder: FormBuilder, 
-    private datePipe: DatePipe,
-    private serviceRegister: Register
-  ) {}  
+  data: any = data;
+  idRegistroSeleccionado: number | undefined;
+  showModal = false;
+
+  isRegistroC: boolean = false;
+
 
   ngOnInit(): void {
-    this.formularioRegistro = this.formBuilder.group({
-      nombre_completo: ['', Validators.required],
-      seccion_electoral: ['', Validators.required],
-      demarcacion: [''],
-      duninominal: [{ value: '', disabled: true }],
-      scomunidad: [''],
-      ncomunidad: ['', Validators.required],
-
-      ooriginario: [''],
-      pueblo: [''],
-      barrio: [''],
-      uterritorial: [''],
-      comunidad: [''],
-      otro: [''],
-
-      pueblor: [''],
-      comunidadr: [''],
-      organizacion: [''],
-      prelevante: [''],
-      otror: [''],
-
-      ninstancia: ['', Validators.required],
-      cinstancia: ['', Validators.required],
-      domicilio: ['', Validators.required],
-      tfijo: ['', [Validators.pattern('^[0-9]+$')]],
-      tcelular: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      docs: [{ value: '', disabled: true }],
-      coficial: ['', [Validators.email]],
-      cpersonal: ['', [Validators.required, Validators.email]],
-    });
-
-    this.currentTime = this.datePipe.transform(new Date(), 'HH:mm:ss') + ' hrs.';
-    this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
+    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
     this.nombreUser = sessionStorage.getItem('nameUsuario')!;
-    this.tokenSesion = sessionStorage.getItem('key')!;
     this.position = sessionStorage.getItem('dir')!;
-    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
-    this.area = sessionStorage.getItem('area')!;
-    this.id_usuario = Number(sessionStorage.getItem('id_usuario')!);
+    this.tokenSesion = sessionStorage.getItem('key')!;
+    this.area_adscripcion = Number(sessionStorage.getItem('area'));
 
-    this.originalFormData = this.formularioRegistro.getRawValue();
-    this.catalogo_comunidad();
-    this.catalogo_demarcacion();
-    this.formularioRegistro?.get('duninominal')?.setValue(this.area);
+    this.getRegister();
   }
 
-  onChangeComunidad() {
-    if(this.opcionComunidad == 1) {
-      this.showIndigenas = true;
-      this.showAfromexicanos = false;
-
-      this.catalogo_pueblor();
-      this.catalogo_pueblos();
-      this.catalogo_barrios();
-      this.catalogo_unidad_territorial();
-
-      if (this.formularioRegistro) {
-        this.formularioRegistro.get('pueblor')?.enable();
-        this.formularioRegistro.get('comunidadr')?.enable();
-        this.formularioRegistro.get('organizacion')?.enable();
-        this.formularioRegistro.get('otror')?.enable();
-      }
-
-      if (this.formularioRegistro) {
-        this.formularioRegistro.patchValue({
-          pueblor: '',
-          comunidadr: '',
-          comunidad: '',
-          organizacion: '',
-          prelevante: '',
-          otror: ''
-        });
-      };
-
-
-    } else if(this.opcionComunidad == 2) {
-      this.showAfromexicanos = true;
-      this.showIndigenas = false;
-
-      if (this.formularioRegistro) {
-        this.formularioRegistro.patchValue({
-          ooriginario: '',
-          pueblo: '',
-          barrio: '',
-          uterritorial: '',
-          comunidad: '',
-          otro: '',
-          prelevante: ''
-        });
-      };
-
-      if(this.formularioRegistro) {
-        this.formularioRegistro.get('ooriginario')?.enable();
-        this.formularioRegistro.get('pueblo')?.enable();
-        this.formularioRegistro.get('barrio')?.enable();
-        this.formularioRegistro.get('uterritorial')?.enable();
-        this.formularioRegistro.get('otro')?.enable();
-      }
-    }
+    goToBitacora(id: number, tipo: string) {
+    this.router.navigate(['/bitacora', id, tipo]);
   }
-
-  onChangePuebloOriginario() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('pueblo')?.disable();
-      this.formularioRegistro.get('barrio')?.disable();
-      this.formularioRegistro.get('uterritorial')?.disable();
-      this.formularioRegistro.get('otro')?.disable();
-    }
-  }
-
-  onChangePueblo() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('ooriginario')?.disable();
-      this.formularioRegistro.get('barrio')?.disable();
-      this.formularioRegistro.get('uterritorial')?.disable();
-      this.formularioRegistro.get('otro')?.disable();
-    }
-  }
-
-  onChangeBarrio() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('ooriginario')?.disable();
-      this.formularioRegistro.get('pueblo')?.disable();
-      this.formularioRegistro.get('uterritorial')?.disable();
-      this.formularioRegistro.get('otro')?.disable();
-    }
-  }
-
-  onChangeUnidadTerritorial() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('ooriginario')?.disable();
-      this.formularioRegistro.get('pueblo')?.disable();
-      this.formularioRegistro.get('barrio')?.disable();
-      this.formularioRegistro.get('otro')?.disable();
-    }
-  }
-
-  onChangeOtro() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('ooriginario')?.disable();
-      this.formularioRegistro.get('pueblo')?.disable();
-      this.formularioRegistro.get('barrio')?.disable();
-      this.formularioRegistro.get('uterritorial')?.disable();
-    }
-  }
-
-  onChangePuebloT() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('pueblor')?.disable();
-      this.formularioRegistro.get('comunidadr')?.disable();
-      this.formularioRegistro.get('organizacion')?.disable();
-      this.formularioRegistro.get('otror')?.disable();
-    }
-  }
-
-  onChangeComunidadT() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('pueblor')?.disable();
-      this.formularioRegistro.get('comunidadr')?.disable();
-      this.formularioRegistro.get('organizacion')?.disable();
-      this.formularioRegistro.get('otror')?.disable();
-    }
-  }
-
-  onChangeOrganizacionT() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('pueblor')?.disable();
-      this.formularioRegistro.get('comunidadr')?.disable();
-      this.formularioRegistro.get('organizacion')?.disable();
-      this.formularioRegistro.get('otror')?.disable();
-    }
-  }
-
-  onChangeOtroT() {
-    if (this.formularioRegistro) {
-      this.formularioRegistro.get('pueblor')?.disable();
-      this.formularioRegistro.get('comunidadr')?.disable();
-      this.formularioRegistro.get('organizacion')?.disable();
-    }
-  }
-
-  catalogo_unidad_territorial() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_unidad_territorial", this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.cat_unidad_territorial.length > 0) {
-          this.catalogoUnidadTerritorial = data.cat_unidad_territorial;
-        }
-      }, error: (err) => {
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
-        }
-      }
-    });
-  };
-
-  catalogo_demarcacion() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.cat_demarcacion_territorial.length > 0) {
-          this.catalogoDemarcacion = data.cat_demarcacion_territorial;
-        }
-      }, error: (err) => {
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
-        }
-      }
-    });
-  };
-
-  catalogo_pueblos() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos", this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.cat_pueblos.length > 0) {
-          this.catalogoPueblos = data.cat_pueblos;
-        }
-      }, error: (err) => {
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
-        }
-      }
-    });
-  };
-
-  catalogo_pueblor() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos_originarios", this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.cat_pueblos_originarios.length > 0) {
-          this.catalogoPueblor = data.cat_pueblos_originarios;
-        }
-      }, error: (err) => {
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
-        }
-      }
-    });
-  };
-
-  catalogo_barrios() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_barrios", this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.cat_barrios.length > 0) {
-          this.catalogoBarrios = data.cat_barrios;
-        }
-      }, error: (err) => {
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
-        }
-      }
-    });
-  };
-
-  catalogo_comunidad() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_comunidad", this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.cat_comunidad.length > 0) {
-          this.catalogoComunidad = data.cat_comunidad;
-        }
-      }, error: (err) => {
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
-        }
-      }
-    });
-
-  };
-
-  logout() {
-    this.router.navigate(['']);
-  }
-
-  onValidateInfo() {
-    if (this.formularioRegistro?.dirty){
-      Swal.fire({
-        title: "Seguro que desea salir?",
-        icon: "warning",
-        confirmButtonText: "Aceptar",
-        cancelButtonText: "Cancelar",
-        showCancelButton: true,
-        confirmButtonColor: "#FBB03B",
-        cancelButtonColor: "#9D75CA",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['/menutwo']);
-        }
-      });
-    } else {
-      this.router.navigate(['/menutwo']);
-    }
-  };
   
-  liberaFormulario() {
-    this.liberaForm = true;
+   getReporte(){
+    this.descargarReporteInstitucion.descargarReporteInstitucion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
   }
+ 
+  search(): void {
+    const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
 
-  saveForm() {
+    if (rawFilter === '') {
+      this.dataTable = [...this.allDatable];
+      return;
+    }
 
+    this.dataTable = this.allDatable.filter((val) => {
+      const id_registro = (val.id_registro ?? '').toString().toLowerCase().trim();
+      const nombre_completo = (val.nombre_completo ?? '').toString().toLowerCase().trim();
+      const pueblo_originario = (val.pueblo_originario ?? '').toString().toLowerCase().trim();
+      const pueblo = (val.pueblo ?? '').toString().toLowerCase().trim();
+      const barrio = (val.barrio ?? '').toString().toLowerCase().trim();
+      const ut = (val.ut ?? '').toString().toLowerCase().trim();
+      const otro  = (val.otro ?? '').toString().toLowerCase().trim();
+      const comunidad = (val.comunidad ?? '').toString().toLowerCase().trim();
+      const interes_profesional = (val.interes_profesional ?? '').toString().toLowerCase().trim();
+      const nombre_institucion = (val.nombre_institucion ?? '').toString().toLowerCase().trim();
+      const npueblo = (val.npueblo ?? '').toString().toLowerCase().trim();
+               
+      return (
+        id_registro.includes(rawFilter) ||
+        nombre_completo.includes(rawFilter) ||
+        pueblo_originario.includes(rawFilter) ||
+        pueblo.includes(rawFilter) ||
+        barrio.includes(rawFilter) ||
+        ut.includes(rawFilter) ||
+        otro.includes(rawFilter) ||
+        comunidad.includes(rawFilter) ||
+        interes_profesional.includes(rawFilter) ||
+        nombre_institucion.includes(rawFilter) ||
+        npueblo.includes(rawFilter)
+      );
+    });
+  };
+
+  constructor(
+    private router: Router,
+    private reporteService: Reportes,
+    private descargarReporteInstitucion: reporteService,
+    private miServicio: Reportes,
+    private service: Auth) {}
+
+  onSubmit() {
     Swal.fire({
       title: "¿Está seguro que desea registrar la información capturada?",
       icon: "warning",
@@ -378,117 +127,99 @@ export class Nregistro implements OnInit{
       cancelButtonText: "Cancelar"
     }).then((result) => {
       if (result.isConfirmed) {
-          
-        if (!this.formularioRegistro) {
-          return;
-        }
-
-        const datosFormularioCompletos = {
-          nombre_completo: this.formularioRegistro.get('nombre_completo')?.value || null,
-          seccion_electoral: Number(this.formularioRegistro.get('seccion_electoral')?.value || 0),
-          demarcacion: this.opcionDemarcacion || null,
-          distrito_electoral: Number(this.area),
-          comunidad: Number(this.opcionComunidad) || null,
-          nombre_comunidad: this.formularioRegistro.get('ncomunidad')?.value || null,
-          pueblo_originario: this.opcionPuebloOriginario || null,
-          pueblo_pbl: this.opcionPueblo || null,
-          barrio_pbl: this.opcionBarrio || null,
-          unidad_territorial_pbl: this.opcionUnidadTerritorial || null,
-          comunidad_pbl: this.formularioRegistro.get('comunidad')?.value || null,
-          otro_pbl: this.formularioRegistro.get('otro')?.value || null,
-          pueblo_afro: this.formularioRegistro.get('pueblor')?.value || null,
-          comunidad_afro: this.formularioRegistro.get('comunidadr')?.value || null,
-          organizacion_afro: this.formularioRegistro.get('organizacion')?.value || null,
-          persona_relevante_afro: this.formularioRegistro.get('prelevante')?.value || null,
-          otro_afro: this.formularioRegistro.get('otror')?.value || null,
-          nombre_instancia: this.formularioRegistro.get('ninstancia')?.value || null,
-          cargo_instancia: this.formularioRegistro.get('cinstancia')?.value || null,
-          domicilio: this.formularioRegistro.get('domicilio')?.value || null,
-          telefono_particular: this.formularioRegistro.get('tfijo')?.value || null,
-          telefono_celular: this.formularioRegistro.get('tcelular')?.value || null,
-          correo_electronico_oficial: this.formularioRegistro.get('coficial')?.value || null,
-          correo_electronico_personal: this.formularioRegistro.get('cpersonal')?.value || null,
-          documentos: 0,
-          enlace_documentos: "https://drive.google.com/documento",
-          usuario_registro: this.id_usuario,
-          modulo_registro: this.tipo_usuario,
-          estado_registro: 1,
-          tipo_usuario: this.tipo_usuario
-        };
-
-        this.serviceRegister.insertaRegistro(datosFormularioCompletos, this.tokenSesion).subscribe({
-          next: (data) => {
-            if(data.code === 200) {
-              Swal.fire({
-                title: "Se le ha asignado el folio único.",
-                text: data.folio,
-                icon: "success",
-                confirmButtonText: "Aceptar",
-                confirmButtonColor: "#FBB03B",
-              });
-              this.resetData();
-            }
-          }, error: (err) => {
-            
-            if(err.error.code === 160) {
-              this.service.cerrarSesionByToken();
-            }
-
-            if(err.error.code === 100) {
-              Swal.fire("Error al registrar");
-            }
-          }
+        Swal.fire({
+          title: "Se le ha asignado el folio único.",
+          text: "5684684641516516-ASSADAS",
+          icon: "success",
+          confirmButtonText: "Aceptar" 
         });
       }
     });
   };
-  
-  resetData() {
-    this.router.navigate(['nregistro']);
-    // this.formularioRegistro?.reset();
 
-    if (this.formularioRegistro) {
-      this.formularioRegistro.patchValue({
-        nombre_completo: '',
-        seccion_electoral: '',
-        demarcacion: '',
-        scomunidad: '',
-        ncomunidad: '',
+   descargar2(item: any): void {
+    this.miServicio.descargarOtrosNorma(item.cv_enlace, this.tokenSesion).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
 
-        ooriginario: '',
-        pueblo: '',
-        barrio: '',
-        uterritorial: '',
-        comunidad: '',
-        otro: '',
+        a.download =item.nombre_archivo;
 
-        pueblor: '',
-        comunidadr: '',
-        organizacion: '',
-        prelevante: '',
-        otror: '',
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
 
-        ninstancia: '',
-        cinstancia: '',
-        domicilio: '',
-        tfijo: '',
-        tcelular: '',
-        docs: '',
-        coficial: '',
-        cpersonal: '',
-      });
+  getRegister() {
+    this.reporteService.getRegisterDataTableAcompa(this.area_adscripcion, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.getInstituciones.length > 0) {
+          this.dataTable = data.getInstituciones;
+          this.allDatable = data.getInstituciones;
+        } else {
+          Swal.fire("No se encontraron registros");
+        }        
+      },
+      error: (err) => {
 
-      this.formularioRegistro.get('pueblor')?.enable();
-      this.formularioRegistro.get('comunidadr')?.enable();
-      this.formularioRegistro.get('organizacion')?.enable();
-      this.formularioRegistro.get('otror')?.enable();
-      this.formularioRegistro.get('ooriginario')?.enable();
-      this.formularioRegistro.get('pueblo')?.enable();
-      this.formularioRegistro.get('barrio')?.enable();
-      this.formularioRegistro.get('uterritorial')?.enable();
-      this.formularioRegistro.get('otro')?.enable();
-    }
-    
-    this.liberaForm = false;
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros")
+        }
+      }
+    });
+  }
+
+  onValidateInfo() {
+    this.router.navigate(['/menutwo']);
   };
+
+  logout() {
+    this.router.navigate(['']);
+  }
+
+  openModal(id: number | undefined) {
+    this.showModal = true;
+    this.idRegistroSeleccionado = id;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.getRegister();
+  }
+
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.dataTable.sort((a: any, b: any) => {
+      const valueA = a[column] ?? '';
+      const valueB = b[column] ?? '';
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return this.sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      } else {
+        return this.sortDirection === 'asc'
+          ? (valueA > valueB ? 1 : -1)
+          : (valueA < valueB ? 1 : -1);
+      }
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
+    return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+  }
 }

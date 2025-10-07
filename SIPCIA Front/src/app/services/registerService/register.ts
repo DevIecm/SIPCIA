@@ -30,11 +30,10 @@ export class Register {
       );
   };
 
-    nuinsertaRegistro(data: FormData, token: string): Observable<any> {
+  nuinsertaRegistro(data: FormData, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
 
     return this.http.post(this.apiUrl + 'registro/altaRegistro', data, { headers })
       .pipe(
@@ -65,7 +64,6 @@ export class Register {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
 
     const params = new HttpParams()
       .set('tipo_comunidad', tipo_comunidad)
