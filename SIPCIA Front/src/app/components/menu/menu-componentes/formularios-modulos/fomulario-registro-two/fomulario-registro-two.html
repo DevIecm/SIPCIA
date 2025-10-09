@@ -99,7 +99,6 @@
                         class="select-input form-select" 
                         aria-label="Default select example"
                         (change)="onChangeComunidad()"
-                        [(ngModel)]="opcionComunidad"
                       >
                         <option value="" disabled selected>Seleccione una opción</option>
                         @for (item of catalogoComunidad; track item) {
@@ -146,10 +145,9 @@
                         <div class="mb-3">
                           <label class="form-label">*Pueblo:</label>
                           <select 
-                            formControlName="pueblo" 
                             class="select-input form-select" 
                             aria-label="Default select example"
-                            [(ngModel)]="opcionPueblo"
+                            formControlName="pueblo"
                             (change)="onChangePueblo()"
                           >
                             <option value="" disabled selected>Seleccione una opción</option>

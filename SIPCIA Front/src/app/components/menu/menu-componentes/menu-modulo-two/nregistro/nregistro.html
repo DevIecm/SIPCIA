@@ -53,7 +53,7 @@
           type="button" 
           data-bs-toggle="modal" 
           data-bs-target="#miModal"
-          (click)="openModal(undefined, undefined)">Nuevo registro</button>
+          (click)="openModal(undefined)">Nuevo registro</button>
       </div>
       <div class="col-2 d-flex justify-content-end">
         <button class="btn button" (click)="getReporte()">Genera y Descarga de Reporte</button>
@@ -203,7 +203,7 @@
                 <button 
                   type="button" 
                   class="btn button-table"
-                  (click)="openModal(item.id_registro, idComunidad)"
+                  (click)="openModal(item.id_registro)"
                 >
                   <i class="bi bi-pencil-square"></i>
                 </button>
@@ -348,7 +348,7 @@
                 <button 
                   type="button" 
                   class="btn button-table"
-                  (click)="openModal(item.id_registro, idComunidad)"
+                  (click)="openModal(item.id_registro)"
                 >
                   <i class="bi bi-pencil-square"></i>
                 </button>

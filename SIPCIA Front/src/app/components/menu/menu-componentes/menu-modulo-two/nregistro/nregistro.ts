@@ -45,15 +45,14 @@ export class Nregistro implements OnInit {
 
   area_adscripcion: number = 0;
   tipo_usuario: number = 0;
-  
+  idComunidad: number = 0;
+
   data: any = data;
   idRegistroSeleccionado: number | undefined;
   idComunidadSeleccionado: number | undefined;
   
   showModal = false;
   isRegistroC: boolean = false;
-
-  idComunidad: number = 0;
 
 
   ngOnInit(): void {
@@ -72,11 +71,7 @@ export class Nregistro implements OnInit {
     this.catalogo_comunidad();
     this.getRegisterTwo(1)
     localStorage.setItem('comunidad', '1');
-
     this.idComunidad = Number(localStorage.getItem('comunidad'));
-
-    console.log(this.idComunidad)
-
   }
 
   goToBitacora(id: number, tipo: string) {
@@ -109,13 +104,16 @@ export class Nregistro implements OnInit {
  
   search(): void {
     const rawFilter = this.formularioRegistro?.get('searchTerm')?.value.trim().toLowerCase();
-
+console.log(rawFilter)
+console.log(this.allDatable)
 
     if (rawFilter === '') {
       this.dataTable = [...this.allDatable];
       return;
     }
 
+
+    console.log(this.allDatable)
     this.dataTable = this.allDatable.filter((val) => {
       const id_registro = (val.id_registro ?? '').toString().toLowerCase().trim();
       const nombre_completo = (val.nombre_completo ?? '').toString().toLowerCase().trim();
@@ -172,7 +170,7 @@ export class Nregistro implements OnInit {
   }
 
   getRegisterTwo(tipo_comunidad: number) {
-    this.registerService.getRegisterData(tipo_comunidad, 0, 2, this.tokenSesion).subscribe({
+    this.registerService.getRegisterData(tipo_comunidad, null,  2, this.tokenSesion).subscribe({
       next: (data) => {
         if(data.comunidades.length > 0) {
           this.dataTable = data.comunidades;
@@ -206,10 +204,11 @@ export class Nregistro implements OnInit {
     this.router.navigate(['']);
   }
 
-  openModal(id: number | undefined, idComuna: number | undefined) {
+  openModal(id: number | undefined) {
     this.showModal = true;
     this.idRegistroSeleccionado = id;
-    this.idComunidadSeleccionado = idComuna
+
+    this.idComunidadSeleccionado = this.idComunidad;
   }
 
   closeModal() {
@@ -248,6 +247,7 @@ export class Nregistro implements OnInit {
   cambiaComunidad(event: Event): void {
     const selectedId = this.formularioRegistro?.get('comunidad')?.value;
     localStorage.setItem('comunidad', selectedId);
+    this.idComunidad = selectedId;
     this.getRegisterTwo(selectedId);
   }
 }
