@@ -60,7 +60,7 @@ export class Register {
       );
   };
 
-  getRegisterData(tipo_comunidad: number, id_distrito: number | null, tipo_usuario: number, token: string): Observable<any> {
+  getRegisterData(tipo_comunidad: number , id_distrito: number | null, tipo_usuario: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
