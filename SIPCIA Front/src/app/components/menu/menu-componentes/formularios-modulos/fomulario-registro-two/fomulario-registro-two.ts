@@ -143,8 +143,8 @@ export class FomularioRegistroTwo implements OnInit{
       
       this.formularioRegistro.get('scomunidad')?.disable();
       this.hayCambios = true;
-
       this.getDataById();
+
     }
   }
 
@@ -290,12 +290,10 @@ export class FomularioRegistroTwo implements OnInit{
           };
         
           if(data.getRegistro[0].id_comunidad == 1){
+            
             this.showIndigenas = true;
             this.showAfromexicanos = false;
-
-            console.log(userDataIndigenas)
             this.formularioRegistro!.patchValue(userDataIndigenas);
-
             this.catalogo_comunidad();
             this.catalogo_barrios();
             this.catalogo_pueblor();
@@ -304,11 +302,13 @@ export class FomularioRegistroTwo implements OnInit{
             this.catalogo_demarcacion();
 
           } else {
+            
             this.showAfromexicanos = true;
             this.showIndigenas = false;
             this.formularioRegistro!.patchValue(userDataAfro);
-
             this.catalogo_demarcacion();
+            this.catalogo_comunidad();
+
           }
 
         }, error: (err) => {
@@ -408,7 +408,6 @@ export class FomularioRegistroTwo implements OnInit{
         }
       }
     });
-
   };
 
   resetData() {
@@ -438,36 +437,6 @@ export class FomularioRegistroTwo implements OnInit{
         }
 
         if(this.hayCambios){
-
-          // formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");
-          // formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
-          // formData.append("demarcacion", this.opcionDemarcacion);
-          // formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
-          // formData.append("comunidad", this.opcionComunidad);
-          // formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");          
-          // formData.append("pueblo_originario", this.opcionPuebloOriginario);
-          // formData.append("pueblo_pbl", this.opcionPueblo);
-          // formData.append("barrio_pbl", this.opcionBarrio);
-          // formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
-          // formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
-          // formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
-          // formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
-          // formData.append("comunidad_afro", this.formularioRegistro.get('comunidadr')?.value || "");
-          // formData.append("organizacion_afro", this.formularioRegistro.get('organizacion')?.value || "");
-          // formData.append("persona_relevante_afro", this.formularioRegistro.get('prelevante')?.value || "");
-          // formData.append("otro_afro", this.formularioRegistro.get('otror')?.value || "");
-          // formData.append("nombre_instancia", this.formularioRegistro.get('ninstancia')?.value || "");
-          // formData.append("cargo_instancia", this.formularioRegistro.get('cinstancia')?.value || "");
-          // formData.append("domicilio", this.formularioRegistro.get('domicilio')?.value || "");
-          // formData.append("telefono_particular", this.formularioRegistro.get('tfijo')?.value || "");
-          // formData.append("telefono_celular", this.formularioRegistro.get('tcelular')?.value || "");
-          // formData.append("correo_electronico_oficial", this.formularioRegistro.get('coficial')?.value || "");
-          // formData.append("correo_electronico_personal", this.formularioRegistro.get('cpersonal')?.value || "");
-          // formData.append("usuario_registro", this.id_usuario.toString());
-          // formData.append("modulo_registro", this.tipo_usuario.toString());
-          // formData.append("estado_registro", "1");
-          // formData.append("tipo_usuario", this.tipo_usuario.toString());
-          // formData.append("id_registro", this.idRegistro?.toString() ?? "")
 
           const datosFormularioCompletos = {
             nombre_completo: this.formularioRegistro.get('nombre_completo')?.value || null,
@@ -531,35 +500,6 @@ export class FomularioRegistroTwo implements OnInit{
             }
           });
         } else {
-
-          // formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");
-          // formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
-          // formData.append("demarcacion", this.opcionDemarcacion);
-          // formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
-          // formData.append("comunidad", this.opcionComunidad);
-          // formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");          
-          // formData.append("pueblo_originario", this.opcionPuebloOriginario);
-          // formData.append("pueblo_pbl", this.opcionPueblo);
-          // formData.append("barrio_pbl", this.opcionBarrio);
-          // formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
-          // formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
-          // formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
-          // formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
-          // formData.append("comunidad_afro", this.formularioRegistro.get('comunidadr')?.value || "");
-          // formData.append("organizacion_afro", this.formularioRegistro.get('organizacion')?.value || "");
-          // formData.append("persona_relevante_afro", this.formularioRegistro.get('prelevante')?.value || "");
-          // formData.append("otro_afro", this.formularioRegistro.get('otror')?.value || "");
-          // formData.append("nombre_instancia", this.formularioRegistro.get('ninstancia')?.value || "");
-          // formData.append("cargo_instancia", this.formularioRegistro.get('cinstancia')?.value || "");
-          // formData.append("domicilio", this.formularioRegistro.get('domicilio')?.value || "");
-          // formData.append("telefono_particular", this.formularioRegistro.get('tfijo')?.value || "");
-          // formData.append("telefono_celular", this.formularioRegistro.get('tcelular')?.value || "");
-          // formData.append("correo_electronico_oficial", this.formularioRegistro.get('coficial')?.value || "");
-          // formData.append("correo_electronico_personal", this.formularioRegistro.get('cpersonal')?.value || "");
-          // formData.append("usuario_registro", this.id_usuario.toString());
-          // formData.append("modulo_registro", this.tipo_usuario.toString());
-          // formData.append("estado_registro", "1");
-          // formData.append("tipo_usuario", this.tipo_usuario.toString());
 
           const datosFormularioCompletos = {
             id_registro: this.idRegistro,

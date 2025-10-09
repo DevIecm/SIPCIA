@@ -42,6 +42,7 @@ export class FormularioRegistro implements OnInit{
   nombreUser: string = '';
   cargoUser: string = '';
   position: string = '';
+  area: string = '';
   labelText: string = '';
 
   catalogoComunidad: any = [];
@@ -68,8 +69,7 @@ export class FormularioRegistro implements OnInit{
   distrito: number = 0;
   tipo_usuario: number = 0;
   id_usuario: number = 0;
-  area: string = '';
-  
+  modulo: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -127,6 +127,8 @@ export class FormularioRegistro implements OnInit{
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.formularioRegistro?.get('duninominal')?.setValue(this.area);
     this.id_usuario =  Number(sessionStorage.getItem('id_usuario')!);
+
+    this.modulo = Number(localStorage.getItem('modulo')!);
 
     //Modulo 2 
     
@@ -211,6 +213,14 @@ export class FormularioRegistro implements OnInit{
             this.showAfromexicanos = false;
             this.formularioRegistro!.patchValue(userDataIndigenas);
           } else if(this.moduloClicked === '1.3') {
+            this.showAfromexicanos = true;
+            this.showIndigenas = false;
+            this.formularioRegistro!.patchValue(userDataAfro);
+          } else if(this.moduloClicked === '2.2') {
+            this.showIndigenas = true;
+            this.showAfromexicanos = false;
+            this.formularioRegistro!.patchValue(userDataIndigenas);
+          } else if(this.moduloClicked === '2.3') {
             this.showAfromexicanos = true;
             this.showIndigenas = false;
             this.formularioRegistro!.patchValue(userDataAfro);
@@ -320,59 +330,6 @@ export class FormularioRegistro implements OnInit{
     this.onClose();
   };
 
-  resetFormulario() {
-    this.formularioRegistro?.patchValue({
-      scomunidad: this.infoUpdate.id_comunidad,
-
-      nombre_completo: this.infoUpdate.nombre_completo,
-      seccion_electoral: this.infoUpdate.seccion_electoral,
-      demarcacion: this.infoUpdate.id_demarcacion_territorial,
-      ncomunidad: this.infoUpdate.nombre_comunidad,
-
-      ooriginario: this.infoUpdate.id_pueblo_originario,
-      pueblo: this.infoUpdate.id_pueblo,
-      barrio: this.infoUpdate.id_barrio,
-      uterritorial: this.infoUpdate.id_ut,
-      comunidad: this.infoUpdate.comunidad_pbl,
-      otro: this.infoUpdate.otro_pbl,
-
-      pueblor: this.infoUpdate.pueblo_afro,
-      comunidadr: this.infoUpdate.comunidad_afro,
-      organizacion: this.infoUpdate.organizacion_afro,
-      prelevante: this.infoUpdate.persona_relevante_afro,
-      otror: this.infoUpdate.otro_afro,
-
-      ninstancia: this.infoUpdate.nombre_instancia,
-      cinstancia: this.infoUpdate.cargo_instancia,
-      domicilio: this.infoUpdate.domicilio,
-      tfijo: this.infoUpdate.telefono_particular,
-      tcelular: this.infoUpdate.telefono_celular,
-      coficial: this.infoUpdate.correo_electronico_oficial,
-      cpersonal: this.infoUpdate.correo_electronico_personal
-    });
-
-    if(this.formularioRegistro) {
-      this.formularioRegistro.get('ooriginario')?.enable();
-      this.formularioRegistro.get('pueblo')?.enable();
-      this.formularioRegistro.get('barrio')?.enable();
-      this.formularioRegistro.get('uterritorial')?.enable();
-      this.formularioRegistro.get('otro')?.enable();
-
-      this.formularioRegistro.get('pueblor')?.enable();
-      this.formularioRegistro.get('comunidadr')?.enable();
-      this.formularioRegistro.get('organizacion')?.enable();
-      this.formularioRegistro.get('otror')?.enable();    
-    }
-
-    if(this.moduloClicked === '1.2') {
-      this.showIndigenas = true;
-      this.showAfromexicanos = false;
-    } else if(this.moduloClicked === '1.3') {
-      this.showAfromexicanos = true;
-      this.showIndigenas = false;
-    }
-  };
-
   saveForm() {
     Swal.fire({
       title: "¿Está seguro que desea Editar la Instacia? Se sobrescribirán los datos actuales.",
@@ -416,9 +373,9 @@ export class FormularioRegistro implements OnInit{
           documentos: 0,
           enlace_documentos: "https://drive.google.com/documento",
           usuario_registro: this.id_usuario,
-          modulo_registro: this.tipo_usuario,
+          modulo_registro: this.modulo == 2 ? '1' : this.tipo_usuario,
           estado_registro: 2,
-          tipo_usuario: this.tipo_usuario,
+          tipo_usuario: this.modulo == 2 ? '1' : this.tipo_usuario,
           id_registro: this.idRegistro,
         };
 

@@ -119,7 +119,7 @@ export class DirectorioIndigenasTwo implements OnInit {
   };
 
   getRegister() {
-    this.serviceRegister.getRegisterData(1, this.area, 1, this.tokenSesion).subscribe({
+    this.serviceRegister.getRegisterData(1, null, 1, this.tokenSesion).subscribe({
       next: (data) => {
         if(data.comunidades.length > 0) {
           this.dataTable = data.comunidades;

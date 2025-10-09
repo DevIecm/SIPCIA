@@ -213,6 +213,7 @@ console.log(this.allDatable)
 
   closeModal() {
     this.showModal = false;
+    this.getRegisterTwo(this.idComunidad);
   }
 
   sortData(column: string) {
