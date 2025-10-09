@@ -128,6 +128,8 @@ export class FormularioRegistro implements OnInit{
     this.formularioRegistro?.get('duninominal')?.setValue(this.area);
     this.id_usuario =  Number(sessionStorage.getItem('id_usuario')!);
 
+    //Modulo 2 
+    
 
     if(this.moduloClicked === '1.2') {
       this.showAfromexicanos = false;
@@ -181,7 +183,6 @@ export class FormularioRegistro implements OnInit{
           };
 
           const userDataAfro = {
-
             folio: data.getRegistro[0].folio,
             nombre_completo: data.getRegistro[0].nombre_completo,
             seccion_electoral: data.getRegistro[0].seccion_electoral,
@@ -360,9 +361,9 @@ export class FormularioRegistro implements OnInit{
       this.formularioRegistro.get('pueblor')?.enable();
       this.formularioRegistro.get('comunidadr')?.enable();
       this.formularioRegistro.get('organizacion')?.enable();
-      this.formularioRegistro.get('otror')?.enable();
-      
+      this.formularioRegistro.get('otror')?.enable();    
     }
+
     if(this.moduloClicked === '1.2') {
       this.showIndigenas = true;
       this.showAfromexicanos = false;
@@ -370,8 +371,6 @@ export class FormularioRegistro implements OnInit{
       this.showAfromexicanos = true;
       this.showIndigenas = false;
     }
-
-    
   };
 
   saveForm() {
