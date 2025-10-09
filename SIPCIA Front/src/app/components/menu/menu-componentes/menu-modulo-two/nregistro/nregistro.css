@@ -145,3 +145,17 @@ i{
     display: flex;
     font-size: 14px;
 }
+
+.listComunidad{
+    text-align: center;
+    border-radius: 40px;
+    width: 244px;
+    height: 25px;
+    padding: 0px;
+    border: 1px solid black;
+}
+
+.labelComunidad {
+    font-weight: bold;
+    color: #f4f4f4;
+}

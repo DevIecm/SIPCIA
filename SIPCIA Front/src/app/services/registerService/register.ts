@@ -60,12 +60,13 @@ export class Register {
       );
   };
 
-  getRegisterData(tipo_comunidad: number, id_distrito:number, token: string): Observable<any> {
+  getRegisterData(tipo_comunidad: number, id_distrito: number, tipo_usuario: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
+      .set('tipo_usuario', tipo_usuario)
       .set('tipo_comunidad', tipo_comunidad)
       .set('id_distrito', id_distrito)
       
@@ -84,4 +85,16 @@ export class Register {
     return this.http.get(this.apiUrl + 'registro/getRegistro', {headers, params})
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
+
+  getSeccion(idSeccion: number, token: string) {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+      .set('idSeccion', idSeccion)
+
+    return this.http.get(this.apiUrl + 'catalogos/distritoElectoral', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  }
 }

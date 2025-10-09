@@ -59,18 +59,17 @@
 }
 
 .div-redondeado-right-home {
-    padding: 0%;
-    margin: 0px;
     padding: 26px;
-    width: 5px;
-    height: 1px;
-    color: #f4f4f4!important;
-    background-color: #BF90DD!important;
+    width: 568px;
+    color: #f4f4f4 !important;
+    background-color: #BF90DD !important;
     border-top-right-radius: 26px;
+    height: 1px;
     border-bottom-right-radius: 26px;
     display: flex;
-    justify-content: right;
     align-items: center;
+    justify-content: right;
+    gap: 10px;
     font-family: Arial, Helvetica, sans-serif;
 }
 

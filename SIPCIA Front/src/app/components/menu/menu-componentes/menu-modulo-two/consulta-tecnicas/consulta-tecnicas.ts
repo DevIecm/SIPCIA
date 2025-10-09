@@ -125,7 +125,7 @@ export class ConsultaTecnicas implements OnInit {
   }
 
   getRegister() {
-    this.serviceRegister.getRegisterData(2, this.area, this.tokenSesion).subscribe({
+    this.serviceRegister.getRegisterData(2, this.area, this.tipo_usuario, this.tokenSesion).subscribe({
       next: (data) => {
         if(data.comunidades.length > 0) {
           this.dataTable = data.comunidades;

@@ -54,60 +54,19 @@ export class MenuModuloTwo implements OnInit{
   goControl() {
     this.router.navigate(['ccontrol'])
   }
-
-  goToRegistro(){
-    this.router.navigate(['nregistro']);
-  }
-
-  goToDIndigenas(){
-    localStorage.setItem('moduloClicked', '1.2');
-    this.router.navigate(['dindigenas']);
-  }
-
-  goToDAfro(){
-    localStorage.setItem('moduloClicked', '1.3');
-    this.router.navigate(['dafroamericanas']);
-  }
-
-  goToRepresentativas(){
-    this.router.navigate(['representativas']);
-  }
-
-  goToRComunitarias(){
-    this.router.navigate(['rcomunitaria']);
-  }
-
-  goToPComunitaria(){
-    this.router.navigate(['pcomunitaria']);
-  }
-
-  goToRConsultas(){
-    this.router.navigate(['rconsultas']);
-  }
-
-  goToCAcompanamiento(){
-    this.router.navigate(['cacompanamiento']);
-  }
-
-  goToDNIndigenas(){
-    this.router.navigate(['dnindigenas']);
-  }
-
-  goToDNIAfro(){
-    this.router.navigate(['dnafroamericanas']);
-  }
-
-  //Modulo 2 
-
+  
   goToRegistroTwo() {
     this.router.navigate(['nregistrotwo']);
+    localStorage.setItem('moduloClicked', '2.1');
   }
   
   goToDIndigenasTwo() {
+    localStorage.setItem('moduloClicked', '2.2');
     this.router.navigate(['dirndigenastwo']);
   }
 
   goToDAfroTwo() {
+    localStorage.setItem('moduloClicked', '2.3');
     this.router.navigate(['dafroamericanastwo']);
   }
 
