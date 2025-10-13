@@ -70,6 +70,7 @@ export class FormularioRegistro implements OnInit{
   tipo_usuario: number = 0;
   id_usuario: number = 0;
   modulo: number = 0;
+  distritoElectoral: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -125,7 +126,6 @@ export class FormularioRegistro implements OnInit{
     this.area = sessionStorage.getItem('area')!;
 
     this.originalFormData = this.formularioRegistro.getRawValue();
-    this.formularioRegistro?.get('duninominal')?.setValue(this.area);
     this.id_usuario =  Number(sessionStorage.getItem('id_usuario')!);
 
     this.modulo = Number(localStorage.getItem('modulo')!);
@@ -144,12 +144,86 @@ export class FormularioRegistro implements OnInit{
     }
 
     this.getDataById();
-    this.catalogo_comunidad();
-    this.catalogo_demarcacion();
-    this.catalogo_barrios();
-    this.catalogo_pueblor();
-    this.catalogo_pueblos();
-    this.catalogo_unidad_territorial();
+  }
+
+    changeSeccion(){
+    this.getSeccion();
+  }
+
+  getSeccion(){
+    this.registerService.getSeccion(Number(this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
+      next: (data) => {
+
+        const distritos = data as { distrito_electoral: number }[];
+        this.distritoElectoral = distritos[0]?.distrito_electoral;
+        this.formularioRegistro?.get('duninominal')?.setValue(this.distritoElectoral);
+        this.catalogo_demarcacion();
+
+        if (this.formularioRegistro) {
+          this.formularioRegistro.get('scomunidad')?.enable();
+        }
+
+      }, error: (err) => {
+        if(err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+      }
+    });
+  }
+
+  onChangeComunidad() {
+    if(Number(this.formularioRegistro?.get('scomunidad')?.value) == 1) {
+      this.showIndigenas = true;
+      this.showAfromexicanos = false;
+
+      this.catalogo_pueblor();
+      this.catalogo_pueblos();
+      this.catalogo_barrios();
+      this.catalogo_unidad_territorial();
+
+      if (this.formularioRegistro) {
+        this.formularioRegistro.get('pueblor')?.enable();
+        this.formularioRegistro.get('comunidadr')?.enable();
+        this.formularioRegistro.get('organizacion')?.enable();
+        this.formularioRegistro.get('otror')?.enable();
+      }
+
+      if (this.formularioRegistro) {
+        this.formularioRegistro.patchValue({
+          pueblor: '',
+          comunidadr: '',
+          comunidad: '',
+          organizacion: '',
+          prelevante: '',
+          otror: ''
+        });
+      };
+
+
+    } else if(Number(this.formularioRegistro?.get('scomunidad')?.value) == 2) {
+      this.showAfromexicanos = true;
+      this.showIndigenas = false;
+
+      if (this.formularioRegistro) {
+        this.formularioRegistro.patchValue({
+          ooriginario: '',
+          pueblo: '',
+          barrio: '',
+          uterritorial: '',
+          comunidad: '',
+          otro: '',
+          prelevante: ''
+        });
+      };
+
+      if(this.formularioRegistro) {
+        this.formularioRegistro.get('ooriginario')?.enable();
+        this.formularioRegistro.get('pueblo')?.enable();
+        this.formularioRegistro.get('barrio')?.enable();
+        this.formularioRegistro.get('uterritorial')?.enable();
+        this.formularioRegistro.get('otro')?.enable();
+      }
+    }
   }
 
   getDataById() {
@@ -174,6 +248,7 @@ export class FormularioRegistro implements OnInit{
             comunidad: data.getRegistro[0].comunidad_pbl,
             otro: data.getRegistro[0].otro_pbl,
 
+            duninominal: data.getRegistro[0].id_direccion_distrital,
             ninstancia: data.getRegistro[0].nombre_instancia,
             cinstancia: data.getRegistro[0].cargo_instancia,
             domicilio: data.getRegistro[0].domicilio,
@@ -191,6 +266,7 @@ export class FormularioRegistro implements OnInit{
             demarcacion: data.getRegistro[0].id_demarcacion_territorial,
             scomunidad: data.getRegistro[0].id_comunidad,
             ncomunidad: data.getRegistro[0].nombre_comunidad,
+            duninominal: data.getRegistro[0].id_direccion_distrital,
 
             pueblor: data.getRegistro[0].pueblo_afro,
             comunidadr: data.getRegistro[0].comunidad_afro,
@@ -212,18 +288,38 @@ export class FormularioRegistro implements OnInit{
             this.showIndigenas = true;
             this.showAfromexicanos = false;
             this.formularioRegistro!.patchValue(userDataIndigenas);
+            this.catalogo_comunidad();
+            this.catalogo_barrios();
+            this.catalogo_pueblor();
+            this.catalogo_pueblos();
+            this.catalogo_unidad_territorial();
+            this.catalogo_demarcacion();
           } else if(this.moduloClicked === '1.3') {
             this.showAfromexicanos = true;
             this.showIndigenas = false;
             this.formularioRegistro!.patchValue(userDataAfro);
+            this.catalogo_comunidad();
+            this.catalogo_barrios();
+            this.catalogo_pueblor();
+            this.catalogo_pueblos();
+            this.catalogo_unidad_territorial();
+            this.catalogo_demarcacion();
           } else if(this.moduloClicked === '2.2') {
             this.showIndigenas = true;
             this.showAfromexicanos = false;
             this.formularioRegistro!.patchValue(userDataIndigenas);
+            this.catalogo_comunidad();
+            this.catalogo_barrios();
+            this.catalogo_pueblor();
+            this.catalogo_pueblos();
+            this.catalogo_unidad_territorial();
+            this.catalogo_demarcacion();
           } else if(this.moduloClicked === '2.3') {
             this.showAfromexicanos = true;
             this.showIndigenas = false;
             this.formularioRegistro!.patchValue(userDataAfro);
+            this.catalogo_demarcacion();
+            this.catalogo_comunidad();
           }
 
         }, error: (err) => {
@@ -242,7 +338,7 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_unidad_territorial() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_unidad_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.formularioRegistro?.get('duninominal')?.value), "cat_unidad_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_unidad_territorial.length > 0) {
           this.catalogoUnidadTerritorial = data.cat_unidad_territorial;
@@ -256,7 +352,7 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_demarcacion() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.formularioRegistro?.get('duninominal')?.value), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {
           this.catalogoDemarcacion = data.cat_demarcacion_territorial;
@@ -270,7 +366,7 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_pueblos() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.formularioRegistro?.get('duninominal')?.value), "cat_pueblos", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_pueblos.length > 0) {
           this.catalogoPueblos = data.cat_pueblos;
@@ -284,7 +380,7 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_pueblor() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos_originarios", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.formularioRegistro?.get('duninominal')?.value), "cat_pueblos_originarios", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_pueblos_originarios.length > 0) {
           this.catalogoPueblor = data.cat_pueblos_originarios;
@@ -298,7 +394,7 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_barrios() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_barrios", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.formularioRegistro?.get('duninominal')?.value), "cat_barrios", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_barrios.length > 0) {
           this.catalogoBarrios = data.cat_barrios;
@@ -312,7 +408,7 @@ export class FormularioRegistro implements OnInit{
   };
 
   catalogo_comunidad() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_comunidad", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(Number(this.formularioRegistro?.get('duninominal')?.value), "cat_comunidad", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_comunidad.length > 0) {
           this.catalogoComunidad = data.cat_comunidad;
@@ -331,6 +427,7 @@ export class FormularioRegistro implements OnInit{
   };
 
   saveForm() {
+    console.log("this.modulo", this.modulo);
     Swal.fire({
       title: "¿Está seguro que desea Editar la Instacia? Se sobrescribirán los datos actuales.",
       icon: "warning",
@@ -347,13 +444,13 @@ export class FormularioRegistro implements OnInit{
         }
 
         const datosFormularioCompletos = {
-          nombre_completo: this.formularioRegistro.get('nombre_completo')?.value || null,
-          seccion_electoral: Number(this.formularioRegistro.get('seccion_electoral')?.value || 0),
+        nombre_completo: this.formularioRegistro.get('nombre_completo')?.value || null,
+          seccion_electoral: this.formularioRegistro.get('seccion_electoral')?.value || '',
           demarcacion: this.opcionDemarcacion || null,
-          distrito_electoral: Number(this.area),
+          distrito_electoral: this.formularioRegistro.get('duninominal')?.value || null,
           nombre_comunidad: this.formularioRegistro.get('ncomunidad')?.value || null,
           pueblo_originario: this.opcionPuebloOriginario || null,
-          pueblo_pbl: this.opcionPueblo || null,
+          pueblo_pbl: this.formularioRegistro.get('pueblo')?.value || null,
           barrio_pbl: this.opcionBarrio || null,
           unidad_territorial_pbl: this.opcionUnidadTerritorial || null,
           comunidad_pbl: this.formularioRegistro.get('comunidad')?.value || null,
@@ -371,7 +468,7 @@ export class FormularioRegistro implements OnInit{
           correo_electronico_oficial: this.formularioRegistro.get('coficial')?.value || null,
           correo_electronico_personal: this.formularioRegistro.get('cpersonal')?.value || null,
           documentos: 0,
-          enlace_documentos: "https://drive.google.com/documento",
+          enlace_documentos: "",
           usuario_registro: this.id_usuario,
           modulo_registro: this.modulo == 2 ? '1' : this.tipo_usuario,
           estado_registro: 2,

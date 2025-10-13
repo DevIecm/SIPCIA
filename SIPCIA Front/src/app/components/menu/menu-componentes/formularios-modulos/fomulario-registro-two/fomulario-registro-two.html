@@ -361,7 +361,10 @@
                         formControlName="docs"
                         class="form-control"
                         type="file" 
-                        id="formFile">
+                        id="formFile"
+                        (change)="onFileSelect($event, 'zip')"
+                        accept=".zip"
+                        formControlName="documentos">
                     </div>
 
                     <div *ngIf="infoUpdate?.enlace_documentos">

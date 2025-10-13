@@ -1,39 +1,103 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Navbar } from '../../../../navbar/navbar';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import * as data from '../../../../labels/label.json';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormGroup, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { FormularioRegistro } from '../../formularios-modulos/formulario-registro/formulario-registro';
-import { Register } from '../../../../../services/registerService/register';
+import { FomularioRegistroTwo } from '../../formularios-modulos/fomulario-registro-two/fomulario-registro-two';
+import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
 import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
-import { Reportes } from '../../../../../services/reporteService/reportes';
+import { Catalogos } from '../../../../../services/catService/catalogos';
+import { Register } from '../../../../../services/registerService/register';
 
 @Component({
-  selector: 'app-consulta-tecnicas',
+  selector: 'app-nregistro',
   imports: [
-    Navbar,
+    Navbar, 
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FormularioRegistro
+    FomularioRegistroTwo
   ],
+  providers: [DatePipe],
+  standalone: true,
   templateUrl: './consulta-tecnicas.html',
   styleUrl: './consulta-tecnicas.css'
 })
 
 export class ConsultaTecnicas implements OnInit {
+
+  formularioRegistro: FormGroup | undefined;
+
+  nombreUser: string = '';
+  cargoUser: string = '';
+  tokenSesion: string = '';
+  position: string = '';
+  searchTerm: string = '';
+  sortColumn: string = '';  
+  moduloClicked: string = '';
+
+  sortDirection: 'asc' | 'desc' = 'asc';
+
+  dataTable: any = [];
+  allDatable: any[] = [];
+  catalogoComunidad: any = [];
+
+  area_adscripcion: number = 0;
+  tipo_usuario: number = 0;
+  idComunidad: number = 0;
+
+  data: any = data;
+  idRegistroSeleccionado: number | undefined;
+  idComunidadSeleccionado: number | undefined;
   
   showModal = false;
+  isRegistroC: boolean = false;
+
+
+  ngOnInit(): void {
+    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
+    this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
+    this.nombreUser = sessionStorage.getItem('nameUsuario')!;
+    this.position = sessionStorage.getItem('dir')!;
+    this.tokenSesion = sessionStorage.getItem('key')!;
+    this.area_adscripcion = Number(sessionStorage.getItem('area'));
+    this.moduloClicked = localStorage.getItem('modulo')!;
+
+
+    this.formularioRegistro = this.formBuilder.group({
+      comunidad: [null],
+      searchTerm: ['']
+    });
+
+    this.catalogo_comunidad();
+    this.getRegisterTwo(1)
+    localStorage.setItem('comunidad', '1');
+    this.idComunidad = Number(localStorage.getItem('comunidad'));
+  }
 
   goToBitacora(id: number, tipo: string) {
     this.router.navigate(['/bitacora', id, tipo]);
   }
-    getReporte(){
-    this.descargarReporteAfro.descargarReporteAfro(2,this.area,this.tokenSesion).subscribe((blob: Blob) => {
+
+  catalogo_comunidad() {
+    this.catalogos.getCatalogos(Number(this.area_adscripcion), "cat_comunidad", this.tokenSesion).subscribe({
+      next: (data) => {
+      
+        if (data.cat_comunidad.length > 0) {
+          this.catalogoComunidad = data.cat_comunidad;
+
+          const primerId = this.catalogoComunidad[0].id;
+          this.formularioRegistro?.get('comunidad')?.setValue(primerId);
+        }
+      },
+    });
+  };
+  
+  getReporte(){
+    this.descargarReporteInstitucion.descargarReporteInstitucion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte.xlsx';
@@ -41,100 +105,88 @@ export class ConsultaTecnicas implements OnInit {
       window.URL.revokeObjectURL(link.href);
     });
   }
-
-  nombreUser: string = '';
-  sortColumn: string = '';
-  tokenSesion: string = '';
-  searchTerm: string = '';
-  position: string = '';  
-  sortDirection: 'asc' | 'desc' = 'asc';
-  cargoUser: string = '';
-
-  data: any = data;
-  
-  catalogoDemarcacionI: any = [];
-  dataTable: any = [];
-  allDatable: any[] = [];
-  reporteI:  any = [];
-  opcionDermarcacionI: any;
-
-  tipo_usuario: number = 0;
-  registroSeleccionadoId: number | undefined;
-  area: number = 0;
-
-  ngOnInit(): void {
-    this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
-    this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
-    this.area = Number(sessionStorage.getItem('area')!);
-    this.nombreUser = sessionStorage.getItem('nameUsuario')!;
-    this.tokenSesion = sessionStorage.getItem('key')!;
-    this.position = sessionStorage.getItem('dir')!;
-    this.getRegister();
-  }
-
-  constructor(
-    private router: Router, 
-    private serviceRegister: Register,
-    private descargarReporteAfro: reporteService,
-    private reportes: Reportes,
-    private service: Auth) {}
-  
-  logout() {
-    this.router.navigate(['']);
-  }
-
+ 
   search(): void {
-    const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+    const rawFilter = this.formularioRegistro?.get('searchTerm')?.value.trim().toLowerCase();
+console.log(rawFilter)
+console.log(this.allDatable)
 
     if (rawFilter === '') {
       this.dataTable = [...this.allDatable];
       return;
     }
 
+
+    console.log(this.allDatable)
     this.dataTable = this.allDatable.filter((val) => {
       const id_registro = (val.id_registro ?? '').toString().toLowerCase().trim();
-      const folio = (val.folio ?? '').toString().toLowerCase().trim();
-      const demarcacion_territorial = (val.demarcacion_territorial ?? '').toLowerCase().trim();
-      const nombre_completo = (val.nombre_completo ?? '').toLowerCase().trim();
-      const pueblo_originario = (val.pueblo_originario ?? '').toLowerCase().trim();
-      const pueblo = (val.pueblo_afro ?? '').toLowerCase().trim();
-      const barrio = (val.barrio ?? '').toLowerCase().trim();
-      const comunidad = (val.comunidad_afro ?? '').toLowerCase().trim();
-      const unidad_territorial = (val.unidad_territorial ?? '').toLowerCase().trim();
-      const nombre_comunidad = (val.nombre_comunidad ?? '').toLowerCase().trim();
-      const nombre_instancia = (val.nombre_instancia ?? '').toLowerCase().trim();
-      const cargo_instancia = (val.cargo_instancia ?? '').toLowerCase().trim();
-      const domicilio = (val.domicilio ?? '').toLowerCase().trim();
-
+      const nombre_completo = (val.nombre_completo ?? '').toString().toLowerCase().trim();
+      const pueblo_originario = (val.pueblo_originario ?? '').toString().toLowerCase().trim();
+      const pueblo = (val.pueblo ?? '').toString().toLowerCase().trim();
+      const barrio = (val.barrio ?? '').toString().toLowerCase().trim();
+      const ut = (val.ut ?? '').toString().toLowerCase().trim();
+      const otro  = (val.otro ?? '').toString().toLowerCase().trim();
+      const comunidad = (val.comunidad ?? '').toString().toLowerCase().trim();
+      const interes_profesional = (val.interes_profesional ?? '').toString().toLowerCase().trim();
+      const nombre_institucion = (val.nombre_institucion ?? '').toString().toLowerCase().trim();
+      const npueblo = (val.npueblo ?? '').toString().toLowerCase().trim();
+               
       return (
         id_registro.includes(rawFilter) ||
-        folio.includes(rawFilter) ||
-        demarcacion_territorial.includes(rawFilter) ||
         nombre_completo.includes(rawFilter) ||
         pueblo_originario.includes(rawFilter) ||
         pueblo.includes(rawFilter) ||
         barrio.includes(rawFilter) ||
+        ut.includes(rawFilter) ||
+        otro.includes(rawFilter) ||
         comunidad.includes(rawFilter) ||
-        unidad_territorial.includes(rawFilter) ||
-        nombre_comunidad.includes(rawFilter) ||
-        nombre_instancia.includes(rawFilter) ||
-        cargo_instancia.includes(rawFilter) ||
-        domicilio.includes(rawFilter)
+        interes_profesional.includes(rawFilter) ||
+        nombre_institucion.includes(rawFilter) ||
+        npueblo.includes(rawFilter)
       );
+    });
+  };
+
+  constructor(
+    private router: Router,
+    private reporteService: Reportes,
+    private descargarReporteInstitucion: reporteService,
+    private miServicio: Reportes,
+    private catalogos: Catalogos,
+    private formBuilder: FormBuilder,
+    private service: Auth,
+    private registerService: Register) {}
+
+  descargar2(item: any): void {
+    this.miServicio.descargarOtrosNorma(item.cv_enlace, this.tokenSesion).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        a.download =item.nombre_archivo;
+
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
     });
   }
 
-  getRegister() {
-    this.serviceRegister.getRegisterData(2, null, this.tipo_usuario, this.tokenSesion).subscribe({
+  getRegisterTwo(tipo_comunidad: number) {
+    this.registerService.getRegisterData(tipo_comunidad, null, 3, this.tokenSesion).subscribe({
       next: (data) => {
         if(data.comunidades.length > 0) {
           this.dataTable = data.comunidades;
           this.allDatable = data.comunidades;
         } else {
+          this.dataTable = [];
           Swal.fire("No se encontraron registros");
         }
       },
       error: (err) => {
+
+        this.dataTable = [];
 
         if (err.error.code === 160) {
           this.service.cerrarSesionByToken();
@@ -148,49 +200,25 @@ export class ConsultaTecnicas implements OnInit {
     });
   }
 
-  OnChangeGetReporteIndigenas(id: number){
-      if(this.opcionDermarcacionI==0){
-        this.reportes.getAllRegistrosInd(this.area, this.tokenSesion).subscribe({
-        next: (data) => {
-          this.reporteI = [data];
-        }, error: (err) => {
-  
-          Swal.fire("Error al cargar la información");
-  
-          if(err.error.code === 160) {
-            this.service.cerrarSesionByToken();
-          }
-        }
-      });
-      }else{
-        this.reportes.getRegisterData(1, this.area, this.opcionDermarcacionI, this.tokenSesion).subscribe({
-        next: (data) => {
-          this.reporteI = [data];
-        }, error: (err) => {
-  
-          Swal.fire("Error al cargar la información");
-  
-          if(err.error.code === 160) {
-            this.service.cerrarSesionByToken();
-          }
-        }
-      });
-      }
-    };
+  onValidateInfo() {
+    this.router.navigate(['/menutwo']);
+  };
+
+  logout() {
+    this.router.navigate(['']);
+  }
 
   openModal(id: number | undefined) {
     this.showModal = true;
-    this.registroSeleccionadoId = id;
+    this.idRegistroSeleccionado = id;
+
+    this.idComunidadSeleccionado = this.idComunidad;
   }
 
   closeModal() {
     this.showModal = false;
-    this.getRegister();
+    this.getRegisterTwo(this.idComunidad);
   }
-
-  onValidateInfo() {
-    this.router.navigate(['/menutwo']);
-  };
 
   sortData(column: string) {
     if (this.sortColumn === column) {
@@ -219,5 +247,12 @@ export class ConsultaTecnicas implements OnInit {
   getSortIcon(column: string): string {
     if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
     return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+  }
+
+  cambiaComunidad(event: Event): void {
+    const selectedId = this.formularioRegistro?.get('comunidad')?.value;
+    localStorage.setItem('comunidad', selectedId);
+    this.idComunidad = selectedId;
+    this.getRegisterTwo(selectedId);
   }
 }

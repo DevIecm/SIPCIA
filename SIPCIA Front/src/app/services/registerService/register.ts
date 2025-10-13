@@ -43,6 +43,19 @@ export class Register {
       );
   };
 
+    nuupdateRegistro(data: FormData, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    
+    return this.http.patch(this.apiUrl + 'registro/updateRegistro', data, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
   updateRegistro(data: any, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`

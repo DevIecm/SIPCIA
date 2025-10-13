@@ -56,6 +56,7 @@
                         maxlength="4"
                         type="text"
                         formControlName="seccion_electoral"
+                        (change)="changeSeccion()"
                         class="form-control">
                     </div>
                   </div>
@@ -93,6 +94,7 @@
                         formControlName="scomunidad"
                         class="select-input form-select" 
                         aria-label="Default select example"
+                        (change)="onChangeComunidad()"
                         [(ngModel)]="opcionComunidad"
                       >
                         <option value="" disabled selected>Seleccione una opción</option>
