@@ -38,18 +38,32 @@
   </div>
 </nav>
 
-<div class="container text-center mt-4" style="z-index: 1;">
-  <div class="row">
-    <div class="col d-flex justify-content-end">
-      <button class="btn button " (click)="getReporte()">Generar y Descarga de Reporte</button>
+<form [formGroup]="formularioRegistro!">
+  <div class="container d-flex mt-4">
+    <label class="form-label label-dem-d">Dirección Distrital:</label>
+    <select 
+      formControlName="direccion"
+      class="select-input select-di form-select" 
+      aria-label="Default select example"
+      (change)="OnChangeDireccion()"
+    >
+      <option value="" disabled selected>Seleccione una opción</option>
+      <option value="0">Todos</option>
+      @for (item of catalogoDemarcacionA; track item) {
+        <option [value]="item.id">{{item.direccion_distrital}}</option>
+      }
+    </select>
+  </div>
+
+  <div class="container text-center " style="z-index: 1;">
+    <div class="row">
+      <div class="col d-flex justify-content-end">
+        <button class="btn button " (click)="getReporte()">Generar y Descarga de Reporte</button>
+      </div>
     </div>
   </div>
-</div>
-
-<form [formGroup]="formularioRegistro!">
 
   <div class="container back-table justify-content-center mt-4" style="z-index: 2;">
-
 
     <div class="row mt-6">
       <div class="col-12 d-flex justify-content-center mb-3">
@@ -67,7 +81,7 @@
             class="select-input form-select" 
             aria-label="Default select example"
             [(ngModel)]="opcionDermarcacionI"
-            (change)="OnChangeGetReporteIndigenas(1)"
+            (change)="onChangeDemarcacion(1)"
           >
             <option value="" disabled selected>Seleccione una opción</option>
             <option value="0">Todos</option>

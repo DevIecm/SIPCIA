@@ -28,17 +28,21 @@ export class ReporteRepresentativaTwo implements OnInit{
   data: any = data;
   nombreUser: string = '';
   cargoUser: string = '';
-  
   tokenSesion: string = '';
+  moduloClicked: string = '';
+  position: string = '';
+
   catalogoDemarcacionI: any = [];
   catalogoDemarcacionA: any = [];
-  moduloClicked: string = '';
-  opcionDermarcacionI: any;
-  opcionDermarcacionA: any;
   formularioRegistro: FormGroup | undefined;
-  position: string = '';
+
   reporteI:  any = [];
   reporteA: any = [];
+  
+  opcionDermarcacionI: any;
+  opcionDermarcacionA: any;
+  
+  direccion: number = 0;
   area: number = 0;
 
   constructor(
@@ -53,7 +57,8 @@ export class ReporteRepresentativaTwo implements OnInit{
 
     this.formularioRegistro = this.formBuilder.group({
       demarcacionI: [''],
-      demarcacionA: ['']
+      demarcacionA: [''],
+      direccion: ['']
     });
 
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
@@ -62,11 +67,10 @@ export class ReporteRepresentativaTwo implements OnInit{
     this.moduloClicked = localStorage.getItem('moduloClicked')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.position = sessionStorage.getItem('dir')!;
-    this.catalogo_demarcacion();
     this.catalogo_demarcacionA();
   }
 
-    getReporte(){
+  getReporte(){
     this.descargarReporteInstancias.descargarReporteInstancias(this.area,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
@@ -85,7 +89,7 @@ export class ReporteRepresentativaTwo implements OnInit{
   }
 
   catalogo_demarcacion() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos(this.direccion, "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {
           this.catalogoDemarcacionI = data.cat_demarcacion_territorial;
@@ -102,10 +106,10 @@ export class ReporteRepresentativaTwo implements OnInit{
   };
 
   catalogo_demarcacionA() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogosD("cat_distrito", this.tokenSesion).subscribe({
       next: (data) => {
-        if(data.cat_demarcacion_territorial.length > 0) {
-          this.catalogoDemarcacionA = data.cat_demarcacion_territorial;
+        if(data.cat_distrito.length > 0) {
+          this.catalogoDemarcacionA = data.cat_distrito;
         }
       }, error: (err) => {
 
@@ -118,7 +122,16 @@ export class ReporteRepresentativaTwo implements OnInit{
     });
   };
 
-  OnChangeGetReporteIndigenas(id: number){
+  OnChangeDireccion(){
+    this.direccion = this.formularioRegistro?.get('direccion')?.value;
+    this.catalogo_demarcacion();
+
+    console.log(this.direccion);
+  };
+
+  onChangeDemarcacion(id: number){
+
+    console.log(this.opcionDermarcacionI)
     if(this.opcionDermarcacionI==0){
       this.reportes.getAllRegistrosInd(this.area, this.tokenSesion).subscribe({
       next: (data) => {
@@ -146,7 +159,7 @@ export class ReporteRepresentativaTwo implements OnInit{
       }
     });
     }
-  };
+  }
 
   OnChangeGetReporteAfro(id: number) {
     if(this.opcionDermarcacionA==0){

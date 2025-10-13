@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 export class Home implements OnInit{
 
   ngOnInit(): void {
-    localStorage.removeItem('modulo');
     sessionStorage.removeItem('key');
     sessionStorage.removeItem("dir");
     sessionStorage.removeItem("tipoUsuario");
