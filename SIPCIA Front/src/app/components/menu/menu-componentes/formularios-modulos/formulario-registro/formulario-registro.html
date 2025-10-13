@@ -67,7 +67,6 @@
                         formControlName="demarcacion"
                         class="select-input form-select" 
                         aria-label="Default select example"
-                        [(ngModel)]="opcionDemarcacion"  
                       >
                         <option value="" disabled selected>Seleccione una opción</option>
                         @for (item of catalogoDemarcacion; track item) {
@@ -95,7 +94,6 @@
                         class="select-input form-select" 
                         aria-label="Default select example"
                         (change)="onChangeComunidad()"
-                        [(ngModel)]="opcionComunidad"
                       >
                         <option value="" disabled selected>Seleccione una opción</option>
                         @for (item of catalogoComunidad; track item) {
@@ -128,7 +126,6 @@
                             formControlName="ooriginario" 
                             class="select-input form-select" 
                             aria-label="Default select example"
-                            [(ngModel)]="opcionPuebloOriginario"
                             (change)="onChangePuebloOriginario()"
                           >
                             <option selected></option>
@@ -145,7 +142,6 @@
                             formControlName="pueblo" 
                             class="select-input form-select" 
                             aria-label="Default select example"
-                            [(ngModel)]="opcionPueblo"
                             (change)="onChangePueblo()"
                           >
                             <option value="" disabled selected>Seleccione una opción</option>
@@ -162,7 +158,6 @@
                             formControlName="barrio" 
                             class="select-input form-select" 
                             aria-label="Default select example"
-                            [(ngModel)]="opcionBarrio"
                             (change)="onChangeBarrio()"
                           >
                             <option value="" disabled selected>Seleccione una opción</option>
@@ -181,7 +176,6 @@
                             formControlName="uterritorial" 
                             class="select-input form-select" 
                             aria-label="Default select example"
-                            [(ngModel)]="opcionUnidadTerritorial"
                             (change)="onChangeUnidadTerritorial()"
                           >
                             <option value="" disabled selected>Seleccione una opción</option>

@@ -95,13 +95,12 @@ export class Login implements OnInit {
            }
          });
        } else {
-         Swal.fire({
-           icon: "error",
-           title: "Error",
-           text: "Es necesario llenar el formulario",
-         });
-      // }
-  }
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Es necesario llenar el formulario",
+        });
+      }
     } catch (error) {
       console.error("Error al iniciar sesión", error);
     }

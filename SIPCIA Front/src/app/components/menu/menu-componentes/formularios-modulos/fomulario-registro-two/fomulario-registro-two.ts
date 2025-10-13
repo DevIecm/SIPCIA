@@ -437,181 +437,177 @@ export class FomularioRegistroTwo implements OnInit{
   };
 
   saveForm(){
-      try {
-        if(this.idRegistroC) {
-          Swal.fire({
-            title: "¿Está seguro que desea guardar estos cambios?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#FBB03B",
-            cancelButtonColor: "#9D75CA",
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar"
-          }).then((result) => {
-  
+    try {
+      if(this.idRegistroC) {
+        Swal.fire({
+          title: "¿Está seguro que desea guardar estos cambios?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#FBB03B",
+          cancelButtonColor: "#9D75CA",
+          confirmButtonText: "Aceptar",
+          cancelButtonText: "Cancelar"
+        }).then((result) => {
+
+          if (!this.formularioRegistro) {
+            return;
+          }
+          if (result.isConfirmed) {
+            const formData = new FormData();
+
+          if (this.selectedFile instanceof File) {
+            formData.append("kmlFile", this.selectedFile, this.selectedFile.name);
+          } else if (!this.selectedFile && this.infoUpdate?.enlace_documentos) {
+            formData.append("enlace_documentos", this.infoUpdate.enlace_documentos);
+          }
+
+          formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");    
+          formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
+          formData.append("demarcacion", this.opcionDemarcacion); 
+          formData.append("comunidad", this.formularioRegistro.get('scomunidad')?.value || "");
+          formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
+          formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");   
+          formData.append("pueblo_originario", this.opcionPuebloOriginario);
+          formData.append("pueblo_pbl", this.opcionPueblo);
+          formData.append("barrio_pbl", this.opcionBarrio);
+          formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
+          formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
+          formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
+          formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
+          formData.append("comunidad_afro", this.formularioRegistro.get('comunidadr')?.value || "");
+          formData.append("organizacion_afro", this.formularioRegistro.get('organizacion')?.value || "");
+          formData.append("persona_relevante_afro", this.formularioRegistro.get('prelevante')?.value || "");
+          formData.append("otro_afro", this.formularioRegistro.get('otror')?.value || "");
+          formData.append("nombre_instancia", this.formularioRegistro.get('ninstancia')?.value || "");
+          formData.append("cargo_instancia", this.formularioRegistro.get('cinstancia')?.value || "");
+          formData.append("domicilio", this.formularioRegistro.get('domicilio')?.value || "");
+          formData.append("telefono_particular", this.formularioRegistro.get('tfijo')?.value || "");
+          formData.append("telefono_celular", this.formularioRegistro.get('tcelular')?.value || "");
+          formData.append("correo_electronico_oficial", this.formularioRegistro.get('coficial')?.value || "");
+          formData.append("correo_electronico_personal", this.formularioRegistro.get('cpersonal')?.value || "");
+          formData.append("usuario_registro", this.id_usuario.toString());
+          formData.append("modulo_registro", this.tipo_usuario.toString());
+          formData.append("estado_registro", "1");
+          formData.append("tipo_usuario", this.tipo_usuario.toString());
+
+          this.registerService.nuinsertaRegistro(formData, this.tokenSesion).subscribe({
+                  next: (data) => {
+                if(data.code === 200) {
+                  Swal.fire({
+                    title: "Se ha registrado correctamente.",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#FBB03B",
+                  });
+
+                  setTimeout(() => {
+                    this.onClose();
+                    this.resetData();
+                  }, 3000);
+
+                }
+              }, error: (err) => {
+                
+                if(err.error.code === 160) {
+                  this.service.cerrarSesionByToken();
+                }
+    
+                if(err.error.code === 100) {
+                  Swal.fire("Error al registrar");
+                }
+              }
+            });
+          }
+        });
+      } else {
+        Swal.fire({
+          title: "¿Está seguro que desea guardar estos cambios?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#FBB03B",
+          cancelButtonColor: "#9D75CA",
+          confirmButtonText: "Aceptar",
+          cancelButtonText: "Cancelar"
+        }).then((result) => {
+          if (result.isConfirmed) {
+              const formData = new FormData();
+
             if (!this.formularioRegistro) {
               return;
             }
-            console.log("this.idRegistroC", this.idRegistroC)
-            if (result.isConfirmed) {
-              const formData = new FormData();
-  
-              if (this.selectedFile instanceof File) {
-                formData.append("kmlFile", this.selectedFile, this.selectedFile.name);
-              } else if (!this.selectedFile && this.infoUpdate?.enlace_documentos) {
-                formData.append("enlace_documentos", this.infoUpdate.enlace_documentos);
-              }
 
+            if (this.selectedFile) {
+              formData.append("kmlFile", this.selectedFile);          
+            }else if(this.infoUpdate.enlace_documentos){
+              formData.append("kmlFile", this.infoUpdate.enlace_documentos);
+            }  
 
-              console.log("this.selectedFile", this.selectedFile)
-
-            formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");    
-            formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
-            formData.append("demarcacion", this.opcionDemarcacion); 
-            formData.append("comunidad", this.formularioRegistro.get('scomunidad')?.value || "");
-            formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
-            formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");   
-            formData.append("pueblo_originario", this.opcionPuebloOriginario);
-            formData.append("pueblo_pbl", this.opcionPueblo);
-            formData.append("barrio_pbl", this.opcionBarrio);
-            formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
-            formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
-            formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
-            formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
-            formData.append("comunidad_afro", this.formularioRegistro.get('comunidadr')?.value || "");
-            formData.append("organizacion_afro", this.formularioRegistro.get('organizacion')?.value || "");
-            formData.append("persona_relevante_afro", this.formularioRegistro.get('prelevante')?.value || "");
-            formData.append("otro_afro", this.formularioRegistro.get('otror')?.value || "");
-            formData.append("nombre_instancia", this.formularioRegistro.get('ninstancia')?.value || "");
-            formData.append("cargo_instancia", this.formularioRegistro.get('cinstancia')?.value || "");
-            formData.append("domicilio", this.formularioRegistro.get('domicilio')?.value || "");
-            formData.append("telefono_particular", this.formularioRegistro.get('tfijo')?.value || "");
-            formData.append("telefono_celular", this.formularioRegistro.get('tcelular')?.value || "");
-            formData.append("correo_electronico_oficial", this.formularioRegistro.get('coficial')?.value || "");
-            formData.append("correo_electronico_personal", this.formularioRegistro.get('cpersonal')?.value || "");
-            formData.append("usuario_registro", this.id_usuario.toString());
-            formData.append("modulo_registro", this.tipo_usuario.toString());
-            formData.append("estado_registro", "1");
-            formData.append("tipo_usuario", this.tipo_usuario.toString());
-  
-            this.registerService.nuinsertaRegistro(formData, this.tokenSesion).subscribe({
-                    next: (data) => {
-                  if(data.code === 200) {
-                    Swal.fire({
-                      title: "Se ha registrado correctamente.",
-                      icon: "success",
-                      confirmButtonText: "Aceptar",
-                      confirmButtonColor: "#FBB03B",
-                    });
-  
-                    setTimeout(() => {
-                      this.onClose();
-                      this.resetData();
-                    }, 3000);
-  
-                  }
-                }, error: (err) => {
-                  
-                  if(err.error.code === 160) {
-                    this.service.cerrarSesionByToken();
-                  }
-      
-                  if(err.error.code === 100) {
-                    Swal.fire("Error al registrar");
-                  }
-                }
-              });
+            if (this.idRegistro !== undefined) {
+              formData.append("id_registro", this.idRegistro.toString());
             }
-          });
-        } else {
-          Swal.fire({
-            title: "¿Está seguro que desea guardar estos cambios?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#FBB03B",
-            cancelButtonColor: "#9D75CA",
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar"
-          }).then((result) => {
-            if (result.isConfirmed) {
-                const formData = new FormData();
-  
-              if (!this.formularioRegistro) {
-                return;
-              }
-  
-              if (this.selectedFile) {
-                formData.append("kmlFile", this.selectedFile);          
-              }else if(this.infoUpdate.enlace_documentos){
-                formData.append("kmlFile", this.infoUpdate.enlace_documentos);
-              }  
-  
-              if (this.idRegistro !== undefined) {
-                formData.append("id_registro", this.idRegistro.toString());
-              }
-  
-            formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");    
-            formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
-            formData.append("demarcacion", this.opcionDemarcacion); 
-            formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
-            formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");   
-            formData.append("pueblo_originario", this.opcionPuebloOriginario);
-            formData.append("pueblo_pbl", this.opcionPueblo);
-            formData.append("barrio_pbl", this.opcionBarrio);
-            formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
-            formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
-            formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
-            formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
-            formData.append("comunidad_afro", this.formularioRegistro.get('comunidadr')?.value || "");
-            formData.append("organizacion_afro", this.formularioRegistro.get('organizacion')?.value || "");
-            formData.append("persona_relevante_afro", this.formularioRegistro.get('prelevante')?.value || "");
-            formData.append("otro_afro", this.formularioRegistro.get('otror')?.value || "");
-            formData.append("nombre_instancia", this.formularioRegistro.get('ninstancia')?.value || "");
-            formData.append("cargo_instancia", this.formularioRegistro.get('cinstancia')?.value || "");
-            formData.append("domicilio", this.formularioRegistro.get('domicilio')?.value || "");
-            formData.append("telefono_particular", this.formularioRegistro.get('tfijo')?.value || "");
-            formData.append("telefono_celular", this.formularioRegistro.get('tcelular')?.value || "");
-            formData.append("correo_electronico_oficial", this.formularioRegistro.get('coficial')?.value || "");
-            formData.append("correo_electronico_personal", this.formularioRegistro.get('cpersonal')?.value || "");
-            formData.append("usuario_registro", this.id_usuario.toString());
-            formData.append("modulo_registro", this.tipo_usuario.toString());
-            formData.append("estado_registro", "2");
-            formData.append("tipo_usuario", this.tipo_usuario.toString());
-  
-              this.registerService.nuupdateRegistro(formData, this.tokenSesion).subscribe({
-                next: (data) => {
-                  if(data.code === 200) {
-  
-                    Swal.fire({
-                      title: "Se han guardado correctamentelos cambios.",
-                      icon: "success",
-                      confirmButtonText: "Aceptar",
-                      confirmButtonColor: "#FBB03B",
-                    });
-  
-                    setTimeout(() => {
-                      this.onClose();
-                      this.resetData();
-                    }, 3000);
-                  }
-                }, error: (err) => {
-                  
-                  if(err.error.code === 160) {
-                    this.service.cerrarSesionByToken();
-                  }
-      
-                  if(err.error.code === 100) {
-                    Swal.fire("Error al registrar");
-                  }
+
+          formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");    
+          formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
+          formData.append("demarcacion", this.opcionDemarcacion); 
+          formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
+          formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");   
+          formData.append("pueblo_originario", this.opcionPuebloOriginario);
+          formData.append("pueblo_pbl", this.opcionPueblo);
+          formData.append("barrio_pbl", this.opcionBarrio);
+          formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
+          formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
+          formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
+          formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
+          formData.append("comunidad_afro", this.formularioRegistro.get('comunidadr')?.value || "");
+          formData.append("organizacion_afro", this.formularioRegistro.get('organizacion')?.value || "");
+          formData.append("persona_relevante_afro", this.formularioRegistro.get('prelevante')?.value || "");
+          formData.append("otro_afro", this.formularioRegistro.get('otror')?.value || "");
+          formData.append("nombre_instancia", this.formularioRegistro.get('ninstancia')?.value || "");
+          formData.append("cargo_instancia", this.formularioRegistro.get('cinstancia')?.value || "");
+          formData.append("domicilio", this.formularioRegistro.get('domicilio')?.value || "");
+          formData.append("telefono_particular", this.formularioRegistro.get('tfijo')?.value || "");
+          formData.append("telefono_celular", this.formularioRegistro.get('tcelular')?.value || "");
+          formData.append("correo_electronico_oficial", this.formularioRegistro.get('coficial')?.value || "");
+          formData.append("correo_electronico_personal", this.formularioRegistro.get('cpersonal')?.value || "");
+          formData.append("usuario_registro", this.id_usuario.toString());
+          formData.append("modulo_registro", this.tipo_usuario.toString());
+          formData.append("estado_registro", "2");
+          formData.append("tipo_usuario", this.tipo_usuario.toString());
+
+            this.registerService.nuupdateRegistro(formData, this.tokenSesion).subscribe({
+              next: (data) => {
+                if(data.code === 200) {
+
+                  Swal.fire({
+                    title: "Se han guardado correctamentelos cambios.",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#FBB03B",
+                  });
+
+                  setTimeout(() => {
+                    this.onClose();
+                    this.resetData();
+                  }, 3000);
                 }
-              });
-            }
-          });
-        }
-      } catch(e) {
-        console.error(e);
+              }, error: (err) => {
+                
+                if(err.error.code === 160) {
+                  this.service.cerrarSesionByToken();
+                }
+    
+                if(err.error.code === 100) {
+                  Swal.fire("Error al registrar");
+                }
+              }
+            });
+          }
+        });
       }
+    } catch(e) {
+      console.error(e);
     }
+  }
     
   onChangePuebloOriginario() {
     if (this.formularioRegistro) {

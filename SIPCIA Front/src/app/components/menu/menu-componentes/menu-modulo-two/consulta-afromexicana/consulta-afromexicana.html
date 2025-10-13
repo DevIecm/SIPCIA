@@ -46,11 +46,9 @@
           (input)="search()"  
           name="searchTerm" >
       </div>
-      <div class="col-4 d-flex justify-content-end">
-        <button 
-          class="btn button"
-          type="button">Descargar Directorio</button>
-      </div>      
+      <div class="col-6 d-flex justify-content-end">
+        <button class="btn button" (click)="getReporte()">Descarga Directorio</button>
+      </div> 
     </div>
 
     <div class="row back-table" style="margin-top: 8px;">

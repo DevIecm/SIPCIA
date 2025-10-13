@@ -12,7 +12,6 @@
 
 .div-redondeado-right {
     padding: 20px;
-    width: 200px;
     height: 4px;
     color: #f4f4f4!important;
     background-color: #9B3BCA!important;
@@ -59,18 +58,17 @@
 }
 
 .div-redondeado-right-home {
-    padding: 0%;
-    margin: 0px;
     padding: 26px;
-    width: 582px;
-    height: 1px;
-    color: #f4f4f4!important;
-    background-color: #BF90DD!important;
+    width: 520px;
+    color: #f4f4f4 !important;
+    background-color: #BF90DD !important;
     border-top-right-radius: 26px;
+    height: 1px;
     border-bottom-right-radius: 26px;
     display: flex;
-    justify-content: right;
     align-items: center;
+    justify-content: right;
+    gap: 10px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -79,7 +77,7 @@
     cursor: pointer;
 }
 
-input {
+.input-search {
     height: 25px;
     background-color: #C5C5FF;
     border-radius: 15px;
@@ -88,8 +86,8 @@ input {
 
 table {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 12px;
     width: 100%;
+    height: 100%;
     table-layout: fixed;
     word-wrap: break-word;
 }
@@ -99,10 +97,6 @@ th {
     background-color: #9d75ca !important;
 }   
 
-tr {
-    font-size: 8px;
-
-}
 
 .back-table {
     border-radius: 10px;
@@ -112,7 +106,7 @@ tr {
 
 .button {
     background-color: #FBB03B;
-    width: 178px;
+    width: 197px;
     border-radius: 45px;
     height: 39px;
     position: absolute;
@@ -123,6 +117,8 @@ tr {
 
 th,
 td {
+    
+    font-size: 9px!important;
     text-align: center;
     border: 1px solid white;
     padding: 8px;
@@ -148,4 +144,18 @@ i{
     width: 122px;
     display: flex;
     font-size: 14px;
+}
+
+.listComunidad{
+    text-align: center;
+    border-radius: 40px;
+    width: 244px;
+    height: 25px;
+    padding: 0px;
+    border: 1px solid black;
+}
+
+.labelComunidad {
+    font-weight: bold;
+    color: #f4f4f4;
 }
