@@ -31,14 +31,15 @@ export class DirectorioAfromexicanasTwo implements OnInit {
     this.router.navigate(['/bitacora', id, tipo]);
   }
     getReporte(){
-    this.descargarReporteAfro.descargarReporteAfro(2,this.area,this.tokenSesion).subscribe((blob: Blob) => {
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
-      link.click();
-      window.URL.revokeObjectURL(link.href);
-    });
-  }
+    //descarga comunidad Afro
+        this.descargarReporteAfro.descargarReporteAfro(2, null, 1, this.tokenSesion).subscribe((blob: Blob) => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'reporte.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
+    }
 
   nombreUser: string = '';
   sortColumn: string = '';

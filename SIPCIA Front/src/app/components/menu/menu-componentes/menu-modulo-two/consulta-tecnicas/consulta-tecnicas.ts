@@ -97,14 +97,25 @@ export class ConsultaTecnicas implements OnInit {
   };
   
   getReporte(){
-    this.descargarReporteInstitucion.descargarReporteInstitucion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+    const selectedId = this.formularioRegistro?.get('comunidad')?.value;
+    if (selectedId == 1) {
+    //descarga comunidad Indigena
+      this.descargarReporte.descargarReporte(1, null, 3, this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });
-  }
+    } else {
+      this.descargarReporte.descargarReporteAfro(2, null, 3, this.tokenSesion).subscribe((blob: Blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'reporte.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  }}
  
   search(): void {
     const rawFilter = this.formularioRegistro?.get('searchTerm')?.value.trim().toLowerCase();
@@ -146,7 +157,7 @@ export class ConsultaTecnicas implements OnInit {
   constructor(
     private router: Router,
     private reporteService: Reportes,
-    private descargarReporteInstitucion: reporteService,
+    private descargarReporte: reporteService,
     private miServicio: Reportes,
     private catalogos: Catalogos,
     private formBuilder: FormBuilder,

@@ -30,7 +30,7 @@ export class DirectorioIndigenas implements OnInit {
     this.router.navigate(['/bitacora', id, tipo]);
   }
   getReporte(){
-    this.descargarReporte.descargarReporte(1,this.area,this.tokenSesion).subscribe((blob: Blob) => {
+    this.descargarReporte.descargarReporte(1,this.area, this.tipo_usuario, this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte.xlsx';

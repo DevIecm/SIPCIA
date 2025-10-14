@@ -169,7 +169,7 @@ export class RegistroComunitaria implements OnInit {
   }
 
   getRegister() {
-    this.reporteService.getRegisterDataTable(this.area_adscripcion, this.tokenSesion).subscribe({
+    this.reporteService.getRegisterDataTable(null, this.tokenSesion).subscribe({
       next: (data) => {
         if(data.getAfluencia.length > 0) {
           this.dataTable = data.getAfluencia;

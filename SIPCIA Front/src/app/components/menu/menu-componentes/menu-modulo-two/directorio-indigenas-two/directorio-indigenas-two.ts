@@ -29,15 +29,16 @@ export class DirectorioIndigenasTwo implements OnInit {
   goToBitacora(id: number, tipo: string) {
     this.router.navigate(['/bitacora', id, tipo]);
   }
-  getReporte(){
-    this.descargarReporte.descargarReporte(1,this.area,this.tokenSesion).subscribe((blob: Blob) => {
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
-      link.click();
-      window.URL.revokeObjectURL(link.href);
-    });
-  }
+    getReporte(){
+    //descarga comunidad Indigena
+        this.descargarReporte.descargarReporte(1, null, 1, this.tokenSesion).subscribe((blob: Blob) => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'reporte.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      });
+    }
   
   nombreUser: string = '';
   cargoUser: string = '';

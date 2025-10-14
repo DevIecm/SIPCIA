@@ -12,14 +12,15 @@ export class reporteService {
 
   constructor(private http: HttpClient) { }
 
-  descargarReporte(tipo_comunidad: number, distrito_electoral: number, token: string): Observable<Blob> {
+    descargarReporte(tipo_comunidad: number, distrito_electoral: number | null, tipo_usuario: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
     .set('tipo_comunidad', tipo_comunidad)
-    .set('distrito_electoral', distrito_electoral)
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '')
+    .set('tipo_usuario', tipo_usuario)
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteDirectorioIndig', { headers, params, responseType: 'blob' })
       .pipe(
@@ -27,16 +28,17 @@ export class reporteService {
           return throwError(() => error);
         })
       );
-  }
+  } 
 
-  descargarReporteAfro(tipo_comunidad: number, distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteAfro(tipo_comunidad: number, distrito_electoral: number | null, tipo_usuario: number, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
     .set('tipo_comunidad', tipo_comunidad)
-    .set('distrito_electoral', distrito_electoral)
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '')
+    .set('tipo_usuario', tipo_usuario)
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteDirectorioAfro', { headers, params, responseType: 'blob' })
       .pipe(

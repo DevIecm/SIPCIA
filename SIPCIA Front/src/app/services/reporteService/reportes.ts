@@ -191,13 +191,13 @@ export class Reportes {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-  getRegisterDataTable(area: number, token: string): Observable<any> {
+  getRegisterDataTable(area: number | null, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
-      .set('distrito_electoral', area)
+      .set('distrito_electoral', area !== null ? area: '')
       
     return this.http.get(this.apiUrl + 'afluencia/getAfluencia', {headers, params})
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
