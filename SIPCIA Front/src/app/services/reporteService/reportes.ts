@@ -287,6 +287,15 @@ export class Reportes {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
+  getRegisterDataTableComunitariaTwo(token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.get(this.apiUrl + 'lugares/getLugares', {headers})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
   getDataByIdComunitaria(id: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -334,6 +343,15 @@ export class Reportes {
       .set('distrito_electoral', area)
       
     return this.http.get(this.apiUrl + 'atencion/getAtencion', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
+
+  getRegisterDataTableConsultasTwo(token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+      
+    return this.http.get(this.apiUrl + 'atencion/getAtencion', {headers})
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 

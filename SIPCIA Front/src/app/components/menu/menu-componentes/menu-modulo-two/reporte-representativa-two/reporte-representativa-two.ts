@@ -125,13 +125,9 @@ export class ReporteRepresentativaTwo implements OnInit{
   OnChangeDireccion(){
     this.direccion = this.formularioRegistro?.get('direccion')?.value;
     this.catalogo_demarcacion();
-
-    console.log(this.direccion);
   };
 
   onChangeDemarcacion(id: number){
-
-    console.log(this.opcionDermarcacionI)
     if(this.opcionDermarcacionI==0){
       this.reportes.getAllRegistrosInd(this.area, this.tokenSesion).subscribe({
       next: (data) => {

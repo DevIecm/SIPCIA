@@ -55,6 +55,7 @@ export class FormularioConsultas {
   tipo_usuario: number = 0;
   id_usuario: number = 0;
   idConsecutivo: number = 0;
+  moduloRegister: number = 0;
   selectedKmlFile: File | null = null;
 
   constructor(
@@ -66,7 +67,7 @@ export class FormularioConsultas {
   ) {}
 
 
-   onFileSelect(event: any, type: string) {
+  onFileSelect(event: any, type: string) {
 
     if (event.target.files.length > 0) {
       this.selectedKmlFile = event.target.files[0];
@@ -249,6 +250,11 @@ export class FormularioConsultas {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.position = sessionStorage.getItem('dir')!;
     this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
+    this.moduloRegister = Number(localStorage.getItem('modulo'));
+
+    if(this.moduloRegister === 1){
+      this.area = sessionStorage.getItem('area')!;
+    }
 
     this.formularioRegistro = this.formBuilder.group({
       nreporte: ['', [Validators.required]],
@@ -278,19 +284,16 @@ export class FormularioConsultas {
     }
 
     this.getConsecutivo();
-    this.catalogo_demarcacion();
-    this.catalogo_pueblor();
-    this.catalogo_pueblos();
-    this.catalogo_barrios();
-    this.catalogo_unidad_territorial();
     this.catalogo_nreporte();
     this.catalogo_fecha();
 
-      this.onCheckboxChange({ target: { checked: false } });
+    this.onCheckboxChange({ target: { checked: false } });
 
   }
 
   catalogo_unidad_territorial() {
+
+    if(this.moduloRegister === 2){} else {}
     this.catalogos.getCatalogos(Number(this.area), "cat_unidad_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_unidad_territorial.length > 0) {
@@ -508,10 +511,25 @@ export class FormularioConsultas {
       this.formularioRegistro?.get('consulta')?.enable();
       this.formularioRegistro?.get('forma')?.enable();
       this.formularioRegistro?.get('observaciones')?.enable();
+
+      console.log("lluege")
+
+      this.formularioRegistro?.reset({
+        ncompleto: '',
+        ooriginario: '',
+        pueblo: '',
+        barrio: '',
+        uterritorial: '',
+        otro: '',
+        cargo: '',
+        consulta: '',
+        forma: '',
+        observaciones: ''
+      }, { emitEvent: false });
+
     }
   }
   
-
   formatFecha(data: any) {
     const isoDate = data;
     const date = new Date(isoDate);
@@ -533,31 +551,75 @@ export class FormularioConsultas {
         
         next: (data) => {
           this.infoUpdate = data.getRegistroAtencion[0];
-          
+         
           if(data.getRegistroAtencion.length > 0) {
 
-            const datosFormulariosCompletos = {
-              nreporte: this.infoUpdate.numero_reporte,
-              fyperiodo: this.infoUpdate.fecha_periodo,
-              consecutivo: this.infoUpdate.numero_consecutivo,
-              fconsulta: this.infoUpdate.fecha_consulta ? new Date(this.infoUpdate.fecha_consulta).toISOString().split('T')[0] : '',
-              ncompleto: this.infoUpdate.nombre_completo,
-              ooriginario: this.infoUpdate.pueblo_originario,
-              pueblo: this.infoUpdate.pueblo,
-              barrio: this.infoUpdate.barrio,
-              uterritorial: this.infoUpdate.unidad_territorial,
-              otro: this.infoUpdate.otro,
-              cargo: this.infoUpdate.cargo,
-              consulta: this.infoUpdate.descripcion_consulta,
-              forma: this.infoUpdate.forma_atendio,
-              observaciones: this.infoUpdate.observaciones,
-              presento_caso: !!this.infoUpdate.presento_caso
-            }
+            if(this.moduloRegister === 2){
 
-            this.formularioRegistro!.patchValue(datosFormulariosCompletos);
+              console.log(this.infoUpdate)
 
-            if (this.formularioRegistro?.get('presento_caso')?.value === true || this.formularioRegistro?.get('presento_caso')?.value === 1) {
-              this.onCheckboxChange({ target: { checked: true } });
+              this.area = this.infoUpdate.distrito_electoral;
+
+              const datosFormulariosCompletos = {
+                nreporte: this.infoUpdate.numero_reporte,
+                fyperiodo: this.infoUpdate.fecha_periodo,
+                consecutivo: this.infoUpdate.numero_consecutivo,
+                fconsulta: this.infoUpdate.fecha_consulta ? new Date(this.infoUpdate.fecha_consulta).toISOString().split('T')[0] : '',
+                ncompleto: this.infoUpdate.nombre_completo,
+                ooriginario: this.infoUpdate.pueblo_originario,
+                pueblo: this.infoUpdate.pueblo,
+                barrio: this.infoUpdate.barrio,
+                uterritorial: this.infoUpdate.unidad_territorial,
+                otro: this.infoUpdate.otro,
+                cargo: this.infoUpdate.cargo,
+                consulta: this.infoUpdate.descripcion_consulta,
+                forma: this.infoUpdate.forma_atendio,
+                observaciones: this.infoUpdate.observaciones,
+                presento_caso: !!this.infoUpdate.presento_caso
+              }
+
+              this.catalogo_demarcacion();
+              this.catalogo_pueblor();
+              this.catalogo_pueblos();
+              this.catalogo_barrios();
+              this.catalogo_unidad_territorial();
+              this.formularioRegistro!.patchValue(datosFormulariosCompletos);
+
+              if (this.formularioRegistro?.get('presento_caso')?.value === true || this.formularioRegistro?.get('presento_caso')?.value === 1) {
+                this.onCheckboxChange({ target: { checked: true } });
+              }
+
+            } else {
+              
+              const datosFormulariosCompletos = {
+                nreporte: this.infoUpdate.numero_reporte,
+                fyperiodo: this.infoUpdate.fecha_periodo,
+                consecutivo: this.infoUpdate.numero_consecutivo,
+                fconsulta: this.infoUpdate.fecha_consulta ? new Date(this.infoUpdate.fecha_consulta).toISOString().split('T')[0] : '',
+                ncompleto: this.infoUpdate.nombre_completo,
+                ooriginario: this.infoUpdate.pueblo_originario,
+                pueblo: this.infoUpdate.pueblo,
+                barrio: this.infoUpdate.barrio,
+                uterritorial: this.infoUpdate.unidad_territorial,
+                otro: this.infoUpdate.otro,
+                cargo: this.infoUpdate.cargo,
+                consulta: this.infoUpdate.descripcion_consulta,
+                forma: this.infoUpdate.forma_atendio,
+                observaciones: this.infoUpdate.observaciones,
+                presento_caso: !!this.infoUpdate.presento_caso
+              }
+              
+
+              this.catalogo_demarcacion();
+              this.catalogo_pueblor();
+              this.catalogo_pueblos();
+              this.catalogo_barrios();
+              this.catalogo_unidad_territorial();
+              this.formularioRegistro!.patchValue(datosFormulariosCompletos);
+
+              if (this.formularioRegistro?.get('presento_caso')?.value === true || this.formularioRegistro?.get('presento_caso')?.value === 1) {
+                this.onCheckboxChange({ target: { checked: true } });
+              }
             }
           
           } else {
