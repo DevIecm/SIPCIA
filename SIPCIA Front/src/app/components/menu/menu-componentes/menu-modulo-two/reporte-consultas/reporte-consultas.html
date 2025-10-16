@@ -59,7 +59,7 @@
         <thead>
           <tr class="table-primary">
             <th scope="col">No.</th>
-            <th scope="col">Edición</th>
+            <th scope="col">Visualizar</th>
             <th scope="col">No se presentó <br> el caso</th>
             <th 
               scope="col"
@@ -180,7 +180,7 @@
                 class="btn button-table"
                 (click)="openModal(item.id_registro)"
               >
-                <i class="bi bi-pencil-square"></i>
+                <i class="bi bi-journal-text"></i>
               </button>
             </td>
             <td>{{ item.presento_caso === false ? 'No' : 'Si'}}</td>

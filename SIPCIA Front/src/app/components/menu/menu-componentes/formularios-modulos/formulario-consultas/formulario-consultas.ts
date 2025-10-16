@@ -486,6 +486,16 @@ export class FormularioConsultas {
       this.formularioRegistro?.get('forma')?.disable();
       this.formularioRegistro?.get('observaciones')?.disable();
 
+      this.formularioRegistro?.get('ncompleto')?.setValue('');
+      this.formularioRegistro?.get('ooriginario')?.setValue('');
+      this.formularioRegistro?.get('pueblo')?.setValue('');
+      this.formularioRegistro?.get('barrio')?.setValue('');
+      this.formularioRegistro?.get('uterritorial')?.setValue('');
+      this.formularioRegistro?.get('otro')?.setValue('');
+      this.formularioRegistro?.get('cargo')?.setValue('');
+      this.formularioRegistro?.get('consulta')?.setValue('');
+      this.formularioRegistro?.get('forma')?.setValue('');
+      this.formularioRegistro?.get('observaciones')?.setValue('');
 
       this.formularioRegistro?.get('ncompleto')?.clearValidators();
       this.formularioRegistro?.get('ooriginario')?.clearValidators();
@@ -511,21 +521,6 @@ export class FormularioConsultas {
       this.formularioRegistro?.get('consulta')?.enable();
       this.formularioRegistro?.get('forma')?.enable();
       this.formularioRegistro?.get('observaciones')?.enable();
-
-      console.log("lluege")
-
-      this.formularioRegistro?.reset({
-        ncompleto: '',
-        ooriginario: '',
-        pueblo: '',
-        barrio: '',
-        uterritorial: '',
-        otro: '',
-        cargo: '',
-        consulta: '',
-        forma: '',
-        observaciones: ''
-      }, { emitEvent: false });
 
     }
   }
@@ -584,6 +579,8 @@ export class FormularioConsultas {
               this.catalogo_barrios();
               this.catalogo_unidad_territorial();
               this.formularioRegistro!.patchValue(datosFormulariosCompletos);
+      
+              this.formularioRegistro?.disable();
 
               if (this.formularioRegistro?.get('presento_caso')?.value === true || this.formularioRegistro?.get('presento_caso')?.value === 1) {
                 this.onCheckboxChange({ target: { checked: true } });

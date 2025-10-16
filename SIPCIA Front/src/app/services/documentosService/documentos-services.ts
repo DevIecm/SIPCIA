@@ -73,6 +73,20 @@ export class DocumentosServices {
         .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
     };
 
+    getRegisterfichaTecnicaTablaTwo(tipo_comunidad: number, tipo_documento: number, token: string): Observable<any> {
+        const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`
+        });
+
+
+        const params = new HttpParams()
+        .set('tipo_comunidad', tipo_comunidad)
+        .set('tipo_documento', tipo_documento)
+        
+        return this.http.get(this.apiUrl + 'cargaNormativo/getDocumentos', {headers, params})
+        .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+    };
+
     getDataFichaTecnicaById(id: number, token: string): Observable<any> {
         const headers = new HttpHeaders({
         Authorization: `Bearer ${token}`
