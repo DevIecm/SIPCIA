@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { Register } from '../../../../../services/registerService/register';
 import { Auth } from '../../../../../services/authService/auth';
 import { Catalogos } from '../../../../../services/catService/catalogos';
+import { DeleteService } from '../../../../../services/deleteServices/delete-service';
 
 @Component({
   selector: 'app-formulario-registro',
@@ -72,6 +73,7 @@ export class FormularioRegistro implements OnInit{
     private registerService: Register,
     private service: Auth,
     private catalogos: Catalogos,
+    private delService: DeleteService
   ) {}
 
   ngOnInit(): void {
@@ -670,6 +672,43 @@ export class FormularioRegistro implements OnInit{
 
   onBackdropClick(event: MouseEvent) {
     this.onClose();
+  }
+
+  eliminaRegistro() {
+    Swal.fire({
+      title: "¿Está seguro que desea Eliminar la Instacia?",
+      icon: "warning", 
+      showCancelButton: true,
+      confirmButtonColor: "#FBB03B",
+      cancelButtonColor: "#9D75CA",
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.delService.delSecondPointOneStep(this.idRegistro, this.tokenSesion).subscribe({
+          next: (data) => {
+            if(data.code === 200) {
+              Swal.fire({
+                title: "Se han aplicado correctamente los cambios.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#FBB03B",
+              });
+              setTimeout(() => {
+                this.onClose();
+                this.resetData();
+              }, 3000);
+            }
+          }, error: (err) => {
+            if(err.error.code === 160) {
+              this.service.cerrarSesionByToken();
+            }
+          }
+        });
+      } else {
+        return;
+      }
+    });
   }
 }
 

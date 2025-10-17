@@ -71,7 +71,6 @@
                         formControlName="demarcacion"
                         class="select-input form-select" 
                         aria-label="Default select example"
-                        [(ngModel)]="opcionDemarcacion"  
                       >
                         <option value="" disabled selected>Seleccione una opción</option>
                         @for (item of catalogoDemarcacion; track item) {
@@ -131,7 +130,6 @@
                             formControlName="ooriginario" 
                             class="select-input form-select" 
                             aria-label="Default select example"
-                            [(ngModel)]="opcionPuebloOriginario"
                             (change)="onChangePuebloOriginario()"
                           >
                             <option selected></option>
@@ -164,7 +162,6 @@
                             formControlName="barrio" 
                             class="select-input form-select" 
                             aria-label="Default select example"
-                            [(ngModel)]="opcionBarrio"
                             (change)="onChangeBarrio()"
                           >
                             <option value="" disabled selected>Seleccione una opción</option>
@@ -183,7 +180,6 @@
                             formControlName="uterritorial" 
                             class="select-input form-select" 
                             aria-label="Default select example"
-                            [(ngModel)]="opcionUnidadTerritorial"
                             (change)="onChangeUnidadTerritorial()"
                           >
                             <option value="" disabled selected>Seleccione una opción</option>
@@ -422,16 +418,36 @@
                 </div>
               </div>
 
-              <div class="container text-center" style="margin-top: 15px;">
-                <div class="row">
-                  <div class="col">
-                    <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
-                  </div>
-                  <div class="col">
-                    <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+              @if(!this.idRegistroC){
+                <div class="container text-center mt-4">
+                  <div class="row align-items-center">
+                    <div class="col-5">
+                      <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">
+                        {{data.btn1}}
+                      </button>
+                    </div>
+                    <div class="col-5">
+                      <button type="button" (click)="resetData()" class="btn button-clean">
+                        Cancelar
+                      </button>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center">
+                      <i (click)="eliminaRegistro()" class="bi bi-trash3-fill fs-1 btn-trash"></i>
+                    </div>
                   </div>
                 </div>
-              </div>
+              } @else {
+                <div class="container text-center" style="margin-top: 15px;">
+                  <div class="row">
+                    <div class="col">
+                      <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
+                    </div>
+                    <div class="col">
+                      <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              }
 
               <div *ngIf="formularioRegistro?.get('coficial')?.invalid && 
                   (formularioRegistro?.get('coficial')?.dirty || formularioRegistro?.get('coficial')?.touched)">

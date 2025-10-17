@@ -61,7 +61,7 @@ export class CatalogoAcompa implements OnInit {
   }
   
   getReporte(){
-    this.descargarReporteInstitucion.descargarReporteInstitucion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+    this.descargarReporteInstitucion.descargarReporteInstitucion(null,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte.xlsx';

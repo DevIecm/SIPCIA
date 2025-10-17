@@ -43,7 +43,7 @@ export class Register {
       );
   };
 
-    nuupdateRegistro(data: FormData, token: string): Observable<any> {
+  nuupdateRegistro(data: FormData, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });

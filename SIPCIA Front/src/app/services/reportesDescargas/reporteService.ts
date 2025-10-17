@@ -64,13 +64,13 @@ export class reporteService {
       );
   }
 
-  descargarReporteInstitucion(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteInstitucion(distrito_electoral: number | null, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
-    .set('distrito_electoral', distrito_electoral)
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '')
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteInstituciones', { headers, params, responseType: 'blob' })
       .pipe(

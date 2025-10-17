@@ -67,7 +67,7 @@ textarea {
 }
 
 .button-clean {
-    width: 50%;
+    width: 70%;
     height: 38px;
     border-radius: 15px;
     background-color: #9B3BCA!important;
@@ -76,10 +76,15 @@ textarea {
 }
 
 .button-register {
-    width: 50%;
+    width: 70%;
     height: 38px;
     border-radius: 15px;
     background-color: #FBB03B!important;
     color: black!important;
     font-weight: bold;
+}
+
+.btn-trash {
+    color: #dc3545;
+    cursor: pointer;
 }
