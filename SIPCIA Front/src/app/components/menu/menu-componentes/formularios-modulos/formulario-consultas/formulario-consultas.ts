@@ -551,8 +551,6 @@ export class FormularioConsultas {
 
             if(this.moduloRegister === 2){
 
-              console.log(this.infoUpdate)
-
               this.area = this.infoUpdate.distrito_electoral;
 
               const datosFormulariosCompletos = {

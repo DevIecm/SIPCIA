@@ -120,16 +120,12 @@ export class ConsultaAfromexicana implements OnInit {
  
   search(): void {
     const rawFilter = this.formularioRegistro?.get('searchTerm')?.value.trim().toLowerCase();
-console.log(rawFilter)
-console.log(this.allDatable)
 
     if (rawFilter === '') {
       this.dataTable = [...this.allDatable];
       return;
     }
 
-
-    console.log(this.allDatable)
     this.dataTable = this.allDatable.filter((val) => {
       const id_registro = (val.id_registro ?? '').toString().toLowerCase().trim();
       const nombre_completo = (val.nombre_completo ?? '').toString().toLowerCase().trim();

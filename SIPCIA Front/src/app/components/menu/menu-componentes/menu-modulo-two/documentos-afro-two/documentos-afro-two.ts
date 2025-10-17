@@ -231,11 +231,11 @@ export class DocumentosAfroTwo implements OnInit{
   }
 
   getRegisterFichaTecnica() {
-    this.reporteService.getRegisterfichaTecnicaTabla(this.area_adscripcion, this.tokenSesion).subscribe({
+    this.reporteService.getRegisterfichaTecnicaTablaAfroTwo(this.tokenSesion).subscribe({
       next: (data) => {
         if(data.getFichasInd.length > 0) {
-          this.dataTable = data.getFichasInd;
-          this.allDatable = data.getFichasInd;
+          this.dataTable = data.getFichasAfro;
+          this.allDatable = data.getFichasAfro;
         } else {
           Swal.fire("No se encontraron registros");
         }        

@@ -55,16 +55,17 @@ export class FormularioDocumentos {
   infoUpdate: any = [];
 
   opcionDemarcacion: any = null;
-
+  cabecera: number | null = null;
+  
   tokenSesion: string = '';
   today: string = '';
   labelTitle: string = '';
   
   area: number = 0;
   id_usuario: number = 0;
-  cabecera: number | null = null;
   tipo_usuario: number = 0;
   cammbiosOrdenDia: number = 0;
+  modulo: number = 0;
 
   checksDisabled: boolean = false;
 
@@ -162,8 +163,6 @@ export class FormularioDocumentos {
                 modulo_registro: this.tipo_usuario,
                 estado_registro: 1,
               }
-              console.log("datosForm", datosForm);
-
 
               this.registerService.insertaFichaTecnica(datosForm, this.tokenSesion).subscribe({
                 next: (data) => {
@@ -270,6 +269,7 @@ export class FormularioDocumentos {
     this.area = Number(sessionStorage.getItem('area')!);
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
+    this.modulo = Number(localStorage.getItem('modulo'));
 
     this.formularioRegistro = this.formBuilder.group({
       demarcacion_territorial: ['', [Validators.required]],
@@ -317,8 +317,6 @@ export class FormularioDocumentos {
       observaciones: [''],
       cuales: [''],
     });
-
-    this.catalogo_demarcacion();
     
     setTimeout(() => {
       this.cdRef.detectChanges();
@@ -334,7 +332,10 @@ export class FormularioDocumentos {
     } else if(this.idSelected === undefined || this.idSelected === null) {
       this.idRegistroC = false;
     }
-    
+
+    if(this.modulo === 2){
+      this.formularioRegistro?.disable();
+    }
   }
 
   onClose() {
@@ -408,9 +409,13 @@ export class FormularioDocumentos {
       this.registerService.getDataFichaTecnicaById(this.idSelected ?? 0, this.tokenSesion).subscribe({
         
         next: (data) => {
-
           this.infoUpdate = data.getRegistroFichaInd[0];
+
           if(data.getRegistroFichaInd.length > 0) {
+
+            if(this.modulo === 2) {
+              this.area = this.infoUpdate.distrito_electoral;
+            }
 
             const datosCargados = {
               fecha: this.infoUpdate.fecha_asamblea_informativa ? new Date(this.infoUpdate.fecha_ficha).toISOString().split('T')[0] : '',
@@ -447,6 +452,7 @@ export class FormularioDocumentos {
             }
 
             this.formularioRegistro!.patchValue(datosCargados);
+            this.catalogo_demarcacion();
 
             const lenguasSeleccionadas = this.infoUpdate.lenguas?.map((l: { id_lengua: { toString: () => any; }; }) => l.id_lengua.toString()) ?? [];
 
@@ -515,10 +521,13 @@ export class FormularioDocumentos {
       this.registerService.getDataFichaTecnicaByIdAfro(this.idSelected ?? 0, this.tokenSesion).subscribe({
         
         next: (data) => {
-
           this.infoUpdate = data.getRegistroFichaAfro[0];
           
           if(data.getRegistroFichaAfro.length > 0) {
+
+            if(this.modulo === 2) {
+              this.area = this.infoUpdate.distrito_electoral;
+            }
 
             const datosFormularioCompletos = {
               demarcacion_territorial: this.infoUpdate.id_demarcacion,
@@ -554,6 +563,7 @@ export class FormularioDocumentos {
             };
 
             this.formularioRegistro!.patchValue(datosFormularioCompletos);
+            this.catalogo_demarcacion();
 
             const personaResponsables = this.infoUpdate.personaRes ?? [];
 

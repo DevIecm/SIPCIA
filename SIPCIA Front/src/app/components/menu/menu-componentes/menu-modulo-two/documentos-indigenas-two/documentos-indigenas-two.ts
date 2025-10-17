@@ -231,7 +231,7 @@ export class DocumentosIndigenasTwo implements OnInit{
   }
 
   getRegisterFichaTecnica() {
-    this.reporteService.getRegisterfichaTecnicaTabla(this.area_adscripcion, this.tokenSesion).subscribe({
+    this.reporteService.getRegisterfichaTecnicaTablaTwoo(this.tokenSesion).subscribe({
       next: (data) => {
         if(data.getFichasInd.length > 0) {
           this.dataTable = data.getFichasInd;
