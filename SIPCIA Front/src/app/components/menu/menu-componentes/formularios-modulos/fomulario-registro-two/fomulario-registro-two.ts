@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { Register } from '../../../../../services/registerService/register';
 import { Auth } from '../../../../../services/authService/auth';
 import { Catalogos } from '../../../../../services/catService/catalogos';
+import { DeleteService } from '../../../../../services/deleteServices/delete-service';
 
 @Component({
   selector: 'app-fomulario-registro-two',
@@ -59,12 +60,6 @@ export class FomularioRegistroTwo implements OnInit{
   oculta_folio: boolean = false;
   fileUploaded: boolean = false;
   
-  opcionComunidad: any = null;
-  opcionPuebloOriginario: any = null;
-  opcionPueblo: any = null;
-  opcionBarrio: any = null;
-  opcionUnidadTerritorial: any = null;
-  opcionDemarcacion: any = null;
   selectedFileName: string | null = null;
   selectedFile: File | null = null;
   
@@ -81,6 +76,7 @@ export class FomularioRegistroTwo implements OnInit{
     private registerService: Register,
     private service: Auth,
     private catalogos: Catalogos,
+    private delService: DeleteService
   ) {}
 
   ngOnInit(): void {
@@ -155,20 +151,20 @@ export class FomularioRegistroTwo implements OnInit{
     }
   }
 
- onFileSelect(event: any, type: string) {
-  if (event.target.files.length > 0) {
-    if (type === "zip") {
-      this.selectedFile = event.target.files[0];
+  onFileSelect(event: any, type: string) {
+    if (event.target.files.length > 0) {
+      if (type === "zip") {
+        this.selectedFile = event.target.files[0];
+      }
     }
   }
-}
   
-    removeFile(fileInput: HTMLInputElement): void {
-      fileInput.value = '';
-      this.selectedFileName = null;
-      this.fileUploaded = false;
-      this.selectedFile = null;
-    }
+  removeFile(fileInput: HTMLInputElement): void {
+    fileInput.value = '';
+    this.selectedFileName = null;
+    this.fileUploaded = false;
+    this.selectedFile = null;
+  }
 
   changeSeccion(){
     this.getSeccion();
@@ -463,14 +459,14 @@ export class FomularioRegistroTwo implements OnInit{
 
           formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");    
           formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
-          formData.append("demarcacion", this.opcionDemarcacion); 
+          formData.append("demarcacion", this.formularioRegistro.get('demarcacion')?.value || ""); 
           formData.append("comunidad", this.formularioRegistro.get('scomunidad')?.value || "");
           formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
           formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");   
-          formData.append("pueblo_originario", this.opcionPuebloOriginario);
-          formData.append("pueblo_pbl", this.opcionPueblo);
-          formData.append("barrio_pbl", this.opcionBarrio);
-          formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
+          formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || "");
+          formData.append("pueblo_pbl", this.formularioRegistro.get('pueblo')?.value || "");
+          formData.append("barrio_pbl", this.formularioRegistro.get('barrio')?.value || "");
+          formData.append("unidad_territorial_pbl", this.formularioRegistro.get('uterritorial')?.value || "");
           formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
           formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
           formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
@@ -548,13 +544,13 @@ export class FomularioRegistroTwo implements OnInit{
 
           formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");    
           formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
-          formData.append("demarcacion", this.opcionDemarcacion); 
+          formData.append("demarcacion", this.formularioRegistro.get('demarcacion')?.value || ""); 
           formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
           formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");   
-          formData.append("pueblo_originario", this.opcionPuebloOriginario);
-          formData.append("pueblo_pbl", this.opcionPueblo);
-          formData.append("barrio_pbl", this.opcionBarrio);
-          formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
+          formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || "");
+          formData.append("pueblo_pbl", this.formularioRegistro.get('pueblo')?.value || "");
+          formData.append("barrio_pbl", this.formularioRegistro.get('barrio')?.value || "");
+          formData.append("unidad_territorial_pbl", this.formularioRegistro.get('uterritorial')?.value || "");
           formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
           formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
           formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
@@ -766,6 +762,43 @@ export class FomularioRegistroTwo implements OnInit{
 
   onBackdropClick(event: MouseEvent) {
     this.onClose();
+  }
+
+  eliminaRegistro() {
+    Swal.fire({
+      title: "¿Está seguro que desea Eliminar la Instacia?",
+      icon: "warning", 
+      showCancelButton: true,
+      confirmButtonColor: "#FBB03B",
+      cancelButtonColor: "#9D75CA",
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.delService.delFirstStep(this.idRegistro, this.tokenSesion).subscribe({
+          next: (data) => {
+            if(data.code === 200) {
+              Swal.fire({
+                title: "Se han aplicado correctamente los cambios.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#FBB03B",
+              });
+              setTimeout(() => {
+                this.onClose();
+                this.resetData();
+              }, 3000);
+            }
+          }, error: (err) => {
+            if(err.error.code === 160) {
+              this.service.cerrarSesionByToken();
+            }
+          }
+        });
+      } else {
+        return;
+      }
+    });
   }
 }
 
