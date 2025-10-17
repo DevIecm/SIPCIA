@@ -47,7 +47,6 @@ export class Control {
 
 
   updateEstadoModulo(distrito: number, estado_sistema: number, token: string): Observable<any> {
-    console.log(distrito)
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -56,8 +55,6 @@ export class Control {
       "id_modulo": distrito,
       "estado_sistema": estado_sistema
     }
-
-    console.log(data)
 
     return this.http.patch(this.apiUrl + 'control/updateEstadoModulo', data, { headers })
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))

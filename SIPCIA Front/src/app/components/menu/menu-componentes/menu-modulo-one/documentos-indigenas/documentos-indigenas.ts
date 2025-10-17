@@ -18,7 +18,7 @@ import { DocumentosServices } from '../../../../../services/documentosService/do
     FormsModule,
     ReactiveFormsModule,
     FormularioDocumentos
-],
+  ],
   templateUrl: './documentos-indigenas.html',
   styleUrl: './documentos-indigenas.css'
 })

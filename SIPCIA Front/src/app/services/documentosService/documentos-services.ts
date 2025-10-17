@@ -60,6 +60,16 @@ export class DocumentosServices {
         .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
     };
 
+    getRegisterfichaTecnicaTablaAfroTwo(token: string): Observable<any> {
+        const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`
+        });
+        
+        return this.http.get(this.apiUrl + 'fichasAfro/getFichasAfro', {headers})
+        .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+    };
+
+
     getRegisterfichaTecnicaTabla(area: number, token: string): Observable<any> {
         const headers = new HttpHeaders({
         Authorization: `Bearer ${token}`
@@ -70,6 +80,29 @@ export class DocumentosServices {
         .set('distrito_electoral', area)
         
         return this.http.get(this.apiUrl + 'fichas/getFichasInd', {headers, params})
+        .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+    };
+
+    getRegisterfichaTecnicaTablaTwoo( token: string): Observable<any> {
+        const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`
+        });
+        
+        return this.http.get(this.apiUrl + 'fichas/getFichasInd', {headers})
+        .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+    };
+
+    getRegisterfichaTecnicaTablaTwo(tipo_comunidad: number, tipo_documento: number, token: string): Observable<any> {
+        const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`
+        });
+
+
+        const params = new HttpParams()
+        .set('tipo_comunidad', tipo_comunidad)
+        .set('tipo_documento', tipo_documento)
+        
+        return this.http.get(this.apiUrl + 'cargaNormativo/getDocumentos', {headers, params})
         .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
     };
 

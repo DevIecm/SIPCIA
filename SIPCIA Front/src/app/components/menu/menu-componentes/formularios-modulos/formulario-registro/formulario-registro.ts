@@ -429,7 +429,6 @@ export class FormularioRegistro implements OnInit{
   };
 
   saveForm() {
-    console.log("this.modulo", this.modulo);
     Swal.fire({
       title: "¿Está seguro que desea Editar la Instacia? Se sobrescribirán los datos actuales.",
       icon: "warning",
@@ -484,10 +483,6 @@ export class FormularioRegistro implements OnInit{
         formData.append("modulo_registro", this.modulo == 2 ? '1' : this.tipo_usuario.toString());
         formData.append("estado_registro", "2");
         formData.append("tipo_usuario", this.modulo == 2 ? '1' : this.tipo_usuario.toString());
-        
-        for (const [key, value] of formData.entries()) {
-          console.log(`${key}: ${value}`);
-        }
 
         this.registerService.nuupdateRegistro(formData, this.tokenSesion).subscribe({
           next: (data) => {

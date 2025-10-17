@@ -1,0 +1,292 @@
+<div class="modal show fade d-block" tabindex="-1" *ngIf="isOpen" (click)="onBackdropClick($event)" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" style="width: auto; max-width: 60%;" (click)="$event.stopPropagation()">
+        <div class="modal-content" style="width: auto; height: auto;">
+            <div class="modal-body">
+                <div class="card card-size text-center fw-bold">
+                    <div class="card-body">
+                        <form [formGroup]="formularioRegistro!" (ngSubmit)="saveForm()">
+
+                            <div class="container text-end">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="form-label">*campos obligatorios</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container text-center mt-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="form-label">{{ labelTitle }}</label>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="container text-center">
+                                            <div class="mb-3">
+                                                <label class="form-label">Dirección Distrital:</label>
+                                                <select 
+                                                    formControlName="direccion"
+                                                    class="select-input form-select" 
+                                                    aria-label="Default select example"
+                                                    (change)="onChangeDireccion()"
+                                                >
+                                                    <option value="" disabled selected>Seleccione una opción</option>
+                                                    @for (item of catalogoDireccion; track item) {
+                                                    <option [value]="item.id">{{item.id}}</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="container text-center">
+                                            <div class="row row-cols-1">
+                                                <div class="col"><label class="form-label">Fecha:</label></div>
+                                                <div class="col"><label class="form-label" style="color: #b7b5b8;" >{{ today }}</label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container text-center mt-4">
+                                <div class="row row-cols-2">
+                                    <div class="col">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div style="border: 1px solid" *ngIf="imagePreviewUrl">
+                                                    <img *ngIf="imagePreviewUrl" [src]="imagePreviewUrl" class="img-fluid rounded" alt="Fotografía" />
+                                                    </div>
+                                                    <label class="col-sm-8 form-label" style="color: #b7b5b8;">Fotografía (png, jpg, gif)</label>
+                                                    <input class="form-control txt-input" (change)="onFotoSelected($event)" type="file" accept="image/*" id="formFile">
+                                                </div>
+                                                
+                                                <div class="col-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Demarcación Territorial:</label>
+                                                        <select 
+                                                            formControlName="demarcacion"
+                                                            class="select-input form-select" 
+                                                            aria-label="Default select example" 
+                                                        >
+                                                            <option value="" disabled selected>Seleccione una opción</option>
+                                                            @for (item of catalogoDemarcacion; track item) {
+                                                            <option [value]="item.id">{{item.demarcacion_territorial}}</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">*Pueblo Originario:</label>
+                                                        <select 
+                                                            formControlName="ooriginario"
+                                                            class="select-input form-select" 
+                                                            aria-label="Default select example"
+                                                            (change)="onChangePuebloOriginario()"
+                                                        >
+                                                            <option value="" disabled selected>Seleccione una opción</option>
+                                                            @for (item of catalogoPueblor; track item) {
+                                                            <option [value]="item.id">{{item.pueblo_originario}}</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">*Unidad Territorial:</label>
+                                                        <select 
+                                                            formControlName="uterritorial"
+                                                            class="select-input form-select" 
+                                                            aria-label="Default select example"
+                                                            (change)="onChangeUnidadTerritorial()"
+                                                        >
+                                                            <option value="" disabled selected>Seleccione una opción</option>
+                                                            @for (item of catalogoUnidadTerritorial; track item) {
+                                                            <option [value]="item.id">{{item.ut}}</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3 ">
+                                                        <label class="form-label">*Nombre (s) y apellidos completos:</label>
+                                                        <input 
+                                                            type="text"
+                                                            maxlength="200"
+                                                            formControlName="ncompleto"
+                                                            class="form-control txt-input"
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label class="form-label">*Pueblo:</label>
+                                                    <select 
+                                                        formControlName="pueblo"
+                                                        class="select-input form-select" 
+                                                        aria-label="Default select example"
+                                                        (change)="onChangePueblo()"
+                                                    >
+                                                        <option value="" disabled selected>Seleccione una opción</option>
+                                                        @for (item of catalogoPueblos; track item) {
+                                                        <option [value]="item.id">{{item.pueblo}}</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col mb-3">
+                                                    <label class="form-label">*Barrio:</label>
+                                                    <select 
+                                                        formControlName="barrio"
+                                                        class="select-input form-select" 
+                                                        aria-label="Default select example"
+                                                        (change)="onChangeBarrio()"
+                                                    >
+                                                        <option value="" disabled selected>Seleccione una opción</option>
+                                                        @for (item of catalogoBarrios; track item) {
+                                                        <option [value]="item.id">{{item.barrio}}</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Otro</label>
+                                                        <input 
+                                                            type="text"
+                                                            maxlength="200"
+                                                            formControlName="otro"
+                                                            class="form-control txt-input"
+                                                            (change)="onChangeOtro()"
+                                                        >
+                                                    </div>
+                                                </div>
+                                                <div class="col"></div> 
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="col-12 text-center">
+                                            <div class="mb-3">
+                                                <label class="form-label">*Seleccionar comunidad:</label>
+                                                <select 
+                                                    formControlName="comunidad"
+                                                    class="select-input form-select" 
+                                                    aria-label="Default select example"
+                                                    [(ngModel)]="opcionDemarcacion"
+                                                >
+                                                    <option value="" disabled selected>Seleccione una opción</option>
+                                                    @for (item of catalogoComunidad; track item) {
+                                                    <option [value]="item.id">{{item.comunidad}}</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Interés profesional como:</label>
+                                                <input 
+                                                    type="text"
+                                                    maxlength="200"
+                                                    formControlName="interes"
+                                                    class="form-control txt-input"
+                                                >
+                                            </div>
+
+                                            <label class="form-label">Datos de la institución a la que pertence</label>
+                                            <div class="mb-3 mt-4">
+                                                <label class="form-label">Nombre de la institución:</label>
+                                                <input 
+                                                    type="text"
+                                                    maxlength="200"
+                                                    formControlName="ninstitucion"
+                                                    class="form-control txt-input"
+                                                >
+                                            </div>
+                                            <div class="mb-3 mt-4">
+                                                <label class="form-label">Cargo:</label>
+                                                <input 
+                                                    type="text"
+                                                    maxlength="200"
+                                                    formControlName="cargo"
+                                                    class="form-control txt-input"
+                                                >
+                                            </div>
+
+                                            <div class="container text-center">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <button [disabled]="formularioRegistro?.invalid" type="submit" class="btn button-register">Registrar</button>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col mt-4 text-center">
+                                        <label class="form-label">Datos de contacto obtenidos de forma pública o <br>con autorización de la persona titular de la información</label>
+                                        <div class="col-12 mt-1">
+                                            <label class="form-label">Domicilio:</label>
+                                            <input 
+                                                type="text"
+                                                maxlength="200"
+                                                formControlName="domicilio"
+                                                class="form-control txt-input"
+                                            >
+                                        </div>
+                                        <div class="mt-4 mb-3 col-12">
+                                            <label class="form-label">Teléfono:</label>
+                                            <input 
+                                                type="text"
+                                                maxlength="10"
+                                                inputmode="numeric" 
+                                                formControlName="telefono"
+                                                pattern="[0-9]*"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                class="form-control txt-input"
+                                            >
+                                        </div>
+                                        <div class="mt-4 mb-3 col-12">
+                                            <label class="form-label">Correo Electrónico:</label>
+                                            <input 
+                                                type="text"
+                                                formControlName="correo"
+                                                maxlength="200"
+                                                class="form-control txt-input"
+                                            >
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br>lo determine la DEOEyG</label>
+                                                <input
+                                                class="form-control"
+                                                type="file"
+                                                id="formFile"
+                                                (change)="onFileSelect($event, 'zip')"
+                                                accept=".zip"
+                                                #fileInputRef
+                                            />
+                                            </div>
+                                            <div *ngIf="infoUpdate?.cv_enlace ">
+                                            <small>Archivo actual: {{ infoUpdate?.cv_enlace }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
