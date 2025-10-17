@@ -91,7 +91,7 @@ export class ReporteConsultas implements OnInit {
 
   getReporte(){
     if(this.selectedIds.length === 0) {
-      this.descargarReporteAtencion.descargarReporteAtencionAll(this.area_adscripcion, this.tokenSesion).subscribe((blob: Blob) => {
+      this.descargarReporteAtencion.descargarReporteAtencionAll(null, this.tokenSesion).subscribe((blob: Blob) => {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = 'reporte.xlsx';
@@ -99,7 +99,7 @@ export class ReporteConsultas implements OnInit {
         window.URL.revokeObjectURL(link.href);
       });
     } else{
-      this.descargarReporteAtencion.descargarReporteAtencion(this.area_adscripcion, this.selectedIds,  this.tokenSesion).subscribe((blob: Blob) => {
+      this.descargarReporteAtencion.descargarReporteAtencion(null, this.selectedIds,  this.tokenSesion).subscribe((blob: Blob) => {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = 'reporte.xlsx';

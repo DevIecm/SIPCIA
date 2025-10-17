@@ -11,13 +11,13 @@ export class Catalogos {
 
   constructor(private http: HttpClient) { }
 
-  getCatalogos(id_distrito: number, cat_tipo: string, token: string): Observable<any> {
+  getCatalogos(id_distrito: number | null, cat_tipo: string, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
-      .set('id_distrito', id_distrito)
+    .set('id_distrito', id_distrito !== null ? id_distrito: '')
     
     return this.http.get(this.apiUrl + 'catalogos/' + cat_tipo, {headers, params}).pipe(catchError((error: HttpErrorResponse) => {return throwError(() => error);}));
   };

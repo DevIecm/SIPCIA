@@ -48,13 +48,13 @@ export class reporteService {
       );
   }
 
-  descargarReporteInstancias(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteInstancias(distrito_electoral: number | null, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
-    .set('distrito_electoral', distrito_electoral)
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '')
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteInstancias', { headers, params, responseType: 'blob' })
       .pipe(
@@ -80,13 +80,13 @@ export class reporteService {
       );
   }
 
-  descargarReporteAtencionAll(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteAtencionAll(distrito_electoral: number | null, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
-    .set('distrito_electoral', distrito_electoral)
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '')      
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteAtencion', { headers, params, responseType: 'blob' })
       .pipe(
@@ -96,13 +96,13 @@ export class reporteService {
       );
   }
 
-  descargarReporteAtencion(distrito_electoral: number, id_registro: any, token: string): Observable<Blob> {
+  descargarReporteAtencion(distrito_electoral: number | null, id_registro: any, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
-    .set('distrito_electoral', distrito_electoral)
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '')
     .set('id_registro', id_registro);
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteAtencionById', { headers, params, responseType: 'blob' })
@@ -113,13 +113,13 @@ export class reporteService {
       );
   }
 
-  descargarReporteAfluencia(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteAfluencia(distrito_electoral: number | null, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
-    .set('distrito_electoral', distrito_electoral)
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '')
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteAfluencia', { headers, params, responseType: 'blob' })
       .pipe(
@@ -129,13 +129,13 @@ export class reporteService {
       );
   }
 
-  descargarReporteAsamblea(distrito_electoral: number, token: string): Observable<Blob> {
+  descargarReporteAsamblea(distrito_electoral: number | null, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
     const params = new HttpParams()
-    .set('distrito_electoral', distrito_electoral)
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '');
 
     return this.http.get(this.apiUrl + 'reportesDes/reporteAsamblea', { headers, params, responseType: 'blob' })
       .pipe(

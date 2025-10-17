@@ -60,7 +60,7 @@ export class PropuestaComunitaria implements OnInit {
   }
 
   getReporte(){
-    this.descargarReporteAsamblea.descargarReporteAsamblea(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+    this.descargarReporteAsamblea.descargarReporteAsamblea(null,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte.xlsx';

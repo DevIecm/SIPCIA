@@ -64,7 +64,7 @@ export class RegistroComunitaria implements OnInit {
   }
 
   getReporte(){
-    this.descargarReporteAfluencia.descargarReporteAfluencia(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+    this.descargarReporteAfluencia.descargarReporteAfluencia(null,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte.xlsx';

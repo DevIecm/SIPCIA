@@ -71,7 +71,7 @@ export class ReporteRepresentativaTwo implements OnInit{
   }
 
   getReporte(){
-    this.descargarReporteInstancias.descargarReporteInstancias(this.area,this.tokenSesion).subscribe((blob: Blob) => {
+    this.descargarReporteInstancias.descargarReporteInstancias(null,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte.xlsx';
@@ -89,20 +89,40 @@ export class ReporteRepresentativaTwo implements OnInit{
   }
 
   catalogo_demarcacion() {
-    this.catalogos.getCatalogos(this.direccion, "cat_demarcacion_territorial", this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.cat_demarcacion_territorial.length > 0) {
-          this.catalogoDemarcacionI = data.cat_demarcacion_territorial;
-        }
-      }, error: (err) => {
+    if (this.direccion==0) {
+      console.log("nueva funcion para mostrar todo")
+      this.catalogos.getCatalogos(null, "cat_demarcacion_territorial", this.tokenSesion).subscribe({
+        next: (data) => {
+          if (data.cat_demarcacion_territorial.length > 0) {
+            this.catalogoDemarcacionI = data.cat_demarcacion_territorial;
+          }
+        }, error: (err) => {
 
-        Swal.fire("Error al cargar catalogo");
+          Swal.fire("Error al cargar catalogo");
 
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
         }
-      }
-    });
+      });
+
+    } else {
+      this.catalogos.getCatalogos(this.direccion, "cat_demarcacion_territorial", this.tokenSesion).subscribe({
+        next: (data) => {
+          if (data.cat_demarcacion_territorial.length > 0) {
+            this.catalogoDemarcacionI = data.cat_demarcacion_territorial;
+          }
+        }, error: (err) => {
+
+          Swal.fire("Error al cargar catalogo");
+
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+        }
+      });
+
+    }
   };
 
   catalogo_demarcacionA() {
@@ -122,70 +142,164 @@ export class ReporteRepresentativaTwo implements OnInit{
     });
   };
 
-  OnChangeDireccion(){
+  OnChangeDireccion() {
     this.direccion = this.formularioRegistro?.get('direccion')?.value;
     this.catalogo_demarcacion();
+    if (this.direccion == 0) {
+      if (this.formularioRegistro) {
+        this.formularioRegistro.patchValue({
+          demarcacionA: 0,
+          demarcacionI: 0
+        });
+      };
+
+      this.reportes.getAllRegistrosInd(null, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteI = [data];
+        }, error: (err) => {
+
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+        }
+      });
+
+      this.reportes.getAllRegistrosAfro(null,this.tokenSesion).subscribe({
+      next: (data) => {
+        this.reporteA = [data];
+      }, error: (err) => {
+
+
+        if(err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+      }
+    });
+
+    } else {
+      console.log("CONTRARIO", this.direccion)
+      if (this.formularioRegistro) {
+        this.formularioRegistro.patchValue({
+          demarcacionA: 0,
+          demarcacionI: 0
+        });
+      };
+
+      this.reportes.getAllRegistrosInd(this.direccion, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteI = [data];
+        }, error: (err) => {
+
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+        }
+      });
+
+    }
   };
 
-  onChangeDemarcacion(id: number){
-    if(this.opcionDermarcacionI==0){
-      this.reportes.getAllRegistrosInd(this.area, this.tokenSesion).subscribe({
-      next: (data) => {
-        this.reporteI = [data];
-      }, error: (err) => {
-
-        Swal.fire("Error al cargar la información");
-
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
+  onChangeDemarcacion(id: number) {
+    //nueva funcion 
+    if (this.direccion == 0 && this.opcionDermarcacionI != 0) {
+      console.log("BY DEMARCACION", this.opcionDermarcacionI)
+      this.reportes.getRegisterData(1, null, this.opcionDermarcacionI, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteI = [data];
+        }, error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
         }
-      }
-    });
-    }else{
-      this.reportes.getRegisterData(1, this.area, this.opcionDermarcacionI, this.tokenSesion).subscribe({
-      next: (data) => {
-        this.reporteI = [data];
-      }, error: (err) => {
+      });
 
-        Swal.fire("Error al cargar la información");
-
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
+    } else if (this.direccion == 0 && this.opcionDermarcacionI == 0) {
+      console.log("TODOS")
+      this.reportes.getAllRegistrosInd(null, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteI = [data];
+        }, error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
         }
-      }
-    });
-    }
+      });
+    } else if (this.direccion != 0 && this.opcionDermarcacionI != 0) {
+      console.log("indigena by distrito")
+      this.reportes.getRegisterData(1, this.direccion, this.opcionDermarcacionI, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteI = [data];
+        }, error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+        }
+      });
+
+    } else if (this.direccion != 0 && this.opcionDermarcacionI == 0) {
+      console.log("indigena by todos los demarcaciones")
+      this.reportes.getAllRegistrosInd(this.direccion, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteI = [data];
+        }, error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+        }
+      });
+    } 
   }
 
   OnChangeGetReporteAfro(id: number) {
-    if(this.opcionDermarcacionA==0){
-      this.reportes.getAllRegistrosAfro(this.area,this.tokenSesion).subscribe({
-      next: (data) => {
-        this.reporteA = [data];
-      }, error: (err) => {
-
-        Swal.fire("Error al cargar la información");
-
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
+    if (this.direccion == 0 && this.opcionDermarcacionA != 0) {
+      console.log("demarcacion afro")
+      this.reportes.getRegisterData(2, null, this.opcionDermarcacionA, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteA = [data];
+        }, error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
         }
-      }
-    });
+      });
 
-    }else{
-      this.reportes.getRegisterData(2, this.area, this.opcionDermarcacionA, this.tokenSesion).subscribe({
-      next: (data) => {
-        this.reporteA = [data];
-      }, error: (err) => {
-
-        Swal.fire("Error al cargar la información");
-
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
+    } else if (this.direccion == 0 && this.opcionDermarcacionA == 0) {
+      console.log("todos afro")
+      this.reportes.getAllRegistrosAfro(null, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteA = [data];
+        }, error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
         }
-      }
-    });
-
+      });
+    } else if (this.direccion != 0 && this.opcionDermarcacionA != 0) {
+      this.reportes.getRegisterData(2, this.direccion, this.opcionDermarcacionA, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteA = [data];
+        }, error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+        }
+      });
+    } else if (this.direccion != 0 && this.opcionDermarcacionI == 0) {
+      console.log("indigena by todos los demarcaciones")
+      this.reportes.getAllRegistrosAfro(this.direccion, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteA = [data];
+        }, error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+        }
+      });
     }
   };
+
+
+  prueba2(){
+    console.log("PRUEBA 2")
+  }
 }
