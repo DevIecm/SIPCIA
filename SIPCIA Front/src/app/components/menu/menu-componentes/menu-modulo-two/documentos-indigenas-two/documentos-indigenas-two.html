@@ -289,12 +289,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <tr *ngFor="let item of dataTable; let i = index" class="dual-row"> -->
-                            <tr  class="dual-row">
-
-                                <td>1</td>
-                                <td>Normativa 1</td>
-                                <td>15/05/2025</td>
+                            <tr *ngFor="let item of allDatableTwo; let i = index" class="dual-row">
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.nombre_documento }}</td>
+                                <td>{{ formatFecha(item.fecha_carga) }}</td>
                                 <td><i class="bi bi-download" (click)="descargar()"></i></td>
                                 <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
                             </tr>
@@ -361,56 +359,104 @@
         <!-- fichas-fin -->
 
 			</div>
-      <div class="tab-pane fade" id="nav-other" role="tabpanel" aria-labelledby="nav-other-tab">
-        <!-- fichas-inicio -->
-         
-        <div class="container justify-content-center mt-4">
-          <div class="row back-table" style="margin-top: -21px;">
-            <div class="col-12">
-              <table class="table">
-                <thead>
-                  <tr class="table-primary">
-                    <th 
-                      scope="col"
-                      (click)="sortDataD('direccion_documento')"
-                      style="cursor: pointer;">
-                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                        <span>Nombre</span>
-                        <i [ngClass]="getSortIcon('direccion_documento')"></i>
-                      </div>
-                    </th>
-                    <th 
-                      scope="col"
-                      (click)="sortDataD('fecha_carga')"
-                      style="cursor: pointer;">
-                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                        <span>Fecha</span>
-                        <i [ngClass]="getSortIcon('fecha_carga')"></i>
-                      </div>
-                    </th>
-                    <th 
-                      scope="col"
-                      style="cursor: pointer;">
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of dataTableD; index as i" class="dual-row">
-                    <td (click)="descargarOtros(item.direccion_documento) " style="cursor: pointer;">{{ item.nombre_documento ? item.nombre_documento : '-' }}</td>
-                    <td>{{ formatFecha(item.fecha_carga) }} {{item.hora_carga}}</td>
-                    <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <!-- fichas-fin -->
-      </div>
-		</div>
-	</div>
-</div>
+    <div class="tab-pane fade" id="nav-other" role="tabpanel" aria-labelledby="nav-other-tab">		
+        <!-- direcciones-inicio -->
 
+        <div class="container text-center mb-5">
+            <div class="row">
+                <div class="col-9">
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-9" style="text-align: end;">
+                            <label style="color: #ffff; font-size: 16px;">Agregar documento</label>
+                        </div>
+                        <div class="col-3">
+                            <!-- Carga de .ZIP -->
+                            <input 
+                                type="file" 
+                                id="fileInputZip" 
+                                accept=".zip" 
+                                style="display: none;" 
+                                (change)="onFileSelected($event)"
+                            >
+                            <!--botón -->
+                            <div 
+                                class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning text-white"
+                                style="width: 32px; height: 32px; cursor: pointer;"
+                                onclick="document.getElementById('fileInputZip').click()"
+                            >
+                                <i class="bi bi-plus-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container justify-content-center mt-4">
+            <div class="row back-table" style="margin-top: -21px;">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr class="table-primary">
+                                <th 
+                                    scope="col"
+                                    (click)="sortData('distrito_cabecera')"
+                                    style="width: 54px; cursor: pointer;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <span>No.</span>
+                                        <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                                    </div>
+                                </th>
+                                <th 
+                                    scope="col"
+                                    (click)="sortData('distrito_cabecera')"
+                                    style="cursor: pointer;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <span>Nombre del Documento</span>
+                                        <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                                    </div>
+                                </th>
+                                <th 
+                                    scope="col"
+                                    (click)="sortData('distrito_cabecera')"
+                                    style="cursor: pointer; width: 137px;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <span>Fecha de Carga</span>
+                                        <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                                    </div>
+                                </th>
+                                <th 
+                                    scope="col"
+                                    style="cursor: pointer; width: 115px;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <span>Descarga</span>
+                                    </div>
+                                </th>
+                                <th 
+                                    scope="col"
+                                    style="cursor: pointer; width: 115px;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <span>Eliminar</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of dataTableInd; let i = index" class="dual-row">
+                                <td></td>
+                                <td>{{ item.nombre_documento }}</td>
+                                <td>{{ formatFecha(item.fecha_carga) }}</td>
+                                <td><i class="bi bi-download" (click)="descargar()"></i></td>
+                                <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- direcciones-fin -->
+	</div>
 @if(showModal) {
   <app-formulario-documentos
     [formId]="idformIdSelected"

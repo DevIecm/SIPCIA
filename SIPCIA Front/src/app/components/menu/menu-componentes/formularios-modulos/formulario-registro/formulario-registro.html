@@ -413,19 +413,9 @@
                   </div>
                 </div>
               </div>
-<!-- 
-              <div class="container text-center" style="margin-top: 15px;">
-                <div class="row">
-                  <div class="col">
-                    <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
-                  </div>
-                  <div class="col">
-                    <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
-                  </div>
-                </div>
-              </div> -->
 
-              @if(!this.idRegistroC){
+              @if(!this.idRegistroC && this.moduloClicked === '2') {
+                
                 <div class="container text-center mt-4">
                   <div class="row align-items-center">
                     <div class="col-5">

@@ -47,6 +47,7 @@ export class DocumentosIndigenasTwo implements OnInit{
   dataTable: any = [];
   allDatable: any[] = [];
   dataTableTwo: any = [];
+  dataTableInd: any = [];
   allDatableTwo: any[] = [];
 
   dataTableD: any = [];
@@ -212,8 +213,10 @@ export class DocumentosIndigenasTwo implements OnInit{
         if(data.getDocumentos.length > 0) {
           this.dataTableTwo = data.getDocumentos;
           this.allDatableTwo = data.getDocumentos;
+          this.dataTableInd = data.getDocumentos;
+
         } else {
-          Swal.fire("No se encontraron registros");
+          Swal.fire("No se encontraron registros01");
         }        
       },
       error: (err) => {
@@ -223,6 +226,7 @@ export class DocumentosIndigenasTwo implements OnInit{
         }
 
         if(err.error.code === 100) {
+          this.dataTableInd = [];
           Swal.fire("No se encontraron registros")
         }
 
@@ -330,7 +334,7 @@ export class DocumentosIndigenasTwo implements OnInit{
   }
 
   handleProfileTab(): void {
-    this.getRegister(3);
+    this.getRegister(2);
   }
 
   handleContactTab(): void {
@@ -338,7 +342,8 @@ export class DocumentosIndigenasTwo implements OnInit{
   }
 
   handleOtherTab(): void {
-    this.getRegister(4);
+    console.log("CAMBIO TAB")
+    this.getRegister(3);
   }
 
   changeTab(tabName: string): void {

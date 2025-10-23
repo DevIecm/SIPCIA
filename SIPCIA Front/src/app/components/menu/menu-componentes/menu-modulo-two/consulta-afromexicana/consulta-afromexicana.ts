@@ -24,7 +24,7 @@ import { Register } from '../../../../../services/registerService/register';
   providers: [DatePipe],
   standalone: true,
   templateUrl: './consulta-afromexicana.html',
-  styleUrl: './consulta-afromexicana-two.css'
+  styleUrls: ['./consulta-afromexicana-two.css']
 })
 export class ConsultaAfromexicana implements OnInit {
 

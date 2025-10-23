@@ -101,6 +101,7 @@ export class FormularioPropuesta {
     if(!this.idRegistro){
       this.idRegistroC = true;
       this.labelTitle = 'Registro - Propuesta de lugares y espacios para Asambleas Comunitarias';
+      this.catalogo_demarcacion();
     } else {
       this.labelTitle = 'Edición - Propuesta de lugares y espacios para Asambleas Comunitarias';
       this.idRegistroC = false;

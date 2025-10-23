@@ -104,7 +104,7 @@ export class FormularioComunitaria {
               formData.append("otroFile", this.selectedZipFile);
             }
 
-          formData.append("distrito_electoral", this.formularioRegistro.get('distrito_electoral')?.value || "");
+          formData.append("distrito_electoral", this.moduloRegister === 1 ? this.area : this. formularioRegistro?.get('distrito_electoral')?.value || "");
           formData.append("distrito_cabecera", (this.cabecera ?? "").toString());
           formData.append("demarcacion_territorial", this.formularioRegistro.get('demarcacion_territorial')?.value || "");
           formData.append("denominacion_lugar", this.formularioRegistro.get('denominacion_lugar')?.value || "");
@@ -260,6 +260,7 @@ export class FormularioComunitaria {
     if(!this.idRegistro){
       this.idRegistroC = true;
       this.labelTitle = ' Registro - Lugar de mayor afluencia comunitaria';
+      this.catalogo_demarcacion();
     } else {
       this.labelTitle = 'Edición - Lugar de mayor afluencia comunitaria';
       this.idRegistroC = false
@@ -279,7 +280,6 @@ export class FormularioComunitaria {
     this.getCabezera();
   }
 
-  //consulta cabezera
   getCabezera() {
     if (!this.formularioRegistro) {
       return;
@@ -398,7 +398,9 @@ export class FormularioComunitaria {
           this.catalogoDemarcacion = data.cat_demarcacion_territorial;
         }
 
-        this.seccionDemarcacion();
+        if(this.moduloRegister === 2){
+          this.seccionDemarcacion();
+        }
       }, error: (err) => {
         
         Swal.fire("Error al cargar catalogo");

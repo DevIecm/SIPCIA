@@ -22,6 +22,7 @@
     align-items: center;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute;
+    width: 200px;
 }
 
 .div-redondeado-left {
@@ -58,10 +59,9 @@
 }
 
 .div-redondeado-right-home {
-    padding: 0%;
     margin: 0px;
     padding: 26px;
-    width: 430px;
+    width: 530px;
     height: 1px;
     color: #f4f4f4!important;
     background-color: #BF90DD!important;
