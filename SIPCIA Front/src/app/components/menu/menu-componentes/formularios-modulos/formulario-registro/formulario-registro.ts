@@ -177,6 +177,20 @@ export class FormularioRegistro implements OnInit{
     }
   }
 
+  removeFile() {
+    this.selectedFile = null;
+    this.fileUploaded = false;
+
+    if (this.infoUpdate?.enlace_documentos) {
+      this.infoUpdate.enlace_documentos = null;
+    }
+
+    const fileInput = document.getElementById('formFile') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
   onChangeComunidad() {
     if(Number(this.formularioRegistro?.get('scomunidad')?.value) == 1) {
       this.showIndigenas = true;

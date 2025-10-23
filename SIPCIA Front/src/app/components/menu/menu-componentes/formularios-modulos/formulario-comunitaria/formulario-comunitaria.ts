@@ -1,5 +1,5 @@
-import { Input, Component, OnInit, Output, SimpleChanges, EventEmitter, input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Input, Component, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 import { Auth } from '../../../../../services/authService/auth';
@@ -42,10 +42,10 @@ export class FormularioComunitaria {
 
   cabecera: number | null = null;
   selectedFileName: string | null = null;
-  fileUploaded: boolean = false;
+  fileUploadedf: boolean = false;
+  fileUploadedu: boolean = false;
   selectedFile: File | null = null;
   opcionDemarcacion: any = null;
-
   selectedKmlFile: File | null = null;
   selectedZipFile: File | null = null;
 
@@ -63,17 +63,42 @@ export class FormularioComunitaria {
     if (event.target.files.length > 0) {
       if (type === "kml") {
         this.selectedKmlFile = event.target.files[0];
+        this.fileUploadedu = true;
       } else if (type === "zip") {
         this.selectedZipFile = event.target.files[0];
+        this.fileUploadedf = true;
       }
     }
   }
 
-  removeFile(fileInput: HTMLInputElement): void {
-    fileInput.value = '';
-    this.selectedKmlFile = null;
-    this.fileUploaded = false;
-    this.selectedKmlFile = null;
+  removeFile(): void {
+    this.selectedFile = null;
+    this.fileUploadedf = false;
+
+    if (this.infoUpdate?.enlace_foto) {
+      this.infoUpdate.enlace_foto = null;
+    }
+
+    const fileInputf = document.getElementById('formFilef') as HTMLInputElement;
+    
+    if (fileInputf) {
+      fileInputf.value = '';
+    }
+  }
+
+  removeFileu(): void {
+    this.selectedFile = null;
+    this.fileUploadedu = false;
+
+    if (this.infoUpdate?.enlace_ubicacion) {
+      this.infoUpdate.enlace_ubicacion = null;
+    }
+
+    const fileInputu = document.getElementById('formFileu') as HTMLInputElement;
+    
+    if (fileInputu) {
+      fileInputu.value = '';
+    }
   }
 
   saveForm(){
