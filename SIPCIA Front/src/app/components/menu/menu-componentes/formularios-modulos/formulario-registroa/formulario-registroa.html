@@ -255,19 +255,31 @@
                                             >
                                         </div>
                                         <div class="col-12">
-                                            <div class="mb-3">
+                                            <div class="mb-3 position-relative">
                                                 <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br>lo determine la DEOEyG</label>
-                                                <input
-                                                class="form-control"
-                                                type="file"
-                                                id="formFile"
-                                                (change)="onFileSelect($event, 'zip')"
-                                                accept=".zip"
-                                                #fileInputRef
-                                            />
+                                                <div class="d-flex align-items-center">
+                                                    <input
+                                                        class="form-control"
+                                                        type="file"
+                                                        id="formFile"
+                                                        (change)="onFileSelect($event, 'zip')"
+                                                        accept=".zip"
+                                                        #fileInput
+                                                    />
+
+                                                    <button 
+                                                        *ngIf="fileUploaded || infoUpdate?.cv_enlace" 
+                                                        type="button" 
+                                                        class="btn btn-outline-danger ms-2"
+                                                        (click)="removeFile()"
+                                                        title="Eliminar archivo">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
+                                            
                                             <div *ngIf="infoUpdate?.cv_enlace ">
-                                            <small>Archivo actual: {{ infoUpdate?.cv_enlace }}</small>
+                                                <small>Archivo actual: {{ infoUpdate?.cv_enlace }}</small>
                                             </div>
                                         </div>
                                     </div>
