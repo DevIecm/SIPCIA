@@ -49,7 +49,8 @@ export class FormularioPropuesta {
   selectedZipFile: File | null = null;
   selectedFileName: string | null = null;
 
-  fileUploaded: boolean = false;
+  fileUploadedu: boolean = false;
+  fileUploadedf: boolean = false;
 
   constructor(
     private catalogos: Catalogos,
@@ -113,18 +114,42 @@ export class FormularioPropuesta {
     if (event.target.files.length > 0) {
       if (type === "kml") {
         this.selectedKmlFile = event.target.files[0];
+         this.fileUploadedu = true;
       } else if (type === "zip") {
         this.selectedZipFile = event.target.files[0];
+        this.fileUploadedf = true;
       }
     }
   }
 
-
-  removeFile(fileInput: HTMLInputElement): void {
-    fileInput.value = '';
-    this.selectedFileName = null;
-    this.fileUploaded = false;
+  removeFile(): void {
     this.selectedFile = null;
+    this.fileUploadedf = false;
+
+    if (this.infoUpdate?.enlace_fotografia) {
+      this.infoUpdate.enlace_fotografia = null;
+    }
+
+    const fileInputf = document.getElementById('formFilef') as HTMLInputElement;
+    
+    if (fileInputf) {
+      fileInputf.value = '';
+    }
+  }
+
+  removeFileu(): void {
+    this.selectedFile = null;
+    this.fileUploadedu = false;
+
+    if (this.infoUpdate?.enlace_ubicacion) {
+      this.infoUpdate.enlace_ubicacion = null;
+    }
+
+    const fileInputu = document.getElementById('formFileu') as HTMLInputElement;
+    
+    if (fileInputu) {
+      fileInputu.value = '';
+    }
   }
 
   saveForm(){

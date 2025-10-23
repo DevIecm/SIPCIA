@@ -347,22 +347,33 @@
                     </div>
                   </div>
                   <div class="col-4">
-                    <div class="mb-3">
+                    <div class="mb-3 position-relative">
                       <label for="formFile" class="form-label">Documentos:</label>
-                      <input 
-                        formControlName="docs"
-                        class="form-control"
-                        type="file" 
-                        id="formFile"
-                        (change)="onFileSelect($event, 'zip')"
-                        accept=".zip"
-                        formControlName="documentos">
-                    </div>
 
-                    <div *ngIf="infoUpdate?.enlace_documentos">
-                      <small>Archivo actual: {{ infoUpdate.enlace_documentos }}</small>
+                      <div class="d-flex align-items-center">
+                        <input 
+                          formControlName="docs"
+                          class="form-control"
+                          type="file"
+                          id="formFile"
+                          (change)="onFileSelect($event, 'zip')"
+                          accept=".zip"
+                        />
+
+                        <button 
+                          *ngIf="fileUploaded || infoUpdate?.enlace_documentos" 
+                          type="button" 
+                          class="btn btn-outline-danger ms-2"
+                          (click)="removeFile()"
+                          title="Eliminar archivo">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+
+                      <div *ngIf="infoUpdate?.enlace_documentos && !fileUploaded" class="mt-1">
+                        <small>Archivo actual: {{ infoUpdate.enlace_documentos }}</small>
+                      </div>
                     </div>
-                    
                   </div>
                 </div>
                 <div class="row">
