@@ -243,25 +243,26 @@
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <div class="mb-3">
+                                        <div class="mb-3 position-relative">
                                             <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br> lo determine la DEOEyG</label>
-                                           <input
+                                            <div class="d-flex align-items-center">
+                                            <input
                                                 class="form-control"
                                                 type="file"
                                                 id="formFile"
                                                 (change)="onFileSelect($event, 'zip')"
                                                 accept=".zip"
-                                                #fileInputRef
                                             />
 
-                                            <button
-                                                *ngIf="fileUploaded"
-                                                type="button"
-                                                class="btn btn-outline-danger"
-                                                (click)="removeFile(fileInputRef)"
-                                            >
-                                            🗑️
+                                            <button 
+                                                *ngIf="fileUploaded || infoUpdate?.enlace_documento" 
+                                                type="button" 
+                                                class="btn btn-outline-danger ms-2"
+                                                (click)="removeFile()"
+                                                title="Eliminar archivo">
+                                                <i class="bi bi-trash"></i>
                                             </button>
+                                            </div>
                                         </div>
                                         <div *ngIf="infoUpdate?.enlace_documento ">
                                             <small>Archivo actual: {{ infoUpdate?.enlace_documento }}</small>
@@ -270,7 +271,7 @@
                                 </div>
                             </div>
 
-                            @if(!this.idRegistroC){
+                            @if(!this.idRegistroC && moduloRegister == 2) {
                                 <div class="container text-center mt-4">
                                     <div class="row align-items-center">
                                         <div class="col-5">

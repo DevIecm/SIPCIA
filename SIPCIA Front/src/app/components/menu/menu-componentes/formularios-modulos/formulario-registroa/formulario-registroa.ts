@@ -1,4 +1,4 @@
-import { Input, Component, Output, EventEmitter, input } from '@angular/core';
+import { Input, Component, Output, EventEmitter, input, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
@@ -23,6 +23,7 @@ export class FormularioRegistroa {
   @Input() idRegistroC: any;
   @Input() idRegistro : number | undefined;
   @Output() close = new EventEmitter<void>();
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   formularioRegistro: FormGroup | undefined;
 
@@ -51,6 +52,8 @@ export class FormularioRegistroa {
   opcionDemarcacion: any = null;
   selectedFile: File | null = null;
   imagePreviewUrl: string | null = null;
+
+  fileUploaded: boolean = false;
 
   onFotoSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -354,11 +357,12 @@ export class FormularioRegistroa {
     });
   };
 
-   onFileSelect(event: any, type: string) {
-  if (event.target.files.length > 0) {
-      this.selectedKmlFile = event.target.files[0];
+  onFileSelect(event: any, type: string) {
+    if (event.target.files.length > 0) {
+        this.selectedKmlFile = event.target.files[0];
+        this.fileUploaded = true;
+    }
   }
-}
 
   catalogo_fecha() {
     this.catalogos.getCatalogos(Number(this.area), "cat_fecha_periodo", this.tokenSesion).subscribe({
@@ -373,6 +377,19 @@ export class FormularioRegistroa {
       }
     });
   };
+
+  removeFile(): void {
+    this.selectedKmlFile = null;
+    this.fileUploaded = false;
+
+    if (this.infoUpdate?.cv_enlace) {
+      this.infoUpdate.cv_enlace = null;
+    }
+
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
 
   catalogo_barrios() {
     this.catalogos.getCatalogos(Number(this.area), "cat_barrios", this.tokenSesion).subscribe({

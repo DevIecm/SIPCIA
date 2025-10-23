@@ -230,7 +230,7 @@ export class FormularioPropuesta {
         });
       } else {
         Swal.fire({
-          title: "¿Está seguro que desea guardar estos cambios?",
+          title: "¿Está seguro que desea guardar estos cambios011?",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#FBB03B",

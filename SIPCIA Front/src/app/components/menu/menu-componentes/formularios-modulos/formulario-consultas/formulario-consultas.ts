@@ -648,11 +648,20 @@ export class FormularioConsultas {
     this.close.emit();
   }
 
-  removeFile(fileInput: HTMLInputElement): void {
-    fileInput.value = '';
+  removeFile(): void {
+
     this.selectedFileName = null;
     this.fileUploaded = false;
-    this.selectedKmlFile = null;
+
+    if (this.infoUpdate?.enlace_documento) {
+      this.infoUpdate.enlace_documento = null;
+    }
+
+    const fileInputf = document.getElementById('formFile') as HTMLInputElement;
+
+    if (fileInputf) {
+      fileInputf.value = '';
+    }
   }
 
   onBackdropClick(event: MouseEvent) {
