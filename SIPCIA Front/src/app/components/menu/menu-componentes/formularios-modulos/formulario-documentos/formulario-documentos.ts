@@ -336,6 +336,10 @@ export class FormularioDocumentos {
     if(this.modulo === 2){
       this.formularioRegistro?.disable();
     }
+
+    if(this.modulo === 1) {
+      this.catalogo_demarcacion();
+    }
   }
 
   onClose() {

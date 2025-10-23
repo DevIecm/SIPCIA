@@ -278,6 +278,11 @@ export class FormularioConsultas {
     if(!this.idRegistro){
       this.idRegistroC = true;
       this.labelTitle = 'Atención a consultas';
+      this.catalogo_demarcacion();
+      this.catalogo_pueblor();
+      this.catalogo_pueblos();
+      this.catalogo_barrios();
+      this.catalogo_unidad_territorial();
     } else {
       this.labelTitle = 'Edición - Atención a consultas';
       this.idRegistroC = false;

@@ -13,6 +13,7 @@
 .div-redondeado-right {
     padding: 20px;
     height: 4px;
+    width: 200px;
     color: #f4f4f4!important;
     background-color: #9B3BCA!important;
     border-top-right-radius: 30px;
@@ -58,10 +59,9 @@
 }
 
 .div-redondeado-right-home {
-    padding: 0%;
     margin: 0px;
     padding: 26px;
-    width: 400px;
+    width: 500px;
     height: 1px;
     color: #f4f4f4!important;
     background-color: #BF90DD!important;

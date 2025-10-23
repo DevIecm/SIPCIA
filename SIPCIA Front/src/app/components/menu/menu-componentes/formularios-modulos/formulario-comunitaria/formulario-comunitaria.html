@@ -30,7 +30,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label" style="color: #b7b5b8;">  
-                                            {{ formularioRegistro?.get('distrito_electoral')?.value }}
+                                            {{moduloRegister === 1 ? area : formularioRegistro?.get('distrito_electoral')?.value }}
                                         </label>
                                     </div>
                                     <div class="col">
@@ -186,7 +186,7 @@
                                 </div>
                             </div>
 
-                            @if(!this.idRegistroC){
+                            @if(!this.idRegistroC && this.moduloRegister === 2) {
                                 <div class="container text-center mt-4">
                                     <div class="row align-items-center">
                                         <div class="col-5">

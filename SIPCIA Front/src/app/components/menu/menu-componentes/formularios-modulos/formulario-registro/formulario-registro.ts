@@ -56,6 +56,7 @@ export class FormularioRegistro implements OnInit{
   infoUpdate: any = [];
   showIndigenas: boolean = false;
   showAfromexicanos: boolean = false;
+  fileUploaded: boolean = false;
   hayCambios: boolean = false;
   selectedFile: File | null = null;
 
@@ -171,6 +172,7 @@ export class FormularioRegistro implements OnInit{
     if (event.target.files.length > 0) {
       if (type === "zip") {
         this.selectedFile = event.target.files[0];
+        this.fileUploaded = true;
       }
     }
   }
