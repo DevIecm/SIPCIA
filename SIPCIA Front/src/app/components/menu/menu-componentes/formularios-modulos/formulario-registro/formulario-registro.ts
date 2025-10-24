@@ -128,7 +128,6 @@ export class FormularioRegistro implements OnInit{
     this.modulo = Number(localStorage.getItem('modulo')!);
 
     //Modulo 2 
-    
 
     if(this.moduloClicked === '1.2') {
       this.showAfromexicanos = false;
@@ -143,7 +142,7 @@ export class FormularioRegistro implements OnInit{
     this.getDataById();
   }
 
-    changeSeccion(){
+  changeSeccion(){
     this.getSeccion();
   }
 
@@ -686,9 +685,7 @@ export class FormularioRegistro implements OnInit{
     this.close.emit();
   }
 
-  onBackdropClick(event: MouseEvent) {
-    this.onClose();
-  }
+
 
   eliminaRegistro() {
     Swal.fire({

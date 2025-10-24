@@ -43,8 +43,10 @@ export class ReporteConsultas implements OnInit {
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
-  showModal = false;
+  showModal: boolean = false;
   isRegistroC: boolean = false;
+  allSelected: boolean = false;
+  oneSelected: boolean = false;
   
   idSelected: number | undefined;
 
@@ -55,9 +57,7 @@ export class ReporteConsultas implements OnInit {
     this.position = sessionStorage.getItem('dir')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.area_adscripcion = Number(sessionStorage.getItem('area'));
-
     this.moduloRegister =Number (localStorage.getItem('modulo'));
-
     this.getRegister();
   }
 
@@ -71,6 +71,23 @@ export class ReporteConsultas implements OnInit {
     } else {
       this.selectedIds = this.selectedIds.filter(selectedId => selectedId !== id);
     }
+
+    this.allSelected = this.selectedIds.length === this.dataTable.length;
+    this.oneSelected = this.selectedIds.length > 0 && !this.allSelected;  
+  }
+
+  toggleAll(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.allSelected = checkbox.checked;
+
+    if (this.allSelected) {
+      this.selectedIds = this.dataTable.map((item: any) => item.id_registro);
+    } else {
+      this.selectedIds = [];
+    }
+
+    // También actualizamos el flag oneSelected
+    this.oneSelected = this.selectedIds.length > 0 && !this.allSelected;
   }
 
   descargar2(item: any): void {

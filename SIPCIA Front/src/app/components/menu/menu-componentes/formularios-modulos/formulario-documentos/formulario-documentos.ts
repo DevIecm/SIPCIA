@@ -347,11 +347,6 @@ export class FormularioDocumentos {
     this.cdRef.detectChanges();
   }
 
-  onBackdropClick(event: MouseEvent) {
-    this.onClose();
-    this.cdRef.detectChanges();
-  }
-
   seccionDemarcacion(){
     this.getCabezera();
   }
