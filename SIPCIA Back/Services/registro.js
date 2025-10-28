@@ -8,7 +8,6 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 
 dotenv.config();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,10 +15,18 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads/zip");
+    let uploadPath;
+
+    if (file.originalname.toLowerCase().endsWith(".zip")) {
+      uploadPath = path.join(__dirname, "../uploads/zip");
+    } else {
+      return cb(new Error("Tipo de archivo no permitido"), null);
+    }
+
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -30,115 +37,118 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 //insert de registro
-router.post("/altaRegistro", Midleware.verifyToken, upload.single("kmlFile"), async (req, res) => {
-    let {
-        nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad,
-        pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl, pueblo_afro,
-        comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia,
-        domicilio, telefono_particular, telefono_celular, correo_electronico_oficial, correo_electronico_personal,
-        documentos, enlace_documentos, usuario_registro, modulo_registro, estado_registro
-    } = req.body;
+router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), Midleware.verifyToken, async (req, res) => {
 
-    // Validación de campos requeridos
+  let {
+    nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad,
+    pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl, pueblo_afro,
+    comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia,
+    domicilio, telefono_particular, telefono_celular, correo_electronico_oficial, correo_electronico_personal,
+    documentos, enlace_documentos, usuario_registro, modulo_registro, estado_registro
+  } = req.body;
 
-    if (
-        !nombre_completo ||
-        !seccion_electoral || 
-        !demarcacion  ||
-        !distrito_electoral || 
-        !comunidad ||
-        !nombre_comunidad  ||
-        !nombre_instancia ||
-        !cargo_instancia||
-        !domicilio || 
-        !telefono_celular  ||
-        !correo_electronico_personal ||
-        !usuario_registro ||
-        !modulo_registro ||
-        !estado_registro 
-    ) {
-        return res.status(400).json({ message: "Datos requeridos" });
+
+  // Validación de campos requeridos
+
+  if (
+    !nombre_completo ||
+    !seccion_electoral ||
+    !demarcacion ||
+    !distrito_electoral ||
+    !comunidad ||
+    !nombre_comunidad ||
+    !nombre_instancia ||
+    !cargo_instancia ||
+    !domicilio ||
+    !telefono_celular ||
+    !correo_electronico_personal ||
+    !usuario_registro ||
+    !modulo_registro ||
+    !estado_registro
+  ) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
+
+
+  const pueblo_originarioInt = pueblo_originario === "" ? null : parseInt(pueblo_originario, 10);
+  const puebloInt = pueblo_pbl === "" ? null : parseInt(pueblo_pbl, 10);
+  const barrioInt = barrio_pbl === "" ? null : parseInt(barrio_pbl, 10);
+  const unidad_territorialInt = unidad_territorial_pbl === "" ? null : parseInt(unidad_territorial_pbl, 10);
+  const telefono_particularInt = telefono_particular === "" ? null : parseInt(telefono_particular, 10)
+  documentos = req.files ? 1 : 0;
+  enlace_documentos = req.files ? `/uploads/zip/${req.files.filename}` : null;
+
+  // Fecha y hora
+  const original = new Date();
+  const offsetInMs = original.getTimezoneOffset() * 60000;
+  const fechaLocal = new Date(original.getTime() - offsetInMs);
+  const ahora = new Date();
+  const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
+
+  let transaction;
+
+  try {
+    const pool = await connectToDatabase();
+    const transaction = pool.transaction();
+
+    await transaction.begin();
+
+    let folio = null;
+
+    if (modulo_registro == 1) {
+
+      // Obtener folio
+      const resultadoFolio = await pool.request()
+        .input('distrito_electoral', sql.Int, distrito_electoral)
+        .query(`
+                SELECT MAX(CAST(RIGHT(folio, 4) AS INT)) AS ultimoFolio
+                FROM registro
+                WHERE distrito_electoral = @distrito_electoral
+            `);
+
+      const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
+      const siguienteFolio = ultimoFolio + 1;
+
+      const primerCaracter = comunidad == 1 ? 'CI' : 'CA';
+
+      folio = `${primerCaracter}-D-${distrito_electoral}-${siguienteFolio.toString().padStart(4, '0')}`;
     }
-    
 
-    const pueblo_originarioInt = pueblo_originario === "" ? null : parseInt(pueblo_originario, 10);
-    const puebloInt = pueblo_pbl === "" ? null : parseInt(pueblo_pbl, 10);
-    const barrioInt = barrio_pbl === "" ? null : parseInt(barrio_pbl, 10);
-    const unidad_territorialInt = unidad_territorial_pbl === "" ? null : parseInt(unidad_territorial_pbl, 10);
-    const telefono_particularInt = telefono_particular === "" ? null : parseInt(telefono_particular, 10)
-     documentos = req.file ? 1 : 0;
-     enlace_documentos = req.file ? `/uploads/zip/${req.file.filename}` : null;
-
-    // Fecha y hora
-    const original = new Date();
-    const offsetInMs = original.getTimezoneOffset() * 60000;
-    const fechaLocal = new Date(original.getTime() - offsetInMs);
-    const ahora = new Date();
-    const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
-
-    let transaction; 
-    
-    try {
-        const pool = await connectToDatabase();
-        const transaction = pool.transaction();
-
-        await transaction.begin();
-
-        // Obtener folio
-       const resultadoFolio = await pool.request()
+    // Insertar en registro
+    const result = await transaction.request()
+      .input('nombre_completo', sql.VarChar, nombre_completo)
+      .input('seccion_electoral', sql.VarChar, seccion_electoral)
+      .input('demarcacion', sql.Int, demarcacion)
       .input('distrito_electoral', sql.Int, distrito_electoral)
-      .query(`SELECT MAX(CAST(RIGHT(folio, 4) AS INT)) AS ultimoFolio
-            FROM registro
-            where distrito_electoral =@distrito_electoral
-      `);
-
-        const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
-        const siguienteFolio = ultimoFolio + 1;
-        let primerCaracter = '';
-        if (comunidad == 1) {
-            primerCaracter = 'CI';
-        } else {
-            primerCaracter = 'CA';
-        }
-
-        const folio = `${primerCaracter}-D-${distrito_electoral}-${siguienteFolio.toString().padStart(4, '0')}`;
-
-
-        // Insertar en registro
-        const result = await transaction.request()
-            .input('nombre_completo', sql.VarChar, nombre_completo)
-            .input('seccion_electoral', sql.Int, seccion_electoral)
-            .input('demarcacion', sql.Int, demarcacion)
-            .input('distrito_electoral', sql.Int, distrito_electoral)
-            .input('comunidad', sql.Int, comunidad)
-            .input('nombre_comunidad', sql.VarChar, nombre_comunidad)
-            .input('pueblo_originario', sql.Int, pueblo_originarioInt)
-            .input('pueblo_pbl', sql.Int, puebloInt)
-            .input('barrio_pbl', sql.Int, barrioInt)
-            .input('unidad_territorial_pbl', sql.Int, unidad_territorialInt)
-            .input('comunidad_pbl', sql.VarChar, comunidad_pbl)
-            .input('otro_pbl', sql.VarChar, otro_pbl)
-            .input('pueblo_afro', sql.VarChar, pueblo_afro)
-            .input('comunidad_afro', sql.VarChar, comunidad_afro)
-            .input('organizacion_afro', sql.VarChar, organizacion_afro)
-            .input('persona_relevante_afro', sql.VarChar, persona_relevante_afro)
-            .input('otro_afro', sql.VarChar, otro_afro)
-            .input('nombre_instancia', sql.VarChar, nombre_instancia)
-            .input('cargo_instancia', sql.VarChar, cargo_instancia)
-            .input('domicilio', sql.VarChar, domicilio)
-            .input('telefono_particular', sql.Numeric, telefono_particularInt)
-            .input('telefono_celular', sql.Numeric, telefono_celular)
-            .input('correo_electronico_oficial', sql.VarChar, correo_electronico_oficial)
-            .input('correo_electronico_personal', sql.VarChar, correo_electronico_personal)
-            .input('documentos', sql.Int, documentos)
-            .input('enlace_documentos', sql.VarChar, enlace_documentos)
-            .input('fecha_registro', sql.DateTime, fechaLocal)
-            .input('hora_registro', sql.VarChar, horaActual)
-            .input('usuario_registro', sql.Int, usuario_registro)
-            .input('modulo_registro', sql.Int, modulo_registro)
-            .input('estado_registro', sql.Int, estado_registro)
-            .input('folio', sql.VarChar, folio)
-            .query(`
+      .input('comunidad', sql.Int, comunidad)
+      .input('nombre_comunidad', sql.VarChar, nombre_comunidad)
+      .input('pueblo_originario', sql.Int, pueblo_originarioInt)
+      .input('pueblo_pbl', sql.Int, puebloInt)
+      .input('barrio_pbl', sql.Int, barrioInt)
+      .input('unidad_territorial_pbl', sql.Int, unidad_territorialInt)
+      .input('comunidad_pbl', sql.VarChar, comunidad_pbl)
+      .input('otro_pbl', sql.VarChar, otro_pbl)
+      .input('pueblo_afro', sql.VarChar, pueblo_afro)
+      .input('comunidad_afro', sql.VarChar, comunidad_afro)
+      .input('organizacion_afro', sql.VarChar, organizacion_afro)
+      .input('persona_relevante_afro', sql.VarChar, persona_relevante_afro)
+      .input('otro_afro', sql.VarChar, otro_afro)
+      .input('nombre_instancia', sql.VarChar, nombre_instancia)
+      .input('cargo_instancia', sql.VarChar, cargo_instancia)
+      .input('domicilio', sql.VarChar, domicilio)
+      .input('telefono_particular', sql.Numeric, telefono_particularInt)
+      .input('telefono_celular', sql.Numeric, telefono_celular)
+      .input('correo_electronico_oficial', sql.VarChar, correo_electronico_oficial)
+      .input('correo_electronico_personal', sql.VarChar, correo_electronico_personal)
+      .input('documentos', sql.Int, documentos)
+      .input('enlace_documentos', sql.VarChar, enlace_documentos)
+      .input('fecha_registro', sql.DateTime, fechaLocal)
+      .input('hora_registro', sql.VarChar, horaActual)
+      .input('usuario_registro', sql.Int, usuario_registro)
+      .input('modulo_registro', sql.Int, modulo_registro)
+      .input('estado_registro', sql.Int, estado_registro)
+      .input('folio', sql.VarChar, folio)
+      .query(`
                     INSERT INTO registro (nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad, pueblo_originario,
                         pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl,  pueblo_afro, comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia,
                         cargo_instancia, domicilio, telefono_particular, telefono_celular, correo_electronico_oficial, correo_electronico_personal,
@@ -150,60 +160,60 @@ router.post("/altaRegistro", Midleware.verifyToken, upload.single("kmlFile"), as
                         @correo_electronico_personal, @documentos, @enlace_documentos, @fecha_registro, @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @folio)
                 `);
 
-        const insertedId = result.recordset[0].id;
+    const insertedId = result.recordset[0].id;
 
-        // Insertar en bitácora
-        const camposModificados = JSON.stringify({
-            nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad,
-            pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl, pueblo_afro,
-            comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia,
-            domicilio, telefono_particular, telefono_celular, correo_electronico_oficial, correo_electronico_personal,
-            documentos, enlace_documentos, modulo_registro, estado_registro
-        });
+    // Insertar en bitácora
+    const camposModificados = JSON.stringify({
+      nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad,
+      pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl, pueblo_afro,
+      comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia,
+      domicilio, telefono_particular, telefono_celular, correo_electronico_oficial, correo_electronico_personal,
+      documentos, enlace_documentos, modulo_registro, estado_registro
+    });
 
-        await transaction.request()
-            .input('usuario', sql.Int, usuario_registro)
-            .input('tipo_usuario', sql.Int, modulo_registro)
-            .input('fecha', sql.Date, fechaLocal)
-            .input('hora', sql.VarChar, horaActual)
-            .input('registro_id', sql.Int, insertedId)
-            .input('campos_modificados', sql.VarChar(sql.MAX), camposModificados)
-            .query(`
+    await transaction.request()
+      .input('usuario', sql.Int, usuario_registro)
+      .input('tipo_usuario', sql.Int, modulo_registro)
+      .input('fecha', sql.Date, fechaLocal)
+      .input('hora', sql.VarChar, horaActual)
+      .input('registro_id', sql.Int, insertedId)
+      .input('campos_modificados', sql.VarChar(sql.MAX), camposModificados)
+      .query(`
                 INSERT INTO log_registro (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
                 VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
             `);
 
-        // Confirmar la transacción
-        await transaction.commit();
+    // Confirmar la transacción
+    await transaction.commit();
 
-        return res.status(200).json({
-            message: "Registro creado correctamente",
-            id: insertedId,
-            folio: folio,
-            code: 200,
-        });
+    return res.status(200).json({
+      message: "Registro creado correctamente",
+      id: insertedId,
+      folio: folio,
+      code: 200,
+    });
 
-    } catch (err) {
-        console.error("Error en Registro:", err);
-        if (transaction) {
-            await transaction.rollback();
-        }
-        return res.status(500).json({ message: "Error al guardar el registro", error: err.message });
+  } catch (err) {
+    console.error("Error en Registro:", err);
+    if (transaction) {
+      await transaction.rollback();
     }
+    return res.status(500).json({ message: "Error al guardar el registro", error: err.message });
+  }
 });
 
 //consulta de registro
 router.get("/getRegistro", Midleware.verifyToken, async (req, res) => {
-    try {
-        const { id } = req.query; //pibote por medio del id del usuario registrado
+  try {
+    const { id } = req.query; //pibote por medio del id del usuario registrado
 
-        if(!id){
-            return res.status(400).json({ message: "Datos requeridos"})
-        }
-        const pool = await connectToDatabase();
-        const result = await pool.request()
-            .input('id', sql.Int, id)
-            .query(`
+    if (!id) {
+      return res.status(400).json({ message: "Datos requeridos" })
+    }
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('id', sql.Int, id)
+      .query(`
                 SELECT 
                     r.id as id_registro,
                     r.nombre_completo,
@@ -258,192 +268,283 @@ router.get("/getRegistro", Midleware.verifyToken, async (req, res) => {
                     JOIN tipo_usuario as tu on r.modulo_registro = tu.id 
                     JOIN estado_registro as er on r.estado_registro = er.id 
                 WHERE r.id = @id;`
-            )
-        if (result.recordset.length > 0) {
-            return res.status(200).json({
-                getRegistro: result.recordset
-            });
-        } else {
-            return res.status(404).json({ message: "No se encontraron registros", code: 100})
-        }
-    } catch (error) {
-        console.error("Error: ", error);
-        return res.status(500).json({ message: "Error de servidor", error: error.message0});
+      )
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        getRegistro: result.recordset
+      });
+    } else {
+      return res.status(404).json({ message: "No se encontraron registros", code: 100 })
     }
+  } catch (error) {
+    console.error("Error: ", error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message0 });
+  }
 });
 
 //actializacion de registro
-router.patch("/updateRegistro", Midleware.verifyToken, async (req, res) => {
-    
-
+router.patch(
+  "/updateRegistro",
+  Midleware.verifyToken,
+  upload.fields([{ name: "kmlFile", maxCount: 1 }, { name: "otroFile", maxCount: 1 }]),
+  async (req, res) => {
     try {
-        const {
-            id_registro, nombre_completo, seccion_electoral, demarcacion, distrito_electoral,
-            nombre_comunidad, pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl,
-            comunidad_pbl, otro_pbl, pueblo_afro, comunidad_afro, organizacion_afro,
-            persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia, domicilio,
-            telefono_particular, telefono_celular, correo_electronico_oficial,
-            correo_electronico_personal, documentos, enlace_documentos, usuario_registro, modulo_registro, estado_registro
-        } = req.body;
+      let {
+        id_registro,
+        nombre_completo,
+        seccion_electoral,
+        demarcacion,
+        distrito_electoral,
+        nombre_comunidad,
+        pueblo_originario,
+        pueblo_pbl,
+        barrio_pbl,
+        unidad_territorial_pbl,
+        comunidad_pbl,
+        otro_pbl,
+        pueblo_afro,
+        comunidad_afro,
+        organizacion_afro,
+        persona_relevante_afro,
+        otro_afro,
+        nombre_instancia,
+        cargo_instancia,
+        domicilio,
+        telefono_particular,
+        telefono_celular,
+        correo_electronico_oficial,
+        correo_electronico_personal,
+        documentos,
+        enlace_documentos,
+        usuario_registro,
+        modulo_registro,
+        estado_registro,
+      } = req.body;
 
-        if (
-            id_registro == null || id_registro === '' ||
-            nombre_completo == null || nombre_completo === '' ||
-            seccion_electoral == null || demarcacion == null || distrito_electoral == null ||
-            nombre_comunidad == null || nombre_comunidad === '' ||
-            nombre_instancia == null || nombre_instancia === '' ||
-            cargo_instancia == null || cargo_instancia === '' ||
-            domicilio == null || domicilio === '' || telefono_celular == null ||
-            correo_electronico_personal == null || correo_electronico_personal === '' ||
-            documentos == null || usuario_registro == null ||
-            modulo_registro == null || estado_registro == null || telefono_celular === '' || telefono_celular == null
-        ) {
-            return res.status(400).json({ message: "Datos requeridos" });
+
+      // Validación básica
+      if (
+        !id_registro ||
+        !nombre_completo ||
+        !nombre_comunidad ||
+        !nombre_instancia ||
+        !cargo_instancia ||
+        !domicilio ||
+        !telefono_celular ||
+        !correo_electronico_personal ||
+        !usuario_registro ||
+        !modulo_registro ||
+        !estado_registro
+      ) {
+        return res.status(400).json({ message: "Datos requeridos" });
+      }
+
+      const pool = await connectToDatabase();
+
+      // Obtener datos actuales
+      const resultAnterior = await pool
+        .request()
+        .input("id", sql.Int, id_registro)
+        .query("SELECT * FROM registro WHERE id = @id");
+
+      const registroAnterior = resultAnterior.recordset[0];
+
+      if (!registroAnterior) {
+        return res.status(404).json({ message: "Registro no encontrado" });
+      }
+
+      // Archivos 
+      if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
+        enlace_documentos = `/uploads/zip/${req.files.kmlFile[0].filename}`;
+        documentos = 1;
+      } else {
+        enlace_documentos = registroAnterior.enlace_documentos;
+        documentos = registroAnterior.enlace_documentos ? 1 : 0;
+      }
+
+      documentos = documentos ? 1 : 0;
+
+      // Datos nuevos
+      const nuevosDatos = {
+        nombre_completo,
+        seccion_electoral,
+        demarcacion,
+        distrito_electoral,
+        nombre_comunidad,
+        pueblo_originario,
+        pueblo_pbl,
+        barrio_pbl,
+        unidad_territorial_pbl,
+        comunidad_pbl,
+        otro_pbl,
+        pueblo_afro,
+        comunidad_afro,
+        organizacion_afro,
+        persona_relevante_afro,
+        otro_afro,
+        nombre_instancia,
+        cargo_instancia,
+        domicilio,
+        telefono_particular,
+        telefono_celular,
+        correo_electronico_oficial,
+        correo_electronico_personal,
+        documentos,
+        enlace_documentos,
+        usuario_registro,
+        modulo_registro,
+        estado_registro,
+      };
+
+      // Campos numéricos en BD
+      const intFields = [
+        "pueblo_originario",
+        "pueblo_pbl",
+        "barrio_pbl",
+        "unidad_territorial_pbl",
+        "demarcacion",
+        "distrito_electoral",
+        "usuario_registro",
+        "seccion_electoral",
+        "modulo_registro",
+        "estado_registro"
+      ];
+
+      for (const campo of intFields) {
+        if (nuevosDatos[campo] === "" || nuevosDatos[campo] == null) {
+          nuevosDatos[campo] = null;
+        } else {
+          nuevosDatos[campo] = parseInt(nuevosDatos[campo], 10);
+        }
+      }
+
+      // Detectar cambios
+      const cambios = {};
+      for (const campo of Object.keys(nuevosDatos)) {
+        if (registroAnterior[campo] != nuevosDatos[campo]) {
+          cambios[campo] = nuevosDatos[campo];
+        }
+      }
+
+      // Actualizar solo si hay cambios
+      if (Object.keys(cambios).length > 0) {
+        const requestUpdate = pool.request();
+        requestUpdate.input("id_registro", sql.Int, id_registro);
+
+        for (const [campo, valor] of Object.entries(nuevosDatos)) {
+          if (intFields.includes(campo) || campo === "documentos") {
+            requestUpdate.input(campo, sql.Int, valor);
+          } else {
+            requestUpdate.input(campo, sql.VarChar, valor ?? "");
+          }
         }
 
-        const pool = await connectToDatabase();
+        await requestUpdate.query(`
+          UPDATE registro SET
+            nombre_completo = @nombre_completo,
+            seccion_electoral = @seccion_electoral,
+            demarcacion = @demarcacion,
+            distrito_electoral = @distrito_electoral,
+            nombre_comunidad = @nombre_comunidad,
+            pueblo_originario = @pueblo_originario,
+            pueblo_pbl = @pueblo_pbl,
+            barrio_pbl = @barrio_pbl,
+            unidad_territorial_pbl = @unidad_territorial_pbl,
+            comunidad_pbl = @comunidad_pbl,
+            otro_pbl = @otro_pbl,
+            pueblo_afro = @pueblo_afro,
+            comunidad_afro = @comunidad_afro,
+            organizacion_afro = @organizacion_afro,
+            persona_relevante_afro = @persona_relevante_afro,
+            otro_afro = @otro_afro,
+            nombre_instancia = @nombre_instancia,
+            cargo_instancia = @cargo_instancia,
+            domicilio = @domicilio,
+            telefono_particular = @telefono_particular,
+            telefono_celular = @telefono_celular,
+            correo_electronico_oficial = @correo_electronico_oficial,
+            correo_electronico_personal = @correo_electronico_personal,
+            documentos = @documentos,
+            enlace_documentos = @enlace_documentos,
+            usuario_registro = @usuario_registro,
+            modulo_registro = @modulo_registro,
+            estado_registro = @estado_registro
+          WHERE id = @id_registro;
+        `);
 
-        // Obtener datos actuales
-        const resultAnterior = await pool.request()
-            .input('id', sql.Int, id_registro)
-            .query('SELECT * FROM registro WHERE id = @id');
-        
-        const registroAnterior = resultAnterior.recordset[0];
+        // Registrar cambios en log
+        const original = new Date();
+        const offsetInMs = original.getTimezoneOffset() * 60000;
+        const fechaLocal = new Date(original.getTime() - offsetInMs);
+        const horaActual = new Date().toTimeString().split(" ")[0];
 
+        const camposModificados = JSON.stringify(cambios);
 
-        if (!registroAnterior) {
-            return res.status(404).json({ message: "Registro no encontrado" });
-        }
+        await pool
+          .request()
+          .input("usuario", sql.Int, usuario_registro)
+          .input("tipo_usuario", sql.Int, modulo_registro)
+          .input("fecha", sql.Date, fechaLocal)
+          .input("hora", sql.VarChar, horaActual)
+          .input("registro_id", sql.Int, id_registro)
+          .input("campos_modificados", sql.VarChar(sql.MAX), camposModificados)
+          .query(`
+            INSERT INTO log_registro (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
+            VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
+          `);
+      }
 
-        // Comparar cambios
-        const camposAuditables = [
-            'nombre_completo', 'seccion_electoral', 'demarcacion', 'distrito_electoral',
-            'nombre_comunidad', 'pueblo_originario', 'pueblo_pbl', 'barrio_pbl',
-            'unidad_territorial_pbl', 'comunidad_pbl', 'otro_pbl', 'pueblo_afro',
-            'comunidad_afro', 'organizacion_afro', 'persona_relevante_afro', 'otro_afro',
-            'nombre_instancia', 'cargo_instancia', 'domicilio', 'telefono_particular',
-            'telefono_celular', 'correo_electronico_oficial', 'correo_electronico_personal',
-            'documentos', 'enlace_documentos', 'usuario_registro', 'modulo_registro', 'estado_registro'
-        ];
-
-        const nuevosDatos = {
-            nombre_completo, seccion_electoral, demarcacion, distrito_electoral,
-            nombre_comunidad, pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl,
-            comunidad_pbl, otro_pbl, pueblo_afro, comunidad_afro, organizacion_afro,
-            persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia, domicilio,
-            telefono_particular, telefono_celular, correo_electronico_oficial,
-            correo_electronico_personal, documentos, enlace_documentos, usuario_registro,
-            modulo_registro, estado_registro
-        };
-
-        const cambios = {};
-        for (const campo of camposAuditables) {
-            const valorAnterior = registroAnterior[campo];
-            const valorNuevo = nuevosDatos[campo];
-
-            if (valorAnterior != valorNuevo) {
-                cambios[campo] = valorNuevo;
-                /* 
-                cambios[campo] = {
-                    antes: valorAnterior,
-                    actual: valorNuevo
-                };*/
-            }
-        }
-        if (Object.keys(cambios).length > 0) {
-            await pool.request()
-                .input('id_registro', sql.Int, id_registro)
-                .input('nombre_completo', sql.VarChar, nombre_completo)
-                .input('seccion_electoral', sql.Int, seccion_electoral)
-                .input('demarcacion', sql.Int, demarcacion)
-                .input('distrito_electoral', sql.Int, distrito_electoral)
-                .input('nombre_comunidad', sql.VarChar, nombre_comunidad)
-                .input('pueblo_originario', sql.Int, pueblo_originario)
-                .input('pueblo_pbl', sql.Int, pueblo_pbl)
-                .input('barrio_pbl', sql.Int, barrio_pbl)
-                .input('unidad_territorial_pbl', sql.Int, unidad_territorial_pbl)
-                .input('comunidad_pbl', sql.VarChar, comunidad_pbl)
-                .input('otro_pbl', sql.VarChar, otro_pbl)
-                .input('pueblo_afro', sql.VarChar, pueblo_afro)
-                .input('comunidad_afro', sql.VarChar, comunidad_afro)
-                .input('organizacion_afro', sql.VarChar, organizacion_afro)
-                .input('persona_relevante_afro', sql.VarChar, persona_relevante_afro)
-                .input('otro_afro', sql.VarChar, otro_afro)
-                .input('nombre_instancia', sql.VarChar, nombre_instancia)
-                .input('cargo_instancia', sql.VarChar, cargo_instancia)
-                .input('domicilio', sql.VarChar, domicilio)
-                .input('telefono_particular', sql.Numeric, telefono_particular)
-                .input('telefono_celular', sql.Numeric, telefono_celular)
-                .input('correo_electronico_oficial', sql.VarChar, correo_electronico_oficial)
-                .input('correo_electronico_personal', sql.VarChar, correo_electronico_personal)
-                .input('documentos', sql.Int, documentos)
-                .input('enlace_documentos', sql.VarChar, enlace_documentos)
-                .input('usuario_registro', sql.Int, usuario_registro)
-                .input('modulo_registro', sql.Int, modulo_registro)
-                .input('estado_registro', sql.Int, estado_registro)
-                .query(`UPDATE registro SET
-                    nombre_completo = @nombre_completo,
-                    seccion_electoral = @seccion_electoral,
-                    demarcacion = @demarcacion,
-                    distrito_electoral = @distrito_electoral,
-                    nombre_comunidad = @nombre_comunidad,
-                    pueblo_originario = @pueblo_originario,
-                    pueblo_pbl = @pueblo_pbl,
-                    barrio_pbl = @barrio_pbl,
-                    unidad_territorial_pbl = @unidad_territorial_pbl,
-                    comunidad_pbl = @comunidad_pbl,
-                    otro_pbl = @otro_pbl,
-                    pueblo_afro = @pueblo_afro,
-                    comunidad_afro = @comunidad_afro,
-                    organizacion_afro = @organizacion_afro,
-                    persona_relevante_afro = @persona_relevante_afro,
-                    otro_afro = @otro_afro,
-                    nombre_instancia = @nombre_instancia,
-                    cargo_instancia = @cargo_instancia,
-                    domicilio = @domicilio,
-                    telefono_particular = @telefono_particular,
-                    telefono_celular = @telefono_celular,
-                    correo_electronico_oficial = @correo_electronico_oficial,
-                    correo_electronico_personal = @correo_electronico_personal,
-                    documentos = @documentos,
-                    enlace_documentos = @enlace_documentos,
-                    usuario_registro = @usuario_registro,
-                    modulo_registro = @modulo_registro,
-                    estado_registro = @estado_registro
-                    WHERE id = @id_registro;
-                `);
-
-                // Fecha y hora
-                const original = new Date();
-                const offsetInMs = original.getTimezoneOffset() * 60000;
-                const fechaLocal = new Date(original.getTime() - offsetInMs);
-                const ahora = new Date();
-                const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
-                
-                const camposModificados = JSON.stringify(cambios);
-
-            await pool.request()
-                .input('usuario', sql.Int, usuario_registro)
-                .input('tipo_usuario', sql.Int, modulo_registro)
-                .input('fecha', sql.Date, fechaLocal)
-                .input('hora', sql.VarChar, horaActual)
-                .input('registro_id', sql.Int, id_registro)
-                .input('campos_modificados', sql.VarChar(sql.MAX), camposModificados)
-                .query(`
-                    INSERT INTO log_registro (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
-                    VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
-                `);
-        } 
-
-        return res.status(200).json({ message: "Registro actualizado correctamente", code: 200 });
-
+      return res
+        .status(200)
+        .json({ message: "Registro actualizado correctamente", code: 200 });
     } catch (err) {
-        console.error(err);
-        console.error("ERROR:", err.message);
-        console.error("STACK:", err.stack);
-
-        return res.status(500).json({ message: "Error de servidor", err });
+      console.error("ERROR:", err.message);
+      console.error("STACK:", err.stack);
+      return res.status(500).json({ message: "Error de servidor", error: err.message });
     }
+  }
+);
+
+/// elimiacion logica de registro
+router.patch("/eliminarRegistro", Midleware.verifyToken, async (req, res) => {
+
+  const { id } = req.body;
+
+  if (id == null) {
+    return res.status(400), json({ message: "EL campo es requerido" })
+  }
+
+  let transaction;
+
+  try {
+    const pool = await connectToDatabase();
+    transaction = pool.transaction();
+    await transaction.begin();
+
+    await transaction.request()
+      .input('id', sql.Int, id)
+      .query(`
+                UPDATE registro
+                SET estado_registro = 4
+                where id = @id;
+            `);
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      message: `EL registro fue eliminado`,
+      code: 200,
+    });
+
+  } catch (err) {
+    console.error("Error en Registro:", err);
+    if (transaction) {
+      await transaction.rollback();
+    }
+    return res.status(500).json({ message: "Error al actualizar los registros", error: err.message });
+  }
+
 });
+
 
 export default router;

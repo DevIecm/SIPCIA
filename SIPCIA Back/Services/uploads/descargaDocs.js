@@ -9,7 +9,7 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-router.get("/download/:filename", Midleware.verifyToken, async (req, res) => {
+router.get("/download/:filename", async (req, res) => {
   try {
     // agrgar espacios y caracteres especiales al nombre del documento
     const filename = decodeURIComponent(req.params.filename);
@@ -42,7 +42,7 @@ router.get("/download/:filename", Midleware.verifyToken, async (req, res) => {
 });
 
 //normativa descarga 
-router.get("/downloadNorma/:filename", Midleware.verifyToken , async(req, res) => {
+router.get("/downloadNorma/:filename", async (req, res) => {
   const { filename } = req.params;
   const filePath = path.join(__dirname, "../uploads/pdf", filename);
 
@@ -67,7 +67,7 @@ router.get("/downloadNorma/:filename", Midleware.verifyToken , async(req, res) =
 
 
 //normativa descarga 
-router.get("/downloadOtrosNorma/:filename", Midleware.verifyToken, async (req, res) => {
+router.get("/downloadOtrosNorma/:filename", async (req, res) => {
   try {
     // decodificamos por si trae espacios o caracteres especiales
     const filename = decodeURIComponent(req.params.filename);
@@ -99,5 +99,35 @@ router.get("/downloadOtrosNorma/:filename", Midleware.verifyToken, async (req, r
   }
 });
 
+// normativa descarga fotos
+router.get("/downloadFoto/:filename", async (req, res) => {
+  try {
+    const filename = decodeURIComponent(req.params.filename);
+    const filePath = path.join(__dirname, "../uploads/fotos", filename);
+
+    if (!fs.existsSync(filePath)) {
+      console.error("Foto no encontrada:", filePath);
+      return res.status(404).json({ message: "Foto no encontrada" });
+    }
+
+    let nombreOriginal = filename;
+    const guionIndex = filename.indexOf("-");
+    if (guionIndex > -1) {
+      nombreOriginal = filename.substring(guionIndex + 1);
+    }
+
+    res.download(filePath, nombreOriginal, (err) => {
+      if (err) {
+        console.error("Error al descargar la foto:", err);
+        if (!res.headersSent) {
+          res.status(500).json({ message: "Error al descargar la foto" });
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Error en descarga de foto:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
 
 export default router;

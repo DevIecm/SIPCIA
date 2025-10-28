@@ -11,13 +11,14 @@ router.get("/cat_distrito", Midleware.verifyToken, async (req, res) => {
   try {
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .query(`SELECT 
+      .query(`SELECT 
                     id,
                     direccion_distrital,
                     domicilio,
                     titular,
                     secretario                     
-                FROM cat_distrito;`);
+                FROM cat_distrito
+                where id <> 34;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
@@ -35,16 +36,16 @@ router.get("/cat_distrito", Midleware.verifyToken, async (req, res) => {
 //catalogo barrios
 router.get("/cat_barrios", Midleware.verifyToken, async (req, res) => {
   try {
-     const { id_distrito } = req.query;
+    const { id_distrito } = req.query;
 
     if (!id_distrito) {
       return res.status(400).json({ message: "Datos requeridos" });
     }
 
     const pool = await connectToDatabase();
-    const result = await pool.request()    
+    const result = await pool.request()
       .input('id_distrito', sql.Int, id_distrito)
-        .query(`SELECT 
+      .query(`SELECT 
                     id,
                     barrio,
                     clave_ut,
@@ -69,7 +70,7 @@ router.get("/cat_barrios", Midleware.verifyToken, async (req, res) => {
 //catalogo pueblos
 router.get("/cat_pueblos", Midleware.verifyToken, async (req, res) => {
   try {
-    
+
     const { id_distrito } = req.query;
 
     if (!id_distrito) {
@@ -77,9 +78,9 @@ router.get("/cat_pueblos", Midleware.verifyToken, async (req, res) => {
     }
 
     const pool = await connectToDatabase();
-    const result = await pool.request()  
-        .input('id_distrito', sql.Int, id_distrito)
-        .query(`SELECT 
+    const result = await pool.request()
+      .input('id_distrito', sql.Int, id_distrito)
+      .query(`SELECT 
                     id,
                     pueblo,
                     clave_ut,
@@ -104,7 +105,7 @@ router.get("/cat_pueblos", Midleware.verifyToken, async (req, res) => {
 //catalogo pueblos originarios
 router.get("/cat_pueblos_originarios", Midleware.verifyToken, async (req, res) => {
   try {
-    
+
     const { id_distrito } = req.query;
 
     if (!id_distrito) {
@@ -113,8 +114,8 @@ router.get("/cat_pueblos_originarios", Midleware.verifyToken, async (req, res) =
 
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .input('id_distrito', sql.Int, id_distrito)
-        .query(`SELECT 
+      .input('id_distrito', sql.Int, id_distrito)
+      .query(`SELECT 
                     id,
                     pueblo_originario,
                     clave_ut,
@@ -142,7 +143,7 @@ router.get("/cat_seccion", Midleware.verifyToken, async (req, res) => {
   try {
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .query(`SELECT 
+      .query(`SELECT 
                     seccion_electoral,
                     demarcacion_territorial,
                     distrito_local
@@ -173,7 +174,7 @@ router.get("/cat_unidad_territorial", Midleware.verifyToken, async (req, res) =>
     const pool = await connectToDatabase();
     const result = await pool.request()
       .input('id_distrito', sql.Int, id_distrito)
-        .query(`SELECT 
+      .query(`SELECT 
                     id,
                     clave_ut,
                     ut,
@@ -201,7 +202,7 @@ router.get("/cat_comunidad", Midleware.verifyToken, async (req, res) => {
   try {
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .query(`SELECT 
+      .query(`SELECT 
                     id,
                     comunidad
                 FROM comunidad;`);
@@ -227,13 +228,13 @@ router.get("/cat_demarcacion_territorial", Midleware.verifyToken, async (req, re
 
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .input('id_distrito', sql.Int, id_distrito)
-        .query(`select DISTINCT dd.distrito, 
+      .input('id_distrito', sql.Int, id_distrito)
+      .query(`select DISTINCT dd.demarcacion_territorial as dt, 
                 dd.demarcacion_territorial as id,
                 dt.demarcacion_territorial  
                 from distritos_demarcaciones dd 
                 join demarcacion_territorial dt on dt.id = dd.demarcacion_territorial
-                where  dd.distrito = @id_distrito;`);
+              WHERE dt.id <>1 ${id_distrito ? ' AND dd.distrito = @id_distrito' : ''}`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
@@ -255,7 +256,7 @@ router.get("/cat_numero_reporte", Midleware.verifyToken, async (req, res) => {
   try {
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .query(`SELECT 
+      .query(`SELECT 
                     id,
                     numero_reporte
                 FROM cat_numero_reporte`);
@@ -279,7 +280,7 @@ router.get("/cat_fecha_periodo", Midleware.verifyToken, async (req, res) => {
   try {
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .query(`SELECT 
+      .query(`SELECT 
                     id,
                     numero_reporte
                 FROM cat_fecha_periodo`);
@@ -304,7 +305,7 @@ router.get("/cat_lenguas_indigenas", Midleware.verifyToken, async (req, res) => 
   try {
     const pool = await connectToDatabase();
     const result = await pool.request()
-        .query(`SELECT 
+      .query(`SELECT 
                     id,
                     lengua_indigena
                 FROM cat_lenguas_indigenas`);
@@ -323,7 +324,7 @@ router.get("/cat_lenguas_indigenas", Midleware.verifyToken, async (req, res) => 
 });
 
 router.get("/getCabezera", Midleware.verifyToken, async (req, res) => {
-  try{
+  try {
 
     const { id_distrito, demarcacion } = req.query;
 
@@ -332,21 +333,51 @@ router.get("/getCabezera", Midleware.verifyToken, async (req, res) => {
     }
 
     const pool = await connectToDatabase();
-    const result = await pool.request()    
+    const result = await pool.request()
       .input('id_distrito', sql.Int, id_distrito)
       .input('demarcacion', sql.Int, demarcacion)
       .query(`select distrito_cabecera 
                from distritos_demarcaciones
                where distrito = @id_distrito and demarcacion_territorial = @demarcacion;`);
 
-              if (result.recordset.length > 0) {
-            return res.status(200).json({
-                getCabezera: result.recordset
-            });
-        } else {
-            return res.status(404).json({ message: "No se encontraron registros", code: 100})
-        }
-  }catch (error) {
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        getCabezera: result.recordset
+      });
+    } else {
+      return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
+});
+
+
+router.get("/distritoElectoral", Midleware.verifyToken, async (req, res) => {
+  try {
+    const { idSeccion } = req.query;
+
+    if (!idSeccion) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('idSeccion', sql.VarChar, idSeccion)
+      .query(`select 
+                distrito_electoral 
+                from cat_secciones
+                where seccion_electoral = @idSeccion;`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json(result.recordset);
+
+    } else {
+      return res.status(404).json({ message: "No se encontraron datos" });
+    }
+
+  } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error de servidor", error: error.message });
   }

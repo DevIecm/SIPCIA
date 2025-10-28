@@ -7,7 +7,9 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 
-dotenv.config();    
+dotenv.config();
+
+const API_BASE_URL = process.env.API_BASE_URL;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -62,100 +64,100 @@ const upload = multer({ storage, fileFilter });
 
 
 // registro de Instituciones
-router.post("/altaInstituciones", Midleware.verifyToken, upload.fields([{ name: "fotografia", maxCount: 1 },{ name: "kmlFile", maxCount: 1 }]), async (req, res) => {
+router.post("/altaInstituciones", Midleware.verifyToken, upload.fields([{ name: "fotografia", maxCount: 1 }, { name: "kmlFile", maxCount: 1 }]), async (req, res) => {
 
-    let {
-        distrito_electoral,
-        demarcacion_territorial,
-        nombre_completo,
-        pueblo_originario,
-        pueblo,
-        barrio,
-        unidad_territorial,
-        otro,
-        comunidad,
-        interes_profesional,
-        nombre_institucion,
-        cargo,
-        domicilio,
-        telefono,
-        correo_electronico,
-        usuario_registro,
-        modulo_registro,
-        estado_registro,
-        cv_documento,
-        cv_enlace
-    } = req.body
-   
-    const pueblo_originarioInt = pueblo_originario === "" ? null : parseInt(pueblo_originario, 10);
-    const puebloInt = pueblo === "" ? null : parseInt(pueblo, 10);
-    const barrioInt = barrio === "" ? null : parseInt(barrio, 10);
-    const unidad_territorialInt = unidad_territorial === "" ? null : parseInt(unidad_territorial, 10);
+  let {
+    distrito_electoral,
+    demarcacion_territorial,
+    nombre_completo,
+    pueblo_originario,
+    pueblo,
+    barrio,
+    unidad_territorial,
+    otro,
+    comunidad,
+    interes_profesional,
+    nombre_institucion,
+    cargo,
+    domicilio,
+    telefono,
+    correo_electronico,
+    usuario_registro,
+    modulo_registro,
+    estado_registro,
+    cv_documento,
+    cv_enlace
+  } = req.body
 
-            
-    if(!demarcacion_territorial ||
-        !nombre_completo ||
-        !comunidad  ||
-        !usuario_registro  ||
-        !modulo_registro  ||
-        !estado_registro 
-    ){
-        return res.status(400).json({ message: "Datos requeridos"})
-    }
-
-    const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;    
-
-    cv_documento = kmlFile ? 1 : 0;
-    cv_enlace = kmlFile ? `/uploads/zip/${kmlFile.filename}` : null;
+  const pueblo_originarioInt = pueblo_originario === "" ? null : parseInt(pueblo_originario, 10);
+  const puebloInt = pueblo === "" ? null : parseInt(pueblo, 10);
+  const barrioInt = barrio === "" ? null : parseInt(barrio, 10);
+  const unidad_territorialInt = unidad_territorial === "" ? null : parseInt(unidad_territorial, 10);
 
 
+  if (!demarcacion_territorial ||
+    !nombre_completo ||
+    !comunidad ||
+    !usuario_registro ||
+    !modulo_registro ||
+    !estado_registro
+  ) {
+    return res.status(400).json({ message: "Datos requeridos" })
+  }
 
-    // fecha y hora
-    const original = new Date();
-    const offsetInMs = original.getTimezoneOffset() * 60000;
-    const fechaLocal = new Date(original.getTime() - offsetInMs);
-    const ahora = new Date();
-    const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
+  const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;
 
-     const fotografia = req.files?.fotografia ? `/uploads/fotos/${req.files.fotografia[0].filename}` : null;
-     
+  cv_documento = kmlFile ? 1 : 0;
+  cv_enlace = kmlFile ? `/uploads/zip/${kmlFile.filename}` : null;
 
 
-    let transaction;
+
+  // fecha y hora
+  const original = new Date();
+  const offsetInMs = original.getTimezoneOffset() * 60000;
+  const fechaLocal = new Date(original.getTime() - offsetInMs);
+  const ahora = new Date();
+  const horaActual = ahora.toTimeString().split(' ')[0]; // formato HH:MM:SS
+
+  const fotografia = req.files?.fotografia ? `/uploads/fotos/${req.files.fotografia[0].filename}` : null;
 
 
-    try{
 
-        const pool = await connectToDatabase();
-        const transaction = pool.transaction();
+  let transaction;
 
-        await transaction.begin();
 
-        const result = await transaction.request()
-        .input('distrito_electoral', sql.Int, distrito_electoral)
-        .input('fotografia', sql.VarChar, fotografia)
-        .input('demarcacion_territorial', sql.Int, demarcacion_territorial)
-        .input('nombre_completo', sql.VarChar, nombre_completo)
-        .input('pueblo_originario', sql.Int, pueblo_originarioInt)
-        .input('pueblo',sql.Int, puebloInt)
-        .input('barrio',sql.Int, barrioInt)
-        .input('unidad_territorial', sql.Int, unidad_territorialInt)
-        .input('otro', sql.VarChar, otro)
-        .input('comunidad',sql.Int, comunidad)
-        .input('interes_profesional',sql.VarChar, interes_profesional)
-        .input('nombre_institucion', sql.VarChar, nombre_institucion)
-        .input('cargo', sql.VarChar, cargo)
-        .input('domicilio', sql.VarChar, domicilio)
-        .input('telefono', sql.VarChar, telefono)
-        .input('correo_electronico', sql.VarChar, correo_electronico)
-        .input('fecha_registro', sql.DateTime, fechaLocal)
-        .input('hora_registro', sql.VarChar, horaActual)
-        .input('usuario_registro', sql.Int, usuario_registro)
-        .input('modulo_registro', sql.Int, modulo_registro)
-        .input('estado_registro', sql.Int, estado_registro)  
-        .input('cv_documento', sql.Int, cv_documento) //0
-        .input('cv_enlace', sql.VarChar, cv_enlace)
-        .query(`INSERT INTO registro_instituciones (distrito_electoral, fotografia,
+  try {
+
+    const pool = await connectToDatabase();
+    const transaction = pool.transaction();
+
+    await transaction.begin();
+
+    const result = await transaction.request()
+      .input('distrito_electoral', sql.Int, distrito_electoral)
+      .input('fotografia', sql.VarChar, fotografia)
+      .input('demarcacion_territorial', sql.Int, demarcacion_territorial)
+      .input('nombre_completo', sql.VarChar, nombre_completo)
+      .input('pueblo_originario', sql.Int, pueblo_originarioInt)
+      .input('pueblo', sql.Int, puebloInt)
+      .input('barrio', sql.Int, barrioInt)
+      .input('unidad_territorial', sql.Int, unidad_territorialInt)
+      .input('otro', sql.VarChar, otro)
+      .input('comunidad', sql.Int, comunidad)
+      .input('interes_profesional', sql.VarChar, interes_profesional)
+      .input('nombre_institucion', sql.VarChar, nombre_institucion)
+      .input('cargo', sql.VarChar, cargo)
+      .input('domicilio', sql.VarChar, domicilio)
+      .input('telefono', sql.VarChar, telefono)
+      .input('correo_electronico', sql.VarChar, correo_electronico)
+      .input('fecha_registro', sql.DateTime, fechaLocal)
+      .input('hora_registro', sql.VarChar, horaActual)
+      .input('usuario_registro', sql.Int, usuario_registro)
+      .input('modulo_registro', sql.Int, modulo_registro)
+      .input('estado_registro', sql.Int, estado_registro)
+      .input('cv_documento', sql.Int, cv_documento) //0
+      .input('cv_enlace', sql.VarChar, cv_enlace)
+      .query(`INSERT INTO registro_instituciones (distrito_electoral, fotografia,
             demarcacion_territorial, nombre_completo, pueblo_originario, pueblo, barrio,
             unidad_territorial, otro, comunidad, interes_profesional, nombre_institucion,
             cargo, domicilio, telefono, correo_electronico, fecha_registro, hora_registro, usuario_registro, modulo_registro,
@@ -168,184 +170,184 @@ router.post("/altaInstituciones", Midleware.verifyToken, upload.fields([{ name: 
             @estado_registro, @cv_documento, @cv_enlace)
             `);
 
-        const insertedId = result.recordset[0].id;
+    const insertedId = result.recordset[0].id;
 
-        const camposModificados = JSON.stringify({
-            distrito_electoral,
-            fotografia,
-            demarcacion_territorial,
-            nombre_completo,
-            pueblo_originario,
-            pueblo,
-            barrio,
-            unidad_territorial,
-            otro,
-            comunidad,
-            interes_profesional,
-            nombre_institucion,
-            cargo,
-            domicilio,
-            telefono,
-            correo_electronico,
-            usuario_registro,
-            modulo_registro,
-            estado_registro,
-            cv_documento,
-            cv_enlace
-        });
+    const camposModificados = JSON.stringify({
+      distrito_electoral,
+      fotografia,
+      demarcacion_territorial,
+      nombre_completo,
+      pueblo_originario,
+      pueblo,
+      barrio,
+      unidad_territorial,
+      otro,
+      comunidad,
+      interes_profesional,
+      nombre_institucion,
+      cargo,
+      domicilio,
+      telefono,
+      correo_electronico,
+      usuario_registro,
+      modulo_registro,
+      estado_registro,
+      cv_documento,
+      cv_enlace
+    });
 
-        //garda data en bitacora
-        await transaction.request()
-            .input('usuario', sql.Int, usuario_registro)
-            .input('tipo_usuario', sql.Int, modulo_registro)
-            .input('fecha', sql.Date, fechaLocal)
-            .input('hora', sql.VarChar, horaActual)
-            .input('registro_id', sql.Int, insertedId)
-            .input('campos_modificados', sql.VarChar(sql.MAX), camposModificados)
-            .query(`
+    //garda data en bitacora
+    await transaction.request()
+      .input('usuario', sql.Int, usuario_registro)
+      .input('tipo_usuario', sql.Int, modulo_registro)
+      .input('fecha', sql.Date, fechaLocal)
+      .input('hora', sql.VarChar, horaActual)
+      .input('registro_id', sql.Int, insertedId)
+      .input('campos_modificados', sql.VarChar(sql.MAX), camposModificados)
+      .query(`
                 INSERT INTO log_registro_instituciones (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
                 VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
             `);
-        
-        // Confirmar la transacción
-        await transaction.commit();
 
-        return res.status(200).json({
-            message: "Registro creado correctamente",
-            id: insertedId,
-            code: 200,
-        });
+    // Confirmar la transacción
+    await transaction.commit();
 
-    }catch (err) {
-        console.error("Error en Registro:", err);
-        if (transaction) {
-            await transaction.rollback();
-        }
-        return res.status(500).json({ message: "Error al guardar el registro", error: err.message });
+    return res.status(200).json({
+      message: "Registro creado correctamente",
+      id: insertedId,
+      code: 200,
+    });
+
+  } catch (err) {
+    console.error("Error en Registro:", err);
+    if (transaction) {
+      await transaction.rollback();
     }
+    return res.status(500).json({ message: "Error al guardar el registro", error: err.message });
+  }
 });
 
 //update instituciones
-router.patch("/updateInstituciones", Midleware.verifyToken, upload.fields([{ name: "fotografia", maxCount: 1 },{ name: "kmlFile", maxCount: 1 }]), async (req, res) => {
+router.patch("/updateInstituciones", Midleware.verifyToken, upload.fields([{ name: "fotografia", maxCount: 1 }, { name: "kmlFile", maxCount: 1 }]), async (req, res) => {
 
-    let {
-        id_registro,
-        distrito_electoral,
-        demarcacion_territorial,
-        nombre_completo,
-        pueblo_originario,
-        pueblo,
-        barrio,
-        unidad_territorial,
-        otro,
-        comunidad,
-        interes_profesional,
-        nombre_institucion,
-        cargo,
-        domicilio,
-        telefono,
-        correo_electronico,
-        usuario_registro,
-        modulo_registro,
-        estado_registro,
-        cv_documento,
-        cv_enlace
-    } = req.body;
+  let {
+    id_registro,
+    distrito_electoral,
+    demarcacion_territorial,
+    nombre_completo,
+    pueblo_originario,
+    pueblo,
+    barrio,
+    unidad_territorial,
+    otro,
+    comunidad,
+    interes_profesional,
+    nombre_institucion,
+    cargo,
+    domicilio,
+    telefono,
+    correo_electronico,
+    usuario_registro,
+    modulo_registro,
+    estado_registro,
+    cv_documento,
+    cv_enlace
+  } = req.body;
 
-    if (!demarcacion_territorial || !nombre_completo ||  !comunidad ||
-        !usuario_registro || !modulo_registro || !estado_registro) {
-        return res.status(400).json({ message: "Datos requeridos" });
+  if (!demarcacion_territorial || !nombre_completo || !comunidad ||
+    !usuario_registro || !modulo_registro || !estado_registro) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
+
+  try {
+    const pool = await connectToDatabase();
+    const transaction = pool.transaction();
+    await transaction.begin();
+
+    // Obtener registro anterior
+    const resultAnterior = await transaction.request()
+      .input('id', sql.Int, id_registro)
+      .query('SELECT * FROM registro_instituciones WHERE id = @id');
+
+    const registroAnterior = resultAnterior.recordset[0];
+    if (!registroAnterior) {
+      return res.status(404).json({ message: "Registro no encontrado" });
     }
 
-    try {
-        const pool = await connectToDatabase();
-        const transaction = pool.transaction();
-        await transaction.begin();
 
-        // Obtener registro anterior
-        const resultAnterior = await transaction.request()
-            .input('id', sql.Int, id_registro)
-            .query('SELECT * FROM registro_instituciones WHERE id = @id');
+    if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
+      cv_enlace = `/uploads/zip/${req.files.kmlFile[0].filename}`;
+      cv_documento = 1;
+    } else {
+      cv_enlace = registroAnterior.cv_enlace;
+      cv_documento = registroAnterior.cv_enlace ? 1 : 0;
+    }
 
-        const registroAnterior = resultAnterior.recordset[0];
-        if (!registroAnterior) {
-            return res.status(404).json({ message: "Registro no encontrado" });
-        }
+    cv_documento = cv_documento ? 1 : 0;
 
+    const fotografiaFinal = req.files?.fotografia?.[0]
+      ? `/uploads/fotos/${req.files.fotografia[0].filename}`
+      : registroAnterior.fotografia || null;
 
-        if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
-        cv_enlace = `/uploads/zip/${req.files.kmlFile[0].filename}`;
-        cv_documento = 1;
+    const nuevosDatos = {
+      distrito_electoral,
+      fotografia: fotografiaFinal,
+      demarcacion_territorial,
+      nombre_completo,
+      pueblo_originario,
+      pueblo,
+      barrio,
+      unidad_territorial,
+      otro,
+      comunidad,
+      interes_profesional,
+      nombre_institucion,
+      cargo,
+      domicilio,
+      telefono,
+      correo_electronico,
+      usuario_registro,
+      modulo_registro,
+      estado_registro,
+      cv_documento,
+      cv_enlace
+    };
+
+    // Campos que son enteros en la BD
+    const intFields = [
+      'pueblo_originario', 'pueblo', 'barrio', 'unidad_territorial'
+    ];
+
+    for (const campo of intFields) {
+      if (nuevosDatos[campo] === "" || nuevosDatos[campo] == null) {
+        nuevosDatos[campo] = null;
+      } else {
+        nuevosDatos[campo] = parseInt(nuevosDatos[campo], 10);
+      }
+    }
+
+    // cambios
+    const cambios = {};
+    for (const campo of Object.keys(nuevosDatos)) {
+      if (registroAnterior[campo] != nuevosDatos[campo]) {
+        cambios[campo] = nuevosDatos[campo];
+      }
+    }
+
+    // Actualizar solo si hay cambios
+    if (Object.keys(cambios).length > 0) {
+      const requestUpdate = transaction.request();
+      requestUpdate.input('id_registro', sql.Int, id_registro);
+
+      for (const [campo, valor] of Object.entries(nuevosDatos)) {
+        if (intFields.includes(campo) || campo === "cv_documento") {
+          requestUpdate.input(campo, sql.Int, valor);
         } else {
-        cv_enlace = registroAnterior.cv_enlace;
-        cv_documento = registroAnterior.cv_enlace ? 1 : 0;
+          requestUpdate.input(campo, sql.VarChar, valor ?? "");
         }
+      }
 
-        cv_documento = cv_documento ? 1 : 0;
-
-        const fotografiaFinal = req.files?.fotografia?.[0]
-        ? `/uploads/fotos/${req.files.fotografia[0].filename}`
-        : registroAnterior.fotografia || null;
-
-        const nuevosDatos = {
-            distrito_electoral,
-            fotografia: fotografiaFinal,
-            demarcacion_territorial,
-            nombre_completo,
-            pueblo_originario,
-            pueblo,
-            barrio,
-            unidad_territorial,
-            otro,
-            comunidad,
-            interes_profesional,
-            nombre_institucion,
-            cargo,
-            domicilio,
-            telefono,
-            correo_electronico,
-            usuario_registro,
-            modulo_registro,
-            estado_registro,
-            cv_documento,
-            cv_enlace
-        };
-
-        // Campos que son enteros en la BD
-        const intFields = [
-            'pueblo_originario', 'pueblo', 'barrio', 'unidad_territorial'
-        ];
-
-        for (const campo of intFields) {
-            if (nuevosDatos[campo] === "" || nuevosDatos[campo] == null) {
-                nuevosDatos[campo] = null;
-            } else {
-                nuevosDatos[campo] = parseInt(nuevosDatos[campo], 10);
-            }
-        }
-
-        // cambios
-        const cambios  = {};
-        for (const campo of Object.keys(nuevosDatos)) {
-            if (registroAnterior[campo] != nuevosDatos[campo]) {
-                cambios[campo] = nuevosDatos[campo];
-            }
-        }
-
-        // Actualizar solo si hay cambios
-        if (Object.keys(cambios).length > 0) {
-            const requestUpdate = transaction.request();
-            requestUpdate.input('id_registro', sql.Int, id_registro);
-
-            for (const [campo, valor] of Object.entries(nuevosDatos)) {
-            if (intFields.includes(campo) || campo === "cv_documento") {
-                requestUpdate.input(campo, sql.Int, valor);
-            } else {
-                requestUpdate.input(campo, sql.VarChar, valor ?? "");
-            }
-            }
-
-            await requestUpdate.query(`
+      await requestUpdate.query(`
                 UPDATE registro_instituciones SET
                     distrito_electoral = @distrito_electoral,
                     fotografia = @fotografia,
@@ -370,60 +372,57 @@ router.patch("/updateInstituciones", Midleware.verifyToken, upload.fields([{ nam
                     cv_enlace = @cv_enlace
                 WHERE id = @id_registro;
             `);
-        }
+    }
 
-        // Registrar log de cambios
-        const original = new Date();
-        const offsetInMs = original.getTimezoneOffset() * 60000;
-        const fechaLocal = new Date(original.getTime() - offsetInMs);
-        const horaActual = new Date().toTimeString().split(' ')[0];
+    // Registrar log de cambios
+    const original = new Date();
+    const offsetInMs = original.getTimezoneOffset() * 60000;
+    const fechaLocal = new Date(original.getTime() - offsetInMs);
+    const horaActual = new Date().toTimeString().split(' ')[0];
 
-        await transaction.request()
-            .input('usuario', sql.Int, usuario_registro)
-            .input('tipo_usuario', sql.Int, modulo_registro)
-            .input('fecha', sql.Date, fechaLocal)
-            .input('hora', sql.VarChar, horaActual)
-            .input('registro_id', sql.Int, id_registro)
-            .input('campos_modificados', sql.VarChar(sql.MAX), JSON.stringify(cambios))
-            .query(`
+    await transaction.request()
+      .input('usuario', sql.Int, usuario_registro)
+      .input('tipo_usuario', sql.Int, modulo_registro)
+      .input('fecha', sql.Date, fechaLocal)
+      .input('hora', sql.VarChar, horaActual)
+      .input('registro_id', sql.Int, id_registro)
+      .input('campos_modificados', sql.VarChar(sql.MAX), JSON.stringify(cambios))
+      .query(`
                 INSERT INTO log_registro_instituciones (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
                 VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
             `);
 
-        await transaction.commit();
+    await transaction.commit();
 
-        return res.status(200).json({
-            message: "Registro actualizado correctamente",
-            code: 200,
-        });
+    return res.status(200).json({
+      message: "Registro actualizado correctamente",
+      code: 200,
+    });
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error al guardar en BD" });
-    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error al guardar en BD" });
+  }
 });
 
 
 
 //consulta registros de tabla por distrito
 
-router.get("/getInstituciones", Midleware.verifyToken, async(req, res)=>{
+router.get("/getInstituciones", Midleware.verifyToken, async (req, res) => {
 
-    const {
-        distrito_electoral
-    }= req.query
+  const {
+    distrito_electoral
+  } = req.query
 
-    if (!distrito_electoral){
-        return res.status(400).json({ message: "Datos requeridos"})
-    }
 
-    try{
+  try {
 
-        const pool = await connectToDatabase();
-        const result = await pool.request()
-    
-        .input('distrito_electoral', sql.Int, distrito_electoral)
-        .query(`select 
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+
+      .input('distrito_electoral', sql.Int, distrito_electoral)
+      .query(`select 
                 ri.id as id_registro,
                 ri.nombre_completo,
                 cpo.pueblo_originario,
@@ -443,37 +442,38 @@ router.get("/getInstituciones", Midleware.verifyToken, async(req, res)=>{
                 left join cat_barrios cb  on ri.barrio = cb.id
                 left join unidad_territorial ut  on ri.unidad_territorial = ut.id
                 join comunidad c on ri.comunidad = c.id
-                where ri.distrito_electoral = @distrito_electoral;`);
+                WHERE  (1 = 1${distrito_electoral ? ' AND ri.distrito_electoral = @distrito_electoral' : ''} and ri.estado_registro<>4)
+              ;`);
 
- if (result.recordset.length > 0) {
-        const data = result.recordset.map(item => {
-          let nombreUbicacion = null;
-          let nombreUbicacionLimpio = null;
+    if (result.recordset.length > 0) {
+      const data = result.recordset.map(item => {
+        let nombreUbicacion = null;
+        let nombreUbicacionLimpio = null;
 
-          if (item.cv_enlace) {
-            nombreUbicacion = path.basename(item.cv_enlace);
-            const guionIndex = nombreUbicacion.indexOf("-");
-            nombreUbicacionLimpio = guionIndex > -1
-              ? nombreUbicacion.substring(guionIndex + 1)
-              : nombreUbicacion;
-          }
-
-          return {
-            ...item,
-            cv_enlace: nombreUbicacion,
-            nombre_archivo: nombreUbicacionLimpio
-          };
-        });
-
-        return res.status(200).json({ getInstituciones: data });
-      } else {
-            return res.status(404).json({ message: "No se encontraron datos" });
+        if (item.cv_enlace) {
+          nombreUbicacion = path.basename(item.cv_enlace);
+          const guionIndex = nombreUbicacion.indexOf("-");
+          nombreUbicacionLimpio = guionIndex > -1
+            ? nombreUbicacion.substring(guionIndex + 1)
+            : nombreUbicacion;
         }
 
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error de servidor", error: error.message });
+        return {
+          ...item,
+          cv_enlace: nombreUbicacion,
+          nombre_archivo: nombreUbicacionLimpio
+        };
+      });
+
+      return res.status(200).json({ getInstituciones: data });
+    } else {
+      return res.status(404).json({ message: "No se encontraron datos" });
     }
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
 })
 
 router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) => {
@@ -490,6 +490,7 @@ router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) 
       .query(`
         SELECT 
           ri.id AS id_registro,
+          ri.distrito_electoral,
           ri.fotografia,
           ri.cv_enlace,
           ri.demarcacion_territorial AS id_demarcacion,
@@ -533,7 +534,7 @@ router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) 
       const basename = path.basename(registro.fotografia);
 
       registro.fotografia_url =
-        `http://145.0.46.49:4000/Services${dirname}/${encodeURIComponent(basename)}`;
+        `${API_BASE_URL}/Services${dirname}/${encodeURIComponent(basename)}`;
     } else {
       registro.fotografia_url = null;
     }
@@ -548,4 +549,44 @@ router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) 
   }
 });
 
+/// elimiacion logica de registro
+router.patch("/eliminarRegistro", Midleware.verifyToken, async (req, res) => {
+
+  const { id } = req.body;
+
+  if (id == null) {
+    return res.status(400), json({ message: "EL campo es requerido" })
+  }
+
+  let transaction;
+
+  try {
+    const pool = await connectToDatabase();
+    transaction = pool.transaction();
+    await transaction.begin();
+
+    await transaction.request()
+      .input('id', sql.Int, id)
+      .query(`
+                UPDATE registro_instituciones
+                SET estado_registro = 4
+                where id = @id;
+            `);
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      message: `EL registro fue eliminado`,
+      code: 200,
+    });
+
+  } catch (err) {
+    console.error("Error en Registro:", err);
+    if (transaction) {
+      await transaction.rollback();
+    }
+    return res.status(500).json({ message: "Error al actualizar los registros", error: err.message });
+  }
+
+});
 export default router;

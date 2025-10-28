@@ -9,7 +9,7 @@ const router = express.Router();
 //Bitacora by tipo de usuario
 import path from "path";
 
-router.get("/bitacora", Midleware.verifyToken, async (req, res) => { 
+router.get("/bitacora", Midleware.verifyToken, async (req, res) => {
   try {
     const { id_registro } = req.query;
 
@@ -18,7 +18,7 @@ router.get("/bitacora", Midleware.verifyToken, async (req, res) => {
     }
 
     const pool = await connectToDatabase();
-    const result = await pool.request()    
+    const result = await pool.request()
       .input('id_registro', sql.Int, id_registro)
       .query(`select 
                 u.id as id_usuario,
@@ -113,19 +113,19 @@ router.get("/bitacora", Midleware.verifyToken, async (req, res) => {
 
 
 //bitacora mayor afluencia
-router.get("/getbitacoraAfluencia", Midleware.verifyToken, async(req, res)=>{
+router.get("/getbitacoraAfluencia", Midleware.verifyToken, async (req, res) => {
 
-    const { id_registro } = req.query;
+  const { id_registro } = req.query;
 
-    if(!id_registro){
-      return res.status(400).json( {message: "Datos requeridos"});
-    }
+  if (!id_registro) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
 
-    try{
-      const pool = await connectToDatabase();
-      const result = await pool.request()  
-        .input('id_registro', sql.Int, id_registro)
-        .query(`select 
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('id_registro', sql.Int, id_registro)
+      .query(`select 
                 r.id as id_registro,
                 u.id as id_usuario,
                 u.nombre_usuario,
@@ -161,18 +161,18 @@ router.get("/getbitacoraAfluencia", Midleware.verifyToken, async(req, res)=>{
                 Left JOIN 
                     estado_registro er ON TRY_CAST(JSON_VALUE(lr.campos_modificados, '$.estado_registro') AS INT) = er.id
                 where r.id =@id_registro
-                order by lr.id, lr.fecha, lr.hora;`);        
+                order by lr.id, lr.fecha, lr.hora;`);
 
 
-       if (result.recordset.length > 0) {
-          const parsedResults = result.recordset.map(item => {
-            let datos= {};
-            try {
-              datos = JSON.parse(item.Datos);
-            } catch (error) {
-              console.error("Error parseado Datos", error);
-            }
-          
+    if (result.recordset.length > 0) {
+      const parsedResults = result.recordset.map(item => {
+        let datos = {};
+        try {
+          datos = JSON.parse(item.Datos);
+        } catch (error) {
+          console.error("Error parseado Datos", error);
+        }
+
 
         // Regresa solo nombre del archivo
         let nombreArchivo = null;
@@ -207,19 +207,19 @@ router.get("/getbitacoraAfluencia", Midleware.verifyToken, async(req, res)=>{
 
 
 //bitacora registro instituciones
-router.get("/getbitacoraInstituciones", Midleware.verifyToken, async(req, res)=>{
+router.get("/getbitacoraInstituciones", Midleware.verifyToken, async (req, res) => {
 
-    const { id_registro } = req.query;
+  const { id_registro } = req.query;
 
-    if(!id_registro){
-      return res.status(400).json( {message: "Datos requeridos"});
-    }
+  if (!id_registro) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
 
-    try{
-        const pool = await connectToDatabase();
-        const result = await pool.request()    
-        .input('id_registro', sql.Int, id_registro)
-        .query(`select 
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('id_registro', sql.Int, id_registro)
+      .query(`select 
                 r.id as id_registro,
                 u.id as id_usuario,
                 u.nombre_usuario,
@@ -262,7 +262,7 @@ router.get("/getbitacoraInstituciones", Midleware.verifyToken, async(req, res)=>
                 LEFT JOIN 
                 comunidad c ON TRY_CAST(JSON_VALUE(lr.campos_modificados, '$.comunidad') AS INT) = c.id
                 where r.id =@id_registro
-                order by lr.id, lr.fecha, lr.hora;`);        
+                order by lr.id, lr.fecha, lr.hora;`);
 
     if (result.recordset.length > 0) {
       const parsedResults = result.recordset.map(item => {
@@ -302,24 +302,24 @@ router.get("/getbitacoraInstituciones", Midleware.verifyToken, async(req, res)=>
     console.error(error);
     return res.status(500).json({ message: "Error de servidor", error: error.message });
   }
-  });
+});
 
 
 //bitacora registro Lugares
-router.get("/getbitacoraLugares", Midleware.verifyToken, async(req, res)=>{
-    
-    const { id_registro } = req.query;
+router.get("/getbitacoraLugares", Midleware.verifyToken, async (req, res) => {
 
-    if(!id_registro){
-      return res.status(400).json( {message: "Datos requeridos"});
-    }
+  const { id_registro } = req.query;
 
-    
-    try{
-      const pool = await connectToDatabase();
-      const result = await pool.request()
-        .input('id_registro', sql.Int, id_registro)
-        .query(`SELECT 
+  if (!id_registro) {
+    return res.status(400).json({ message: "Datos requeridos" });
+  }
+
+
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('id_registro', sql.Int, id_registro)
+      .query(`SELECT 
                 r.id as id_registro,
                 u.id as id_usuario,
                 u.nombre_usuario,
@@ -367,32 +367,32 @@ router.get("/getbitacoraLugares", Midleware.verifyToken, async(req, res)=>{
               WHERE 
                   r.id =@id_registro
                               order by lr.id, lr.fecha, lr.hora
-                            ;`);        
+                            ;`);
 
-    
-        /* // puede servir a futuro
-        if (result.recordset.length > 0) {
-          const parsedResults = result.recordset.map(item => {
-            try {
-              return {
-                ...item,
-                Datos: JSON.parse(item.Datos)
-              };
-            } catch (error) {
-              return item;
-            }
-          });
 
-          return res.status(200).json({
-            getbitacoraLugares: parsedResults
-          });
-        } else {
-          return res.status(404).json({ message: "No se encontraron datos de tipo" });
+    /* // puede servir a futuro
+    if (result.recordset.length > 0) {
+      const parsedResults = result.recordset.map(item => {
+        try {
+          return {
+            ...item,
+            Datos: JSON.parse(item.Datos)
+          };
+        } catch (error) {
+          return item;
         }
+      });
 
-         */
+      return res.status(200).json({
+        getbitacoraLugares: parsedResults
+      });
+    } else {
+      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+    }
 
-            if (result.recordset.length > 0) {
+     */
+
+    if (result.recordset.length > 0) {
       const parsedResults = result.recordset.map(item => {
         let datos = {};
         try {
@@ -430,6 +430,6 @@ router.get("/getbitacoraLugares", Midleware.verifyToken, async(req, res)=>{
     console.error(error);
     return res.status(500).json({ message: "Error de servidor", error: error.message });
   }
-  });
-  
+});
+
 export default router;

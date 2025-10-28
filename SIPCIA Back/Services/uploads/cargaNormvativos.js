@@ -6,6 +6,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { json } from "stream/consumers";
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -63,7 +64,7 @@ router.post("/subirDocumentoNormativo", Midleware.verifyToken, upload.single("ar
   const transaction = pool.transaction();
 
   try {
-    await transaction.begin(); 
+    await transaction.begin();
 
     const request = transaction.request();
     await request
@@ -100,22 +101,22 @@ router.post("/subirDocumentoNormativo", Midleware.verifyToken, upload.single("ar
 
 //getNormativos front
 router.get("/getOtrosDocumentos", Midleware.verifyToken, async (req, res) => {
-    const {
-        distrito_electoral, tipo_comunidad
-    }= req.query
+  const {
+    distrito_electoral, tipo_comunidad
+  } = req.query
 
-    if (!distrito_electoral || !tipo_comunidad){
-        return res.status(400).json({ message: "Datos requeridos"})
-    }
+  if (!distrito_electoral || !tipo_comunidad) {
+    return res.status(400).json({ message: "Datos requeridos" })
+  }
 
-    try {
+  try {
 
-        const pool = await connectToDatabase();
-        const result = await pool.request()
-        
-            .input('distrito_electoral', sql.Int, distrito_electoral)
-            .input('tipo_comunidad', sql.Int, tipo_comunidad)
-            .query(`select nombre_documento, 
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+
+      .input('distrito_electoral', sql.Int, distrito_electoral)
+      .input('tipo_comunidad', sql.Int, tipo_comunidad)
+      .query(`select nombre_documento, 
                 fecha_carga, 
                 direccion_documento, 
                 RIGHT('0' + CAST(
@@ -129,40 +130,108 @@ router.get("/getOtrosDocumentos", Midleware.verifyToken, async (req, res) => {
                 from documentos_normativos
                 WHERE distrito = @distrito_electoral and tipo_comunidad= @tipo_comunidad;`);
 
-        if (result.recordset.length > 0) {
+    if (result.recordset.length > 0) {
 
-           const data = result.recordset.map(item => {
-                  const nombreArchivo = item.direccion_documento
-                    ? path.basename(item.direccion_documento)
-                    : null;
-          
-                  const guionIndex = nombreArchivo?.indexOf("-");
-                  const nombreLimpio = guionIndex > -1
-                    ? nombreArchivo.substring(guionIndex + 1)
-                    : nombreArchivo;
-          
-                  return {
-                    ...item,
-                    direccion_documento: nombreArchivo,
-                    nombre_documento: nombreLimpio
-                  };
-                });
+      const data = result.recordset.map(item => {
+        const nombreArchivo = item.direccion_documento
+          ? path.basename(item.direccion_documento)
+          : null;
 
-            return res.status(200).json({
-                getOtrosDocumentos: data,
-                code: 200
-            });
-        } else {
-            return res.status(404).json({ message: "No se encontraron datos" });
-        }
+        const guionIndex = nombreArchivo?.indexOf("-");
+        const nombreLimpio = guionIndex > -1
+          ? nombreArchivo.substring(guionIndex + 1)
+          : nombreArchivo;
 
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error de servidor", error: error.message });
+        return {
+          ...item,
+          direccion_documento: nombreArchivo,
+          nombre_documento: nombreLimpio
+        };
+      });
+
+      return res.status(200).json({
+        getOtrosDocumentos: data,
+        code: 200
+      });
+    } else {
+      return res.status(404).json({ message: "No se encontraron datos" });
     }
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
 });
 
 
+/// elimiacion logica de documentos normativos
+router.patch("/eliminarDocNormativos", Midleware.verifyToken, async () => {
 
+  const { id } = req.body;
+
+  if (id == null) {
+    return res.status(400), json({ message: "EL campo es requerido" })
+  }
+
+  let transaction;
+
+  try {
+    const pool = await connectToDatabase();
+    transaction = pool.transaction();
+    await transaction.begin();
+
+    await transaction.request()
+      .input('id', sql.Int, id)
+      .query(`
+                UPDATE documentos_normativos
+                SET estado_documento = 4
+                where id = @id;
+            `);
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      message: `EL registro fue eliminado`,
+      code: 200,
+    });
+
+  } catch (err) {
+    console.error("Error en Registro:", err);
+    if (transaction) {
+      await transaction.rollback();
+    }
+    return res.status(500).json({ message: "Error al actualizar los registros", error: err.message });
+  }
+
+});
+
+// consulta de docuemtos normativos modulo 2
+router.get("/getDocumentos", Midleware.verifyToken, async (req, res) => {
+
+  const { distrito, tipo_comunidad, tipo_documento } = req.query;
+
+  try {
+
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('tipo_comunidad', sql.Int, tipo_comunidad)
+      .input('distrito', sql.Int, distrito)
+      .input('tipo_documento', sql.Int, tipo_documento)
+      .query(`select id, nombre_documento, fecha_carga, tipo_documento
+                from documentos_normativos
+            where (tipo_documento = @tipo_documento${distrito ? ' AND distrito = @distrito' : ''} and estado_documento<>4 and tipo_comunidad=@tipo_comunidad);`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        getDocumentos: result.recordset
+      });
+    } else {
+      return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
+});
 
 export default router;

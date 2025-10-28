@@ -354,9 +354,6 @@ router.get("/getFichasInd", Midleware.verifyToken, async (req, res) => {
         distrito_electoral
     }= req.query
 
-    if (!distrito_electoral){
-        return res.status(400).json({ message: "Datos requeridos"})
-    }
 
     try {
 
@@ -377,7 +374,7 @@ router.get("/getFichasInd", Midleware.verifyToken, async (req, res) => {
                 + ' ' + CASE WHEN DATEPART(HOUR, hora_registro) >= 12 THEN 'PM' ELSE 'AM' END 
                 AS hora_registro
             FROM ficha_tecnica_indigena
-            WHERE distrito_electoral = @distrito_electoral;`);
+            WHERE (estado_registro<>4${distrito_electoral ? ' AND distrito_electoral = @distrito_electoral' : ''});`);
 
         if (result.recordset.length > 0) {
             return res.status(200).json({
@@ -468,7 +465,7 @@ router.get("/getRegistroFichaInd", Midleware.verifyToken, async (req, res) => {
                     ) AS personaRes
                 FROM ficha_tecnica_indigena fi
                 JOIN demarcacion_territorial dt ON fi.demarcacion_territorial = dt.id
-                where fi.id = @id;
+                where fi.id = @id and fi.estado_registro<>4;
                 `)
 
         if (result.recordset.length > 0) {
@@ -497,5 +494,46 @@ router.get("/getRegistroFichaInd", Midleware.verifyToken, async (req, res) => {
         return res.status(500).json({ message: "Error de servidor", error: error.message });
     }
 });
+
+// eliminar ficha
+router.patch("/eliminarFichaInd", Midleware.verifyToken, async () => {
+
+    const { id } = req.body;
+
+    if (id == null) {
+        return res.status(400), json({ message: "EL campos requeridos" })
+    }
+
+    let transaction;
+
+    try {
+        const pool = await connectToDatabase();
+        transaction = pool.transaction();
+        await transaction.begin();
+
+        await transaction.request()
+            .input('id', sql.Int, id)
+            .query(`
+                UPDATE ficha_tecnica_indigena
+                SET estado_registro = 4
+                where id = @id;
+            `);
+
+        await transaction.commit();
+
+        return res.status(200).json({
+            message: `EL registro fue eliminado`,
+            code: 200,
+        });
+
+    } catch (err) {
+        console.error("Error en Registro:", err);
+        if (transaction) {
+            await transaction.rollback();
+        }
+        return res.status(500).json({ message: "Error al actualizar los registros", error: err.message });
+    }
+});
+
 
 export default router;

@@ -2,24 +2,32 @@ import { connectToDatabase, sql } from '../Config/Configuracion.js';
 import Midleware from '../Config/Midleware.js';
 import express from 'express';
 import dotenv from 'dotenv';
+import { query } from 'express-validator';
+import { Validator } from '../Validator.js/validator.js';
 
 dotenv.config();
 const router = express.Router();
 
 //Directorio
-router.get("/comunidades", Midleware.verifyToken, async (req, res) => {
+router.get("/comunidades", Midleware.verifyToken, [
+  query('tipo_comunidad').exists().notEmpty().isInt(),
+  query('tipo_usuario').exists().notEmpty().isInt(),
+  Validator
+], async (req, res) => {
   try {
-    const { tipo_comunidad, id_distrito } = req.query; //pibote por medio de la seccion electoral
+    const { tipo_comunidad, id_distrito, tipo_usuario } = req.query;
 
-        if(!tipo_comunidad || !id_distrito){
-            return res.status(400).json({ message: "Datos requeridos"})
-        }
+
+    if (!tipo_comunidad) {
+      return res.status(400).json({ message: "Datos requeridos" })
+    }
 
     const pool = await connectToDatabase();
-    const result = await pool.request()    
-        .input('tipo_comunidad', sql.Int, tipo_comunidad)
-        .input('id_distrito', sql.Int, id_distrito)
-        .query(`SELECT 
+    const result = await pool.request()
+      .input('tipo_comunidad', sql.Int, tipo_comunidad)
+      .input('id_distrito', sql.Int, id_distrito)
+      .input('tipo_usuario', sql.Int, tipo_usuario)
+      .query(`SELECT 
                     r.id as id_registro,
                     r.folio,
                     dt.demarcacion_territorial,
@@ -31,7 +39,10 @@ router.get("/comunidades", Midleware.verifyToken, async (req, res) => {
 	                	when c.id = 1  then r.comunidad_pbl 
 	                	else r.comunidad_afro
 	                END as comunidad,
-                    ut.ut as unidad_territorial,
+ 	                CASE 
+	                	when ut.ut is null then r.otro_pbl 
+	                	else ut.ut
+	                END as unidad_territorial,                   
                     r.comunidad_pbl,
                     r.nombre_comunidad,
                     r.nombre_instancia,
@@ -49,7 +60,8 @@ router.get("/comunidades", Midleware.verifyToken, async (req, res) => {
                     left join cat_pueblos as cp on r.pueblo_pbl = cp.id
                     left join cat_barrios as cb on r.barrio_pbl = cb.id
                     left join unidad_territorial as ut on r.unidad_territorial_pbl = ut.id
-                where c.id = @tipo_comunidad and r.distrito_electoral =@id_distrito;`);
+                WHERE 
+                (c.id = @tipo_comunidad${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = @tipo_usuario and r.estado_registro<>4);`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({

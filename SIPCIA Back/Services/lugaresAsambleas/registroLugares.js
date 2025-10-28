@@ -15,21 +15,32 @@ const __dirname = path.dirname(__filename);
 const router = express.Router();
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads/kml");
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
+    destination: (req, file, cb) => {
+        let uploadPath;
+
+        if (file.originalname.toLowerCase().endsWith(".kml")) {
+            uploadPath = path.join(__dirname, "../uploads/kml");
+        } else if (file.originalname.toLowerCase().endsWith(".zip")) {
+            uploadPath = path.join(__dirname, "../uploads/zip");
+        } else {
+            return cb(new Error("Tipo de archivo no permitido"), null);
+        }
+
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "-" + file.originalname);
     }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
 });
 
 const upload = multer({ storage });
 
-router.post("/altaLugar", Midleware.verifyToken, upload.fields([ { name: "kmlFile", maxCount: 1 },{ name: "otroFile", maxCount: 1 }]), async (req, res) => {
+
+router.post("/altaLugar", Midleware.verifyToken, upload.fields([{ name: "kmlFile", maxCount: 1 }, { name: "otroFile", maxCount: 1 }]), async (req, res) => {
     let {
         distrito_electoral,
         estado_registro,
@@ -65,7 +76,7 @@ router.post("/altaLugar", Midleware.verifyToken, upload.fields([ { name: "kmlFil
         modulo_registro == null || modulo_registro === '' ||
         estado_registro == null || estado_registro === '') {
         return res.status(400).json({ message: "Datos requeridos" })
-    } 
+    }
 
     const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;
     const zipFile = req.files["otroFile"] ? req.files["otroFile"][0] : null;
@@ -115,7 +126,7 @@ router.post("/altaLugar", Midleware.verifyToken, upload.fields([ { name: "kmlFil
             .input('fotografia', sql.Int, fotografia) //mandar  0
             .input('enlace_fotografia', sql.VarChar, enlace_fotografia)
             .input('ubicacion_kml', sql.Int, ubicacion_kml) //mandar  0
-            .input('enlace_ubicacion', sql.VarChar, enlace_ubicacion) 
+            .input('enlace_ubicacion', sql.VarChar, enlace_ubicacion)
             .input('intitucion_propietaria', sql.VarChar, intitucion_propietaria)
             .input('prestamo_iecm', sql.Int, prestamo_iecm)
             .input('nuevo_prestamo', sql.Int, nuevo_prestamo)
@@ -127,8 +138,8 @@ router.post("/altaLugar", Midleware.verifyToken, upload.fields([ { name: "kmlFil
             .input('hora_registro', sql.VarChar, horaActual)
             .input('usuario_registro', sql.Int, usuario_registro)
             .input('modulo_registro', sql.Int, modulo_registro)
-            .input('estado_registro', sql.Int, estado_registro)   
-            .input('consecutivo', sql.Int, consecutivo)         
+            .input('estado_registro', sql.Int, estado_registro)
+            .input('consecutivo', sql.Int, consecutivo)
             .query(`INSERT INTO registro_lugares (distrito_electoral, demarcacion, lugar_espacio, domicilio, fotografia, 
                 enlace_fotografia, ubicacion_kml, enlace_ubicacion, intitucion_propietaria, prestamo_iecm, nuevo_prestamo, 
                 superficie_espacio, aforo, ventilacion, observaciones, fecha_registro, hora_registro, usuario_registro, 
@@ -143,26 +154,26 @@ router.post("/altaLugar", Midleware.verifyToken, upload.fields([ { name: "kmlFil
 
 
         const camposModificados = JSON.stringify({
-            distrito_electoral, 
-            demarcacion, 
-            lugar_espacio, 
-            domicilio, 
-            fotografia,                 
-            enlace_fotografia, 
-            ubicacion_kml, 
-            enlace_ubicacion, 
-            intitucion_propietaria, 
-            prestamo_iecm, 
-            nuevo_prestamo,                 
-            superficie_espacio, 
-            aforo, 
-            ventilacion, 
-            observaciones, 
-            usuario_registro, 
-            modulo_registro, 
+            distrito_electoral,
+            demarcacion,
+            lugar_espacio,
+            domicilio,
+            fotografia,
+            enlace_fotografia,
+            ubicacion_kml,
+            enlace_ubicacion,
+            intitucion_propietaria,
+            prestamo_iecm,
+            nuevo_prestamo,
+            superficie_espacio,
+            aforo,
+            ventilacion,
+            observaciones,
+            usuario_registro,
+            modulo_registro,
             estado_registro,
             consecutivo
-            });
+        });
 
         //garda data en bitacora
         await transaction.request()
@@ -176,7 +187,7 @@ router.post("/altaLugar", Midleware.verifyToken, upload.fields([ { name: "kmlFil
                 INSERT INTO log_registro_lugares (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
                 VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
             `);
-        
+
         // Confirmar la transacción
         await transaction.commit();
 
@@ -186,16 +197,16 @@ router.post("/altaLugar", Midleware.verifyToken, upload.fields([ { name: "kmlFil
             code: 200,
         });
 
-    }catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Error al guardar en BD" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error al guardar en BD" });
     }
 });
 
 
 // update del registro
 
-router.patch("/updateLugar", Midleware.verifyToken, upload.single("kmlFile"),async (req, res)=> {
+router.patch("/updateLugar", Midleware.verifyToken, upload.fields([{ name: "kmlFile", maxCount: 1 }, { name: "otroFile", maxCount: 1 }]), async (req, res) => {
 
     let {
         id_registro,
@@ -220,22 +231,22 @@ router.patch("/updateLugar", Midleware.verifyToken, upload.single("kmlFile"),asy
     } = req.body
 
     if (
-            id_registro == null || id_registro === '' ||
-            distrito_electoral == null || distrito_electoral === '' ||
-            demarcacion == null || demarcacion === '' ||
-            lugar_espacio === '' ||
-            domicilio === '' ||
-            fotografia === '' ||            
-            prestamo_iecm === '' ||
-            nuevo_prestamo === '' ||
-            superficie_espacio === '' ||
-            aforo === '' ||
-            usuario_registro == null || usuario_registro === '' ||
-            modulo_registro == null || modulo_registro === '' ||
-            estado_registro == null || estado_registro === '') {
-            return res.status(400).json({ message: "Datos requeridos" })
-        }
-    
+        id_registro == null || id_registro === '' ||
+        distrito_electoral == null || distrito_electoral === '' ||
+        demarcacion == null || demarcacion === '' ||
+        lugar_espacio === '' ||
+        domicilio === '' ||
+        fotografia === '' ||
+        prestamo_iecm === '' ||
+        nuevo_prestamo === '' ||
+        superficie_espacio === '' ||
+        aforo === '' ||
+        usuario_registro == null || usuario_registro === '' ||
+        modulo_registro == null || modulo_registro === '' ||
+        estado_registro == null || estado_registro === '') {
+        return res.status(400).json({ message: "Datos requeridos" })
+    }
+
 
     try {
 
@@ -255,22 +266,22 @@ router.patch("/updateLugar", Midleware.verifyToken, upload.single("kmlFile"),asy
             return res.status(404).json({ message: "Registro no encontrado" });
         }
 
-  if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
-    enlace_ubicacion = `/uploads/kml/${req.files.kmlFile[0].filename}`;
-    ubicacion_kml = 1;
-  } else {
-    enlace_ubicacion = registroAnterior.enlace_ubicacion;
-    ubicacion_kml = registroAnterior.enlace_ubicacion ? 1 : 0;
-  }
+        if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
+            enlace_ubicacion = `/uploads/kml/${req.files.kmlFile[0].filename}`;
+            ubicacion_kml = 1;
+        } else {
+            enlace_ubicacion = registroAnterior.enlace_ubicacion;
+            ubicacion_kml = registroAnterior.enlace_ubicacion ? 1 : 0;
+        }
 
-  let enlace_fotografia;
-  if (req.files && req.files.otroFile && req.files.otroFile[0]) {
-    enlace_fotografia = `/uploads/zip/${req.files.otroFile[0].filename}`;
-  } else {
-    enlace_fotografia = registroAnterior.enlace_fotografia;
-  }
+        let enlace_fotografia;
+        if (req.files && req.files.otroFile && req.files.otroFile[0]) {
+            enlace_fotografia = `/uploads/zip/${req.files.otroFile[0].filename}`;
+        } else {
+            enlace_fotografia = registroAnterior.enlace_fotografia;
+        }
 
-                //comparar
+        //comparar
         const camposEditables = [
             "distrito_electoral",
             "estado_registro",
@@ -311,7 +322,7 @@ router.patch("/updateLugar", Midleware.verifyToken, upload.single("kmlFile"),asy
             observaciones,
             usuario_registro,
             modulo_registro
-        };        
+        };
 
         const cambios = {};
         for (const campo of camposEditables) {
@@ -323,7 +334,7 @@ router.patch("/updateLugar", Midleware.verifyToken, upload.single("kmlFile"),asy
             }
         }
 
-         if (Object.keys(cambios).length > 0) {
+        if (Object.keys(cambios).length > 0) {
             await transaction.request()
                 .input('id_registro', sql.Int, id_registro)
                 .input('distrito_electoral', sql.Int, distrito_electoral)
@@ -333,7 +344,7 @@ router.patch("/updateLugar", Midleware.verifyToken, upload.single("kmlFile"),asy
                 .input('fotografia', sql.Int, fotografia) //mandar  0
                 .input('enlace_fotografia', sql.VarChar, enlace_fotografia)
                 .input('ubicacion_kml', sql.Int, ubicacion_kml) //mandar  0
-                .input('enlace_ubicacion', sql.VarChar, enlace_ubicacion) 
+                .input('enlace_ubicacion', sql.VarChar, enlace_ubicacion)
                 .input('intitucion_propietaria', sql.VarChar, intitucion_propietaria)
                 .input('prestamo_iecm', sql.Int, prestamo_iecm)
                 .input('nuevo_prestamo', sql.Int, nuevo_prestamo)
@@ -399,23 +410,20 @@ router.patch("/updateLugar", Midleware.verifyToken, upload.single("kmlFile"),asy
             code: 200,
         });
 
-    }catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Error al guardar en BD" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error al guardar en BD" });
     }
 });
 
 //consulta tabla registro
 
-router.get("/getLugares", Midleware.verifyToken, async (req, res)=> {
+router.get("/getLugares", Midleware.verifyToken, async (req, res) => {
 
     const {
         distrito_electoral
-    }= req.query
+    } = req.query
 
-    if (!distrito_electoral){
-        return res.status(400).json({ message: "Datos requeridos"})
-    }
 
     try {
 
@@ -423,6 +431,7 @@ router.get("/getLugares", Midleware.verifyToken, async (req, res)=> {
         const result = await pool.request()
             .input('distrito_electoral', sql.Int, distrito_electoral)
             .query(`select 
+                    rl.distrito_electoral,
                     rl.id as id_registro,
                     rl.fecha_registro,
                     dt.id as id_demarcacion,
@@ -438,8 +447,9 @@ router.get("/getLugares", Midleware.verifyToken, async (req, res)=> {
                     rl.observaciones
                     from registro_lugares rl 
                     join demarcacion_territorial dt on rl.demarcacion = dt.id
-                    where rl.distrito_electoral = @distrito_electoral;`);
-        
+                    where (rl.modulo_registro = 1${distrito_electoral ? ' AND rl.distrito_electoral = @distrito_electoral' : ''} and rl.estado_registro<>4)
+                ;`);
+
         if (result.recordset.length > 0) {
             return res.status(200).json({
                 getLugares: result.recordset
@@ -448,7 +458,7 @@ router.get("/getLugares", Midleware.verifyToken, async (req, res)=> {
             return res.status(404).json({ message: "No se encontraron datos" });
         }
 
-    }catch (error) {
+    } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Error de servidor", error: error.message });
     }
@@ -458,21 +468,21 @@ router.get("/getLugares", Midleware.verifyToken, async (req, res)=> {
 
 
 // consultar registro
-router.get("/getRegistroLugares", Midleware.verifyToken, async(req, res)=>{
+router.get("/getRegistroLugares", Midleware.verifyToken, async (req, res) => {
 
     const { id } = req.query;
 
-    if(!id){
-        return res.status(400).json({ message: "Datos requeridos"})
+    if (!id) {
+        return res.status(400).json({ message: "Datos requeridos" })
     }
 
-   
+
     try {
-        
-    const pool = await connectToDatabase();
-    const result = await pool.request()  
-        .input('id', sql.Int, id)
-        .query(`select 
+
+        const pool = await connectToDatabase();
+        const result = await pool.request()
+            .input('id', sql.Int, id)
+            .query(`select 
                     rl.id as id_registro,
                     rl.consecutivo,                    
                     rl.distrito_electoral,                    
@@ -503,10 +513,51 @@ router.get("/getRegistroLugares", Midleware.verifyToken, async(req, res)=>{
             return res.status(404).json({ message: "No se encontraron registros", code: 100 })
         }
 
-    }catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error de servidor", error: error.message });
-  }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error de servidor", error: error.message });
+    }
+
+});
+
+/// elimiacion logica de registro
+router.patch("/eliminarRegistro", Midleware.verifyToken, async (req, res) => {
+
+    const { id } = req.body;
+
+    if (id == null) {
+        return res.status(400), json({ message: "EL campo es requerido" })
+    }
+
+    let transaction;
+
+    try {
+        const pool = await connectToDatabase();
+        transaction = pool.transaction();
+        await transaction.begin();
+
+        await transaction.request()
+            .input('id', sql.Int, id)
+            .query(`
+                UPDATE registro_lugares
+                SET estado_registro = 4
+                where id = @id;
+            `);
+
+        await transaction.commit();
+
+        return res.status(200).json({
+            message: `EL registro fue eliminado`,
+            code: 200,
+        });
+
+    } catch (err) {
+        console.error("Error en Registro:", err);
+        if (transaction) {
+            await transaction.rollback();
+        }
+        return res.status(500).json({ message: "Error al actualizar los registros", error: err.message });
+    }
 
 });
 
