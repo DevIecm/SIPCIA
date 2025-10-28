@@ -87,6 +87,15 @@
                 <i style="margin-left: 5px;" [ngClass]="getSortIcon('fecha_consulta')"></i>
               </div>
             </th>
+            <!-- <th 
+              scope="col"
+              (click)="sortData(direccion_distrital)"
+              style="cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>Dirección <br> Distrital</span>
+                <i style="margin-left: 5px;" [ngClass]="getSortIcon('fecha_consulta')"></i>
+              </div>
+            </th> -->
             <th 
               scope="col"
               (click)="sortData('nombre_completo')"
@@ -194,6 +203,7 @@
             <td>{{ item.presento_caso === false ? 'No' : 'Si'}}</td>
             <td>{{ item.numero_consecutivo ? item.numero_consecutivo : '-'}}</td>
             <td>{{ formatFecha(item.fecha_consulta)}}</td>
+            <!-- <td>{{ item.direccion_distrital }}</td> -->
             <td>{{ item.nombre_completo }}</td>
             <td>{{ item.pueblo_originario ? item.pueblo_originario : '-'}}</td>
             <td>{{ item.pueblo ? item.pueblo : '-'}}</td>

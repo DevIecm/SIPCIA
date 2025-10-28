@@ -253,10 +253,6 @@ export class FormularioAcompaTwo {
     this.close.emit();
   }
 
-  onBackdropClick(event: MouseEvent) {
-    this.onClose();
-  }
-
   ngOnInit() {
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
@@ -562,7 +558,7 @@ export class FormularioAcompaTwo {
 
   eliminaRegistro() {
     Swal.fire({
-      title: "¿Está seguro que desea Eliminar la Instacia?",
+      title: "¿Está seguro que desea Eliminar este registro?",
       icon: "warning", 
       showCancelButton: true,
       confirmButtonColor: "#FBB03B",

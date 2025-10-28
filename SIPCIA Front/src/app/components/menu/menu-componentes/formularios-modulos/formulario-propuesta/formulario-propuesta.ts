@@ -427,13 +427,9 @@ export class FormularioPropuesta {
     this.close.emit();
   }
 
-  onBackdropClick(event: MouseEvent) {
-    this.onClose();
-  }
-
   eliminaRegistro() {
     Swal.fire({
-      title: "¿Está seguro que desea Eliminar la Instacia?",
+      title: "¿Está seguro que desea Eliminar este registro?",
       icon: "warning", 
       showCancelButton: true,
       confirmButtonColor: "#FBB03B",

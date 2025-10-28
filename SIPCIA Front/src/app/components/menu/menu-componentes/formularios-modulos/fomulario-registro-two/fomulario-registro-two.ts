@@ -760,10 +760,6 @@ export class FomularioRegistroTwo implements OnInit{
     this.close.emit();
   }
 
-  onBackdropClick(event: MouseEvent) {
-    this.onClose();
-  }
-
   eliminaRegistro() {
     Swal.fire({
       title: "¿Está seguro que desea Eliminar la Instacia?",
