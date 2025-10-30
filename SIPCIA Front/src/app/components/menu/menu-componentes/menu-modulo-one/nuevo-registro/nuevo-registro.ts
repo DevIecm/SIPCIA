@@ -61,6 +61,7 @@ export class NuevoRegistro implements OnInit{
   tipo_usuario: number = 0;
   area: string = '';
   id_usuario: number = 0;  
+  isCarga: number = 0;
 
   selectedFileName: string | null = null;
   fileUploaded: boolean = false;
@@ -119,6 +120,8 @@ export class NuevoRegistro implements OnInit{
     this.area = sessionStorage.getItem('area')!;
     this.id_usuario = Number(sessionStorage.getItem('id_usuario')!);
 
+
+
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.catalogo_comunidad();
     this.catalogo_demarcacion();
@@ -147,6 +150,7 @@ export class NuevoRegistro implements OnInit{
   }
 
   onChangeComunidad() {
+    console.log("dsad", this.isCarga)
     if(this.opcionComunidad == 1) {
       this.showIndigenas = true;
       this.showAfromexicanos = false;

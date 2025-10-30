@@ -41,10 +41,21 @@ const upload = multer({
 
 // guardar documentos .zip
 router.post("/subirDocumentoNormativo", Midleware.verifyToken, upload.single("archivoZip"), async (req, res) => {
-  const { distrito, tipo_comunidad } = req.body;
+  const { distrito, tipo_comunidad, estado_documento, tipo_documento } = req.body;
 
-  if (!distrito || !tipo_comunidad) {
-    return res.status(400).json({ message: "Datos requeridos" });
+
+  if (!distrito || !tipo_comunidad || !estado_documento || !tipo_documento) {
+    const faltantes = [];
+
+    if (!distrito) faltantes.push("distrito");
+    if (!tipo_comunidad) faltantes.push("tipo_comunidad");
+    if (!estado_documento) faltantes.push("estado_documento");
+    if (!tipo_documento) faltantes.push("tipo_documento");
+
+    return res.status(400).json({
+      message: "Faltan datos requeridos",
+      faltantes,
+    });
   }
 
   if (!req.file) {
@@ -74,11 +85,13 @@ router.post("/subirDocumentoNormativo", Midleware.verifyToken, upload.single("ar
       .input('tipo_comunidad', sql.Int, tipo_comunidad)
       .input('fecha_carga', sql.Date, fechaLocal)
       .input('hora_carga', sql.VarChar, horaActual)
+      .input('estado_documento', sql.Int, estado_documento)
+      .input('tipo_documento', sql.Int, tipo_documento)
       .query(`
         INSERT INTO documentos_normativos 
-          (distrito, nombre_documento, direccion_documento, tipo_comunidad, fecha_carga, hora_carga)
+          (distrito, nombre_documento, direccion_documento, tipo_comunidad, fecha_carga, hora_carga, estado_documento, tipo_documento)
         VALUES
-          (@distrito, @nombre_documento, @direccion_documento, @tipo_comunidad, @fecha_carga, @hora_carga)
+          (@distrito, @nombre_documento, @direccion_documento, @tipo_comunidad, @fecha_carga, @hora_carga, @estado_documento, @tipo_documento)
       `);
 
     const idResult = await request.query("SELECT SCOPE_IDENTITY() AS id");
@@ -128,7 +141,7 @@ router.get("/getOtrosDocumentos", Midleware.verifyToken, async (req, res) => {
                 + ' ' + CASE WHEN DATEPART(HOUR, hora_carga) >= 12 THEN 'PM' ELSE 'AM' END 
                 AS hora_carga
                 from documentos_normativos
-                WHERE distrito = @distrito_electoral and tipo_comunidad= @tipo_comunidad;`);
+                WHERE distrito = @distrito_electoral and tipo_comunidad= @tipo_comunidad and estado_documento<>4;`);
 
     if (result.recordset.length > 0) {
 
@@ -165,9 +178,11 @@ router.get("/getOtrosDocumentos", Midleware.verifyToken, async (req, res) => {
 
 
 /// elimiacion logica de documentos normativos
-router.patch("/eliminarDocNormativos", Midleware.verifyToken, async () => {
+router.patch("/eliminarDocNormativos", Midleware.verifyToken, async (req, res) => {
 
   const { id } = req.body;
+
+
 
   if (id == null) {
     return res.status(400), json({ message: "EL campo es requerido" })
@@ -217,18 +232,38 @@ router.get("/getDocumentos", Midleware.verifyToken, async (req, res) => {
       .input('tipo_comunidad', sql.Int, tipo_comunidad)
       .input('distrito', sql.Int, distrito)
       .input('tipo_documento', sql.Int, tipo_documento)
-      .query(`select id, nombre_documento, fecha_carga, tipo_documento
+      .query(`select id, nombre_documento, fecha_carga, tipo_documento, direccion_documento
                 from documentos_normativos
             where (tipo_documento = @tipo_documento${distrito ? ' AND distrito = @distrito' : ''} and estado_documento<>4 and tipo_comunidad=@tipo_comunidad);`);
 
-    if (result.recordset.length > 0) {
+        if (result.recordset.length > 0) {
+
+      const data = result.recordset.map(item => {
+        const nombreArchivo = item.direccion_documento
+          ? path.basename(item.direccion_documento)
+          : null;
+
+        const guionIndex = nombreArchivo?.indexOf("-");
+        const nombreLimpio = guionIndex > -1
+          ? nombreArchivo.substring(guionIndex + 1)
+          : nombreArchivo;
+
+        return {
+          ...item,
+          direccion_documento: nombreArchivo,
+          nombre_documento: nombreLimpio
+        };
+      });
+
       return res.status(200).json({
-        getDocumentos: result.recordset
+        getDocumentos: data,
+        code: 200
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+      return res.status(404).json({ message: "No se encontraron datos" });
     }
-  } catch (error) {
+
+  }catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error de servidor", error: error.message });
   }

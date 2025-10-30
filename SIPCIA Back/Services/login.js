@@ -20,7 +20,6 @@ router.post("/login", async (req, res) => {
 
         const { username, password, tipo_usuario } = req.body;
 
-        console.log("username, password, tipo_usuario", username, password, tipo_usuario)
 
         if (!username || !password || !tipo_usuario) {
             return res.status(400).json({ message: "Datos requeridos" })

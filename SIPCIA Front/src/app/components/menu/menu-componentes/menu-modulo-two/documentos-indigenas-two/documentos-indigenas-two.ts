@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Navbar } from '../../../../navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
 import { FormularioDocumentos } from "../../formularios-modulos/formulario-documentos/formulario-documentos";
 import { DocumentosServices } from '../../../../../services/documentosService/documentos-services';
+import { DeleteService } from '../../../../../services/deleteServices/delete-service';
 @Component({
   selector: 'app-documentos-indigenas-two',
   imports: [
@@ -23,6 +24,7 @@ import { DocumentosServices } from '../../../../../services/documentosService/do
   styleUrl: './documentos-indigenas-two.css'
 })
 export class DocumentosIndigenasTwo implements OnInit{
+  @Output() close = new EventEmitter<void>();
 
   activeTab: string = 'home';
   data: any = data;
@@ -43,6 +45,9 @@ export class DocumentosIndigenasTwo implements OnInit{
   tipo_documentos: number = 0;
   idformIdSelected: number | undefined;
   idform: number | undefined;
+  estado_documento: number = 1;
+  tipo_documento: number = 1;
+
 
   dataTable: any = [];
   allDatable: any[] = [];
@@ -76,7 +81,9 @@ export class DocumentosIndigenasTwo implements OnInit{
     private service: Auth,
     private miServicio: Reportes,
     private docService: Reportes,
-    private serviceRegister: Reportes
+    private serviceRegister: Reportes,
+    private delDoc: DeleteService,
+    private delFicha: DeleteService
   ) {}
   
   logout() {
@@ -92,22 +99,35 @@ export class DocumentosIndigenasTwo implements OnInit{
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
-      this.uploadZip();
+      this.uploadZip(this.estado_documento, this.tipo_documento);
     }
   }
 
-  uploadZip() {
+  uploadZip(estado_documento: number, tipo_documento: number) {
     if (!this.selectedFile) return;
 
     const formData = new FormData();
     formData.append('archivoZip', this.selectedFile);
-    formData.append('distrito', this.area_adscripcion.toString());
+    formData.append('distrito', this.area_adscripcion.toString());//manda 34 para todos
     formData.append('tipo_comunidad', "1");
+    formData.append('estado_documento', estado_documento.toString());
+    formData.append('tipo_documento', tipo_documento.toString());
 
     this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
       next: (res) => {
         alert('Documento subido correctamente');
-        this.getdata();
+        let tabActual: number;
+
+        switch (this.activeTab) {
+          case 'home': tabActual = 1; break;
+          case 'profile': tabActual = 2; break;
+          case 'contact': tabActual = 3; break;
+          case 'other': tabActual = 4; break;
+          default: tabActual = 1;
+        }
+
+        this.getRegister(tabActual);
+
       },
       error: (err) => {
         console.error('Error al subir documento', err);
@@ -115,6 +135,23 @@ export class DocumentosIndigenasTwo implements OnInit{
       }
     });
   }
+
+  getTabActiva(): number {
+  const tabActiva = document.querySelector('.nav-link.active');
+
+  console.log("tabActiva", tabActiva);
+  if (!tabActiva) return 1;
+
+  const id = tabActiva.getAttribute('id');
+
+  switch (id) {
+    case 'nav-home-tab': return 1;
+    case 'nav-profile-tab': return 2;
+    case 'nav-contact-tab': return 3;
+    case 'nav-other-tab': return 4;
+    default: return 1;
+  }
+}
 
   getdata(){
     this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesion).subscribe({
@@ -168,18 +205,96 @@ export class DocumentosIndigenasTwo implements OnInit{
     });
   }
 
-  delete_item(){
-    this.miServicio.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf", this.tokenSesion).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Documentos Normativos';
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => console.error('Error al descargar archivo:', err)
+  onClose() {
+    this.close.emit();
+  }
+  resetData() {
+    this.onClose();
+  };
+
+  delete_item(id: number) {
+    Swal.fire({
+      title: "¿Está seguro que desea Eliminar la Instacia?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FBB03B",
+      cancelButtonColor: "#9D75CA",
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.delDoc.eliminaDocs(id, this.tokenSesion).subscribe({
+          next: (data) => {
+            if (data.code === 200) {
+              Swal.fire({
+                title: "Se han aplicado correctamente los cambios.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#FBB03B",
+              });
+              setTimeout(() => {
+                this.onClose();
+                let tabActual: number;
+
+                switch (this.activeTab) {
+                  case 'home': tabActual = 1; break;
+                  case 'profile': tabActual = 2; break;
+                  case 'other': tabActual = 3; break;
+                  default: tabActual = 1;
+                }
+
+                this.getRegister(tabActual);
+
+              }, 3000);
+            }
+          }, error: (err) => {
+            if (err.error.code === 160) {
+              this.service.cerrarSesionByToken();
+            }
+          }
+        });
+      } else {
+        return;
+      }
     });
+  }
+
+
+  delete_ficha(id: number) {
+        Swal.fire({
+          title: "¿Está seguro que desea Eliminar la Instacia?",
+          icon: "warning", 
+          showCancelButton: true,
+          confirmButtonColor: "#FBB03B",
+          cancelButtonColor: "#9D75CA",
+          confirmButtonText: "Aceptar",
+          cancelButtonText: "Cancelar"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.delFicha.eliminaFichInd(id, this.tokenSesion).subscribe({
+              next: (data) => {
+                if(data.code === 200) {
+                  Swal.fire({
+                    title: "Se han aplicado correctamente los cambios.",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#FBB03B",
+                  });
+                  setTimeout(() => {
+                    this.onClose();
+                    this.getRegisterFichaTecnica();
+                  }, 3000);
+                }
+              }, error: (err) => {
+                if(err.error.code === 160) {
+                  this.service.cerrarSesionByToken();
+                }
+              }
+            });
+          } else {
+            return;
+          }
+        });
   }
 
   descargarOtros(nameArchivo: any){
@@ -189,7 +304,7 @@ export class DocumentosIndigenasTwo implements OnInit{
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Documentos Normativos';
+        a.download = nameArchivo;
         a.click();
         window.URL.revokeObjectURL(url);
       },
@@ -207,32 +322,46 @@ export class DocumentosIndigenasTwo implements OnInit{
     return formattedDate;
   }
 
-  getRegister(id: number) {
-    this.reporteService.getRegisterfichaTecnicaTablaTwo(1, id, this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.getDocumentos.length > 0) {
-          this.dataTableTwo = data.getDocumentos;
-          this.allDatableTwo = data.getDocumentos;
-          this.dataTableInd = data.getDocumentos;
-
-        } else {
-          Swal.fire("No se encontraron registros01");
-        }        
-      },
-      error: (err) => {
-
-        if (err.error.code === 160) {
-          this.service.cerrarSesionByToken();
+getRegister(id: number) {
+  this.reporteService.getRegisterfichaTecnicaTablaTwo(1, id, this.tokenSesion).subscribe({
+    next: (data) => {
+      if(data.getDocumentos.length > 0) {
+        switch(id) {
+          case 1:
+            this.dataTableTwo = data.getDocumentos;
+            break;
+          case 2:
+            this.allDatableTwo = data.getDocumentos;
+            break;
+          case 3:
+            this.dataTableInd = data.getDocumentos;
+            break;
         }
-
-        if(err.error.code === 100) {
-          this.dataTableInd = [];
-          Swal.fire("No se encontraron registros")
+      } else {
+        switch(id) {
+          case 1:
+            this.dataTableTwo = [];
+            break;
+          case 2:
+            this.allDatableTwo = [];
+            break;
+          case 3:
+            this.dataTableInd = [];
+            break;
         }
-
+        Swal.fire("No se encontraron registros");
+      }        
+    },
+    error: (err) => {
+      if (err.error.code === 160) {
+        this.service.cerrarSesionByToken();
       }
-    });
-  }
+      if(err.error.code === 100) {
+        Swal.fire("No se encontraron registros");
+      }
+    }
+  });
+}
 
   getRegisterFichaTecnica() {
     this.reporteService.getRegisterfichaTecnicaTablaTwoo(this.tokenSesion).subscribe({
@@ -328,13 +457,17 @@ export class DocumentosIndigenasTwo implements OnInit{
     }
   }
 
-  handleHomeTab(): void {
+    handleHomeTab(): void {
     this.tipo_documentos = 1;
     this.getRegister(1);
+    this.estado_documento = 1;
+    this.tipo_documento = 1;
   }
 
   handleProfileTab(): void {
     this.getRegister(2);
+    this.estado_documento = 1;
+    this.tipo_documento = 2;
   }
 
   handleContactTab(): void {
@@ -342,8 +475,9 @@ export class DocumentosIndigenasTwo implements OnInit{
   }
 
   handleOtherTab(): void {
-    console.log("CAMBIO TAB")
     this.getRegister(3);
+    this.estado_documento = 1;
+    this.tipo_documento = 3;
   }
 
   changeTab(tabName: string): void {

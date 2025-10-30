@@ -90,7 +90,6 @@ export class ReporteRepresentativaTwo implements OnInit{
 
   catalogo_demarcacion() {
     if (this.direccion==0) {
-      console.log("nueva funcion para mostrar todo")
       this.catalogos.getCatalogos(null, "cat_demarcacion_territorial", this.tokenSesion).subscribe({
         next: (data) => {
           if (data.cat_demarcacion_territorial.length > 0) {
@@ -177,7 +176,6 @@ export class ReporteRepresentativaTwo implements OnInit{
     });
 
     } else {
-      console.log("CONTRARIO", this.direccion)
       if (this.formularioRegistro) {
         this.formularioRegistro.patchValue({
           demarcacionA: 0,
@@ -202,7 +200,6 @@ export class ReporteRepresentativaTwo implements OnInit{
   onChangeDemarcacion(id: number) {
     //nueva funcion 
     if (this.direccion == 0 && this.opcionDermarcacionI != 0) {
-      console.log("BY DEMARCACION", this.opcionDermarcacionI)
       this.reportes.getRegisterData(1, null, this.opcionDermarcacionI, this.tokenSesion).subscribe({
         next: (data) => {
           this.reporteI = [data];
@@ -225,7 +222,6 @@ export class ReporteRepresentativaTwo implements OnInit{
         }
       });
     } else if (this.direccion != 0 && this.opcionDermarcacionI != 0) {
-      console.log("indigena by distrito")
       this.reportes.getRegisterData(1, this.direccion, this.opcionDermarcacionI, this.tokenSesion).subscribe({
         next: (data) => {
           this.reporteI = [data];
@@ -237,7 +233,6 @@ export class ReporteRepresentativaTwo implements OnInit{
       });
 
     } else if (this.direccion != 0 && this.opcionDermarcacionI == 0) {
-      console.log("indigena by todos los demarcaciones")
       this.reportes.getAllRegistrosInd(this.direccion, this.tokenSesion).subscribe({
         next: (data) => {
           this.reporteI = [data];
@@ -252,7 +247,6 @@ export class ReporteRepresentativaTwo implements OnInit{
 
   OnChangeGetReporteAfro(id: number) {
     if (this.direccion == 0 && this.opcionDermarcacionA != 0) {
-      console.log("demarcacion afro")
       this.reportes.getRegisterData(2, null, this.opcionDermarcacionA, this.tokenSesion).subscribe({
         next: (data) => {
           this.reporteA = [data];
@@ -285,7 +279,6 @@ export class ReporteRepresentativaTwo implements OnInit{
         }
       });
     } else if (this.direccion != 0 && this.opcionDermarcacionI == 0) {
-      console.log("indigena by todos los demarcaciones")
       this.reportes.getAllRegistrosAfro(this.direccion, this.tokenSesion).subscribe({
         next: (data) => {
           this.reporteA = [data];
@@ -300,6 +293,5 @@ export class ReporteRepresentativaTwo implements OnInit{
 
 
   prueba2(){
-    console.log("PRUEBA 2")
   }
 }

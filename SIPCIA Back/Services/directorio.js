@@ -2,18 +2,12 @@ import { connectToDatabase, sql } from '../Config/Configuracion.js';
 import Midleware from '../Config/Midleware.js';
 import express from 'express';
 import dotenv from 'dotenv';
-import { query } from 'express-validator';
-import { Validator } from '../Validator.js/validator.js';
 
 dotenv.config();
 const router = express.Router();
 
 //Directorio
-router.get("/comunidades", Midleware.verifyToken, [
-  query('tipo_comunidad').exists().notEmpty().isInt(),
-  query('tipo_usuario').exists().notEmpty().isInt(),
-  Validator
-], async (req, res) => {
+router.get("/comunidades", Midleware.verifyToken, async (req, res) => {
   try {
     const { tipo_comunidad, id_distrito, tipo_usuario } = req.query;
 

@@ -58,7 +58,7 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
       LEFT JOIN cat_barrios cb ON r.barrio_pbl = cb.id 
       LEFT JOIN unidad_territorial ut ON r.unidad_territorial_pbl = ut.id 
       WHERE  
-        (r.comunidad = @tipo_comunidad${distrito_electoral ? ' AND r.distrito_electoral = @distrito_electoral' : ''} and r.modulo_registro = @tipo_usuario);`);
+        (r.comunidad = @tipo_comunidad${distrito_electoral ? ' AND r.distrito_electoral = @distrito_electoral' : ''} and r.modulo_registro = @tipo_usuario and r.estado_registro<>4);`);
 
     const rows = result.recordset;
 
@@ -252,7 +252,7 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
       JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
       JOIN cat_distrito cd ON r.distrito_electoral = cd.id 
       WHERE  
-        (r.comunidad = @tipo_comunidad${distrito_electoral ? ' AND r.distrito_electoral = @distrito_electoral' : ''} and r.modulo_registro = @tipo_usuario);`);
+        (r.comunidad = @tipo_comunidad${distrito_electoral ? ' AND r.distrito_electoral = @distrito_electoral' : ''} and r.modulo_registro = @tipo_usuario and estado_registro<>4);`);
 
     const rows = result.recordset;
 
@@ -463,7 +463,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
         FROM registro r 
         JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
         JOIN cat_distrito cd ON r.distrito_electoral = cd.id 
-        WHERE (r.comunidad = 1${distrito_electoral
+        WHERE (r.estado_registro<> 4 and r.comunidad = 1${distrito_electoral
           ? " AND r.distrito_electoral = @distrito_electoral"
           : ""
         } and r.modulo_registro = 1)
@@ -495,7 +495,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
         FROM registro r 
         JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
         JOIN cat_distrito cd ON r.distrito_electoral = cd.id
-        WHERE (r.comunidad = 2${distrito_electoral
+        WHERE (r.estado_registro<> 4 and r.comunidad = 2${distrito_electoral
           ? " AND r.distrito_electoral = @distrito_electoral"
           : ""
         } AND r.modulo_registro = 1)
@@ -676,7 +676,7 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
             left join cat_barrios cb on ri.barrio = cb.id 
             left join unidad_territorial ut on ri.unidad_territorial = ut.id 
             join comunidad c on ri.comunidad = c.id
-              where (1=1${distrito_electoral ? ' AND ri.distrito_electoral = @distrito_electoral' : ''})`);
+              where (ri.estado_registro<>4 and 1=1${distrito_electoral ? ' AND ri.distrito_electoral = @distrito_electoral' : ''})`);
 
     const rows = result.recordset;
 
@@ -877,7 +877,7 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
               ra.observaciones 
               from registro_afluencia ra 
               join demarcacion_territorial dt on ra.demarcacion_territorial = dt.id 
-              WHERE  (ra.modulo_registro = 1${distrito_electoral ? ' AND ra.distrito_electoral =  @distrito_electoral' : ''})
+              WHERE (ra.estado_registro<>4 and ra.modulo_registro = 1${distrito_electoral ? ' AND ra.distrito_electoral =  @distrito_electoral' : ''})
             `);
 
     const rows = result.recordset;
@@ -1302,7 +1302,7 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
             left join cat_pueblos cp on ac.pueblo = cp.id
             left join cat_barrios cb on ac.barrio = cb.id 
             left join unidad_territorial ut on ac.unidad_territorial = ut.id
-            WHERE (ac.modulo_registro = 1${distrito_electoral ? ' AND ac.distrito_electoral =  @distrito_electoral' : ''})AND ac.id IN (${idsString})
+            WHERE (ac.estado_registro<>4 and ac.modulo_registro = 1${distrito_electoral ? ' AND ac.distrito_electoral =  @distrito_electoral' : ''})AND ac.id IN (${idsString})
           `);
 
     const rows = result.recordset;
@@ -1512,7 +1512,7 @@ router.get("/reporteAsamblea", Midleware.verifyToken, async (req, res) => {
             rl.observaciones 
             from registro_lugares rl 
             join demarcacion_territorial dt on  rl.demarcacion = dt.id
-            WHERE  (rl.modulo_registro = 1${distrito_electoral ? ' AND rl.distrito_electoral =  @distrito_electoral' : ''})
+            WHERE  (rl.estado_registro<>4 and rl.modulo_registro = 1${distrito_electoral ? ' AND rl.distrito_electoral =  @distrito_electoral' : ''})
           `);
 
     const rows = result.recordset;

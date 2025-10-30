@@ -58,15 +58,6 @@ router.post("/altaAfluencia", Midleware.verifyToken, upload.fields([{ name: "kml
     estado_registro
   } = req.body;
 
-  console.log(distrito_electoral,  
-    distrito_cabecera, 
-    demarcacion_territorial,
-    denominacion_lugar,
-    domicilio_lugar,
-    usuario_registro,
-    modulo_registro,
-    estado_registro);
-
   if (distrito_electoral == null || distrito_electoral === '' ||
     distrito_cabecera == null ||
     demarcacion_territorial == null ||

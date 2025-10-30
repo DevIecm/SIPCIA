@@ -190,11 +190,11 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of dataTableTwo; let i = index" class="dual-row">
-                                <td>{{ item.id }}</td>
+                                <td>{{ i + 1 }}</td>
                                 <td>{{ item.nombre_documento }}</td>
                                 <td>{{ formatFecha(item.fecha_carga) }}</td>
-                                <td><i class="bi bi-download" (click)="descargar()"></i></td>
-                                <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
+                                <td><i class="bi bi-download" (click)="descargarOtros(item.direccion_documento)"></i></td>
+                                <td><i class="bi bi-trash" (click)="delete_item(item.id)"></i></td>
                             </tr>
                         </tbody>
                     </table>
@@ -204,7 +204,7 @@
         <!-- documentos-fin -->
     </div>
 
-    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 				
         <!-- direcciones-inicio -->
 
@@ -289,14 +289,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <tr *ngFor="let item of dataTable; let i = index" class="dual-row"> -->
-                            <tr  class="dual-row">
-
-                                <td>1</td>
-                                <td>Normativa 1</td>
-                                <td>15/05/2025</td>
-                                <td><i class="bi bi-download" (click)="descargar()"></i></td>
-                                <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
+                            <tr *ngFor="let item of allDatableTwo; let i = index" class="dual-row">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ item.nombre_documento }}</td>
+                                <td>{{ formatFecha(item.fecha_carga) }}</td>
+                                <td><i class="bi bi-download" (click)="descargarOtros(item.direccion_documento)"></i></td>
+                                <td><i class="bi bi-trash" (click)="delete_item(item.id)"></i></td>
                             </tr>
                         </tbody>
                     </table>
@@ -305,7 +303,7 @@
         </div>
         <!-- direcciones-fin -->
 	</div>
-	
+  
     <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">			
         <!-- fichas-inicio -->
 
@@ -351,7 +349,7 @@
                   <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
                     <td (click)="openModal(1, item.id) " style="cursor: pointer;">{{ item.nombre_ficha}}</td>
                     <td>{{ formatFecha(item.fecha_registro) }} {{item.hora_registro}}</td>
-                    <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
+                    <td><i class="bi bi-trash" (click)="delete_ficha(item.id)"></i></td>
                   </tr>
                 </tbody>
               </table>
@@ -361,55 +359,63 @@
         <!-- fichas-fin -->
 
 			</div>
-      <div class="tab-pane fade" id="nav-other" role="tabpanel" aria-labelledby="nav-other-tab">
-        <!-- fichas-inicio -->
-         
-        <div class="container justify-content-center mt-4">
-          <div class="row back-table" style="margin-top: -21px;">
-            <div class="col-12">
-              <table class="table">
-                <thead>
-                  <tr class="table-primary">
-                    <th 
-                      scope="col"
-                      (click)="sortDataD('direccion_documento')"
-                      style="cursor: pointer;">
-                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                        <span>Nombre</span>
-                        <i [ngClass]="getSortIcon('direccion_documento')"></i>
-                      </div>
-                    </th>
-                    <th 
-                      scope="col"
-                      (click)="sortDataD('fecha_carga')"
-                      style="cursor: pointer;">
-                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                        <span>Fecha</span>
-                        <i [ngClass]="getSortIcon('fecha_carga')"></i>
-                      </div>
-                    </th>
-                    <th 
-                      scope="col"
-                      style="cursor: pointer;">
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of dataTableD; index as i" class="dual-row">
-                    <td (click)="descargarOtros(item.direccion_documento) " style="cursor: pointer;">{{ item.nombre_documento ? item.nombre_documento : '-' }}</td>
-                    <td>{{ formatFecha(item.fecha_carga) }} {{item.hora_carga}}</td>
-                    <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
-                  </tr>
-                </tbody>
-              </table>
+    <div class="tab-pane fade" id="nav-other" role="tabpanel" aria-labelledby="nav-other-tab">		
+        <!-- direcciones-inicio -->
+
+        <div class="container text-center mb-5">
+            <div class="row">
+                <div class="col-9">
+                </div>
+                <div class="col-3">
+                </div>
             </div>
-          </div>
         </div>
-        <!-- fichas-fin -->
-      </div>
-		</div>
+        <div class="container justify-content-center mt-4">
+            <div class="row back-table" style="margin-top: -21px;">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr class="table-primary">
+                                <th 
+                                    scope="col"
+                                    (click)="sortData('distrito_cabecera')"
+                                    style="cursor: pointer;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <span>Nombre del Documento</span>
+                                        <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                                    </div>
+                                </th>
+                                <th 
+                                    scope="col"
+                                    (click)="sortData('distrito_cabecera')"
+                                    style="cursor: pointer; width: 137px;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <span>Fecha de Carga</span>
+                                        <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
+                                    </div>
+                                </th>
+                                <th 
+                                    scope="col"
+                                    style="cursor: pointer; width: 115px;">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                        <span>Eliminar</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of dataTableInd; let i = index" class="dual-row">
+                              <td>{{ item.nombre_documento }}</td>
+                              <td>{{ formatFecha(item.fecha_carga) }}</td>
+                              <td><i class="bi bi-trash" (click)="delete_item(item.id)"></i></td>                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- direcciones-fin -->
 	</div>
-</div>
 
 @if(showModal) {
   <app-formulario-documentos

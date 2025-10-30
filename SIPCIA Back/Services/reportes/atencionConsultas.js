@@ -448,6 +448,7 @@ router.get("/getAtencion", Midleware.verifyToken, async (req, res) => {
             .input('distrito_electoral', sql.Int, distrito_electoral)
             .query(`select 
                 ac.id as id_registro,
+                ac.distrito_electoral,
                 ac.presento_caso,
                 ac.numero_consecutivo,
                 ac.fecha_consulta,

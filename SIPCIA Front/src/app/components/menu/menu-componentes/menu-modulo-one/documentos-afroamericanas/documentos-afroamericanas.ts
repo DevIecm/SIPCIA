@@ -130,6 +130,8 @@ export class DocumentosAfroamericanas implements OnInit{
     formData.append('archivoZip', this.selectedFile);
     formData.append('distrito', this.area_adscripcion.toString());
     formData.append('tipo_comunidad', "2");
+    formData.append('estado_documento', "1");
+    formData.append('tipo_documento', "3");
 
     this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
       next: (res) => {

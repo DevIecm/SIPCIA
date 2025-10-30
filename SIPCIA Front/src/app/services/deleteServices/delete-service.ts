@@ -11,6 +11,57 @@ export class DeleteService {
   private apiUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) { }
+
+  eliminaFichInd(id: any, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const body = {
+      'id': id
+    };
+
+    return this.http.patch(this.apiUrl + 'fichas/eliminarFichaInd', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+ 
+  eliminaFichAfro(id: any, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const body = {
+      'id': id
+    };
+
+    return this.http.patch(this.apiUrl + 'fichasAfro/eliminarFichaAfro', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
+
+  eliminaDocs(id: any, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const body = {
+      'id': id
+    };
+
+    return this.http.patch(this.apiUrl + 'cargaNormativo/eliminarDocNormativos', body, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  };
   
   delFirstStep(id: any, token: string): Observable<any> {
     const headers = new HttpHeaders({

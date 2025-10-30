@@ -496,9 +496,11 @@ router.get("/getRegistroFichaInd", Midleware.verifyToken, async (req, res) => {
 });
 
 // eliminar ficha
-router.patch("/eliminarFichaInd", Midleware.verifyToken, async () => {
+router.patch("/eliminarFichaInd", Midleware.verifyToken, async (req, res) => {
 
     const { id } = req.body;
+
+    console.log("entro a eliminar ficha");
 
     if (id == null) {
         return res.status(400), json({ message: "EL campos requeridos" })

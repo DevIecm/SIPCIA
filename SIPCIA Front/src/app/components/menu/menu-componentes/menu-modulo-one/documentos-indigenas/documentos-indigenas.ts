@@ -44,6 +44,8 @@ export class DocumentosIndigenas implements OnInit{
   idform: number | undefined;
 
   dataTable: any = [];
+  dataTableDN: any = [];
+  dataTableDA: any = [];
   allDatable: any[] = [];
 
   dataTableD: any = [];
@@ -63,7 +65,7 @@ export class DocumentosIndigenas implements OnInit{
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.area_adscripcion = Number(sessionStorage.getItem('area'));
 
-    this.getRegister();
+    this.getDocumentosMod2(1);
     this.getdata();
   }
 
@@ -100,6 +102,8 @@ export class DocumentosIndigenas implements OnInit{
     formData.append('archivoZip', this.selectedFile);
     formData.append('distrito', this.area_adscripcion.toString());
     formData.append('tipo_comunidad', "1");
+    formData.append('estado_documento', "1");
+    formData.append('tipo_documento', "3");
 
     this.docService.subirDocumentoNormativo(formData, this.tokenSesion).subscribe({
       next: (res) => {
@@ -152,6 +156,31 @@ export class DocumentosIndigenas implements OnInit{
     this.getRegister();
   }
 
+  changeTab(tabName: string): void {
+    this.activeTab = tabName;
+    this.checkActiveTab();
+  }
+
+   checkActiveTab(): void {
+    switch (this.activeTab) {
+      case 'home':
+        this.handleHomeTab();
+        break;
+      case 'profile':
+        this.handleProfileTab();
+        break;
+    }
+  }
+
+    handleHomeTab(): void {
+    this.getDocumentosMod2(1);
+  }
+
+  handleProfileTab(): void {
+    this.getDocumentosMod2(2);
+  }
+
+
   descargar(){
     this.miServicio.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf", this.tokenSesion).subscribe({
       next: (blob) => {
@@ -173,7 +202,7 @@ export class DocumentosIndigenas implements OnInit{
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Documentos Normativos';
+        a.download = nameArchivo;
         a.click();
         window.URL.revokeObjectURL(url);
       },
@@ -189,6 +218,41 @@ export class DocumentosIndigenas implements OnInit{
     const year = date.getUTCFullYear();
     const formattedDate = `${day}/${month}/${year}`;
     return formattedDate;
+  }
+
+  getDocumentosMod2(id: number) {
+    this.reporteService.getRegisterfichaTecnicaTablaTwo(1, id, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.getDocumentos.length > 0) {
+          switch(id) {
+            case 1:    
+              this.dataTableDN = data.getDocumentos;
+              break;
+            case 2:
+              this.dataTableDA = data.getDocumentos;
+              break;
+          }
+        } else {
+          switch(id) {
+            case 1:
+              this.dataTableDN = [];
+              break;
+            case 2:
+              this.dataTableDA = [];
+              break;
+          }
+          Swal.fire("No se encontraron registros");
+        }        
+      },
+      error: (err) => {
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros");
+        }
+      }
+    });
   }
 
   getRegister() {

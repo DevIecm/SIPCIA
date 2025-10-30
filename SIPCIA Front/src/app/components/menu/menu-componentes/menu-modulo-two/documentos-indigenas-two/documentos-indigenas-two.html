@@ -190,11 +190,11 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of dataTableTwo; let i = index" class="dual-row">
-                                <td>{{ item.id }}</td>
+                                <td>{{ i + 1 }}</td>
                                 <td>{{ item.nombre_documento }}</td>
                                 <td>{{ formatFecha(item.fecha_carga) }}</td>
-                                <td><i class="bi bi-download" (click)="descargar()"></i></td>
-                                <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
+                                <td><i class="bi bi-download" (click)="descargarOtros(item.direccion_documento)"></i></td>
+                                <td><i class="bi bi-trash" (click)="delete_item(item.id)"></i></td>
                             </tr>
                         </tbody>
                     </table>
@@ -290,11 +290,11 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of allDatableTwo; let i = index" class="dual-row">
-                                <td>{{ item.id }}</td>
+                                <td>{{ i + 1 }}</td>
                                 <td>{{ item.nombre_documento }}</td>
                                 <td>{{ formatFecha(item.fecha_carga) }}</td>
-                                <td><i class="bi bi-download" (click)="descargar()"></i></td>
-                                <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
+                                <td><i class="bi bi-download" (click)="descargarOtros(item.direccion_documento)"></i></td>
+                                <td><i class="bi bi-trash" (click)="delete_item(item.id)"></i></td>
                             </tr>
                         </tbody>
                     </table>
@@ -349,7 +349,7 @@
                   <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
                     <td (click)="openModal(1, item.id) " style="cursor: pointer;">{{ item.nombre_ficha}}</td>
                     <td>{{ formatFecha(item.fecha_registro) }} {{item.hora_registro}}</td>
-                    <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
+                    <td><i class="bi bi-trash" (click)="delete_ficha(item.id)"></i></td>
                   </tr>
                 </tbody>
               </table>
@@ -367,29 +367,6 @@
                 <div class="col-9">
                 </div>
                 <div class="col-3">
-                    <div class="row">
-                        <div class="col-9" style="text-align: end;">
-                            <label style="color: #ffff; font-size: 16px;">Agregar documento</label>
-                        </div>
-                        <div class="col-3">
-                            <!-- Carga de .ZIP -->
-                            <input 
-                                type="file" 
-                                id="fileInputZip" 
-                                accept=".zip" 
-                                style="display: none;" 
-                                (change)="onFileSelected($event)"
-                            >
-                            <!--botón -->
-                            <div 
-                                class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning text-white"
-                                style="width: 32px; height: 32px; cursor: pointer;"
-                                onclick="document.getElementById('fileInputZip').click()"
-                            >
-                                <i class="bi bi-plus-lg"></i>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -399,15 +376,6 @@
                     <table class="table">
                         <thead>
                             <tr class="table-primary">
-                                <th 
-                                    scope="col"
-                                    (click)="sortData('distrito_cabecera')"
-                                    style="width: 54px; cursor: pointer;">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                                        <span>No.</span>
-                                        <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
-                                    </div>
-                                </th>
                                 <th 
                                     scope="col"
                                     (click)="sortData('distrito_cabecera')"
@@ -430,13 +398,6 @@
                                     scope="col"
                                     style="cursor: pointer; width: 115px;">
                                     <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                                        <span>Descarga</span>
-                                    </div>
-                                </th>
-                                <th 
-                                    scope="col"
-                                    style="cursor: pointer; width: 115px;">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
                                         <span>Eliminar</span>
                                     </div>
                                 </th>
@@ -444,11 +405,9 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of dataTableInd; let i = index" class="dual-row">
-                                <td></td>
                                 <td>{{ item.nombre_documento }}</td>
                                 <td>{{ formatFecha(item.fecha_carga) }}</td>
-                                <td><i class="bi bi-download" (click)="descargar()"></i></td>
-                                <td><i class="bi bi-trash" (click)="delete_item()"></i></td>
+                                <td><i class="bi bi-trash" (click)="delete_item(item.id)"></i></td>                                
                             </tr>
                         </tbody>
                     </table>

@@ -25,7 +25,7 @@ router.get("/reporteInstanciasInd", Midleware.verifyToken, async (req, res) => {
                 JOIN cat_pueblos_originarios cpo ON r.pueblo_originario = cpo.id 
                 JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
                 JOIN cat_distrito cd ON r.distrito_electoral = cd.id
-                WHERE  (c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1)
+                WHERE  (r.estado_registro<>4 and c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1)
                 UNION ALL                        
                 SELECT 'tlPueblos' AS categoria, COUNT(Distinct r.pueblo_pbl) AS total 
                 FROM registro r  
@@ -33,7 +33,7 @@ router.get("/reporteInstanciasInd", Midleware.verifyToken, async (req, res) => {
                 JOIN cat_pueblos cp ON r.pueblo_pbl = cp.id
                 JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
                 JOIN cat_distrito cd ON r.distrito_electoral = cd.id
-                WHERE  (c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1)
+                WHERE  (r.estado_registro<>4 and c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1)
                 UNION ALL
                 SELECT 'tlBarrios' AS categoria, COUNT(Distinct r.barrio_pbl) AS total
                 FROM registro r  
@@ -41,14 +41,14 @@ router.get("/reporteInstanciasInd", Midleware.verifyToken, async (req, res) => {
                 JOIN cat_barrios cb ON r.barrio_pbl = cb.id
                 JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
                 JOIN cat_distrito cd ON r.distrito_electoral = cd.id
-                WHERE  (c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1)
+                WHERE  (r.estado_registro<>4 and c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1)
                 UNION ALL
                 SELECT 'tlComunidadInd' AS categoria, COUNT(Distinct r.comunidad_pbl) AS total
                 FROM registro r
                 join comunidad c on r.comunidad = c.id
                 join demarcacion_territorial dt on r.demarcacion = dt.id 
                 join cat_distrito cd on r.distrito_electoral = cd.id       
-                WHERE  (c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.comunidad_pbl)), '') <> '')
+                WHERE  (r.estado_registro<>4 and c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.comunidad_pbl)), '') <> '')
                     UNION ALL
                 SELECT 'tlUt' AS categoria, COUNT(Distinct r.unidad_territorial_pbl) AS total
                 FROM registro r  
@@ -56,14 +56,14 @@ router.get("/reporteInstanciasInd", Midleware.verifyToken, async (req, res) => {
                 JOIN unidad_territorial ut ON r.unidad_territorial_pbl = ut.id 
                 JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
                 JOIN cat_distrito cd ON r.distrito_electoral = cd.id
-                WHERE  (c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1)
+                WHERE  (r.estado_registro<>4 and c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1)
                 UNION ALL
                 SELECT 'tlOtros_pbl' AS categoria, COUNT(Distinct r.otro_pbl) AS total
                 FROM registro r  
                 JOIN comunidad c ON r.comunidad = c.id
                 JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
                 JOIN cat_distrito cd ON r.distrito_electoral = cd.id 
-                WHERE  (c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.otro_pbl)), '') <> '')`);
+                WHERE  (r.estado_registro<>4 and c.id = 1${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.otro_pbl)), '') <> '')`);
 
         if (todasInstancias.recordset.length > 0) {
             const response = {
@@ -119,35 +119,35 @@ router.get("/reporteInstanciasAfro", Midleware.verifyToken, async (req, res) => 
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE (c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.pueblo_afro)), '') <> '')
+                    WHERE (r.estado_registro<>4 and c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.pueblo_afro)), '') <> '')
                     UNION ALL
                     SELECT 'tlComunidadAfro' AS categoria, COUNT(Distinct r.comunidad_afro) AS total
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE (c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.comunidad_afro)), '') <> '')
+                    WHERE (r.estado_registro<>4 and c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.comunidad_afro)), '') <> '')
                     UNION ALL
                     SELECT 'tlOrganizaciones' AS categoria, COUNT(Distinct r.organizacion_afro) AS total
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE (c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.organizacion_afro)), '') <> '')
+                    WHERE (r.estado_registro<>4 and c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.organizacion_afro)), '') <> '')
                     UNION ALL
                     SELECT 'tlPersoRelevantes' AS categoria, COUNT(Distinct r.persona_relevante_afro) AS total
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id
-                    WHERE (c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.persona_relevante_afro)), '') <> '')
+                    WHERE (r.estado_registro<>4 and c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.persona_relevante_afro)), '') <> '')
                     UNION ALL
                     SELECT 'tlOtroAfro' AS categoria, COUNT(Distinct r.otro_afro) AS total 
                     FROM registro r  
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE (c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.otro_afro)), '') <> '')                    
+                    WHERE (r.estado_registro<>4 and c.id = 2${id_distrito ? ' AND r.distrito_electoral = @id_distrito' : ''} and r.modulo_registro = 1 AND ISNULL(LTRIM(RTRIM(r.otro_afro)), '') <> '')                    
                 ;`);
 
         if (todasInstancias.recordset.length > 0) {
@@ -213,7 +213,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join cat_pueblos_originarios cpo  on r.pueblo_originario = cpo.id 
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1
             `);
 
         const pueblos = await pool.request()
@@ -226,7 +226,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join cat_pueblos cp on r.pueblo_pbl = cp.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1
             `);
 
         const barrios = await pool.request()
@@ -239,7 +239,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join cat_barrios cb  on r.barrio_pbl = cb.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1
             `);
 
         const comunidadInd = await pool.request()
@@ -251,7 +251,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.comunidad_pbl)), '') <> ''
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.comunidad_pbl)), '') <> ''
                     GROUP by dt.demarcacion_territorial
             `);
 
@@ -265,7 +265,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                 join unidad_territorial ut on r.unidad_territorial_pbl = ut.id 
                 join demarcacion_territorial dt on r.demarcacion = dt.id 
                 join cat_distrito cd on r.distrito_electoral = cd.id  
-                WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1
+                WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1
             `);
 
         const otro_pbl = await pool.request()
@@ -277,7 +277,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.otro_pbl)), '') <> ''
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.otro_pbl)), '') <> ''
                     GROUP by dt.demarcacion_territorial
             `);
 
@@ -291,7 +291,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.pueblo_afro)), '') <> ''
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.pueblo_afro)), '') <> ''
                     GROUP by dt.demarcacion_territorial
             `);
 
@@ -304,7 +304,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.comunidad_afro)), '') <> ''
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.comunidad_afro)), '') <> ''
                     GROUP by dt.demarcacion_territorial
             `);
 
@@ -317,7 +317,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.organizacion_afro)), '') <> ''
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.organizacion_afro)), '') <> ''
                     GROUP by dt.demarcacion_territorial
             `);
 
@@ -330,7 +330,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.persona_relevante_afro)), '') <> ''
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.persona_relevante_afro)), '') <> ''
                     GROUP by dt.demarcacion_territorial 
             `);
 
@@ -343,7 +343,7 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
                     join comunidad c on r.comunidad = c.id
                     join demarcacion_territorial dt on r.demarcacion = dt.id 
                     join cat_distrito cd on r.distrito_electoral = cd.id 
-                    WHERE c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.otro_afro)), '') <> ''
+                    WHERE r.estado_registro<>4 and c.id =@tipo_comunidad${id_distrito ? ' AND cd.id =@id_distrito' : ''} and dt.id =@id_demarcacion and r.modulo_registro = 1 and ISNULL(LTRIM(RTRIM(r.otro_afro)), '') <> ''
                     GROUP by dt.demarcacion_territorial
             `);
 
