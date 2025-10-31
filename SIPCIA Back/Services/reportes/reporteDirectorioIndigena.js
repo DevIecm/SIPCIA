@@ -605,7 +605,209 @@ router.get("/reporteInstancias", Midleware.verifyToken, async (req, res) => {
       "Número de instancias representativas, organizaciones y personas relevantes pertenecientes a pueblos y comunidades afromexicanas",
       ["Demarcación", "Pueblos", "Comunidades", "Organizaciones", "Personas Relevantes", "Otros", "Total"],
       tabla2,
-      "ANEXO 4"
+      "ANEXO 3"
+    );
+
+    // Enviar Excel
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=reporte_instancias.xlsx");
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al generar el reporte");
+  }
+});
+
+//reporte de instancias para el modulo 2 agrupacion por distritos y demarcaciones 
+router.get("/reporteInstanciasMod2", Midleware.verifyToken, async (req, res) => {
+  const { distrito_electoral } = req.query;
+
+  // fecha local formateada
+  const original = new Date();
+  const offsetInMs = original.getTimezoneOffset() * 60000;
+  const fechaLocal = new Date(original.getTime() - offsetInMs);
+  const fechaFormateada = fechaLocal.toLocaleDateString("es-MX", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  try {
+    const pool = await connectToDatabase();
+
+    // ====== QUERY 1 ======
+    const result1 = await pool
+      .request()
+      .input("distrito_electoral", sql.Int, distrito_electoral)
+      .query(`
+        SELECT
+          r.distrito_electoral,
+          dt.demarcacion_territorial, 
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.pueblo_originario)), '')) AS pueblos_originarios,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.pueblo_pbl)), '')) AS pueblos,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.barrio_pbl)), '')) AS barrios,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.comunidad_pbl)), '')) AS comunidades_indigenas,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.unidad_territorial_pbl)), '')) AS ut,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.otro_pbl)), '')) AS otros,
+          (
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.pueblo_originario)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.pueblo_pbl)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.barrio_pbl)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.comunidad_pbl)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.unidad_territorial_pbl)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.otro_pbl)), ''))
+          ) AS total
+        FROM registro r 
+        JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
+        JOIN cat_distrito cd ON r.distrito_electoral = cd.id 
+        WHERE (r.estado_registro<> 4 and r.comunidad = 1${distrito_electoral
+          ? " AND r.distrito_electoral = @distrito_electoral"
+          : ""
+        } and r.modulo_registro = 1)
+        GROUP BY r.distrito_electoral, dt.demarcacion_territorial
+        ORDER BY r.distrito_electoral, dt.demarcacion_territorial;
+      `);
+
+    const tabla1 = result1.recordset;
+
+    // ====== QUERY 2 ======
+    const result2 = await pool
+      .request()
+      .input("distrito_electoral", sql.Int, distrito_electoral)
+      .query(`
+        SELECT
+          r.distrito_electoral,
+          dt.demarcacion_territorial, 
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.pueblo_afro)), '')) AS pueblos,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.comunidad_afro)), '')) AS comunidad,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.organizacion_afro)), '')) AS organizacion_afro,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.persona_relevante_afro)), '')) AS persona_relevante_afro,
+          COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.otro_afro)), '')) AS otros,
+          (
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.pueblo_afro)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.comunidad_afro)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.organizacion_afro)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.persona_relevante_afro)), '')) +
+              COUNT(DISTINCT NULLIF(LTRIM(RTRIM(r.otro_afro)), ''))
+          ) AS total
+        FROM registro r 
+        JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
+        JOIN cat_distrito cd ON r.distrito_electoral = cd.id
+        WHERE (r.estado_registro<> 4 and r.comunidad = 2${distrito_electoral
+          ? " AND r.distrito_electoral = @distrito_electoral"
+          : ""
+        } AND r.modulo_registro = 1)
+        GROUP BY r.distrito_electoral, dt.demarcacion_territorial
+        ORDER BY r.distrito_electoral, dt.demarcacion_territorial;
+      `);
+
+    const tabla2 = result2.recordset;
+
+    // ====== CREACIÓN DEL EXCEL ======
+    const workbook = new ExcelJS.Workbook();
+
+    // Helper para aplicar formato
+    const crearHojaConEstilo = (worksheet, tituloTexto, headers, tabla, anexoLabel) => {
+      // Imagen
+      const logoPath = path.join(__dirname, "../../assets/iecm.png");
+      const logoId = workbook.addImage({
+        filename: logoPath,
+        extension: "png",
+      });
+
+      worksheet.addImage(logoId, {
+        tl: { col: 0.1, row: 0.1 },
+        ext: { width: 150, height: 70 },
+      });
+
+      worksheet.mergeCells("B5:F5");
+      const titulo = worksheet.getCell("B5:F5");
+      titulo.value = tituloTexto;
+      titulo.font = { size: 14, bold: true };
+      titulo.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
+
+      worksheet.mergeCells("H1:H2");
+      const anexo = worksheet.getCell("H1");
+      anexo.value = anexoLabel;
+      anexo.font = { size: 27, bold: true, color: { argb: "FF6F42C1" } };
+      anexo.alignment = { vertical: "middle", horizontal: "center" };
+
+      const distrito = worksheet.getCell("B4");
+      distrito.value = {
+        richText: [
+          { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
+          {
+            text: String(distrito_electoral || "Todos"),
+            font: { size: 12, bold: true, underline: true },
+          },
+        ],
+      };
+      distrito.alignment = { vertical: "middle", horizontal: "left" };
+
+      const cellFecha = worksheet.getCell("H4");
+      cellFecha.value = {
+        richText: [
+          { text: "Fecha: ", font: { size: 12, bold: true } },
+          { text: fechaFormateada, font: { size: 12, bold: true, underline: true } },
+        ],
+      };
+      cellFecha.alignment = { vertical: "middle", horizontal: "left" };
+
+      worksheet.mergeCells("C3:F3");
+      const tituloLargo = worksheet.getCell("C3");
+      tituloLargo.value =
+        "Número de Instancias Representativas de\n" +
+        "Pueblos y Barrios Originarios y Comunidades Indígenas\n" +
+        "y Afromexicanas Residentes en la Ciudad de México";
+      tituloLargo.font = { size: 12, bold: true };
+      tituloLargo.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
+
+      worksheet.getRow(3).height = 50;
+      worksheet.getRow(5).height = 50;
+
+      worksheet.addRow(headers);
+      worksheet.columns = headers.map(() => ({ width: 25 }));
+
+      worksheet.getRow(6).eachCell((cell) => {
+        cell.font = { bold: true, size: 11 };
+        cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+
+      worksheet.autoFilter = { from: "A6", to: `${String.fromCharCode(65 + headers.length - 1)}6` };
+
+      tabla.forEach((row) => {
+        worksheet.addRow(Object.values(row));
+      });
+    };
+
+    // Hoja 1: Indígenas
+    const hoja1 = workbook.addWorksheet("Pueblos y Comunidades Indígenas");
+    crearHojaConEstilo(
+      hoja1,
+      "Número de instancias representativas de pueblos, barrios y comunidades indígenas",
+      ["Distrito","Demarcación", "Pueblos Originarios", "Pueblos", "Barrios", "Comunidades Indígenas", "UT", "Otros", "Total"],
+      tabla1,
+      "ANEXO 3"
+    );
+
+    // Hoja 2: Afromexicanas
+    const hoja2 = workbook.addWorksheet("Comunidades Afromexicanas");
+    crearHojaConEstilo(
+      hoja2,
+      "Número de instancias representativas, organizaciones y personas relevantes pertenecientes a pueblos y comunidades afromexicanas",
+      ["Distrito", "Demarcación", "Pueblos", "Comunidades", "Organizaciones", "Personas Relevantes", "Otros", "Total"],
+      tabla2,
+      "ANEXO 3"
     );
 
     // Enviar Excel
@@ -847,6 +1049,9 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
 
   const { distrito_electoral } = req.query;
 
+  const distritoElectoral = distrito_electoral && distrito_electoral !== "null" && distrito_electoral !== ""
+    ? Number(distrito_electoral)
+    : null;
 
   // fecha y hora
   const original = new Date();
@@ -869,6 +1074,7 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
       .input("distrito_electoral", sql.Int, distrito_electoral)
       .query(`select           
               ROW_NUMBER() OVER(ORDER BY ra.id) AS numero_consecutivo,
+             ${distritoElectoral === null ? "ra.distrito_electoral," : ""}
               dt.demarcacion_territorial,
               ra.denominacion_lugar,
               ra.domicilio_lugar,
@@ -877,7 +1083,8 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
               ra.observaciones 
               from registro_afluencia ra 
               join demarcacion_territorial dt on ra.demarcacion_territorial = dt.id 
-              WHERE (ra.estado_registro<>4 and ra.modulo_registro = 1${distrito_electoral ? ' AND ra.distrito_electoral =  @distrito_electoral' : ''})
+              WHERE (ra.estado_registro<>4 and ra.modulo_registro = 1${distritoElectoral ? ' AND ra.distrito_electoral =  @distrito_electoral' : ''})
+              order by numero_consecutivo, distrito_electoral, dt.demarcacion_territorial;
             `);
 
     const rows = result.recordset;
@@ -954,15 +1161,26 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
 
     worksheet.addRow([]);
 
-    const headers = [
-      "No.",
-      "Demarcación Territorial",
-      "Denominación Del Lugar",
-      "Domicilio del Lugar",
-      "Ubicacion georreferenciada kml",
-      "Foto del lugar",
-      "Observaciones"
-    ];
+    const headers = distritoElectoral === null
+    ? [
+        "No.",
+        "DD",
+        "Demarcación Territorial",
+        "Denominación Del Lugar",
+        "Domicilio del Lugar",
+        "Ubicación georreferenciada kml",
+        "Foto del lugar",
+        "Observaciones"
+      ]
+    : [
+        "No.",
+        "Demarcación Territorial",
+        "Denominación Del Lugar",
+        "Domicilio del Lugar",
+        "Ubicación georreferenciada kml",
+        "Foto del lugar",
+        "Observaciones"
+      ];
 
     worksheet.addRow(headers);
     worksheet.columns = headers.map(() => ({ width: 20 }));
@@ -1011,7 +1229,19 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
           : "";
 
 
-        const rowExcel = worksheet.addRow([
+const rowExcel = worksheet.addRow(
+  distritoElectoral === null
+    ? [
+        row.numero_consecutivo,
+        row.distrito_electoral,
+        row.demarcacion_territorial,
+        row.denominacion_lugar,
+        row.domicilio_lugar,
+        ubicacion,
+        archivo,
+        row.observaciones
+      ]
+    : [
         row.numero_consecutivo,
         row.demarcacion_territorial,
         row.denominacion_lugar,
@@ -1019,7 +1249,9 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
         ubicacion,
         archivo,
         row.observaciones
-      ]);
+      ]
+);
+
     
 
       const cellUbicacion = rowExcel.getCell(5);
@@ -1253,6 +1485,10 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
 
   const { distrito_electoral, id_registro } = req.query;
 
+  const distritoElectoral = distrito_electoral && distrito_electoral !== "null" && distrito_electoral !== ""
+    ? Number(distrito_electoral)
+    : null;
+
   if (!id_registro) {
     return res.status(400).json({ message: "Datos requeridos" });
   }
@@ -1285,6 +1521,7 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
       .input("distrito_electoral", sql.Int, distrito_electoral)
       .query(`
             select ac.numero_consecutivo,
+            ${distritoElectoral === null ? "ac.distrito_electoral," : ""}
             ac.fecha_consulta,
             ac.nombre_completo,
             cpo.pueblo_originario,
@@ -1302,7 +1539,7 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
             left join cat_pueblos cp on ac.pueblo = cp.id
             left join cat_barrios cb on ac.barrio = cb.id 
             left join unidad_territorial ut on ac.unidad_territorial = ut.id
-            WHERE (ac.estado_registro<>4 and ac.modulo_registro = 1${distrito_electoral ? ' AND ac.distrito_electoral =  @distrito_electoral' : ''})AND ac.id IN (${idsString})
+            WHERE (ac.estado_registro<>4 and ac.modulo_registro = 1${distritoElectoral ? ' AND ac.distrito_electoral =  @distrito_electoral' : ''})AND ac.id IN (${idsString})
           `);
 
     const rows = result.recordset;
@@ -1380,7 +1617,15 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
 
     worksheet.addRow([]);
 
-    const headers = [
+    const headers = distritoElectoral === null
+    ? [
+      "Número consecutivo de Consulta", "DD", "Fecha de la consulta", "Nombre Completo",
+      "Pueblo Originario", "Pueblo", "Barrio",
+      "Unidad Territorial", "Otro",
+      "Cargo que ocupa", "Describa la consulta",
+      "Forma en la que se atendió la consulta", "Observaciones y/o precisiones", "Solicitudes y documentos (en caso)"
+    ] :
+    [
       "Número consecutivo de Consulta", "Fecha de la consulta", "Nombre Completo",
       "Pueblo Originario", "Pueblo", "Barrio",
       "Unidad Territorial", "Otro",
@@ -1423,7 +1668,25 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
           ? { text: nombreArchivo, hyperlink: `${API_BASE_URL}/api/descargaDoc/downloadOtrosNorma/${nombreArchivo}` }
           : "";
 
-      const rowExcel= worksheet.addRow([
+      const rowExcel= worksheet.addRow(
+      distritoElectoral === null
+        ?[
+        row.numero_consecutivo,        
+        row.distrito_electoral,
+        row.fecha_consulta,
+        row.nombre_completo,
+        row.pueblo_originario,
+        row.pueblo,
+        row.barrio,
+        row.ut,
+        row.otro,
+        row.cargo,
+        row.descripcion_consulta,
+        row.forma_atendio,
+        row.observaciones,
+        enlace
+      ] :
+      [
         row.numero_consecutivo,
         row.fecha_consulta,
         row.nombre_completo,
@@ -1437,7 +1700,8 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
         row.forma_atendio,
         row.observaciones,
         enlace
-      ]);
+      ]    
+    );
 
       const cellArchivo = rowExcel.getCell(13);
 

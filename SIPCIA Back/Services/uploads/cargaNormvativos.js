@@ -179,13 +179,10 @@ router.get("/getOtrosDocumentos", Midleware.verifyToken, async (req, res) => {
 
 /// elimiacion logica de documentos normativos
 router.patch("/eliminarDocNormativos", Midleware.verifyToken, async (req, res) => {
-
   const { id } = req.body;
 
-
-
   if (id == null) {
-    return res.status(400), json({ message: "EL campo es requerido" })
+    return res.status(400).json({ message: "El campo id es requerido" });
   }
 
   let transaction;
@@ -195,78 +192,100 @@ router.patch("/eliminarDocNormativos", Midleware.verifyToken, async (req, res) =
     transaction = pool.transaction();
     await transaction.begin();
 
+    // 1️⃣ Marcar como eliminado
     await transaction.request()
       .input('id', sql.Int, id)
       .query(`
-                UPDATE documentos_normativos
-                SET estado_documento = 4
-                where id = @id;
-            `);
+        UPDATE documentos_normativos
+        SET estado_documento = 4
+        WHERE id = @id;
+      `);
+
+    // 2️⃣ Obtener la lista actualizada (los que no están eliminados)
+    const result = await transaction.request()
+      .query(`
+        SELECT *
+        FROM documentos_normativos
+        WHERE estado_documento <> 4
+        ORDER BY id DESC;
+      `);
 
     await transaction.commit();
 
-    return res.status(200).json({
-      message: `EL registro fue eliminado`,
-      code: 200,
-    });
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        message: "Registro eliminado correctamente",
+        code: 200,
+        documentos: result.recordset
+      });
+    } else {
+      return res.status(200).json({
+        message: "Registro eliminado, no quedan documentos activos",
+        code: 200,
+        documentos: []
+      });
+    }
 
   } catch (err) {
-    console.error("Error en Registro:", err);
-    if (transaction) {
-      await transaction.rollback();
-    }
-    return res.status(500).json({ message: "Error al actualizar los registros", error: err.message });
+    console.error("Error en eliminarDocNormativos:", err);
+    if (transaction) await transaction.rollback();
+    return res.status(500).json({
+      message: "Error al eliminar el registro",
+      error: err.message
+    });
   }
-
 });
+
 
 // consulta de docuemtos normativos modulo 2
 router.get("/getDocumentos", Midleware.verifyToken, async (req, res) => {
-
   const { distrito, tipo_comunidad, tipo_documento } = req.query;
 
   try {
-
     const pool = await connectToDatabase();
     const result = await pool.request()
       .input('tipo_comunidad', sql.Int, tipo_comunidad)
       .input('distrito', sql.Int, distrito)
       .input('tipo_documento', sql.Int, tipo_documento)
-      .query(`select id, nombre_documento, fecha_carga, tipo_documento, direccion_documento
-                from documentos_normativos
-            where (tipo_documento = @tipo_documento${distrito ? ' AND distrito = @distrito' : ''} and estado_documento<>4 and tipo_comunidad=@tipo_comunidad);`);
+      .query(`
+        SELECT id, nombre_documento, fecha_carga, tipo_documento, direccion_documento
+        FROM documentos_normativos
+        WHERE tipo_documento = @tipo_documento
+          ${distrito ? 'AND distrito = @distrito' : ''}
+          AND estado_documento <> 4
+          AND tipo_comunidad = @tipo_comunidad;
+      `);
 
-        if (result.recordset.length > 0) {
+    const data = result.recordset.map(item => {
+      const nombreArchivo = item.direccion_documento
+        ? path.basename(item.direccion_documento)
+        : null;
 
-      const data = result.recordset.map(item => {
-        const nombreArchivo = item.direccion_documento
-          ? path.basename(item.direccion_documento)
-          : null;
+      const guionIndex = nombreArchivo?.indexOf("-");
+      const nombreLimpio = guionIndex > -1
+        ? nombreArchivo.substring(guionIndex + 1)
+        : nombreArchivo;
 
-        const guionIndex = nombreArchivo?.indexOf("-");
-        const nombreLimpio = guionIndex > -1
-          ? nombreArchivo.substring(guionIndex + 1)
-          : nombreArchivo;
+      return {
+        ...item,
+        direccion_documento: nombreArchivo,
+        nombre_documento: nombreLimpio
+      };
+    });
 
-        return {
-          ...item,
-          direccion_documento: nombreArchivo,
-          nombre_documento: nombreLimpio
-        };
-      });
+    return res.status(200).json({
+      getDocumentos: data,
+      code: 200
+    });
 
-      return res.status(200).json({
-        getDocumentos: data,
-        code: 200
-      });
-    } else {
-      return res.status(404).json({ message: "No se encontraron datos" });
-    }
-
-  }catch (error) {
+  } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Error de servidor", error: error.message });
+    return res.status(500).json({
+      message: "Error de servidor",
+      error: error.message
+    });
   }
 });
+
 
 export default router;

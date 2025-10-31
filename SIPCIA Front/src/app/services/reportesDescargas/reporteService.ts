@@ -64,6 +64,22 @@ export class reporteService {
       );
   }
 
+  descargarReporteInstanciasMod2(distrito_electoral: number | null, token: string): Observable<Blob> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+    .set('distrito_electoral', distrito_electoral !== null ? distrito_electoral: '')
+
+    return this.http.get(this.apiUrl + 'reportesDes/reporteInstanciasMod2', { headers, params, responseType: 'blob' })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  }
+
   descargarReporteInstitucion(distrito_electoral: number | null, token: string): Observable<Blob> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`

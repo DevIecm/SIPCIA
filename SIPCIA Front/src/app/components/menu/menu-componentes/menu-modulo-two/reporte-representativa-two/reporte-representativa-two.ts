@@ -71,7 +71,7 @@ export class ReporteRepresentativaTwo implements OnInit{
   }
 
   getReporte(){
-    this.descargarReporteInstancias.descargarReporteInstancias(null,this.tokenSesion).subscribe((blob: Blob) => {
+    this.descargarReporteInstancias.descargarReporteInstanciasMod2(null,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       link.download = 'reporte.xlsx';
@@ -142,6 +142,7 @@ export class ReporteRepresentativaTwo implements OnInit{
   };
 
   OnChangeDireccion() {
+    console.log("Juego de combo");
     this.direccion = this.formularioRegistro?.get('direccion')?.value;
     this.catalogo_demarcacion();
     if (this.direccion == 0) {
@@ -151,6 +152,8 @@ export class ReporteRepresentativaTwo implements OnInit{
           demarcacionI: 0
         });
       };
+
+      console.log("TODOS");
 
       this.reportes.getAllRegistrosInd(null, this.tokenSesion).subscribe({
         next: (data) => {
@@ -163,17 +166,17 @@ export class ReporteRepresentativaTwo implements OnInit{
         }
       });
 
-      this.reportes.getAllRegistrosAfro(null,this.tokenSesion).subscribe({
-      next: (data) => {
-        this.reporteA = [data];
-      }, error: (err) => {
+      this.reportes.getAllRegistrosAfro(null, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteA = [data];
+        }, error: (err) => {
 
 
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
         }
-      }
-    });
+      });
 
     } else {
       if (this.formularioRegistro) {
@@ -183,11 +186,24 @@ export class ReporteRepresentativaTwo implements OnInit{
         });
       };
 
+      
+      console.log("BY DISTRITOS");
+
       this.reportes.getAllRegistrosInd(this.direccion, this.tokenSesion).subscribe({
         next: (data) => {
           this.reporteI = [data];
         }, error: (err) => {
 
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+        }
+      });
+
+      this.reportes.getAllRegistrosAfro(this.direccion, this.tokenSesion).subscribe({
+        next: (data) => {
+          this.reporteA = [data];
+        }, error: (err) => {
           if (err.error.code === 160) {
             this.service.cerrarSesionByToken();
           }
