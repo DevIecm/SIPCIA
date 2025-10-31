@@ -138,7 +138,7 @@ export class DocumentosAfroTwo implements OnInit{
 
     delete_ficha(id: number) {
           Swal.fire({
-            title: "¿Está seguro que desea Eliminar la Instacia?",
+            title: "¿Está seguro que desea Eliminar la Instancia?",
             icon: "warning", 
             showCancelButton: true,
             confirmButtonColor: "#FBB03B",
@@ -231,7 +231,7 @@ export class DocumentosAfroTwo implements OnInit{
 
 delete_item(id: number) {
   Swal.fire({
-    title: "¿Está seguro que desea Eliminar la Instacia?",
+    title: "¿Está seguro que desea Eliminar la Instancia?",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#FBB03B",

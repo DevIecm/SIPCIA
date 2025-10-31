@@ -53,6 +53,8 @@ export class DocumentosAfroamericanas implements OnInit{
 
   dataTableD: any = [];
   allDatableD: any[] = [];
+  dataTableDN: any = [];
+  dataTableDA: any = [];
 
   showModal = false;
 
@@ -64,6 +66,7 @@ export class DocumentosAfroamericanas implements OnInit{
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.area_adscripcion = Number(sessionStorage.getItem('area'));
 
+    this.getDocumentosMod2(1);
     this.getRegister();
     this.getdata();
   }
@@ -160,6 +163,30 @@ export class DocumentosAfroamericanas implements OnInit{
     });
   }
 
+  changeTab(tabName: string): void {
+    this.activeTab = tabName;
+    this.checkActiveTab();
+  }
+
+  checkActiveTab(): void {
+    switch (this.activeTab) {
+      case 'home':
+        this.handleHomeTab();
+        break;
+      case 'profile':
+        this.handleProfileTab();
+        break;
+    }
+  }
+
+  handleHomeTab(): void {
+    this.getDocumentosMod2(1);
+  }
+
+  handleProfileTab(): void {
+    this.getDocumentosMod2(2);
+  }
+
   descargar(){
     this.miServicio.descargarDocNorma("1757703550661-purebaComunidadAfro.pdf", this.tokenSesion).subscribe({
       next: (blob) => {
@@ -190,6 +217,41 @@ export class DocumentosAfroamericanas implements OnInit{
     const formattedDate = `${day}/${month}/${year}`;
 
     return formattedDate;
+  }
+
+  getDocumentosMod2(id: number) {
+    this.reporteService.getRegisterfichaTecnicaTablaTwo(2, id, this.tokenSesion).subscribe({
+      next: (data) => {
+        if(data.getDocumentos.length > 0) {
+          switch(id) {
+            case 1:    
+              this.dataTableDN = data.getDocumentos;
+              break;
+            case 2:
+              this.dataTableDA = data.getDocumentos;
+              break;
+          }
+        } else {
+          switch(id) {
+            case 1:
+              this.dataTableDN = [];
+              break;
+            case 2:
+              this.dataTableDA = [];
+              break;
+          }
+          Swal.fire("No se encontraron registros");
+        }        
+      },
+      error: (err) => {
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+        if(err.error.code === 100) {
+          Swal.fire("No se encontraron registros");
+        }
+      }
+    });
   }
   
   getRegister() {

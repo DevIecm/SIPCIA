@@ -55,7 +55,7 @@
       <li class="nav-item color-1" style="position: relative; z-index: 3;">
         <a 
           [class.active]="activeTab === 'home'"
-          (click)="activeTab = 'home'" 
+          (click)="changeTab('home')" 
           class="nav-link active text-end" 
           data-bs-toggle="tab" 
           href="#nav-home" 
@@ -66,7 +66,7 @@
         <a 
           class="nav-link text-end" 
           [class.active]="activeTab === 'profile'"
-          (click)="activeTab = 'profile'" 
+          (click)="changeTab('profile')" 
           data-bs-toggle="tab" 
           href="#nav-profile"
         >
@@ -76,7 +76,7 @@
         <a 
           class="nav-link text-end" 
           [class.active]="activeTab === 'contact'"
-          (click)="activeTab = 'contact'"
+          (click)="changeTab('contact')"
           data-bs-toggle="tab" 
           href="#nav-contact"
         >
@@ -86,7 +86,7 @@
         <a 
           class="nav-link text-end" 
           [class.active]="activeTab === 'other'"
-          (click)="activeTab = 'other'" 
+          (click)="changeTab('other')" 
           data-bs-toggle="tab" 
           href="#nav-other"
         >
@@ -152,14 +152,11 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- <tr *ngFor="let item of dataTable; let i = index" class="dual-row"> -->
-                    <tr  class="dual-row">
-
-                      <td>1</td>
-                      <td>Normativa 1</td>
-                      <td>15/05/2025</td>
-                      <td><i class="bi bi-download" (click)="descargar()"></i></td>
-                    </tr>
+                    <tr *ngFor="let item of dataTableDN; let i = index" class="dual-row">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.nombre_documento }}</td>
+                    <td>{{ formatFecha(item.fecha_carga) }}</td>
+                    <td><i class="bi bi-download" (click)="descargarOtros(item.direccion_documento)"></i></td>
                   </tbody>
                 </table>
               </div>
@@ -216,14 +213,11 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- <tr *ngFor="let item of dataTable; let i = index" class="dual-row"> -->
-                    <tr  class="dual-row">
-
-                      <td>1</td>
-                      <td>Normativa 1</td>
-                      <td>15/05/2025</td>
-                      <td><i class="bi bi-download" (click)="descargar()"></i></td>
-                    </tr>
+                    <tr *ngFor="let item of dataTableDA; let i = index" class="dual-row">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.nombre_documento }}</td>
+                    <td>{{ formatFecha(item.fecha_carga) }}</td>
+                    <td><i class="bi bi-download" (click)="descargarOtros(item.direccion_documento)"></i></td>
                   </tbody>
                 </table>
               </div>

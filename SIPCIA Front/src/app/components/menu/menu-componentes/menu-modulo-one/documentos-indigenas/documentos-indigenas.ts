@@ -58,6 +58,7 @@ export class DocumentosIndigenas implements OnInit{
   fileUploaded: boolean = false;
 
   ngOnInit(): void {
+    
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
     this.nombreUser = sessionStorage.getItem('nameUsuario')!;
@@ -66,6 +67,7 @@ export class DocumentosIndigenas implements OnInit{
     this.area_adscripcion = Number(sessionStorage.getItem('area'));
 
     this.getDocumentosMod2(1);
+    this.getRegister();
     this.getdata();
   }
 
@@ -73,7 +75,6 @@ export class DocumentosIndigenas implements OnInit{
     private router: Router,
     private reporteService: DocumentosServices,
     private service: Auth,
-    private miServicio: Reportes,
     private docService: Reportes,
     private serviceRegister: Reportes
   ) {}
@@ -161,7 +162,7 @@ export class DocumentosIndigenas implements OnInit{
     this.checkActiveTab();
   }
 
-   checkActiveTab(): void {
+  checkActiveTab(): void {
     switch (this.activeTab) {
       case 'home':
         this.handleHomeTab();
@@ -172,7 +173,7 @@ export class DocumentosIndigenas implements OnInit{
     }
   }
 
-    handleHomeTab(): void {
+  handleHomeTab(): void {
     this.getDocumentosMod2(1);
   }
 
@@ -182,7 +183,7 @@ export class DocumentosIndigenas implements OnInit{
 
 
   descargar(){
-    this.miServicio.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf", this.tokenSesion).subscribe({
+    this.docService.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf", this.tokenSesion).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -196,7 +197,7 @@ export class DocumentosIndigenas implements OnInit{
   }
 
   descargarOtros(nameArchivo: any){
-    this.miServicio.descargarOtrosNorma(nameArchivo, this.tokenSesion).subscribe({
+    this.docService.descargarOtrosNorma(nameArchivo, this.tokenSesion).subscribe({
 
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);

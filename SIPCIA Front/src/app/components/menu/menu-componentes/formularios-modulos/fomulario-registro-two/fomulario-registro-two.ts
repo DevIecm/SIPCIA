@@ -762,7 +762,7 @@ export class FomularioRegistroTwo implements OnInit{
 
   eliminaRegistro() {
     Swal.fire({
-      title: "¿Está seguro que desea Eliminar la Instacia?",
+      title: "¿Está seguro que desea Eliminar la Instnacia?",
       icon: "warning", 
       showCancelButton: true,
       confirmButtonColor: "#FBB03B",

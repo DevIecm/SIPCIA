@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
   templateUrl: './menu-home.html',
   styleUrl: './menu-home.css'
 })
+
 export class MenuHome implements OnInit{
   nombreUser: string = '';
   cargoUser: string = '';

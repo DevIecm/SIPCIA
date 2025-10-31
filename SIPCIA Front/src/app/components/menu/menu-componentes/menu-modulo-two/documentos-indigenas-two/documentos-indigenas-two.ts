@@ -136,23 +136,6 @@ export class DocumentosIndigenasTwo implements OnInit{
     });
   }
 
-  getTabActiva(): number {
-  const tabActiva = document.querySelector('.nav-link.active');
-
-  console.log("tabActiva", tabActiva);
-  if (!tabActiva) return 1;
-
-  const id = tabActiva.getAttribute('id');
-
-  switch (id) {
-    case 'nav-home-tab': return 1;
-    case 'nav-profile-tab': return 2;
-    case 'nav-contact-tab': return 3;
-    case 'nav-other-tab': return 4;
-    default: return 1;
-  }
-}
-
   getdata(){
     this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 1, this.tokenSesion).subscribe({
       next: (data) => {
@@ -214,7 +197,7 @@ export class DocumentosIndigenasTwo implements OnInit{
 
   delete_item(id: number) {
     Swal.fire({
-      title: "¿Está seguro que desea Eliminar la Instacia?",
+      title: "¿Está seguro que desea Eliminar la Instancia?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#FBB03B",
@@ -233,7 +216,7 @@ export class DocumentosIndigenasTwo implements OnInit{
                 confirmButtonColor: "#FBB03B",
               });
               setTimeout(() => {
-                this.onClose();
+                                           
                 let tabActual: number;
 
                 switch (this.activeTab) {
@@ -243,9 +226,11 @@ export class DocumentosIndigenasTwo implements OnInit{
                   default: tabActual = 1;
                 }
 
+                console.log("this.activeTab", tabActual);
+
                 this.getRegister(tabActual);
 
-              }, 3000);
+              }, 2000);
             }
           }, error: (err) => {
             if (err.error.code === 160) {
@@ -259,42 +244,41 @@ export class DocumentosIndigenasTwo implements OnInit{
     });
   }
 
-
   delete_ficha(id: number) {
-        Swal.fire({
-          title: "¿Está seguro que desea Eliminar la Instacia?",
-          icon: "warning", 
-          showCancelButton: true,
-          confirmButtonColor: "#FBB03B",
-          cancelButtonColor: "#9D75CA",
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.delFicha.eliminaFichInd(id, this.tokenSesion).subscribe({
-              next: (data) => {
-                if(data.code === 200) {
-                  Swal.fire({
-                    title: "Se han aplicado correctamente los cambios.",
-                    icon: "success",
-                    confirmButtonText: "Aceptar",
-                    confirmButtonColor: "#FBB03B",
-                  });
-                  setTimeout(() => {
-                    this.onClose();
-                    this.getRegisterFichaTecnica();
-                  }, 3000);
-                }
-              }, error: (err) => {
-                if(err.error.code === 160) {
-                  this.service.cerrarSesionByToken();
-                }
-              }
-            });
-          } else {
-            return;
+    Swal.fire({
+      title: "¿Está seguro que desea Eliminar la Instancia?",
+      icon: "warning", 
+      showCancelButton: true,
+      confirmButtonColor: "#FBB03B",
+      cancelButtonColor: "#9D75CA",
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.delFicha.eliminaFichInd(id, this.tokenSesion).subscribe({
+          next: (data) => {
+            if(data.code === 200) {
+              Swal.fire({
+                title: "Se han aplicado correctamente los cambios.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#FBB03B",
+              });
+              setTimeout(() => {
+                this.onClose();
+                this.getRegisterFichaTecnica();
+              }, 3000);
+            }
+          }, error: (err) => {
+            if(err.error.code === 160) {
+              this.service.cerrarSesionByToken();
+            }
           }
         });
+      } else {
+        return;
+      }
+    });
   }
 
   descargarOtros(nameArchivo: any){
@@ -322,46 +306,74 @@ export class DocumentosIndigenasTwo implements OnInit{
     return formattedDate;
   }
 
-getRegister(id: number) {
-  this.reporteService.getRegisterfichaTecnicaTablaTwo(1, id, this.tokenSesion).subscribe({
-    next: (data) => {
-      if(data.getDocumentos.length > 0) {
+  // getRegister(id: number) {
+  //   this.reporteService.getRegisterfichaTecnicaTablaTwo(1, id, this.tokenSesion).subscribe({
+  //     next: (data) => {
+  //       if(data.getDocumentos.length > 0) {
+  //         switch(id) {
+  //           case 1:
+  //             this.dataTableTwo = data.getDocumentos;
+  //             break;
+  //           case 2:
+  //             this.allDatableTwo = data.getDocumentos;
+  //             break;
+  //           case 3:
+  //             this.dataTableInd = data.getDocumentos;
+  //             break;
+  //         }
+  //       } else {
+  //         switch(id) {
+  //           case 1:
+  //             this.dataTableTwo = [];
+  //             break;
+  //           case 2:
+  //             this.allDatableTwo = [];
+  //             break;
+  //           case 3:
+  //             this.dataTableInd = [];
+  //             break;
+  //         }
+  //         Swal.fire("No se encontraron registros");
+  //       }        
+  //     },
+  //     error: (err) => {
+  //       if (err.error.code === 160) {
+  //         this.service.cerrarSesionByToken();
+  //       }
+  //       if(err.error.code === 100) {
+  //         Swal.fire("No se encontraron registros");
+  //       }
+  //     }
+  //   });
+  // }
+
+  getRegister(id: number) {
+    this.reporteService.getRegisterfichaTecnicaTablaTwo(1, id, this.tokenSesion).subscribe({
+      next: (data) => {
         switch(id) {
           case 1:
-            this.dataTableTwo = data.getDocumentos;
+            this.dataTableTwo = data.getDocumentos || [];
             break;
           case 2:
-            this.allDatableTwo = data.getDocumentos;
+            this.allDatableTwo = data.getDocumentos || [];
             break;
           case 3:
-            this.dataTableInd = data.getDocumentos;
+            this.dataTableInd = data.getDocumentos || [];
+            break;
+          default:
             break;
         }
-      } else {
-        switch(id) {
-          case 1:
-            this.dataTableTwo = [];
-            break;
-          case 2:
-            this.allDatableTwo = [];
-            break;
-          case 3:
-            this.dataTableInd = [];
-            break;
+        if(!data.getDocumentos || data.getDocumentos.length === 0){
+          Swal.fire("No se encontraron registros");
         }
-        Swal.fire("No se encontraron registros");
-      }        
-    },
-    error: (err) => {
-      if (err.error.code === 160) {
-        this.service.cerrarSesionByToken();
+      },
+      error: (err) => {
+        if (err.error.code === 160) this.service.cerrarSesionByToken();
+        if(err.error.code === 100) Swal.fire("No se encontraron registros");
       }
-      if(err.error.code === 100) {
-        Swal.fire("No se encontraron registros");
-      }
-    }
-  });
-}
+    });
+  }
+  
 
   getRegisterFichaTecnica() {
     this.reporteService.getRegisterfichaTecnicaTablaTwoo(this.tokenSesion).subscribe({
@@ -457,7 +469,7 @@ getRegister(id: number) {
     }
   }
 
-    handleHomeTab(): void {
+  handleHomeTab(): void {
     this.tipo_documentos = 1;
     this.getRegister(1);
     this.estado_documento = 1;
@@ -475,6 +487,7 @@ getRegister(id: number) {
   }
 
   handleOtherTab(): void {
+    console.log("Other tab activated")
     this.getRegister(3);
     this.estado_documento = 1;
     this.tipo_documento = 3;

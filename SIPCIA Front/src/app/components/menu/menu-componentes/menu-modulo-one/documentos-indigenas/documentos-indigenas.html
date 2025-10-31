@@ -55,7 +55,7 @@
       <li class="nav-item color-1" style="position: relative; z-index: 3;">
         <a 
           [class.active]="activeTab === 'home'"
-          (click)="activeTab = 'home'" 
+          (click)="changeTab('home')" 
           class="nav-link active text-end" 
           data-bs-toggle="tab" 
           href="#nav-home" 
@@ -66,7 +66,7 @@
         <a 
           class="nav-link text-end" 
           [class.active]="activeTab === 'profile'"
-          (click)="activeTab = 'profile'" 
+          (click)="changeTab('profile')" 
           data-bs-toggle="tab" 
           href="#nav-profile"
         >
@@ -76,7 +76,7 @@
         <a 
           class="nav-link text-end" 
           [class.active]="activeTab === 'contact'"
-          (click)="activeTab = 'contact'"
+          (click)="changeTab('contact')"
           data-bs-toggle="tab" 
           href="#nav-contact"
         >
@@ -86,7 +86,7 @@
         <a 
           class="nav-link text-end" 
           [class.active]="activeTab === 'other'"
-          (click)="activeTab = 'other'" 
+          (click)="changeTab('other')" 
           data-bs-toggle="tab" 
           href="#nav-other"
         >

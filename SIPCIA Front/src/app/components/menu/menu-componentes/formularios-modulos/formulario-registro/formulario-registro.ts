@@ -447,7 +447,7 @@ export class FormularioRegistro implements OnInit{
 
   saveForm() {
     Swal.fire({
-      title: "¿Está seguro que desea Editar la Instacia? Se sobrescribirán los datos actuales.",
+      title: "¿Está seguro que desea Editar la Instancia? Se sobrescribirán los datos actuales.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#FBB03B",
@@ -689,7 +689,7 @@ export class FormularioRegistro implements OnInit{
 
   eliminaRegistro() {
     Swal.fire({
-      title: "¿Está seguro que desea Eliminar la Instacia?",
+      title: "¿Está seguro que desea Eliminar la Instancia?",
       icon: "warning", 
       showCancelButton: true,
       confirmButtonColor: "#FBB03B",
