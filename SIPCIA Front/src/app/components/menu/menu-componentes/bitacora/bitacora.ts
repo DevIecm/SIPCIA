@@ -23,6 +23,7 @@ export class Bitacora implements OnInit {
 
   private route = inject(ActivatedRoute);
   idRegistro!: number;
+  tipoUsuario: number | number = 0;
   tipoBitacora!: string;
   nombreUser: string = '';
   cargoUser: string = '';
@@ -45,6 +46,7 @@ export class Bitacora implements OnInit {
     this.tipoBitacora = this.route.snapshot.paramMap.get('tipo') || 'defaultTipo';
 
     this.position = sessionStorage.getItem('dir')!;
+    this.tipoUsuario = Number(localStorage.getItem("modulo"));
     this.getBitacora();
   }
   constructor(
@@ -83,6 +85,11 @@ export class Bitacora implements OnInit {
 
   onValidateInfo() {
     this.router.navigate(['/menu']);
+    if(this.tipoUsuario === 1) {
+      this.router.navigate(['/menu']);
+    } else if(this.tipoUsuario === 2) {
+      this.router.navigate(['/menutwo']);
+    }
   };
 
   getBitacora() {

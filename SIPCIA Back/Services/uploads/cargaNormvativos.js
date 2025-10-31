@@ -248,7 +248,15 @@ router.get("/getDocumentos", Midleware.verifyToken, async (req, res) => {
       .input('distrito', sql.Int, distrito)
       .input('tipo_documento', sql.Int, tipo_documento)
       .query(`
-        SELECT id, nombre_documento, fecha_carga, tipo_documento, direccion_documento
+        SELECT id, nombre_documento, fecha_carga, tipo_documento, direccion_documento,
+        RIGHT('0' + CAST(
+            CASE 
+                WHEN DATEPART(HOUR, hora_carga) % 12 = 0 THEN 12 
+                ELSE DATEPART(HOUR, hora_carga) % 12 
+            END AS VARCHAR), 2) 
+        + ':' + RIGHT('0' + CAST(DATEPART(MINUTE, hora_carga) AS VARCHAR), 2) 
+        + ' ' + CASE WHEN DATEPART(HOUR, hora_carga) >= 12 THEN 'PM' ELSE 'AM' END 
+        AS hora_carga
         FROM documentos_normativos
         WHERE tipo_documento = @tipo_documento
           ${distrito ? 'AND distrito = @distrito' : ''}

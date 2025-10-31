@@ -853,7 +853,7 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
       .input("distrito_electoral", sql.Int, distrito_electoral)
       .query(`
             select ROW_NUMBER() OVER(ORDER BY ri.id) AS numero_consecutivo,
-            cd.direccion_distrital,
+            ri.distrito_electoral,
             dt.demarcacion_territorial,
             ri.nombre_completo,
             ri.fotografia,
@@ -1003,7 +1003,7 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
 
       const rowExcel = worksheet.addRow([
         row.numero_consecutivo,
-        row.direccion_distrital,
+        row.distrito_electoral,
         row.demarcacion_territorial,
         row.nombre_completo,
         foto,
