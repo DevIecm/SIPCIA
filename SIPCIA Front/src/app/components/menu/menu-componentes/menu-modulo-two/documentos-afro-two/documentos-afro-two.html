@@ -347,7 +347,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
-                    <td (click)="openModal(1, item.id) " style="cursor: pointer;">{{ item.nombre_ficha}}</td>
+                    <td (click)="openModal(2, item.id) " style="cursor: pointer;">{{ item.nombre_ficha}}</td>
                     <td>{{ formatFecha(item.fecha_registro) }} {{item.hora_registro}}</td>
                     <td><i class="bi bi-trash" (click)="delete_ficha(item.id)"></i></td>
                   </tr>
