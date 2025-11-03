@@ -316,7 +316,7 @@
         </div>
          
         <div class="container justify-content-center mt-4">
-          <div class="row back-table" style="margin-top: -21px;">
+          <div class="row" style="margin-top: -21px;">
             <div class="col-12">
               <table class="table">
                 <thead>
@@ -324,8 +324,8 @@
                     <th 
                       scope="col"
                       (click)="sortData('id')"
-                      style="cursor: pointer;">
-                      <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                      style="text-align: start; border: none; width: 910px; cursor: pointer; background-color: #86669D !important;">
+                      <div style="display: flex; align-items: start; justify-content: start; gap: 5px;">
                         <span>Nombre</span>
                         <i [ngClass]="getSortIcon('id')"></i>
                       </div>
@@ -333,7 +333,7 @@
                     <th 
                       scope="col"
                       (click)="sortData('fecha_registro')"
-                      style="cursor: pointer;">
+                      style="border: none; cursor: pointer; background-color: #86669D !important;">
                       <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
                         <span>Fecha</span>
                         <i [ngClass]="getSortIcon('fecha_registro')"></i>
@@ -341,7 +341,7 @@
                     </th>
                     <th 
                       scope="col"
-                      style="cursor: pointer;">
+                      style="border: none; cursor: pointer; background-color: #86669D !important;">
                     </th>
                   </tr>
                 </thead>

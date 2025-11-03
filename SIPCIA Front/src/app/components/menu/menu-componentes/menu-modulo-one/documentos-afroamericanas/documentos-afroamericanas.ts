@@ -57,6 +57,7 @@ export class DocumentosAfroamericanas implements OnInit{
   dataTableDA: any = [];
 
   showModal = false;
+  isRegister: boolean = false;
 
   ngOnInit(): void {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
@@ -112,10 +113,11 @@ export class DocumentosAfroamericanas implements OnInit{
     this.router.navigate(['/menu']);
   };
 
-  openModal(id: number | undefined, idRegistro: number | undefined) {
+  openModal(id: number | undefined, idRegistro: number | undefined, isRegister: boolean) {
     this.showModal = true;
     this.idformIdSelected = id;
     this.idform = idRegistro;
+    this.isRegister = isRegister;
   }
 
   onFileSelected(event: Event) {

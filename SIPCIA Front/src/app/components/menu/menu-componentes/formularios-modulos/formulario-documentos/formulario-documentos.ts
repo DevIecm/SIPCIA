@@ -264,6 +264,8 @@ export class FormularioDocumentos {
   }
 
   ngOnInit() {
+
+    console.log(this.idRegistroC)
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
     this.area = Number(sessionStorage.getItem('area')!);
@@ -325,13 +327,10 @@ export class FormularioDocumentos {
     this.labelTitle = 'Ficha técnica de la reunión de trabajo con instancias representativas y autoridades tradicionales de forma previa a la realización de las asambleas comunitarias.';
 
     if(this.idSelected && this.idSelected > 0) {
-      this.idRegistroC = true;
       this.formularioRegistro.disable();
       this.getDataById();
       this.checksDisabled = true;
-    } else if(this.idSelected === undefined || this.idSelected === null) {
-      this.idRegistroC = false;
-    }
+    } 
 
     if(this.modulo === 2){
       this.formularioRegistro?.disable();

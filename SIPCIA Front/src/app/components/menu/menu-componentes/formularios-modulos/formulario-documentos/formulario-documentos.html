@@ -671,18 +671,16 @@
                                 </div>
                             </div>
 
-                            @if(idRegistroC === false){
                                 <div class="container text-center" style="margin-top: 15px;">
                                     <div class="row">
                                     <div class="col">
-                                        <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">Guardar</button>
+                                        <button type="submit" [disabled]="idRegistroC === false || formularioRegistro?.invalid" class="btn button-register">Guardar</button>
                                     </div>
                                     <div class="col">
                                         <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
                                     </div>
                                     </div>
                                 </div>
-                            }
                         </form>
                     </div>
                 </div>

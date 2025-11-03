@@ -55,6 +55,8 @@ export class DocumentosIndigenas implements OnInit{
   
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
+
+  isRegister: boolean = false;
   fileUploaded: boolean = false;
 
   ngOnInit(): void {
@@ -146,10 +148,11 @@ export class DocumentosIndigenas implements OnInit{
     this.router.navigate(['/menu']);
   };
 
-  openModal(id: number | undefined, idRegistro: number | undefined) {
+  openModal(id: number | undefined, idRegistro: number | undefined, isRegister: boolean) {
     this.showModal = true;
     this.idformIdSelected = id;
     this.idform = idRegistro;
+    this.isRegister = isRegister;
   }
 
   closeModal() {
@@ -180,7 +183,6 @@ export class DocumentosIndigenas implements OnInit{
   handleProfileTab(): void {
     this.getDocumentosMod2(2);
   }
-
 
   descargar(){
     this.docService.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf", this.tokenSesion).subscribe({
