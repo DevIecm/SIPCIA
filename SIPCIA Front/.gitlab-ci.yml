@@ -1,0 +1,6 @@
+build:
+  stage: build
+  script:
+    - cd "SIPCIA Front"
+    - npm ci
+    - npm run build
