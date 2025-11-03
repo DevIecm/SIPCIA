@@ -66,7 +66,7 @@ export class DocumentosAfroamericanas implements OnInit{
     this.position = sessionStorage.getItem('dir')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.area_adscripcion = Number(sessionStorage.getItem('area'));
-
+                                                                                                      
     this.getDocumentosMod2(1);
     this.getRegister();
     this.getdata();
