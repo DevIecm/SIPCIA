@@ -258,7 +258,6 @@ delete_item(id: number) {
               default: tabActual = 1;
             }
 
-          console.log('Tab actual:', this.activeTab, '->', tabActual);
           this.getRegister(tabActual);
 
           }

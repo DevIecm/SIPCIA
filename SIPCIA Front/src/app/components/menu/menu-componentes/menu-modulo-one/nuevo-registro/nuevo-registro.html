@@ -12,7 +12,10 @@
 
           <div class="col div-redondeado-right-home">
               <h3 style="font-size: 14px; margin: 0px;">
-                <i (click)="onValidateInfo()" class=" icon-home bi-house-door-fill"></i>
+                <i 
+                  (click)="onValidateInfo()" 
+                  class="icon-home bi-house-door-fill">
+                </i>
                 {{ data.subm1 }}
               </h3>
           </div>
@@ -107,7 +110,7 @@
         <div class="row">
           <div class="col">
             <div class="mb-3">
-              <label class="form-label">*Seleccionar comunidad:</label>
+              <label class="form-label">*Tipo de directorio:</label>
               <select 
                 formControlName="scomunidad"
                 class="select-input form-select" 
@@ -120,16 +123,6 @@
                   <option [value]="item.id">{{item.comunidad}}</option>
                 }
               </select>
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">*Nombre de la comunidad:</label>
-              <input
-                maxlength="200"
-                formControlName="ncomunidad"
-                type="text" 
-                class="form-control">
             </div>
           </div>
         </div>
@@ -211,7 +204,7 @@
               </div>
               <div class="col">
                 <div class="mb-3">
-                  <label class="form-label">Comunidad:</label>
+                  <label class="form-label">Comunidad indígena residente:</label>
                   <input 
                     formControlName="comunidad"
                     type="text" 
@@ -228,6 +221,20 @@
                     class="form-control"
                     (change)="onChangeOtro()"
                   >
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="mb-3">
+                </div>
+              </div>
+              <div class="col">
+              </div>
+              <div class="col">
+                <div class="mb-3">
+                  <button type="button" class="btn button-register-c" (click)="resetSeleccion()">Corregir Selección</button>
                 </div>
               </div>
             </div>
@@ -252,7 +259,7 @@
               </div>
               <div class="col">
                 <div class="mb-3">
-                  <label class="form-label">*Comunidad:</label>
+                  <label class="form-label">*Comunidad afromexicana residente:</label>
                   <input
                     maxlength="200"
                     formControlName="comunidadr"
@@ -298,6 +305,21 @@
                 </div>
               </div>
             </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="mb-3">
+                </div>
+              </div>
+              <div class="col">
+              </div>
+              <div class="col">
+                <div class="mb-3">
+                  <button type="button" class="btn button-register-c" (click)="resetSeleccion()">Corregir Selección</button>
+                </div>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -453,7 +475,7 @@
       <div class="container text-center" style="margin-top: 15px;">
         <div class="row">
           <div class="col">
-            <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
+            <button type="submit" class="btn button-register">{{data.btn1}}</button>
           </div>
           <div class="col">
             <button type="button" (click)="resetData()" class="btn button-clean">{{data.btn2}}</button>
@@ -477,7 +499,6 @@
           Por favor, ingresa un correo electrónico válido.
         </div>
       </div>
-
     </form>
   </div>
 </div>

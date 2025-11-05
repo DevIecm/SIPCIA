@@ -97,6 +97,7 @@
 }
 
 .icon-home {
+    font-size: 20px;
     margin-right: 10px;
     vertical-align: middle;
     cursor: pointer;
@@ -143,4 +144,14 @@ input {
     background-color: #FBB03B!important;
     color: black!important;
     font-weight: bold;
+}
+
+.button-register-c {
+    width: 78%;
+    height: 26px;
+    border-radius: 15px;
+    background-color: #FBB03B !important;
+    color: black !important;
+    font-weight: bold;
+    padding: 0px;
 }

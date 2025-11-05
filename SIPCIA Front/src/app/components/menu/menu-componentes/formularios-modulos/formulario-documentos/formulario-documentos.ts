@@ -265,7 +265,6 @@ export class FormularioDocumentos {
 
   ngOnInit() {
 
-    console.log(this.idRegistroC)
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
     this.area = Number(sessionStorage.getItem('area')!);

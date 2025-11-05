@@ -31,12 +31,11 @@
                 </div>
               </div>
 
-
               <div class="container text-start" style="margin-bottom: 40px;">
                 <div class="row">
                   <div class="col">
                     <div class="mb-3">
-                      <label class="form-label">*Nombre Cosxasmpleto:</label>
+                      <label class="form-label">*Nombre Completo:</label>
                       <input
                         formControlName="nombre_completo"
                         type="text" 
@@ -88,7 +87,7 @@
                 <div class="row">
                   <div class="col">
                     <div class="mb-3">
-                      <label class="form-label">*Seleccionar comunidad:</label>
+                      <label class="form-label">*Tipo de directorio:</label>
                       <select 
                         formControlName="scomunidad"
                         class="select-input form-select" 
@@ -100,16 +99,6 @@
                           <option [value]="item.id">{{item.comunidad}}</option>
                         }
                       </select>
-                    </div>
-                  </div>
-                  <div class="col">
-                    <div class="mb-3">
-                      <label class="form-label">*Nombre de la comunidad:</label>
-                      <input
-                        formControlName="ncomunidad"
-                        type="text" 
-                        maxlength="200"
-                        class="form-control">
                     </div>
                   </div>
                 </div>
@@ -187,7 +176,7 @@
                       </div>
                       <div class="col">
                         <div class="mb-3">
-                          <label class="form-label">Comunidad:</label>
+                          <label class="form-label">Comunidad indígena residente:</label>
                           <input 
                             formControlName="comunidad"
                             type="text" 
@@ -205,6 +194,20 @@
                             maxlength="200"
                             (change)="onChangeOtro()"
                           >
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col">
+                        <div class="mb-3">
+                        </div>
+                      </div>
+                      <div class="col">
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <button type="button" class="btn button-register-c" (click)="resetSeleccion()">Corregir Selección</button>
                         </div>
                       </div>
                     </div>
@@ -229,7 +232,7 @@
                       </div>
                       <div class="col">
                         <div class="mb-3">
-                          <label class="form-label">*Comunidad:</label>
+                          <label class="form-label">*Comunidad afromexicana residente:</label>
                           <input 
                             (change)="onChangeComunidadT()"
                             formControlName="comunidadr"
@@ -270,6 +273,19 @@
                             class="form-control"
                             maxlength="200"
                             (change)="onChangeOtroT()">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="mb-3">
+                        </div>
+                      </div>
+                      <div class="col">
+                      </div>
+                      <div class="col">
+                        <div class="mb-3">
+                          <button type="button" class="btn button-register-c" (click)="resetSeleccion()">Corregir Selección</button>
                         </div>
                       </div>
                     </div>
@@ -430,7 +446,7 @@
                 <div class="container text-center mt-4">
                   <div class="row align-items-center">
                     <div class="col-5">
-                      <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">
+                      <button type="submit" class="btn button-register">
                         {{data.btn1}}
                       </button>
                     </div>
@@ -448,7 +464,7 @@
                 <div class="container text-center" style="margin-top: 15px;">
                   <div class="row">
                     <div class="col">
-                      <button type="submit" [disabled]="formularioRegistro?.invalid" class="btn button-register">{{data.btn1}}</button>
+                      <button type="submit" class="btn button-register">{{data.btn1}}</button>
                     </div>
                     <div class="col">
                       <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>

@@ -1,6 +1,13 @@
-build:
+stages:
+  - build
+
+build_frontend:
+  image: node:20
   stage: build
   script:
-    - cd "SIPCIA Front"
+    - cd frontend
     - npm ci
     - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/

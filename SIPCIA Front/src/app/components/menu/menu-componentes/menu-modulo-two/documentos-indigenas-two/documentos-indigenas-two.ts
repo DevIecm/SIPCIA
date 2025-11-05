@@ -226,8 +226,6 @@ export class DocumentosIndigenasTwo implements OnInit{
                   default: tabActual = 1;
                 }
 
-                console.log("this.activeTab", tabActual);
-
                 this.getRegister(tabActual);
 
               }, 2000);
@@ -487,7 +485,6 @@ export class DocumentosIndigenasTwo implements OnInit{
   }
 
   handleOtherTab(): void {
-    console.log("Other tab activated")
     this.getRegister(3);
     this.estado_documento = 1;
     this.tipo_documento = 3;

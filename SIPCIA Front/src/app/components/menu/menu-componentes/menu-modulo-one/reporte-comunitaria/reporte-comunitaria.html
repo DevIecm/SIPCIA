@@ -92,15 +92,6 @@
               (click)="sortData('distrito_cabecera')"
               style="cursor: pointer;">
               <div style="display: flex; align-items: center; gap: 5px;">
-                <span>Organo Desconcentrado <br> Cabecera de Demarcación</span>
-                <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
-              </div>
-            </th>
-            <th 
-              scope="col"
-              (click)="sortData('distrito_cabecera')"
-              style="cursor: pointer;">
-              <div style="display: flex; align-items: center; gap: 5px;">
                 <span>Demarcación Territorial</span>
                 <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
               </div>
@@ -181,7 +172,6 @@
               ></i>
             </td>
             <td>{{ item.direccion_distrital ? item.direccion_distrital : '-'}}</td>
-            <td>{{ item.distrito_cabecera ? item.distrito_cabecera : '-' }}</td>
             <td>{{ item.demarcacion_territorial ? item.demarcacion_territorial : '-' }}</td>
             <td>{{ item.denominacion_lugar ? item.denominacion_lugar : '-'}}</td>
             <td>{{ item.domicilio_lugar ? item.domicilio_lugar : '-'}}</td>      

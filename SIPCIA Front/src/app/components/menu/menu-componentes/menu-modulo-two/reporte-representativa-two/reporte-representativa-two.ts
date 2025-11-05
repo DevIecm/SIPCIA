@@ -142,7 +142,6 @@ export class ReporteRepresentativaTwo implements OnInit{
   };
 
   OnChangeDireccion() {
-    console.log("Juego de combo");
     this.direccion = this.formularioRegistro?.get('direccion')?.value;
     this.catalogo_demarcacion();
     if (this.direccion == 0) {
@@ -152,8 +151,6 @@ export class ReporteRepresentativaTwo implements OnInit{
           demarcacionI: 0
         });
       };
-
-      console.log("TODOS");
 
       this.reportes.getAllRegistrosInd(null, this.tokenSesion).subscribe({
         next: (data) => {
@@ -185,9 +182,6 @@ export class ReporteRepresentativaTwo implements OnInit{
           demarcacionI: 0
         });
       };
-
-      
-      console.log("BY DISTRITOS");
 
       this.reportes.getAllRegistrosInd(this.direccion, this.tokenSesion).subscribe({
         next: (data) => {
@@ -227,7 +221,6 @@ export class ReporteRepresentativaTwo implements OnInit{
       });
 
     } else if (this.direccion == 0 && this.opcionDermarcacionI == 0) {
-      console.log("TODOS")
       this.reportes.getAllRegistrosInd(null, this.tokenSesion).subscribe({
         next: (data) => {
           this.reporteI = [data];
@@ -274,7 +267,7 @@ export class ReporteRepresentativaTwo implements OnInit{
       });
 
     } else if (this.direccion == 0 && this.opcionDermarcacionA == 0) {
-      console.log("todos afro")
+
       this.reportes.getAllRegistrosAfro(null, this.tokenSesion).subscribe({
         next: (data) => {
           this.reporteA = [data];

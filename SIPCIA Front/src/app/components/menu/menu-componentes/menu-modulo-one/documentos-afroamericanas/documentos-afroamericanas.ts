@@ -257,7 +257,7 @@ export class DocumentosAfroamericanas implements OnInit{
   }
   
   getRegister() {
-    this.reporteService.getRegisterfichaTecnicaTablaAfro(this.area_adscripcion, this.tokenSesion).subscribe({
+  this.reporteService.getRegisterfichaTecnicaTablaAfro(this.area_adscripcion, this.tokenSesion).subscribe({
       next: (data) => {
         if(data.getFichasAfro.length > 0) {
           this.dataTable = data.getFichasAfro;

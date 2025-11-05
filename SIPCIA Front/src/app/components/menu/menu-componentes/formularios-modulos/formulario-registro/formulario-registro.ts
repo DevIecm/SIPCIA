@@ -86,7 +86,6 @@ export class FormularioRegistro implements OnInit{
       demarcacion: [''],
       duninominal: [{ value: '', disabled: true }],
       scomunidad: [{ value: '', disabled: true }],
-      ncomunidad: ['', Validators.required],
 
       ooriginario: [''],
       pueblo: [''],
@@ -258,7 +257,6 @@ export class FormularioRegistro implements OnInit{
             seccion_electoral: data.getRegistro[0].seccion_electoral,
             demarcacion: data.getRegistro[0].id_demarcacion_territorial,
             scomunidad: data.getRegistro[0].id_comunidad,
-            ncomunidad: data.getRegistro[0].nombre_comunidad,
 
             ooriginario: data.getRegistro[0].id_pueblo_originario,
             pueblo: data.getRegistro[0].id_pueblo,
@@ -284,7 +282,6 @@ export class FormularioRegistro implements OnInit{
             seccion_electoral: data.getRegistro[0].seccion_electoral,
             demarcacion: data.getRegistro[0].id_demarcacion_territorial,
             scomunidad: data.getRegistro[0].id_comunidad,
-            ncomunidad: data.getRegistro[0].nombre_comunidad,
             duninominal: data.getRegistro[0].id_direccion_distrital,
 
             pueblor: data.getRegistro[0].pueblo_afro,
@@ -446,6 +443,11 @@ export class FormularioRegistro implements OnInit{
   };
 
   saveForm() {
+
+    if (!this.validarCamposFaltantes()) {
+      return;
+    }
+    
     Swal.fire({
       title: "¿Está seguro que desea Editar la Instancia? Se sobrescribirán los datos actuales.",
       icon: "warning",
@@ -477,7 +479,6 @@ export class FormularioRegistro implements OnInit{
         formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
         formData.append("demarcacion", this.formularioRegistro.get('demarcacion')?.value || ""); 
         formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
-        formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");
         formData.append("pueblo_originario", this.formularioRegistro.get('ooriginario')?.value || "");
         formData.append("pueblo_pbl", this.formularioRegistro.get('pueblo')?.value || "");
         formData.append("barrio_pbl", this.formularioRegistro.get('barrio')?.value || "");
@@ -685,7 +686,91 @@ export class FormularioRegistro implements OnInit{
     this.close.emit();
   }
 
+  resetSeleccion(){
+    if (this.formularioRegistro) {
+      this.formularioRegistro.patchValue({
+        ooriginario: '',
+        pueblo: '',
+        barrio: '',
+        uterritorial: '',
+        comunidad: '',
+        otro: '',
 
+        pueblor: '',
+        comunidadr: '',
+        organizacion: '',
+        prelevante: '',
+        otror: '',
+      });
+
+      this.formularioRegistro.get('pueblor')?.enable();
+      this.formularioRegistro.get('comunidadr')?.enable();
+      this.formularioRegistro.get('organizacion')?.enable();
+      this.formularioRegistro.get('otror')?.enable();
+      this.formularioRegistro.get('ooriginario')?.enable();
+      this.formularioRegistro.get('pueblo')?.enable();
+      this.formularioRegistro.get('barrio')?.enable();
+      this.formularioRegistro.get('uterritorial')?.enable();
+      this.formularioRegistro.get('otro')?.enable();
+    }
+  }
+
+  validarCamposFaltantes() {
+    if (!this.formularioRegistro) return;
+
+    const camposFaltantes: string[] = [];
+
+    // Recorremos todos los controles del formulario
+    Object.keys(this.formularioRegistro.controls).forEach(campo => {
+      const control = this.formularioRegistro?.get(campo);
+
+      // Verifica si el campo es requerido y no tiene valor
+      const esRequerido = control?.hasValidator?.(Validators.required);
+      const sinValor = !control?.value || control?.value.toString().trim() === '';
+
+      if (esRequerido && sinValor) {
+        camposFaltantes.push(this.obtenerNombreCampo(campo));
+      }
+    });
+
+    if (camposFaltantes.length > 0) {
+      Swal.fire({
+        title: 'Llenar todos los campos obligatorios',
+        html: `
+          <p>Por favor complete los siguientes campos:</p>
+          <ul style="text-align: left;">
+            ${camposFaltantes.map(campo => `<li>${campo}</li>`).join('')}
+          </ul>
+        `,
+        icon: 'warning',
+        confirmButtonColor: '#FBB03B',
+        confirmButtonText: 'Aceptar'
+      });
+      return false;
+    }
+
+    return true; // Todo correcto
+  }
+
+  obtenerNombreCampo(campo: string): string {
+    const nombres: any = {
+      nombre_completo: 'Nombre completo',
+      ninstancia: 'Nombre de la instancia',
+      cinstancia: 'Cargo en la instancia',
+      domicilio: 'Domicilio',
+      tcelular: 'Teléfono celular',
+      cpersonal: 'Correo personal',
+      coficial: 'Correo oficial',
+      seccion_electoral: 'Sección electoral',
+      demarcacion: 'Demarcación',
+      comunidad: 'Comunidad',
+      pueblo: 'Pueblo',
+      barrio: 'Barrio',
+      uterritorial: 'Unidad territorial',
+      documentos: 'Documentos'
+    };
+    return nombres[campo] || campo;
+  }
 
   eliminaRegistro() {
     Swal.fire({

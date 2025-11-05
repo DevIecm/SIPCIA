@@ -173,35 +173,47 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="container text-center mt-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">*Tipo de directorio:</label>
+                                        <select 
+                                            formControlName="comunidad"
+                                            class="select-input form-select" 
+                                            aria-label="Default select example"
+                                            [(ngModel)]="opcionDemarcacion"
+                                        >
+                                            <option value="" disabled selected>Seleccione una opción</option>
+                                            @for (item of catalogoComunidad; track item) {
+                                            <option [value]="item.id">{{item.comunidad}}</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Tema(s) de interés profesional:</label>
+                                        <input 
+                                            type="text"
+                                            maxlength="200"
+                                            formControlName="interes"
+                                            class="form-control txt-input"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div class="mt-4 mb-4">
+                                <label style="font-size: 19px;" class="form-label">Datos de la institución a la que pertence</label>
+                            </div>
+
+                            <div class="container text-center mt-4">
+                                <div class="row row-cols-2">
                                     <div class="col">
                                         <div class="col-12 text-center">
-                                            <div class="mb-3">
-                                                <label class="form-label">*Seleccionar comunidad:</label>
-                                                <select 
-                                                    formControlName="comunidad"
-                                                    class="select-input form-select" 
-                                                    aria-label="Default select example"
-                                                    [(ngModel)]="opcionDemarcacion"
-                                                >
-                                                    <option value="" disabled selected>Seleccione una opción</option>
-                                                    @for (item of catalogoComunidad; track item) {
-                                                    <option [value]="item.id">{{item.comunidad}}</option>
-                                                    }
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Interés profesional como:</label>
-                                                <input 
-                                                    type="text"
-                                                    maxlength="200"
-                                                    formControlName="interes"
-                                                    class="form-control txt-input"
-                                                >
-                                            </div>
-
-                                            <label class="form-label">Datos de la institución a la que pertence</label>
-                                            <div class="mb-3 mt-4">
+                                            <div class="mb-3 mt-1">
                                                 <label class="form-label">Nombre de la institución:</label>
                                                 <input 
                                                     type="text"
@@ -220,36 +232,26 @@
                                                 >
                                             </div>
 
-                                            @if(!this.idRegistroC){
-                                                <div class="container text-center mt-4">
-                                                    <div class="row align-items-center">
-                                                        <div class="col-5">
-                                                            <button [disabled]="formularioRegistro?.invalid" type="submit" class="btn button-register">Registrar</button>
-                                                        </div>
-                                                        <div class="col-5">
-                                                            <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
-                                                        </div>
-                                                        <div class="col-2 d-flex justify-content-center">
-                                                            <i (click)="eliminaRegistro()" class="bi bi-trash3-fill fs-1 btn-trash"></i>
-                                                        </div>
-                                                    </div>
+                                            <div class="col-12">
+                                                <div class="mb-3">
+                                                    <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br>lo determine la DEOEyG</label>
+                                                    <input
+                                                    class="form-control"
+                                                    type="file"
+                                                    id="formFile"
+                                                    (change)="onFileSelect($event, 'zip')"
+                                                    accept=".zip"
+                                                    #fileInputRef
+                                                />
                                                 </div>
-                                            } @else {
-                                                <div class="container text-center" style="margin-top: 15px;">
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <button [disabled]="formularioRegistro?.invalid" type="submit" class="btn button-register">Registrar</button>
-                                                        </div>
-                                                        <div class="col">
-                                                            <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
-                                                        </div>
-                                                    </div>
+                                                <div *ngIf="infoUpdate?.cv_enlace ">
+                                                    <small>Archivo actual: {{ infoUpdate?.cv_enlace }}</small>
                                                 </div>
-                                            }
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col mt-4 text-center">
-                                        <label class="form-label">Datos de contacto obtenidos de forma pública o <br>con autorización de la persona titular de la información</label>
+
+                                    <div class="col text-center">
                                         <div class="col-12 mt-1">
                                             <label class="form-label">Domicilio:</label>
                                             <input 
@@ -280,24 +282,35 @@
                                                 class="form-control txt-input"
                                             >
                                         </div>
-                                        <div class="col-12">
-                                            <div class="mb-3">
-                                                <label class="col-sm-8 form-label" style="color: #b7b5b8;">*Este campo se habilitará cuando <br>lo determine la DEOEyG</label>
-                                                <input
-                                                class="form-control"
-                                                type="file"
-                                                id="formFile"
-                                                (change)="onFileSelect($event, 'zip')"
-                                                accept=".zip"
-                                                #fileInputRef
-                                            />
+
+                                        @if(!this.idRegistroC){
+                                            <div class="container text-center mt-4">
+                                                <div class="row align-items-center">
+                                                    <div class="col-5">
+                                                        <button [disabled]="formularioRegistro?.invalid" type="submit" class="btn button-register">Registrar</button>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+                                                    </div>
+                                                    <div class="col-2 d-flex justify-content-center">
+                                                        <i (click)="eliminaRegistro()" class="bi bi-trash3-fill fs-1 btn-trash"></i>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div *ngIf="infoUpdate?.cv_enlace ">
-                                            <small>Archivo actual: {{ infoUpdate?.cv_enlace }}</small>
+                                        } @else {
+                                            <div class="container text-center" style="margin-top: 15px;">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <button [disabled]="formularioRegistro?.invalid" type="submit" class="btn button-register">Registrar</button>
+                                                    </div>
+                                                    <div class="col">
+                                                        <button type="button" (click)="resetData()" class="btn button-clean">Cancelar</button>
+                                                    </div>
+                                                </div>
                                             </div>
+                                        }
                                         </div>
-                                    </div>
-                                </div>
+                                        </div>
                             </div>
                         </form>
                     </div>

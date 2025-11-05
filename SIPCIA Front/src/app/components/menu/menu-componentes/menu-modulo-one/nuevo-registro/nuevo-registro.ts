@@ -79,11 +79,10 @@ export class NuevoRegistro implements OnInit{
   ngOnInit(): void {
     this.formularioRegistro = this.formBuilder.group({
       nombre_completo: ['', Validators.required],
-      seccion_electoral: ['', Validators.required],
+      seccion_electoral: [''],
       demarcacion: [''],
       duninominal: [{ value: '', disabled: true }],
       scomunidad: [''],
-      ncomunidad: ['', Validators.required],
 
       ooriginario: [''],
       pueblo: [''],
@@ -150,7 +149,6 @@ export class NuevoRegistro implements OnInit{
   }
 
   onChangeComunidad() {
-    console.log("dsad", this.isCarga)
     if(this.opcionComunidad == 1) {
       this.showIndigenas = true;
       this.showAfromexicanos = false;
@@ -400,6 +398,10 @@ export class NuevoRegistro implements OnInit{
 
   saveForm() {
 
+    if (!this.validarCamposFaltantes()) {
+      return;
+    }
+
     Swal.fire({
       title: "¿Está seguro que desea registrar la información capturada?",
       icon: "warning",
@@ -425,12 +427,11 @@ export class NuevoRegistro implements OnInit{
         formData.append("demarcacion", this.opcionDemarcacion);
         formData.append("distrito_electoral", this.area.toString());
         formData.append("comunidad", this.opcionComunidad);
-        formData.append("nombre_comunidad", this.formularioRegistro.get('ncomunidad')?.value || "");          
         formData.append("pueblo_originario", this.opcionPuebloOriginario);
         formData.append("pueblo_pbl", this.opcionPueblo);
         formData.append("barrio_pbl", this.opcionBarrio);
         formData.append("unidad_territorial_pbl", this.opcionUnidadTerritorial);
-        formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad_pbl')?.value || "");
+        formData.append("comunidad_pbl", this.formularioRegistro.get('comunidad')?.value || "");
         formData.append("otro_pbl", this.formularioRegistro.get('otro')?.value || "");
         formData.append("pueblo_afro", this.formularioRegistro.get('pueblor')?.value || "");
         formData.append("comunidad_afro", this.formularioRegistro.get('comunidadr')?.value || "");
@@ -475,17 +476,43 @@ export class NuevoRegistro implements OnInit{
       }
     });
   };
+
+  resetSeleccion(){
+    if (this.formularioRegistro) {
+      this.formularioRegistro.patchValue({
+        ooriginario: '',
+        pueblo: '',
+        barrio: '',
+        uterritorial: '',
+        comunidad: '',
+        otro: '',
+
+        pueblor: '',
+        comunidadr: '',
+        organizacion: '',
+        prelevante: '',
+        otror: '',
+      });
+
+      this.formularioRegistro.get('pueblor')?.enable();
+      this.formularioRegistro.get('comunidadr')?.enable();
+      this.formularioRegistro.get('organizacion')?.enable();
+      this.formularioRegistro.get('otror')?.enable();
+      this.formularioRegistro.get('ooriginario')?.enable();
+      this.formularioRegistro.get('pueblo')?.enable();
+      this.formularioRegistro.get('barrio')?.enable();
+      this.formularioRegistro.get('uterritorial')?.enable();
+      this.formularioRegistro.get('otro')?.enable();
+    }
+  }
   
   resetData() {
-    this.router.navigate(['nregistro']);
-    
     if (this.formularioRegistro) {
       this.formularioRegistro.patchValue({
         nombre_completo: '',
         seccion_electoral: '',
         demarcacion: '',
         scomunidad: '',
-        ncomunidad: '',
 
         ooriginario: '',
         pueblo: '',
@@ -510,18 +537,67 @@ export class NuevoRegistro implements OnInit{
         cpersonal: '',
         documentos: ''
       });
-
-      this.formularioRegistro.get('pueblor')?.enable();
-      this.formularioRegistro.get('comunidadr')?.enable();
-      this.formularioRegistro.get('organizacion')?.enable();
-      this.formularioRegistro.get('otror')?.enable();
-      this.formularioRegistro.get('ooriginario')?.enable();
-      this.formularioRegistro.get('pueblo')?.enable();
-      this.formularioRegistro.get('barrio')?.enable();
-      this.formularioRegistro.get('uterritorial')?.enable();
-      this.formularioRegistro.get('otro')?.enable();
     }
     this.fileUploaded = false;
     this.liberaForm = false;
+    this.showAfromexicanos = false;
+    this.showIndigenas = false;
   };
+
+  validarCamposFaltantes() {
+    if (!this.formularioRegistro) return;
+
+    const camposFaltantes: string[] = [];
+
+    // Recorremos todos los controles del formulario
+    Object.keys(this.formularioRegistro.controls).forEach(campo => {
+      const control = this.formularioRegistro?.get(campo);
+
+      // Verifica si el campo es requerido y no tiene valor
+      const esRequerido = control?.hasValidator?.(Validators.required);
+      const sinValor = !control?.value || control?.value.toString().trim() === '';
+
+      if (esRequerido && sinValor) {
+        camposFaltantes.push(this.obtenerNombreCampo(campo));
+      }
+    });
+
+    if (camposFaltantes.length > 0) {
+      Swal.fire({
+        title: 'Llenar todos los campos obligatorios',
+        html: `
+          <p>Por favor complete los siguientes campos:</p>
+          <ul style="text-align: left;">
+            ${camposFaltantes.map(campo => `<li>${campo}</li>`).join('')}
+          </ul>
+        `,
+        icon: 'warning',
+        confirmButtonColor: '#FBB03B',
+        confirmButtonText: 'Aceptar'
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  obtenerNombreCampo(campo: string): string {
+    const nombres: any = {
+      nombre_completo: 'Nombre completo',
+      ninstancia: 'Nombre de la instancia',
+      cinstancia: 'Cargo en la instancia',
+      domicilio: 'Domicilio',
+      tcelular: 'Teléfono celular',
+      cpersonal: 'Correo personal',
+      coficial: 'Correo oficial',
+      seccion_electoral: 'Sección electoral',
+      demarcacion: 'Demarcación',
+      comunidad: 'Comunidad',
+      pueblo: 'Pueblo',
+      barrio: 'Barrio',
+      uterritorial: 'Unidad territorial',
+      documentos: 'Documentos'
+    };
+    return nombres[campo] || campo;
+  }
 }
