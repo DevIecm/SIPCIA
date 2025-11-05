@@ -103,7 +103,7 @@ export class ConsultaAfromexicana implements OnInit {
       this.descargarReporte.descargarReporte(1, null, 4, this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
+      link.download = 'Directorio de Instancias Representativas de Pueblos, Barrios y Comunidades Indígenas.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });
@@ -111,7 +111,7 @@ export class ConsultaAfromexicana implements OnInit {
       this.descargarReporte.descargarReporteAfro(2, null, 4, this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
+      link.download = 'Directorio de Instancias Representativas de Pueblos, Barrios y Comunidades Afromexicanas.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });

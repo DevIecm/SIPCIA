@@ -11,6 +11,18 @@ export class DocumentosServices {
     private apiUrl = `${environment.apiUrl}`;
 
     constructor(private http: HttpClient) { }
+
+    validaCabecera(id_distrito: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+      .set('id_distrito', id_distrito)
+      
+    return this.http.get(this.apiUrl + 'catalogos/getcabecera', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  };
     
 
     insertaFichaTecnica(data: any, token: string): Observable<any> {

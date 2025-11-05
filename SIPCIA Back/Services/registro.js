@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
     let uploadPath;
 
     if (file.originalname.toLowerCase().endsWith(".zip")) {
-      uploadPath = path.join(__dirname, "../uploads/zip");
+      uploadPath = path.join(__dirname, "uploads/zip");
     } else {
       return cb(new Error("Tipo de archivo no permitido"), null);
     }
@@ -52,11 +52,9 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
 
   if (
     !nombre_completo ||
-    !seccion_electoral ||
     !demarcacion ||
     !distrito_electoral ||
     !comunidad ||
-    !nombre_comunidad ||
     !nombre_instancia ||
     !cargo_instancia ||
     !domicilio ||
@@ -66,7 +64,28 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
     !modulo_registro ||
     !estado_registro
   ) {
-    return res.status(400).json({ message: "Datos requeridos" });
+    
+    const faltantes = [];
+    
+    if (!nombre_completo) faltantes.push("nombre_completo");
+    if (!demarcacion) faltantes.push("demarcacion");
+    if (!distrito_electoral) faltantes.push("distrito_electoral");
+    if (!comunidad) faltantes.push("comunidad");
+    if (!nombre_instancia) faltantes.push("nombre_instancia");
+    if (!cargo_instancia) faltantes.push("cargo_instancia");
+    if (!domicilio) faltantes.push("domicilio");
+    if (!telefono_celular) faltantes.push("telefono_celular");
+    if (!correo_electronico_personal) faltantes.push("correo_electronico_personal");
+    if (!usuario_registro) faltantes.push("usuario_registro");
+    if (!modulo_registro) faltantes.push("modulo_registro");
+    if (!estado_registro) faltantes.push("estado_registro");
+
+    return res.status(400).json({
+      message: "Faltan datos requeridos",
+      faltantes,
+    });
+
+
   }
 
 
@@ -75,8 +94,11 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
   const barrioInt = barrio_pbl === "" ? null : parseInt(barrio_pbl, 10);
   const unidad_territorialInt = unidad_territorial_pbl === "" ? null : parseInt(unidad_territorial_pbl, 10);
   const telefono_particularInt = telefono_particular === "" ? null : parseInt(telefono_particular, 10)
-  documentos = req.files ? 1 : 0;
-  enlace_documentos = req.files ? `/uploads/zip/${req.files.filename}` : null;
+  
+  const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;
+
+  documentos = kmlFile ? 1 : 0;
+  enlace_documentos = kmlFile ? `/uploads/zip/${kmlFile.filename}` : null;
 
   // Fecha y hora
   const original = new Date();
@@ -103,7 +125,6 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
         .query(`
                 SELECT MAX(CAST(RIGHT(folio, 4) AS INT)) AS ultimoFolio
                 FROM registro
-                WHERE distrito_electoral = @distrito_electoral
             `);
 
       const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
@@ -326,7 +347,6 @@ router.patch(
       if (
         !id_registro ||
         !nombre_completo ||
-        !nombre_comunidad ||
         !nombre_instancia ||
         !cargo_instancia ||
         !domicilio ||
@@ -336,7 +356,23 @@ router.patch(
         !modulo_registro ||
         !estado_registro
       ) {
-        return res.status(400).json({ message: "Datos requeridos" });
+        const faltantes = [];
+        
+        if (!id_registro) faltantes.push("id_registro");
+        if (!nombre_completo) faltantes.push("nombre_completo");
+        if (!nombre_instancia) faltantes.push("nombre_instancia");
+        if (!cargo_instancia) faltantes.push("cargo_instancia");
+        if (!domicilio) faltantes.push("domicilio");
+        if (!telefono_celular) faltantes.push("telefono_celular");
+        if (!correo_electronico_personal) faltantes.push("correo_electronico_personal");
+        if (!usuario_registro) faltantes.push("usuario_registro");
+        if (!modulo_registro) faltantes.push("modulo_registro");
+        if (!estado_registro) faltantes.push("estado_registro");
+
+        return res.status(400).json({
+          message: "Faltan datos requeridos",
+          faltantes,
+        });
       }
 
       const pool = await connectToDatabase();

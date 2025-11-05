@@ -62,7 +62,7 @@ export class PropuestaComunitaria implements OnInit {
     this.descargarReporteAsamblea.descargarReporteAsamblea(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
+      link.download = 'Propuestas de lugares y espacios para la eventual realización de Asambleas Ciudadanas de Consulta a Pueblos y Barrios Originarios y Comunidades Indígenas Residentes en la Ciudad de México.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });

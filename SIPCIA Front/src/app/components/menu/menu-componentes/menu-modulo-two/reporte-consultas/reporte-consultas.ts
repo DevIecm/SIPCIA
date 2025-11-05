@@ -111,7 +111,7 @@ export class ReporteConsultas implements OnInit {
       this.descargarReporteAtencion.descargarReporteAtencionAll(null, this.tokenSesion).subscribe((blob: Blob) => {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = 'reporte.xlsx';
+        link.download = 'Reporte de actividades sobre la atención en los Órganos Desconcentrados a las consultas que, en su caso, realicen las Instancias Representativas, Autoridades Tradicionales, así como la población indígena y/o afromexicana sobre temas de geografía, organización, mecanismos de participación ciudadana y otro tipo de ejercicios democráticos.xlsx';
         link.click();
         window.URL.revokeObjectURL(link.href);
       });

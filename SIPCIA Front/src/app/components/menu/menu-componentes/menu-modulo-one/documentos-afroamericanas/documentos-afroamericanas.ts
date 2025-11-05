@@ -55,6 +55,7 @@ export class DocumentosAfroamericanas implements OnInit{
   allDatableD: any[] = [];
   dataTableDN: any = [];
   dataTableDA: any = [];
+  isValido: any = null;
 
   showModal = false;
   isRegister: boolean = false;
@@ -70,6 +71,8 @@ export class DocumentosAfroamericanas implements OnInit{
     this.getDocumentosMod2(1);
     this.getRegister();
     this.getdata();
+    
+    this.isCabecera();
   }
   
   constructor(
@@ -78,12 +81,30 @@ export class DocumentosAfroamericanas implements OnInit{
     private service: Auth,
     private miServicio: Reportes,
     private docService: Reportes,
-    private serviceRegister: Reportes
+    private serviceRegister: Reportes,
+    private Cabecera: DocumentosServices
   ) {}
   
   logout() {
     this.router.navigate(['']);
   };
+
+  isCabecera(){
+      this.Cabecera.validaCabecera(this.area_adscripcion, this.tokenSesion).subscribe({
+        next: (data) => {
+              this.isValido=data.cabecera;    
+              console.log("DATA", this.isValido)  
+            },
+        error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+          if (err.error.code === 100) {
+            Swal.fire("No se encontraron registros");
+          }
+        }
+      });
+    }
 
   getdata(){
     this.serviceRegister.getOtrosDocumentos(this.area_adscripcion, 2, this.tokenSesion).subscribe({

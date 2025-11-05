@@ -353,6 +353,36 @@ router.get("/getCabezera", Midleware.verifyToken, async (req, res) => {
   }
 });
 
+//funcion para validar si es una cabecera
+router.get("/getcabecera", Midleware.verifyToken, async (req, res) => {
+  try {
+
+    const { id_distrito } = req.query;
+
+    if (!id_distrito) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('id_distrito', sql.Int, id_distrito)
+      .query(`select distrito_cabecera 
+               from distritos_demarcaciones
+               where distrito_cabecera = @id_distrito;`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        cabecera: true
+      });
+    } else {
+      return res.status(200).json({ message: "No se encontraron registros", cabecera:false })
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
+});
+
 
 router.get("/distritoElectoral", Midleware.verifyToken, async (req, res) => {
   try {
