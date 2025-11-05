@@ -64,7 +64,7 @@ export class CatalogoAcompanamiento implements OnInit {
     this.descargarReporteInstitucion.descargarReporteInstitucion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'Catálogo de Propuestas de Instituciones, Académicos, Investigadores y/o Especialistas susceptibles de participar en el acompañamiento al Instituto electoral de la Ciudad de México en la instrumentación de la Consulta de los Pueblos y Barrios Originarios y Comunidades Indígenas y Afromexicanas Residentes de la Ciudad de México.xlsx';
+      link.download = 'Catálogo de Instituciones y personas para acompañamiento.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });
