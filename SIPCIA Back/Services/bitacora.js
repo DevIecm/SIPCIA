@@ -102,7 +102,7 @@ router.get("/bitacora", Midleware.verifyToken, async (req, res) => {
 
       return res.status(200).json({ bitacora: parsedResults });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
 
   } catch (error) {
@@ -196,7 +196,7 @@ router.get("/getbitacoraAfluencia", Midleware.verifyToken, async (req, res) => {
 
       return res.status(200).json({ getbitacoraAfluencia: parsedResults });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
 
   } catch (error) {
@@ -295,7 +295,7 @@ router.get("/getbitacoraInstituciones", Midleware.verifyToken, async (req, res) 
 
       return res.status(200).json({ getbitacoraInstituciones: parsedResults });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
 
   } catch (error) {
@@ -387,7 +387,7 @@ router.get("/getbitacoraLugares", Midleware.verifyToken, async (req, res) => {
         getbitacoraLugares: parsedResults
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
 
      */
@@ -423,7 +423,7 @@ router.get("/getbitacoraLugares", Midleware.verifyToken, async (req, res) => {
 
       return res.status(200).json({ getbitacoraLugares: parsedResults });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
 
   } catch (error) {

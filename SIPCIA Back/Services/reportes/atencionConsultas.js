@@ -301,7 +301,7 @@ router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([{ name: "
         const registroAnterior = resultAnterior.recordset[0];
 
         if (!registroAnterior) {
-            return res.status(404).json({ message: "Registro no encontrado" });
+            return res.status(200).json({ message: "Registro no encontrado" });
         }
 
         if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
@@ -494,7 +494,7 @@ router.get("/getAtencion", Midleware.verifyToken, async (req, res) => {
 
             return res.status(200).json({ getAtencion: data });
         } else {
-            return res.status(404).json({ message: "No se encontraron datos" });
+            return res.status(200).json({ message: "No se encontraron datos" });
         }
 
     } catch (error) {
@@ -556,7 +556,7 @@ router.get("/getRegistroAtencion", Midleware.verifyToken, async (req, res) => {
                 getRegistroAtencion: result.recordset
             });
         } else {
-            return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+            return res.status(200).json({ message: "No se encontraron registros", code: 100 })
         }
 
     } catch (err) {

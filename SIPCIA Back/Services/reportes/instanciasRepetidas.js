@@ -93,7 +93,7 @@ router.get("/reporteInstanciasInd", Midleware.verifyToken, async (req, res) => {
 
             return res.status(200).json(response);
         } else {
-            return res.status(404).json({ message: "No se encontraron datos" });
+            return res.status(200).json({ message: "No se encontraron datos" });
         }
     } catch (error) {
         console.error(error);
@@ -176,7 +176,7 @@ router.get("/reporteInstanciasAfro", Midleware.verifyToken, async (req, res) => 
             return res.status(200).json(response);
 
         } else {
-            return res.status(404).json({ message: "No se encontraron datos" });
+            return res.status(200).json({ message: "No se encontraron datos" });
         }
     } catch (error) {
         console.error(error);

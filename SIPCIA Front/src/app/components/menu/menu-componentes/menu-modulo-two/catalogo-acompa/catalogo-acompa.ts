@@ -43,7 +43,7 @@ export class CatalogoAcompa implements OnInit {
   showModal = false;
 
   isRegistroC: boolean = false;
-
+  imagePreviewUrl: string | null = null;
 
   ngOnInit(): void {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);

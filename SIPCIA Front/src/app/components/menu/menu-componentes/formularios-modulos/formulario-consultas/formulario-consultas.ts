@@ -36,6 +36,7 @@ export class FormularioConsultas {
   catalogoReporte: any = [];
   catalogoFecha: any = [];
   infoUpdate: any = [];
+  lista: any = [];
 
   opcionDemarcacion: any = null;
   opcionComunidad: any = null;
@@ -256,6 +257,8 @@ export class FormularioConsultas {
     if(this.moduloRegister === 1){
       this.area = sessionStorage.getItem('area')!;
     }
+    
+    this.lista=[1,2,3,4,5,6,7,8,9];
 
     this.formularioRegistro = this.formBuilder.group({
       nreporte: ['', [Validators.required]],
@@ -326,7 +329,10 @@ export class FormularioConsultas {
       }
     });
   };
-  
+   onChangeReporte(event: any) {
+    const nReporte = Number(event.target.value);
+    console.log(nReporte);
+}
   catalogo_pueblor() {
     this.catalogos.getCatalogos(Number(this.area), "cat_pueblos_originarios", this.tokenSesion).subscribe({
       next: (data) => {

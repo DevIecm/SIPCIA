@@ -94,6 +94,15 @@
               (click)="sortData('pueblo_originario')"
               style="cursor: pointer;">
               <div>
+                <span>Fotografía</span>
+                <i style="margin-left: 5px;"></i>
+              </div>
+            </th>
+            <th 
+              scope="col"
+              (click)="sortData('pueblo_originario')"
+              style="cursor: pointer;">
+              <div>
                 <span>Pueblo Originario</span>
                 <i style="margin-left: 5px;" [ngClass]="getSortIcon('pueblo_originario')"></i>
               </div>
@@ -187,6 +196,15 @@
             </td>
             <td><i (click)="goToBitacora(item.id_registro, 'catInstituciones')" class="bi bi-journal-text"></i></td>
             <td>{{ item.nombre_completo ? item.nombre_completo : '-'}}</td>
+            <td> <img
+                *ngIf="item.fotografia_url"
+                [src]="item.fotografia_url"
+                class="img-fluid rounded"
+                alt="Fotografía"
+                width="60"
+                height="60"
+              />
+            </td>
             <td>{{ item.pueblo_originario }}</td>
             <td>{{ item.pueblo }}</td>
             <td>{{ item.barrio ? item.barrio : '-'}}</td>

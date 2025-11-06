@@ -28,11 +28,13 @@
                                                 formControlName="nreporte"
                                                 class="select-input form-select" 
                                                 aria-label="Default select example"
+                                                (change)="onChangeReporte($event)"
                                             >
-                                                <option value="" disabled selected>Seleccione una opción</option>
+                                            <option [value]="item" *ngFor="let item of lista">{{item}}</option>
+                                                <!--<option value="" disabled selected>Seleccione una opción</option>
                                                 @for (item of catalogoReporte; track item) {
                                                 <option [value]="item.id">{{item.numero_reporte}}</option>
-                                                }
+                                                } -->
                                             </select>
                                         </div>
                                     </div>

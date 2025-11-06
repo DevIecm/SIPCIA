@@ -892,7 +892,7 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
     const rows = result.recordset;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("NombreDelReporte");
+    const worksheet = workbook.addWorksheet("Anexo 7");
 
     //inserta imgaen
     const logoPath = path.join(__dirname, '../../assets/iecm.png');
@@ -937,7 +937,7 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
     distrito.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     distrito.alignment = { vertical: "middle", horizontal: "left" };
@@ -1145,7 +1145,7 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
     numRep.value = {
       richText: [
         { text: "Órgano Desconcentrado Cabecera de Demarcación: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     numRep.alignment = { vertical: "middle", horizontal: "left" };
@@ -1154,7 +1154,7 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
     distrito.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     distrito.alignment = { vertical: "middle", horizontal: "left" };
@@ -1344,7 +1344,7 @@ router.get("/reporteAtencion", Midleware.verifyToken, async (req, res) => {
     const rows = result.recordset;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("NombreDelReporte");
+    const worksheet = workbook.addWorksheet("ANEXO 6");
 
     //inserta imgaen
     const logoPath = path.join(__dirname, '../../assets/iecm.png');
@@ -1387,7 +1387,7 @@ router.get("/reporteAtencion", Midleware.verifyToken, async (req, res) => {
     distrito.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     distrito.alignment = { vertical: "middle", horizontal: "left" };
@@ -1543,6 +1543,7 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
       .query(`
             select ac.numero_consecutivo,
             ${distritoElectoral === null ? "ac.distrito_electoral," : ""}
+            ac.numero_reporte,
             ac.fecha_consulta,
             ac.nombre_completo,
             cpo.pueblo_originario,
@@ -1566,7 +1567,7 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
     const rows = result.recordset;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("NombreDelReporte");
+    const worksheet = workbook.addWorksheet("ANEXO 6");
 
     //inserta imgaen
     const logoPath = path.join(__dirname, '../../assets/iecm.png');
@@ -1609,16 +1610,19 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
     distrito.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     distrito.alignment = { vertical: "middle", horizontal: "left" };
+
+    const reportes = result.recordset.map(r => r.numero_reporte);
+    const concatenado = reportes.join(", ");
 
     const numRep = worksheet.getCell("B5");
     numRep.value = {
       richText: [
         { text: "Número de Reporte: ", font: { size: 12, bold: true } },
-        { text: String(""), font: { size: 12, bold: true, underline: true } }
+        { text: String(concatenado || "Sin datos"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     numRep.alignment = { vertical: "middle", horizontal: "left" };
@@ -1830,7 +1834,7 @@ router.get("/reporteAsamblea", Midleware.verifyToken, async (req, res) => {
     cellA3.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     cellA3.alignment = { vertical: "middle", horizontal: "left" };

@@ -302,7 +302,7 @@ router.get("/getFichasAfro", Midleware.verifyToken, async (req, res) => {
                 code: 200
             });
         } else {
-            return res.status(404).json({ message: "No se encontraron datos" });
+            return res.status(200).json({ message: "No se encontraron datos" });
         }
 
     } catch (error) {
@@ -386,7 +386,7 @@ router.get("/getRegistroFichaAfro", Midleware.verifyToken, async (req, res) => {
             code: 200
           });
         } else {
-            return res.status(404).json({ message: "No se encontraron registros", code: 100})
+            return res.status(200).json({ message: "No se encontraron registros", code: 100})
         }
         }catch (error) {
         console.error(error);

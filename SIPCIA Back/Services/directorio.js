@@ -38,7 +38,6 @@ router.get("/comunidades", Midleware.verifyToken, async (req, res) => {
 	                	else ut.ut
 	                END as unidad_territorial,                   
                     r.comunidad_pbl,
-                    r.nombre_comunidad,
                     r.nombre_instancia,
                     r.cargo_instancia,
                     r.domicilio,
@@ -62,7 +61,7 @@ router.get("/comunidades", Midleware.verifyToken, async (req, res) => {
         comunidades: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
