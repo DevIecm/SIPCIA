@@ -249,41 +249,21 @@ router.get("/cat_demarcacion_territorial", Midleware.verifyToken, async (req, re
   }
 });
 
-
-// nuevos catalogos
-// catalogo Numero de reporte
-router.get("/cat_numero_reporte", Midleware.verifyToken, async (req, res) => {
-  try {
-    const pool = await connectToDatabase();
-    const result = await pool.request()
-      .query(`SELECT 
-                    id,
-                    numero_reporte
-                FROM cat_numero_reporte`);
-
-    if (result.recordset.length > 0) {
-      return res.status(200).json({
-        cat_numero_reporte: result.recordset
-      });
-    } else {
-      return res.status(200).json({ message: "No se encontraron datos de tipo" });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error de servidor", error: error.message });
-  }
-});
-
-
 // catalogo Fecha y periodo
 router.get("/cat_fecha_periodo", Midleware.verifyToken, async (req, res) => {
   try {
+
+     const { id_distrito } = req.query;
+
+    if (!id_distrito) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
     const pool = await connectToDatabase();
     const result = await pool.request()
-      .query(`SELECT 
-                    id,
-                    numero_reporte
-                FROM cat_fecha_periodo`);
+      .input('id_distrito', sql.VarChar, id_distrito)
+      .query(`select id, fecha_reporte from cat_fecha_reporte
+              where id = @id_distrito;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
@@ -412,36 +392,6 @@ router.get("/distritoElectoral", Midleware.verifyToken, async (req, res) => {
     return res.status(500).json({ message: "Error de servidor", error: error.message });
   }
 });
-
-
-//numero de reporte y periodo
-router.get("/fechaPeriodo", Midleware.verifyToken, async (req, res) => {
-  try {
-    const { id } = req.query;
-
-    if (!id) {
-      return res.status(400).json({ message: "Datos requeridos" });
-    }
-
-    const pool = await connectToDatabase();
-    const result = await pool.request()
-      .input('id', sql.VarChar, id)
-      .query(`select id, fecha_reporte from cat_fecha_reporte
-              where id = @id;`);
-
-    if (result.recordset.length > 0) {
-      return res.status(200).json(result.recordset);
-
-    } else {
-      return res.status(200).json({ message: "No se encontraron datos" });
-    }
-
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error de servidor", error: error.message });
-  }
-});
-
 
 
 export default router;

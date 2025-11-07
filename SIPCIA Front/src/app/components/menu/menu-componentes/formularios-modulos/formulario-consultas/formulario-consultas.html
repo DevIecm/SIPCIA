@@ -30,6 +30,7 @@
                                                 aria-label="Default select example"
                                                 (change)="onChangeReporte($event)"
                                             >
+                                            <option value="" disabled selected>Seleccione una opción</option>
                                             <option [value]="item" *ngFor="let item of lista">{{item}}</option>
                                                 <!--<option value="" disabled selected>Seleccione una opción</option>
                                                 @for (item of catalogoReporte; track item) {
@@ -41,15 +42,13 @@
                                     <div class="col">
                                         <div>
                                             <label class="form-label">*Fecha y periodo:</label>
-                                            <select 
+                                           <select 
                                                 formControlName="fyperiodo"
                                                 class="select-input form-select" 
                                                 aria-label="Default select example"
-                                            >
-                                                <option value="" disabled selected>Seleccione una opción</option>
-                                                @for (item of catalogoFecha; track item) {
-                                                <option [value]="item.id">{{item.numero_reporte}}</option>
-                                                }
+                                                >
+                                                <option value="" disabled>Seleccione una opción</option>
+                                                <option [value]="item.id" *ngFor="let item of catalogoFecha">{{item.fecha_reporte}}</option>
                                             </select>
                                         </div>
                                     </div>

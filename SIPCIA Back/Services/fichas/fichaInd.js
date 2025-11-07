@@ -14,6 +14,8 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
         distrito_electoral,
         fecha_reunion,
         fecha_ficha,
+        ptrabajo_nombre,
+        racta_nombre,
         hora_reunion,
         numero_asistentes_reunion,
         lugar_reunion,
@@ -53,7 +55,20 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
         !distrito_cabecera ||
         !estado_registro
     ) {
-        return res.status(400).json({ message: "Datos requeridos" })
+        if (!demarcacion_territorial) faltantes.push("demarcacion_territorial");
+        if (!distrito_electoral) faltantes.push("distrito_electoral");
+        if (!fecha_ficha) faltantes.push("fecha_ficha");
+        if (!fecha_reunion) faltantes.push("fecha_reunion");
+        if (!hora_reunion) faltantes.push("hora_reunion");
+        if (!usuario_registro) faltantes.push("usuario_registro");
+        if (!modulo_registro) faltantes.push("modulo_registro");
+        if (!distrito_cabecera) faltantes.push("distrito_cabecera");
+        if (!estado_registro) faltantes.push("estado_registro");
+
+        return res.status(400).json({
+        message: "Faltan datos requeridos",
+        faltantes,
+        });
     }
 
     const pool = await connectToDatabase();
@@ -116,6 +131,8 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
             .input('nombre_ficha', sql.VarChar, nombre_ficha)
             .input('distrito_cabecera', sql.Int, distrito_cabecera)
             .input('fecha_ficha', sql.DateTime, fecha_ficha) 
+            .input('ptrabajo_nombre', sql.VarChar, ptrabajo_nombre)
+            .input('racta_nombre', sql.VarChar, racta_nombre)
             .query(`
                 INSERT INTO ficha_tecnica_indigena                     
                     (demarcacion_territorial, distrito_electoral, fecha_reunion,
@@ -124,7 +141,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
                     hora_asamblea_consultiva, numero_asistentes_consultiva, lugar_asamblea_consultiva, periodo_del,
                     periodo_al, numero_lugares_publicos, otro_plan_trabajo, otro_resumen_acta,
                     solicitud_cambios, cambios_solicitados, observaciones, fecha_registro,
-                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha, distrito_cabecera, fecha_ficha)
+                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha, distrito_cabecera, fecha_ficha, ptrabajo_nombre, racta_nombre)
                 OUTPUT INSERTED.id
                 VALUES (@demarcacion_territorial, @distrito_electoral, @fecha_reunion,
                     @hora_reunion, @numero_asistentes_reunion, @lugar_reunion, @fecha_asamblea_informativa,
@@ -132,7 +149,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
                     @hora_asamblea_consultiva, @numero_asistentes_consultiva, @lugar_asamblea_consultiva, @periodo_del,
                     @periodo_al, @numero_lugares_publicos, @otro_plan_trabajo, @otro_resumen_acta,
                     @solicitud_cambios, @cambios_solicitados, @observaciones, @fecha_registro,
-                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha, @distrito_cabecera, @fecha_ficha)
+                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha, @distrito_cabecera, @fecha_ficha, @ptrabajo_nombre, @racta_nombre)
             `);
 
         const idRegistro = result.recordset[0].id;
@@ -415,6 +432,8 @@ router.get("/getRegistroFichaInd", Midleware.verifyToken, async (req, res) => {
                     fi.distrito_electoral,
                     fi.fecha_registro,
                     fi.fecha_ficha,
+                    fi.ptrabajo_nombre,
+                    fi.racta_nombre,
                     fi.fecha_reunion,
                     fi.fecha_asamblea_informativa,
                     fi.fecha_asamblea_consultiva,

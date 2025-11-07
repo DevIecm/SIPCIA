@@ -292,7 +292,6 @@ export class FormularioRegistroa {
     this.catalogo_pueblos();
     this.catalogo_barrios();
     this.catalogo_unidad_territorial();
-    this.catalogo_nreporte();
     this.catalogo_fecha();
     this.catalogo_comunidad();
   }
@@ -338,21 +337,6 @@ export class FormularioRegistroa {
       }
     });
   };
-  
-  catalogo_nreporte() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_numero_reporte", this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.cat_numero_reporte.length > 0) {
-          this.catalogoReporte = data.cat_numero_reporte;
-        }
-      }, error: (err) => {
-        if(err.error.code === 160) {
-          this.service.cerrarSesionByToken();
-        }
-      }
-    });
-  };
-
   onFileSelect(event: any, type: string) {
     if (event.target.files.length > 0) {
         this.selectedKmlFile = event.target.files[0];
