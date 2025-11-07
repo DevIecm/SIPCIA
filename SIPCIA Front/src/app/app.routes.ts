@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { AuthGuard } from './guardservice/auth.guard';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
 
 export const routes: Routes = [
     { path: '', loadComponent: () => import('./components/home/home').then(m => m.Home) },

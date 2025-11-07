@@ -92,9 +92,8 @@ export class DocumentosIndigenas implements OnInit{
   isCabecera(){
     this.Cabecera.validaCabecera(this.area_adscripcion, this.tokenSesion).subscribe({
       next: (data) => {
-            this.isValido=data.cabecera;    
-            console.log("DATA", this.isValido)  
-          },
+        this.isValido=data.cabecera;    
+      },
       error: (err) => {
         if (err.error.code === 160) {
           this.service.cerrarSesionByToken();

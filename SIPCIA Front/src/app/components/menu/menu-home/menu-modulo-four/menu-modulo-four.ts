@@ -5,14 +5,13 @@ import { Router } from '@angular/router';
 import * as data from '../../../labels/label.json';
 import { Navbar } from '../../../navbar/navbar';
 import { FormBuilder } from '@angular/forms';
-import { sha256 } from 'js-sha256';
 import { Auth } from '../../../../services/authService/auth';
 import Swal from 'sweetalert2';
-
 @Component({
   selector: 'app-menu-modulo-four',
+  standalone: true,
   imports: [
-    Navbar, 
+    Navbar,
     MatCardModule,
     CommonModule
   ],
@@ -25,9 +24,9 @@ export class MenuModuloFour implements OnInit{
   nombreUser: string = '';
   cargoUser: string = '';
   data: any = data;
+  captchaValido = false;
   position: string = '';
-  cryptoHash = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
-
+  token: string | null = null;
   moduloSelected = localStorage.getItem('modulo');
   
   showModulo1: boolean = false;
@@ -61,6 +60,21 @@ export class MenuModuloFour implements OnInit{
   }
 
   constructor(private router: Router, private formBuilder: FormBuilder, private auth: Auth) {}
+
+  onVerify(token: string) {
+    console.log('Token recibido:', token);
+    this.token = token;
+  }
+
+  onExpired() {
+    console.log('hCaptcha expirado');
+    this.token = null;
+  }
+
+  onError(err: any) {
+    console.error('Error hCaptcha:', err);
+    this.token = null;
+  }
 
   goToRegister() {
 

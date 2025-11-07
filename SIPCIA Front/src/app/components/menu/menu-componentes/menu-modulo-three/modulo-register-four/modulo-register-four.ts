@@ -121,8 +121,6 @@ export class ModuloRegisterFour implements OnInit{
 
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.catalogo_comunidad();
-    this.catalogo_demarcacion();
-    this.formularioRegistro?.get('duninominal')?.setValue(this.area);
   }
 
   onFileSelected(event: any) {
@@ -147,7 +145,6 @@ export class ModuloRegisterFour implements OnInit{
   }
 
   changeSeccion(){
-    console.log("prueb")
     this.getSeccion();
   }
 
@@ -478,8 +475,7 @@ export class ModuloRegisterFour implements OnInit{
           next: (data) => {
             if(data.code === 200) {
               Swal.fire({
-                title: "Se le ha asignado el folio único.",
-                text: data.folio,
+                title: "El IECM, a través del personal adscrito a la Dirección Distrital que corresponda (conforme a la Sección Electoral registrada), establecerá comunicación con usted con la finalidad de confirmar la información, así como para recabar su firma o huella en el formato establecido.",
                 icon: "success",
                 confirmButtonText: "Aceptar",
                 confirmButtonColor: "#FBB03B",

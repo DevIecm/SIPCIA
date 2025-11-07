@@ -333,9 +333,6 @@ export class FormularioConsultas {
     this.catalogo_fecha(nReporte);    
   }
 
-   onChangePeriodo(){
-    console.log("Cambio fecha")   
-   }
   catalogo_pueblor() {
     this.catalogos.getCatalogos(Number(this.area), "cat_pueblos_originarios", this.tokenSesion).subscribe({
       next: (data) => {

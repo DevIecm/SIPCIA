@@ -69,7 +69,6 @@ export class ReporteComunitaria implements OnInit {
   }
 
   getReporte(){
-    console.log("isValido", this.isValido)
     this.descargarReporteAfluencia.descargarReporteAfluencia(this.isValido, this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
@@ -226,9 +225,8 @@ export class ReporteComunitaria implements OnInit {
   isCabecera(){
       this.Cabecera.validaCabecera(this.area_adscripcion, this.tokenSesion).subscribe({
         next: (data) => {
-              this.isValido=data.cabecera;    
-              console.log("DATA", this.isValido)  
-            },
+          this.isValido=data.cabecera;    
+        },
         error: (err) => {
           if (err.error.code === 160) {
             this.service.cerrarSesionByToken();
