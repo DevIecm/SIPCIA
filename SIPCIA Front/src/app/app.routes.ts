@@ -39,9 +39,17 @@ export const routes: Routes = [
     { path: 'dindigenastwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/documentos-indigenas-two/documentos-indigenas-two').then(m => m.DocumentosIndigenasTwo), canActivate: [AuthGuard] },
     { path: 'dafrotwo', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-two/documentos-afro-two/documentos-afro-two').then(m => m.DocumentosAfroTwo), canActivate: [AuthGuard] },
     { path: 'bitacora/:id/:tipo', loadComponent: () => import('./components/menu/menu-componentes/bitacora/bitacora').then(m => m.Bitacora), canActivate: [AuthGuard] },
-    { path: 'ccontrol', loadComponent: () => import('./components/menu/centro-control/centro-control').then(m => m.CentroControl), canActivate: [AuthGuard] }
+    { path: 'ccontrol', loadComponent: () => import('./components/menu/centro-control/centro-control').then(m => m.CentroControl), canActivate: [AuthGuard] },
 
     //Modulo3
+
+    { path: 'menuthree', loadComponent: () => import('./components/menu/menu-home/menu-modulo-three/menu-modulo-three').then(m => m.MenuModuloThree), canActivate: [AuthGuard] },
+    { path: 'moduloRegister', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-three/modulo-register/modulo-register').then(m => m.ModuloRegister), canActivate: [AuthGuard] },
+
+    //Modulo4
+
+    { path: 'menufour', loadComponent: () => import('./components/menu/menu-home/menu-modulo-four/menu-modulo-four').then(m => m.MenuModuloFour) },
+    { path: 'moduloRegisterFour', loadComponent: () => import('./components/menu/menu-componentes/menu-modulo-three/modulo-register-four/modulo-register-four').then(m => m.ModuloRegisterFour) }
 ];
 @NgModule({
     imports: [

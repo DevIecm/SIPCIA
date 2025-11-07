@@ -6,16 +6,16 @@ import * as data from '../../../labels/label.json';
 import { Navbar } from '../../../navbar/navbar';
 
 @Component({
-  selector: 'app-menu-modulo-two',
+  selector: 'app-menu-modulo-three',
   imports: [
     Navbar, 
     MatCardModule,
     CommonModule
   ],
-  templateUrl: './menu-modulo-two.html',
-  styleUrl: './menu-modulo-two.css'
+  templateUrl: './menu-modulo-three.html',
+  styleUrl: './menu-modulo-three.css'
 })
-export class MenuModuloTwo implements OnInit{
+export class MenuModuloThree implements OnInit{
 
   nombreUser: string = '';
   cargoUser: string = '';
@@ -26,6 +26,12 @@ export class MenuModuloTwo implements OnInit{
   showModulo3: boolean = false;
   showModulo4: boolean = false;
   position: string = '';
+
+  showModal = false;
+  isRegistroC: boolean = false;
+
+  idRegistroSeleccionado: number | undefined;
+  idComunidadSeleccionado: number | undefined;
   
   ngOnInit(): void {
 
@@ -47,62 +53,11 @@ export class MenuModuloTwo implements OnInit{
 
   constructor(private router: Router) {}
 
+  goToRegister() {
+    this.router.navigate(['/moduloRegister']);
+  }
+
   logout() {
     this.router.navigate(['']);
-  }
-
-  goControl() {
-    this.router.navigate(['ccontrol'])
-  }
-  
-  goToRegistroTwo() {
-    this.router.navigate(['nregistrotwo']);
-    localStorage.setItem('moduloClicked', '2.1');
-  }
-  
-  goToDIndigenasTwo() {
-    localStorage.setItem('moduloClicked', '2.2');
-    this.router.navigate(['dirndigenastwo']);
-  }
-
-  goToDAfroTwo() {
-    localStorage.setItem('moduloClicked', '2.3');
-    this.router.navigate(['dafroamericanastwo']);
-  }
-
-  goToCTecinas() {
-    this.router.navigate(['ctecnicas']);
-  }
-
-  goToCAfro() {
-    this.router.navigate(['cafro']);
-  }
-  
-  goToRRepre() {
-    this.router.navigate(['rrepresentativastwo']);
-  }
-
-  goToRComunitaria() {
-    this.router.navigate(['rcomunitariatwo']);
-  }
-  
-  goToPCom() {
-    this.router.navigate(['pcomunitariastwo']);
-  }
-  
-  goToRC() {
-    this.router.navigate(['rconsultastwo']);
-  }
-  
-  goToCA() {
-    this.router.navigate(['cacmpatwo']);
-  }
-
-  goToDI() {
-    this.router.navigate(['dindigenastwo']);
-  }
-
-  goToDAf() {
-    this.router.navigate(['dafrotwo']);
   }
 }

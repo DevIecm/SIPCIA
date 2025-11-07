@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Navbar } from '../navbar/navbar';
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
@@ -60,7 +60,7 @@ export class Login implements OnInit {
     try {
       if(this.formularioLogin?.valid){
         
-         this.auth.login(this.formularioLogin?.value.username, sha256(this.formularioLogin?.value.password), this.tipoUsuario).subscribe({
+        this.auth.login(this.formularioLogin?.value.username, sha256(this.formularioLogin?.value.password), this.tipoUsuario).subscribe({
            next: (res) => {
              sessionStorage.setItem("key", res.token);
              sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
@@ -75,26 +75,28 @@ export class Login implements OnInit {
               this.router.navigate(['/menu']);
             } else if(this.tipoUsuario === 2) {
               this.router.navigate(['/menutwo']);
+            } else if(this.tipoUsuario === 3) {
+              this.router.navigate(['/menuthree']);
             }
              
            },
            error: (err) => {
-             if(err.error.code === 401){
-             Swal.fire({
-               icon: "error",
-               title: "Usuario inactivo",
-               text: "Por favor contacta al Administrador del Sistema",
-             });
-           } else if(err.error.code === 101) {
-             Swal.fire({
-               icon: "error",
-               title: "Usuario no encontrado",
-               text: "Por favor contacta al Administrador del Sistema",
-             });
+            if(err.error.code === 401){
+              Swal.fire({
+                icon: "error",
+                title: "Usuario inactivo",
+                text: "Por favor contacta al Administrador del Sistema",
+              });
+            } else if(err.error.code === 101) {
+              Swal.fire({
+                icon: "error",
+                title: "Usuario no encontrado",
+                text: "Por favor contacta al Administrador del Sistema",
+              });
+            }
            }
-           }
-         });
-       } else {
+        });
+      } else {
         Swal.fire({
           icon: "error",
           title: "Error",

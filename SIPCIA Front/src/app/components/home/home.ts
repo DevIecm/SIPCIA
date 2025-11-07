@@ -38,7 +38,7 @@ export class Home implements OnInit{
   };
   
   onSubmitModulo4(){
-    this.router.navigate(['/login']);
+    this.router.navigate(['/menufour']);
     localStorage.setItem('modulo', "4");
   }; 
 }

@@ -3,7 +3,7 @@ import { Navbar } from '../../../../navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import * as data from '../../../../labels/label.json';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';

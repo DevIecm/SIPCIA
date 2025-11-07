@@ -1,0 +1,71 @@
+.div-redondeado-left-sesion {
+    padding: 13px;
+    width: 256px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #FBB03B!important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+}
+
+.title-menu {
+    white-space: normal;
+    overflow-wrap: break-word;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30pt;
+}
+
+.button-register {
+    width: 20%;
+    height: 33px;
+    border-radius: 15px;
+    background-color: #FBB03B !important;
+    color: black !important;
+    font-weight: bold;
+    padding: 0px;
+}
+
+.button-register-r {
+    width: 268px;
+    height: 33px;
+    border-radius: 15px;
+    background-color: #FBB03B !important;
+    color: black !important;
+    font-weight: bold;
+    padding: 0px;
+}
+
+.button-accions {
+    width: 268px;
+    height: 33px;
+    border-radius: 15px;
+    background-color: #C5C5FF !important;
+    color: black !important;
+    font-weight: bold;
+    padding: 0px;
+}
+
+hr {    
+    height: 3px;
+    background-color: black;
+    border: none;
+}
+
+span {
+    border: 1px solid black;   font-size: 20px;
+}
+
+.label-full {
+  display: block;
+  width: 100%;
+  text-align: justify;
+  line-height: 1.6;
+  font-size: 1rem;
+}

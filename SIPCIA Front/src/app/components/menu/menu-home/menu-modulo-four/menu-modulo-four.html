@@ -1,0 +1,103 @@
+<app-navbar></app-navbar>
+
+<nav class="navbar bg-body-tertiary" style="display: inline;">
+    <div class="container-fluid" style="padding: 0px;">
+        <a class="navbar-brand">
+           
+        </a>
+        <div class="d-flex" role="search">
+            <div class="row row-cols-1">
+                <div class="col d-flex justify-content-end">
+                    <button (click)="logout()" class="btn div-redondeado-left-sesion sin-margen-izquierdo">
+                        <h3 style="font-size: 0.9rem; margin: 0px;">Regresar al menú principal</h3>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+@if (mostrarPantalla) {
+    <div style="padding: 180px;" class="container text-center">
+        <div class="row">
+            <div class="col-12 col-sm-12">
+                <h2 class="title-menu">Presentación</h2>
+            </div>
+
+            <div class="w-100 mb-4">
+                <hr>
+            </div>
+
+            <div class="mt-4 mb-4 col-12 col-sm-12">
+                <label>Si tu área cuenta con los datos de alguna representación o autoridad tradicional y consideras <br>
+                    necesario que sea convocada a las actividades del Instituto Electoral de la Ciudad de México <br>
+                    (IECM) captura sus datos.
+                </label>
+            </div>
+            
+            <div class="mt-4 col-12 col-sm-12">
+                <button type="submit" (click)="cambiarPantalla()" class="btn button-register">Aceptar</button>
+            </div>
+        </div>
+    </div>
+}
+
+@if(!mostrarPantalla) {
+    <div style="padding: 120px; padding-left: 315px;">
+        <div style="padding: 20px;" class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="title-menu">Aviso de Privacidad</h2>
+                </div> 
+            </div>
+        </div>
+
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-2 d-flex justify-content-center">
+                    <span class="full-height"></span>
+                </div>
+                <div class="col">
+                    <div class="col-sm-12 mb-4 text-start">
+                        <label class="label-full">
+                        Tus datos personales estarán protegidos conforme a la Ley de Protección de datos Personales en <br>
+                        posesión de sujetos obligados de la Ciudad de México y la normativa del IECM en materia de protección <br>
+                        de datos personales.
+                        </label>
+                    </div>
+
+                    <div class="col-sm-8 mb-4">
+                        <div class="container text-center">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" (click)="cambiarPantalla()" class="btn button-accions">
+                                        Aviso de Privacidad Integral
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <button type="submit" (click)="cambiarPantalla()" class="btn button-accions">
+                                        Aviso de Privacidad Simplificado
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 mt-4 text-start">
+                        <label class="label-full">
+                        Con posterioridad al registro de tus datos, personal del IECM establecerá comunicación con usted para <br>
+                        que, después de completar y validar el llenado de un formato, lo integre al “Directorio de instancias <br>
+                        representativas y autoridades tradicionales indígenas y afromexicanas”.
+                        </label>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" (click)="goToRegister()" class="btn button-register-r">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
