@@ -25,7 +25,7 @@ router.get("/cat_distrito", Midleware.verifyToken, async (req, res) => {
         cat_distrito: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -59,7 +59,7 @@ router.get("/cat_barrios", Midleware.verifyToken, async (req, res) => {
         cat_barrios: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -94,7 +94,7 @@ router.get("/cat_pueblos", Midleware.verifyToken, async (req, res) => {
         cat_pueblos: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -129,7 +129,7 @@ router.get("/cat_pueblos_originarios", Midleware.verifyToken, async (req, res) =
         cat_pueblos_originarios: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -154,7 +154,7 @@ router.get("/cat_seccion", Midleware.verifyToken, async (req, res) => {
         cat_seccion: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -189,7 +189,7 @@ router.get("/cat_unidad_territorial", Midleware.verifyToken, async (req, res) =>
         cat_unidad_territorial: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -212,7 +212,7 @@ router.get("/cat_comunidad", Midleware.verifyToken, async (req, res) => {
         cat_comunidad: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -241,56 +241,36 @@ router.get("/cat_demarcacion_territorial", Midleware.verifyToken, async (req, re
         cat_demarcacion_territorial: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error de servidor", error: error.message });
   }
 });
-
-
-// nuevos catalogos
-// catalogo Numero de reporte
-router.get("/cat_numero_reporte", Midleware.verifyToken, async (req, res) => {
-  try {
-    const pool = await connectToDatabase();
-    const result = await pool.request()
-      .query(`SELECT 
-                    id,
-                    numero_reporte
-                FROM cat_numero_reporte`);
-
-    if (result.recordset.length > 0) {
-      return res.status(200).json({
-        cat_numero_reporte: result.recordset
-      });
-    } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error de servidor", error: error.message });
-  }
-});
-
 
 // catalogo Fecha y periodo
 router.get("/cat_fecha_periodo", Midleware.verifyToken, async (req, res) => {
   try {
+
+     const { id_distrito } = req.query;
+
+    if (!id_distrito) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
     const pool = await connectToDatabase();
     const result = await pool.request()
-      .query(`SELECT 
-                    id,
-                    numero_reporte
-                FROM cat_fecha_periodo`);
+      .input('id_distrito', sql.VarChar, id_distrito)
+      .query(`select id, fecha_reporte from cat_fecha_reporte
+              where id = @id_distrito;`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
         cat_fecha_periodo: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -315,7 +295,7 @@ router.get("/cat_lenguas_indigenas", Midleware.verifyToken, async (req, res) => 
         cat_lenguas_indigenas: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo" });
     }
   } catch (error) {
     console.error(error);
@@ -345,7 +325,37 @@ router.get("/getCabezera", Midleware.verifyToken, async (req, res) => {
         getCabezera: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+      return res.status(200).json({ message: "No se encontraron registros", code: 100 })
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message });
+  }
+});
+
+//funcion para validar si es una cabecera
+router.get("/getcabecera", Midleware.verifyToken, async (req, res) => {
+  try {
+
+    const { id_distrito } = req.query;
+
+    if (!id_distrito) {
+      return res.status(400).json({ message: "Datos requeridos" });
+    }
+
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('id_distrito', sql.Int, id_distrito)
+      .query(`select distrito_cabecera 
+               from distritos_demarcaciones
+               where distrito_cabecera = @id_distrito;`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        cabecera: true
+      });
+    } else {
+      return res.status(200).json({ message: "No se encontraron registros", cabecera:false })
     }
   } catch (error) {
     console.error(error);
@@ -374,7 +384,7 @@ router.get("/distritoElectoral", Midleware.verifyToken, async (req, res) => {
       return res.status(200).json(result.recordset);
 
     } else {
-      return res.status(404).json({ message: "No se encontraron datos" });
+      return res.status(200).json({ message: "No se encontraron datos" });
     }
 
   } catch (error) {

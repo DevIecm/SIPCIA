@@ -78,7 +78,6 @@ router.post("/altaAtencion", Midleware.verifyToken, upload.fields([{ name: "kmlF
     let {
         distrito_electoral,
         numero_reporte,
-        fecha_periodo,
         presento_caso,
         fecha_consulta,
         nombre_completo,
@@ -107,7 +106,6 @@ router.post("/altaAtencion", Midleware.verifyToken, upload.fields([{ name: "kmlF
         distrito_electoral == null || distrito_electoral === '' ||
         presento_caso == null || presento_caso === '' ||
         numero_reporte == null || numero_reporte === '' ||
-        fecha_periodo == null || fecha_periodo === '' ||
         fecha_consulta == null || fecha_consulta === '' ||
         usuario_registro == null || usuario_registro === '' ||
         modulo_registro == null || modulo_registro === '' ||
@@ -153,7 +151,6 @@ router.post("/altaAtencion", Midleware.verifyToken, upload.fields([{ name: "kmlF
         const result = await transaction.request()
             .input('distrito_electoral', sql.Int, distrito_electoral)
             .input('numero_reporte', sql.Int, numero_reporte)
-            .input('fecha_periodo', sql.Int, fecha_periodo)
             .input('presento_caso', sql.Int, presento_caso)
             .input('numero_consecutivo', sql.Numeric, numero_consecutivo)
             .input('fecha_consulta', sql.DateTime, fecha_consulta)
@@ -174,12 +171,12 @@ router.post("/altaAtencion", Midleware.verifyToken, upload.fields([{ name: "kmlF
             .input('usuario_registro', sql.Int, usuario_registro)
             .input('modulo_registro', sql.Int, modulo_registro)
             .input('estado_registro', sql.Int, estado_registro)
-            .query(`INSERT INTO atencion_consultas (distrito_electoral, numero_reporte, fecha_periodo, presento_caso, numero_consecutivo, 
+            .query(`INSERT INTO atencion_consultas (distrito_electoral, numero_reporte, presento_caso, numero_consecutivo, 
                 fecha_consulta, nombre_completo, pueblo_originario, pueblo, barrio, unidad_territorial, otro, cargo, descripcion_consulta,
                 forma_atendio, observaciones, documento, enlace_documento, fecha_registro, hora_registro, usuario_registro, modulo_registro, 
                 estado_registro)
                 OUTPUT INSERTED.id
-                VALUES (@distrito_electoral, @numero_reporte, @fecha_periodo, @presento_caso, @numero_consecutivo, 
+                VALUES (@distrito_electoral, @numero_reporte, @presento_caso, @numero_consecutivo, 
                 @fecha_consulta, @nombre_completo, @pueblo_originario, @pueblo, @barrio, @unidad_territorial, @otro, @cargo, @descripcion_consulta,
                 @forma_atendio, @observaciones, @documento, @enlace_documento, @fecha_registro, @hora_registro, @usuario_registro, @modulo_registro, 
                 @estado_registro);
@@ -191,7 +188,6 @@ router.post("/altaAtencion", Midleware.verifyToken, upload.fields([{ name: "kmlF
         const camposModificados = JSON.stringify({
             distrito_electoral,
             numero_reporte,
-            fecha_periodo,
             presento_caso,
             numero_consecutivo,
             fecha_consulta,
@@ -251,7 +247,6 @@ router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([{ name: "
         id_registro,
         distrito_electoral,
         numero_reporte,
-        fecha_periodo,
         presento_caso,
         fecha_consulta,
         nombre_completo,
@@ -275,7 +270,6 @@ router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([{ name: "
         distrito_electoral == null || distrito_electoral === '' ||
         presento_caso == null || presento_caso === '' ||
         numero_reporte == null || numero_reporte === '' ||
-        fecha_periodo == null || fecha_periodo === '' ||
         fecha_consulta == null || fecha_consulta === '' ||
         usuario_registro == null || usuario_registro === '' ||
         modulo_registro == null || modulo_registro === '' ||
@@ -301,7 +295,7 @@ router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([{ name: "
         const registroAnterior = resultAnterior.recordset[0];
 
         if (!registroAnterior) {
-            return res.status(404).json({ message: "Registro no encontrado" });
+            return res.status(200).json({ message: "Registro no encontrado" });
         }
 
         if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
@@ -318,7 +312,6 @@ router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([{ name: "
         const nuevosDatos = {
             distrito_electoral,
             numero_reporte,
-            fecha_periodo,
             presento_caso,
             fecha_consulta,
             nombre_completo,
@@ -375,7 +368,6 @@ router.patch("/updateAntencion", Midleware.verifyToken, upload.fields([{ name: "
             await requestUpdate.query(`UPDATE atencion_consultas SET
                         distrito_electoral = @distrito_electoral,
                         numero_reporte = @numero_reporte,
-                        fecha_periodo = @fecha_periodo,
                         presento_caso = @presento_caso,
                         fecha_consulta = @fecha_consulta,
                         nombre_completo = @nombre_completo,
@@ -494,7 +486,7 @@ router.get("/getAtencion", Midleware.verifyToken, async (req, res) => {
 
             return res.status(200).json({ getAtencion: data });
         } else {
-            return res.status(404).json({ message: "No se encontraron datos" });
+            return res.status(200).json({ message: "No se encontraron datos" });
         }
 
     } catch (error) {
@@ -531,7 +523,6 @@ router.get("/getRegistroAtencion", Midleware.verifyToken, async (req, res) => {
                     ac.distrito_electoral,
                     ac.id as id_registro,
                     ac.numero_reporte,
-                    ac.fecha_periodo,
                     ac.presento_caso,
                     ac.numero_consecutivo,
                     ac.fecha_consulta,
@@ -556,7 +547,7 @@ router.get("/getRegistroAtencion", Midleware.verifyToken, async (req, res) => {
                 getRegistroAtencion: result.recordset
             });
         } else {
-            return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+            return res.status(200).json({ message: "No se encontraron registros", code: 100 })
         }
 
     } catch (err) {

@@ -217,7 +217,7 @@ router.patch("/updateAfluencia", Midleware.verifyToken, upload.fields([{ name: "
     const registroAnterior = resultAnterior.recordset[0];
 
     if (!registroAnterior) {
-      return res.status(404).json({ message: "Registro no encontrado" });
+      return res.status(200).json({ message: "Registro no encontrado" });
     }
 
     if (req.files && req.files.kmlFile && req.files.kmlFile[0]) {
@@ -408,7 +408,7 @@ router.get("/getAfluencia", Midleware.verifyToken, async (req, res) => {
 
       return res.status(200).json({ getAfluencia: data });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos" });
+      return res.status(200).json({ message: "No se encontraron datos" });
     }
   } catch (error) {
     console.error(error);
@@ -464,7 +464,7 @@ router.get("/getRegistroAfluencia", Midleware.verifyToken, async (req, res) => {
         getRegistroAfluencia: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+      return res.status(200).json({ message: "No se encontraron registros", code: 100 })
     }
   } catch (error) {
     console.error(error);

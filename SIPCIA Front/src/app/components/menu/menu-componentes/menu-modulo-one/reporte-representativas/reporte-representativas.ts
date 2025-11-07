@@ -70,7 +70,7 @@ export class ReporteRepresentativas implements OnInit{
     this.descargarReporteInstancias.descargarReporteInstancias(this.area,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
+      link.download = 'Número de Instancias Representativas de Pueblos y Barrios Originarios y Comunidades Indígenas y Afromexicanas Residentes en la Ciudad de México.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });

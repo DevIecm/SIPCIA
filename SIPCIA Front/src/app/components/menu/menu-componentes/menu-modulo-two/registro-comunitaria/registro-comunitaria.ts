@@ -64,10 +64,10 @@ export class RegistroComunitaria implements OnInit {
   }
 
   getReporte(){
-    this.descargarReporteAfluencia.descargarReporteAfluencia(null,this.tokenSesion).subscribe((blob: Blob) => {
+    this.descargarReporteAfluencia.descargarReporteAfluencia(null,null,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
+      link.download = 'Registro de lugares de mayor afluencia comunitaria de los Pueblos, Barrios y Comunidades Indígenas y Afromexicanas.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });

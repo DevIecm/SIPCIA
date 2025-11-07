@@ -50,6 +50,7 @@ export class DocumentosIndigenas implements OnInit{
 
   dataTableD: any = [];
   allDatableD: any[] = [];
+  isValido: any = null;
 
   showModal = false;
   
@@ -71,6 +72,8 @@ export class DocumentosIndigenas implements OnInit{
     this.getDocumentosMod2(1);
     this.getRegister();
     this.getdata();
+
+    this.isCabecera();
   }
 
   constructor(
@@ -78,12 +81,30 @@ export class DocumentosIndigenas implements OnInit{
     private reporteService: DocumentosServices,
     private service: Auth,
     private docService: Reportes,
-    private serviceRegister: Reportes
+    private serviceRegister: Reportes,
+    private Cabecera: DocumentosServices
   ) {}
   
   logout() {
     this.router.navigate(['']);
   };
+
+  isCabecera(){
+    this.Cabecera.validaCabecera(this.area_adscripcion, this.tokenSesion).subscribe({
+      next: (data) => {
+            this.isValido=data.cabecera;    
+            console.log("DATA", this.isValido)  
+          },
+      error: (err) => {
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+        if (err.error.code === 100) {
+          Swal.fire("No se encontraron registros");
+        }
+      }
+    });
+  }
 
   triggerFileInput() {
     const input = document.getElementById('fileInputZip') as HTMLInputElement;

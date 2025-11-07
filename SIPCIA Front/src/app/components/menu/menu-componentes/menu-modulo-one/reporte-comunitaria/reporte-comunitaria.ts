@@ -10,6 +10,7 @@ import { FormularioComunitaria } from '../../formularios-modulos/formulario-comu
 import { Reportes } from '../../../../../services/reporteService/reportes';
 import { Auth } from '../../../../../services/authService/auth';
 import { reporteService } from '../../../../../services/reportesDescargas/reporteService';
+import { DocumentosServices } from '../../../../../services/documentosService/documentos-services';
 
 @Component({
   selector: 'app-reporte-comunitaria',
@@ -33,6 +34,7 @@ export class ReporteComunitaria implements OnInit {
   position: string = '';
   searchTerm: string = '';
   sortColumn: string = '';
+  isValido: any = null;
 
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -59,6 +61,7 @@ export class ReporteComunitaria implements OnInit {
     this.area_adscripcion = Number(sessionStorage.getItem('area'));
 
     this.getRegister();
+    this.isCabecera();
   }
 
   goToBitacora(id: number, tipo: string) {
@@ -66,10 +69,11 @@ export class ReporteComunitaria implements OnInit {
   }
 
   getReporte(){
-    this.descargarReporteAfluencia.descargarReporteAfluencia(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
+    console.log("isValido", this.isValido)
+    this.descargarReporteAfluencia.descargarReporteAfluencia(this.isValido, this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
+      link.download = 'Registro de lugares de mayor afluencia comunitaria de los Pueblos, Barrios y Comunidades Indígenas y Afromexicanas.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });
@@ -80,7 +84,8 @@ export class ReporteComunitaria implements OnInit {
     private reporteService: Reportes,
     private service: Auth,
     private descargarReporteAfluencia: reporteService,
-    private miServicio: Reportes
+    private miServicio: Reportes,
+    private Cabecera: DocumentosServices
   ) {}
 
   search(): void {
@@ -217,6 +222,23 @@ export class ReporteComunitaria implements OnInit {
   logout() {
     this.router.navigate(['']);
   }
+
+  isCabecera(){
+      this.Cabecera.validaCabecera(this.area_adscripcion, this.tokenSesion).subscribe({
+        next: (data) => {
+              this.isValido=data.cabecera;    
+              console.log("DATA", this.isValido)  
+            },
+        error: (err) => {
+          if (err.error.code === 160) {
+            this.service.cerrarSesionByToken();
+          }
+          if (err.error.code === 100) {
+            Swal.fire("No se encontraron registros");
+          }
+        }
+      });
+    }
 
   openModal(id: number | undefined) {
     this.showModal = true;

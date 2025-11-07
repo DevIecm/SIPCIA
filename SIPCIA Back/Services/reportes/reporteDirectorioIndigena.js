@@ -30,6 +30,7 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
       .query(`SELECT  
           ROW_NUMBER() OVER(ORDER BY r.id) AS numero_consecutivo,
           cd.id AS direccion_distrital,
+          r.folio,
           dt.demarcacion_territorial AS demarcacion,
           r.nombre_completo,
           cpo.pueblo_originario,
@@ -49,7 +50,8 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
           r.correo_electronico_personal,
           '1' AS moduloregistro,
           r.fecha_registro,
-          CONVERT(VARCHAR(8), r.hora_registro, 108) AS hora_registro
+          CONVERT(VARCHAR(8), r.hora_registro, 108) AS hora_registro,
+          r.enlace_documentos
       FROM registro r
       JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
       JOIN cat_distrito cd ON r.distrito_electoral = cd.id 
@@ -63,7 +65,7 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
     const rows = result.recordset;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("NombreDelReporte");
+    const worksheet = workbook.addWorksheet("Anexo 1");
 
     //inserta imgaen
     const logoPath = path.join(__dirname, '../../assets/iecm.png');
@@ -114,6 +116,7 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
     const headers = [
       "No.",
       "DD",
+      "Folio Único",
       "Demarcación",
       "Nombre completo",
       "Nombre del Pueblo Originario",
@@ -131,6 +134,7 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
       "Modulo de registro",
       "Fecha de registro",
       "Hora de registro",
+      "Documentos adjuntos"
     ];
 
     worksheet.addRow(headers);
@@ -158,9 +162,22 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
     };
 
     rows.forEach((row) => {
-      worksheet.addRow([
+      //doc
+      const nombreArchivo = row.enlace_documentos
+        ? path.basename(row.enlace_documentos)
+        : "";
+
+      const archivo =
+        nombreArchivo
+          ? { text: nombreArchivo, hyperlink: `${API_BASE_URL}/api/descargaDoc/downloadOtrosNorma/${nombreArchivo}` }
+          : "";
+
+      const folioVacio = row.folio==null?'N/A': row.folio
+
+      const rowExcel = worksheet.addRow([
         row.numero_consecutivo,
         row.direccion_distrital,
+        folioVacio,
         row.demarcacion,
         row.nombre_completo,
         row.pueblo_originario,
@@ -178,7 +195,16 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
         row.moduloregistro,
         row.fecha_registro,
         row.hora_registro,
+        archivo
       ]);
+
+      const cellUbicacion = rowExcel.getCell(21);
+
+      [cellUbicacion].forEach(cell => {
+        cell.font = { color: { argb: 'FF0000FF' }, underline: true };
+      });
+
+
     });
 
     // Ancho de columnas
@@ -208,19 +234,6 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
     return res.status(400).json({ message: "Datos requeridos" })
   }
 
-  // fecha y hora
-  const original = new Date();
-  const offsetInMs = original.getTimezoneOffset() * 60000;
-  const fechaLocal = new Date(original.getTime() - offsetInMs);
-
-  // convertir a DD/MM/YYYY
-  const fechaFormateada = fechaLocal.toLocaleDateString("es-MX", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-
-
   try {
 
     const pool = await connectToDatabase();
@@ -231,6 +244,7 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
       .query(`SELECT  
           ROW_NUMBER() OVER(ORDER BY r.id) AS numero_consecutivo,
           cd.id AS direccion_distrital,
+          r.folio,
           dt.demarcacion_territorial AS demarcacion,
           r.nombre_completo,
           r.pueblo_afro,
@@ -247,7 +261,8 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
           r.correo_electronico_personal,
           '1' AS moduloregistro,
           r.fecha_registro,
-          CONVERT(VARCHAR(8), r.hora_registro, 108) AS hora_registro
+          CONVERT(VARCHAR(8), r.hora_registro, 108) AS hora_registro,
+          r.enlace_documentos
       FROM registro r
       JOIN demarcacion_territorial dt ON r.demarcacion = dt.id 
       JOIN cat_distrito cd ON r.distrito_electoral = cd.id 
@@ -257,7 +272,7 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
     const rows = result.recordset;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("NombreDelReporte");
+    const worksheet = workbook.addWorksheet("Anexo 2");
 
     //inserta imgaen
     const logoPath = path.join(__dirname, '../../assets/iecm.png');
@@ -293,7 +308,7 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
     worksheet.mergeCells("C2:M2");
     const nombre = worksheet.getCell("C2");
     nombre.value =
-      "Directorio de Instancias Representativas, Organizaciones y Personas Relevantes de Pueblos y Comunidades Afromexicanas";
+      "Directorio de Instancias Representativas de Pueblos, Barrios y Comunidades Afromexicanas";
     nombre.font = { size: 14, bold: true };
     nombre.alignment = { vertical: "middle", horizontal: "center" };
 
@@ -304,39 +319,11 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
     subtitleCell.font = { size: 12, bold: true };
     subtitleCell.alignment = { vertical: "middle", horizontal: "center" };
 
-    //datos en tabla 
-    const cellA3 = worksheet.getCell("A3");
-    cellA3.value = {
-      richText: [
-        { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
-      ]
-    };
-    cellA3.alignment = { vertical: "middle", horizontal: "left" };
-
-    const cellFecha = worksheet.getCell("N3");
-    cellFecha.value = {
-      richText: [
-        { text: "Fecha: ", font: { size: 12, bold: true } },
-        { text: String(fechaFormateada), font: { size: 12, bold: true, underline: true } }
-      ]
-    };
-    cellFecha.alignment = { vertical: "middle", horizontal: "left" };
-
-    const cabezera = worksheet.getCell("N2");
-    cabezera.value = {
-      richText: [
-        { text: "Demarcación: ", font: { size: 12, bold: true } },
-        { text: String(""), font: { size: 12, bold: true, underline: true } }
-      ]
-    };
-    cabezera.alignment = { vertical: "middle", horizontal: "left" };
-
-
     // Encabezados
     const headers = [
       "No.",
       "DD",
+      "Folio Único",
       "Demarcación",
       "Nombre completo",
       "Nombre de Pueblo",
@@ -354,6 +341,7 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
       "Modulo de registro",
       "Fecha de registro",
       "Hora de registro",
+      "Documentos adjuntos"
     ];
 
     worksheet.addRow(headers);
@@ -381,9 +369,22 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
     };
 
     rows.forEach((row) => {
-      worksheet.addRow([
+      //doc
+      const nombreArchivo = row.enlace_documentos
+        ? path.basename(row.enlace_documentos)
+        : "";
+
+      const archivo =
+        nombreArchivo
+          ? { text: nombreArchivo, hyperlink: `${API_BASE_URL}/api/descargaDoc/downloadOtrosNorma/${nombreArchivo}` }
+          : "";
+
+      const folioVacio = row.folio==null?'N/A': row.folio
+
+      const rowExcel = worksheet.addRow([
         row.numero_consecutivo,
         row.direccion_distrital,
+        folioVacio,
         row.demarcacion,
         row.nombre_completo,
         row.pueblo_afro,
@@ -401,7 +402,16 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
         row.moduloregistro,
         row.fecha_registro,
         row.hora_registro,
+        archivo
       ]);
+
+      const cellUbicacion = rowExcel.getCell(21);
+
+      [cellUbicacion].forEach(cell =>{
+        cell.font = { color: { argb: 'FF0000FF' }, underline: true}
+      });
+
+
     });
 
     // Ancho de columnas
@@ -707,7 +717,6 @@ router.get("/reporteInstanciasMod2", Midleware.verifyToken, async (req, res) => 
 
     const tabla2 = result2.recordset;
 
-    // ====== CREACIÓN DEL EXCEL ======
     const workbook = new ExcelJS.Workbook();
 
     // Helper para aplicar formato
@@ -741,7 +750,7 @@ router.get("/reporteInstanciasMod2", Midleware.verifyToken, async (req, res) => 
         richText: [
           { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
           {
-            text: String(distrito_electoral || "Todos"),
+            text: String(distrito_electoral || "1-33"),
             font: { size: 12, bold: true, underline: true },
           },
         ],
@@ -883,7 +892,7 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
     const rows = result.recordset;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("NombreDelReporte");
+    const worksheet = workbook.addWorksheet("Anexo 7");
 
     //inserta imgaen
     const logoPath = path.join(__dirname, '../../assets/iecm.png');
@@ -928,7 +937,7 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
     distrito.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     distrito.alignment = { vertical: "middle", horizontal: "left" };
@@ -1047,7 +1056,10 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
 //Rporte de mayor afluencia
 router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
 
-  const { distrito_electoral } = req.query;
+  const { distrito_electoral, validacion } = req.query;
+
+
+  console.log("validacion", validacion);
 
   const distritoElectoral = distrito_electoral && distrito_electoral !== "null" && distrito_electoral !== ""
     ? Number(distrito_electoral)
@@ -1128,23 +1140,27 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
     };
     anexo.alignment = { vertical: "middle", horizontal: "center" };
 
-    const distrito = worksheet.getCell("B4");
-    distrito.value = {
-      richText: [
-        { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
-      ]
-    };
-    distrito.alignment = { vertical: "middle", horizontal: "left" };
-
+    if(validacion=='true') {
     const numRep = worksheet.getCell("B5");
     numRep.value = {
       richText: [
         { text: "Órgano Desconcentrado Cabecera de Demarcación: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     numRep.alignment = { vertical: "middle", horizontal: "left" };
+    }else{
+    const distrito = worksheet.getCell("B4");
+    distrito.value = {
+      richText: [
+        { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
+      ]
+    };
+    distrito.alignment = { vertical: "middle", horizontal: "left" };
+
+    }
+
 
 
     const cellFecha = worksheet.getCell("G5");
@@ -1304,6 +1320,7 @@ router.get("/reporteAtencion", Midleware.verifyToken, async (req, res) => {
       .input("distrito_electoral", sql.Int, distrito_electoral)
       .query(`
             select ac.numero_consecutivo,
+            ac.numero_reporte,
             ac.fecha_consulta,
             ac.nombre_completo,
             cpo.pueblo_originario,
@@ -1327,7 +1344,7 @@ router.get("/reporteAtencion", Midleware.verifyToken, async (req, res) => {
     const rows = result.recordset;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("NombreDelReporte");
+    const worksheet = workbook.addWorksheet("ANEXO 6");
 
     //inserta imgaen
     const logoPath = path.join(__dirname, '../../assets/iecm.png');
@@ -1370,16 +1387,20 @@ router.get("/reporteAtencion", Midleware.verifyToken, async (req, res) => {
     distrito.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     distrito.alignment = { vertical: "middle", horizontal: "left" };
 
+    
+    const reportes = result.recordset.map(r => r.numero_reporte);
+    const concatenado = reportes.join(", ");
+
     const numRep = worksheet.getCell("B5");
     numRep.value = {
       richText: [
-        { text: "Número de Reporte: ", font: { size: 12, bold: true } },
-        { text: String(""), font: { size: 12, bold: true, underline: true } }
+        { text: "Número de Reporte(s): ", font: { size: 12, bold: true } },
+        { text: concatenado || "Sin datos", font: { size: 12, bold: true, underline: true } }
       ]
     };
     numRep.alignment = { vertical: "middle", horizontal: "left" };
@@ -1522,6 +1543,7 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
       .query(`
             select ac.numero_consecutivo,
             ${distritoElectoral === null ? "ac.distrito_electoral," : ""}
+            ac.numero_reporte,
             ac.fecha_consulta,
             ac.nombre_completo,
             cpo.pueblo_originario,
@@ -1545,7 +1567,7 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
     const rows = result.recordset;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("NombreDelReporte");
+    const worksheet = workbook.addWorksheet("ANEXO 6");
 
     //inserta imgaen
     const logoPath = path.join(__dirname, '../../assets/iecm.png');
@@ -1588,16 +1610,19 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
     distrito.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     distrito.alignment = { vertical: "middle", horizontal: "left" };
+
+    const reportes = result.recordset.map(r => r.numero_reporte);
+    const concatenado = reportes.join(", ");
 
     const numRep = worksheet.getCell("B5");
     numRep.value = {
       richText: [
         { text: "Número de Reporte: ", font: { size: 12, bold: true } },
-        { text: String(""), font: { size: 12, bold: true, underline: true } }
+        { text: String(concatenado || "Sin datos"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     numRep.alignment = { vertical: "middle", horizontal: "left" };
@@ -1809,7 +1834,7 @@ router.get("/reporteAsamblea", Midleware.verifyToken, async (req, res) => {
     cellA3.value = {
       richText: [
         { text: "Dirección Distrital: ", font: { size: 12, bold: true } },
-        { text: String(distrito_electoral), font: { size: 12, bold: true, underline: true } }
+        { text: String(distrito_electoral || "1-33"), font: { size: 12, bold: true, underline: true } }
       ]
     };
     cellA3.alignment = { vertical: "middle", horizontal: "left" };

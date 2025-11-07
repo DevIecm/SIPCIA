@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
     let uploadPath;
 
     if (file.originalname.toLowerCase().endsWith(".zip")) {
-      uploadPath = path.join(__dirname, "../uploads/zip");
+      uploadPath = path.join(__dirname, "uploads/zip");
     } else {
       return cb(new Error("Tipo de archivo no permitido"), null);
     }
@@ -40,7 +40,7 @@ const upload = multer({ storage });
 router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), Midleware.verifyToken, async (req, res) => {
 
   let {
-    nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad,
+    nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, 
     pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl, pueblo_afro,
     comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia,
     domicilio, telefono_particular, telefono_celular, correo_electronico_oficial, correo_electronico_personal,
@@ -52,11 +52,9 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
 
   if (
     !nombre_completo ||
-    !seccion_electoral ||
     !demarcacion ||
     !distrito_electoral ||
     !comunidad ||
-    !nombre_comunidad ||
     !nombre_instancia ||
     !cargo_instancia ||
     !domicilio ||
@@ -66,7 +64,28 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
     !modulo_registro ||
     !estado_registro
   ) {
-    return res.status(400).json({ message: "Datos requeridos" });
+    
+    const faltantes = [];
+    
+    if (!nombre_completo) faltantes.push("nombre_completo");
+    if (!demarcacion) faltantes.push("demarcacion");
+    if (!distrito_electoral) faltantes.push("distrito_electoral");
+    if (!comunidad) faltantes.push("comunidad");
+    if (!nombre_instancia) faltantes.push("nombre_instancia");
+    if (!cargo_instancia) faltantes.push("cargo_instancia");
+    if (!domicilio) faltantes.push("domicilio");
+    if (!telefono_celular) faltantes.push("telefono_celular");
+    if (!correo_electronico_personal) faltantes.push("correo_electronico_personal");
+    if (!usuario_registro) faltantes.push("usuario_registro");
+    if (!modulo_registro) faltantes.push("modulo_registro");
+    if (!estado_registro) faltantes.push("estado_registro");
+
+    return res.status(400).json({
+      message: "Faltan datos requeridos",
+      faltantes,
+    });
+
+
   }
 
 
@@ -75,8 +94,11 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
   const barrioInt = barrio_pbl === "" ? null : parseInt(barrio_pbl, 10);
   const unidad_territorialInt = unidad_territorial_pbl === "" ? null : parseInt(unidad_territorial_pbl, 10);
   const telefono_particularInt = telefono_particular === "" ? null : parseInt(telefono_particular, 10)
-  documentos = req.files ? 1 : 0;
-  enlace_documentos = req.files ? `/uploads/zip/${req.files.filename}` : null;
+  
+  const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;
+
+  documentos = kmlFile ? 1 : 0;
+  enlace_documentos = kmlFile ? `/uploads/zip/${kmlFile.filename}` : null;
 
   // Fecha y hora
   const original = new Date();
@@ -103,7 +125,6 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
         .query(`
                 SELECT MAX(CAST(RIGHT(folio, 4) AS INT)) AS ultimoFolio
                 FROM registro
-                WHERE distrito_electoral = @distrito_electoral
             `);
 
       const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;
@@ -121,7 +142,6 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
       .input('demarcacion', sql.Int, demarcacion)
       .input('distrito_electoral', sql.Int, distrito_electoral)
       .input('comunidad', sql.Int, comunidad)
-      .input('nombre_comunidad', sql.VarChar, nombre_comunidad)
       .input('pueblo_originario', sql.Int, pueblo_originarioInt)
       .input('pueblo_pbl', sql.Int, puebloInt)
       .input('barrio_pbl', sql.Int, barrioInt)
@@ -149,12 +169,12 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
       .input('estado_registro', sql.Int, estado_registro)
       .input('folio', sql.VarChar, folio)
       .query(`
-                    INSERT INTO registro (nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad, pueblo_originario,
+                    INSERT INTO registro (nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, pueblo_originario,
                         pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl,  pueblo_afro, comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia,
                         cargo_instancia, domicilio, telefono_particular, telefono_celular, correo_electronico_oficial, correo_electronico_personal,
                         documentos, enlace_documentos, fecha_registro, hora_registro, usuario_registro, modulo_registro, estado_registro, folio)
                     OUTPUT INSERTED.id
-                    VALUES (@nombre_completo, @seccion_electoral, @demarcacion, @distrito_electoral, @comunidad, @nombre_comunidad, @pueblo_originario,
+                    VALUES (@nombre_completo, @seccion_electoral, @demarcacion, @distrito_electoral, @comunidad, @pueblo_originario,
                         @pueblo_pbl, @barrio_pbl, @unidad_territorial_pbl, @comunidad_pbl, @otro_pbl, @pueblo_afro, @comunidad_afro, @organizacion_afro, @persona_relevante_afro, @otro_afro, @nombre_instancia,
                         @cargo_instancia, @domicilio, @telefono_particular, @telefono_celular, @correo_electronico_oficial,
                         @correo_electronico_personal, @documentos, @enlace_documentos, @fecha_registro, @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @folio)
@@ -164,7 +184,7 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
 
     // Insertar en bitácora
     const camposModificados = JSON.stringify({
-      nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad, nombre_comunidad,
+      nombre_completo, seccion_electoral, demarcacion, distrito_electoral, comunidad,
       pueblo_originario, pueblo_pbl, barrio_pbl, unidad_territorial_pbl, comunidad_pbl, otro_pbl, pueblo_afro,
       comunidad_afro, organizacion_afro, persona_relevante_afro, otro_afro, nombre_instancia, cargo_instancia,
       domicilio, telefono_particular, telefono_celular, correo_electronico_oficial, correo_electronico_personal,
@@ -224,7 +244,6 @@ router.get("/getRegistro", Midleware.verifyToken, async (req, res) => {
                     cd.direccion_distrital,
                     c.id as id_comunidad,
                     c.comunidad,
-                    r.nombre_comunidad,
                     cpo.id as id_pueblo_originario,
                     cpo.pueblo_originario,
                     cp.id as id_pueblo,
@@ -274,7 +293,7 @@ router.get("/getRegistro", Midleware.verifyToken, async (req, res) => {
         getRegistro: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+      return res.status(200).json({ message: "No se encontraron registros", code: 100 })
     }
   } catch (error) {
     console.error("Error: ", error);
@@ -295,7 +314,6 @@ router.patch(
         seccion_electoral,
         demarcacion,
         distrito_electoral,
-        nombre_comunidad,
         pueblo_originario,
         pueblo_pbl,
         barrio_pbl,
@@ -326,7 +344,6 @@ router.patch(
       if (
         !id_registro ||
         !nombre_completo ||
-        !nombre_comunidad ||
         !nombre_instancia ||
         !cargo_instancia ||
         !domicilio ||
@@ -336,7 +353,23 @@ router.patch(
         !modulo_registro ||
         !estado_registro
       ) {
-        return res.status(400).json({ message: "Datos requeridos" });
+        const faltantes = [];
+        
+        if (!id_registro) faltantes.push("id_registro");
+        if (!nombre_completo) faltantes.push("nombre_completo");
+        if (!nombre_instancia) faltantes.push("nombre_instancia");
+        if (!cargo_instancia) faltantes.push("cargo_instancia");
+        if (!domicilio) faltantes.push("domicilio");
+        if (!telefono_celular) faltantes.push("telefono_celular");
+        if (!correo_electronico_personal) faltantes.push("correo_electronico_personal");
+        if (!usuario_registro) faltantes.push("usuario_registro");
+        if (!modulo_registro) faltantes.push("modulo_registro");
+        if (!estado_registro) faltantes.push("estado_registro");
+
+        return res.status(400).json({
+          message: "Faltan datos requeridos",
+          faltantes,
+        });
       }
 
       const pool = await connectToDatabase();
@@ -350,7 +383,7 @@ router.patch(
       const registroAnterior = resultAnterior.recordset[0];
 
       if (!registroAnterior) {
-        return res.status(404).json({ message: "Registro no encontrado" });
+        return res.status(200).json({ message: "Registro no encontrado" });
       }
 
       // Archivos 
@@ -370,7 +403,6 @@ router.patch(
         seccion_electoral,
         demarcacion,
         distrito_electoral,
-        nombre_comunidad,
         pueblo_originario,
         pueblo_pbl,
         barrio_pbl,
@@ -445,7 +477,6 @@ router.patch(
             seccion_electoral = @seccion_electoral,
             demarcacion = @demarcacion,
             distrito_electoral = @distrito_electoral,
-            nombre_comunidad = @nombre_comunidad,
             pueblo_originario = @pueblo_originario,
             pueblo_pbl = @pueblo_pbl,
             barrio_pbl = @barrio_pbl,
