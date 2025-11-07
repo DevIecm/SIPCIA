@@ -35,7 +35,7 @@ export class DirectorioAfromexicanasTwo implements OnInit {
         this.descargarReporteAfro.descargarReporteAfro(2, null, 1, this.tokenSesion).subscribe((blob: Blob) => {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = 'reporte.xlsx';
+        link.download = 'Directorio de Instancias Representativas de Pueblos, Barrios y Comunidades Afromexicanas.xlsx';
         link.click();
         window.URL.revokeObjectURL(link.href);
       });

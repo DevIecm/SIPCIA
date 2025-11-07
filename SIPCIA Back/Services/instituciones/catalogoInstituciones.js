@@ -271,7 +271,7 @@ router.patch("/updateInstituciones", Midleware.verifyToken, upload.fields([{ nam
 
     const registroAnterior = resultAnterior.recordset[0];
     if (!registroAnterior) {
-      return res.status(404).json({ message: "Registro no encontrado" });
+      return res.status(200).json({ message: "Registro no encontrado" });
     }
 
 
@@ -425,6 +425,7 @@ router.get("/getInstituciones", Midleware.verifyToken, async (req, res) => {
       .query(`select 
                 ri.id as id_registro,
                 ri.nombre_completo,
+                ri.fotografia,
                 cpo.pueblo_originario,
                 cp.pueblo,
                 cb.barrio,
@@ -458,23 +459,34 @@ router.get("/getInstituciones", Midleware.verifyToken, async (req, res) => {
             : nombreUbicacion;
         }
 
+        let fotografia_url = null;
+
+        if (item.fotografia) {
+          const dirname = path.dirname(item.fotografia).replace(/\\/g, "/");
+          const basename = path.basename(item.fotografia);
+
+          fotografia_url = `${API_BASE_URL}/Services${dirname}/${encodeURIComponent(basename)}`;
+        }
+
         return {
           ...item,
+          fotografia_url,
           cv_enlace: nombreUbicacion,
           nombre_archivo: nombreUbicacionLimpio
         };
       });
 
+
       return res.status(200).json({ getInstituciones: data });
     } else {
-      return res.status(404).json({ message: "No se encontraron datos" });
+      return res.status(200).json({ message: "No se encontraron datos" });
     }
 
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error de servidor", error: error.message });
   }
-})
+});
 
 router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) => {
   const { id } = req.query;
@@ -524,7 +536,7 @@ router.get("/getRegistroInstituciones", Midleware.verifyToken, async (req, res) 
       `);
 
     if (result.recordset.length === 0) {
-      return res.status(404).json({ message: "No se encontraron datos" });
+      return res.status(200).json({ message: "No se encontraron datos" });
     }
 
     const registro = result.recordset[0];

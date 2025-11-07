@@ -41,6 +41,7 @@ export class CatalogoAcompanamiento implements OnInit {
   data: any = data;
   idRegistroSeleccionado: number | undefined;
   showModal = false;
+  imagePreviewUrl: string | null = null;
 
   isRegistroC: boolean = false;
 
@@ -64,7 +65,7 @@ export class CatalogoAcompanamiento implements OnInit {
     this.descargarReporteInstitucion.descargarReporteInstitucion(this.area_adscripcion,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
+      link.download = 'Catálogo de Instituciones y personas para acompañamiento.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });
@@ -152,27 +153,27 @@ export class CatalogoAcompanamiento implements OnInit {
   }
 
   getRegister() {
-    this.reporteService.getRegisterDataTableAcompa(this.area_adscripcion, this.tokenSesion).subscribe({
-      next: (data) => {
-        if(data.getInstituciones.length > 0) {
-          this.dataTable = data.getInstituciones;
-          this.allDatable = data.getInstituciones;
-        } else {
-          Swal.fire("No se encontraron registros");
-        }        
-      },
-      error: (err) => {
-
-        if (err.error.code === 160) {
-          this.service.cerrarSesionByToken();
-        }
-
-        if(err.error.code === 100) {
-          Swal.fire("No se encontraron registros")
-        }
+  this.reporteService.getRegisterDataTableAcompa(this.area_adscripcion, this.tokenSesion).subscribe({
+    next: (data) => {
+      if (data.getInstituciones.length > 0) {
+        this.dataTable = data.getInstituciones;
+        this.allDatable = data.getInstituciones;
+      } else {
+        Swal.fire("No se encontraron registros");
       }
-    });
-  }
+    },
+    error: (err) => {
+      if (err.error.code === 160) {
+        this.service.cerrarSesionByToken();
+      }
+
+      if (err.error.code === 100) {
+        Swal.fire("No se encontraron registros");
+      }
+    }
+  });
+}
+
 
    onValidateInfo() {
     this.router.navigate(['/menu']);

@@ -130,14 +130,8 @@ export class NuevoRegistro implements OnInit{
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file && file.name.endsWith(".zip")) {
-      this.selectedFile = file;
-      this.selectedFileName = file.name;
-      this.fileUploaded = true;
-    } else {
-      Swal.fire("Solo se permiten archivos .zip");
-      this.selectedFile = null;
-      this.selectedFileName = null;
-      this.fileUploaded = false;
+        this.selectedFile = event.target.files[0];
+        this.fileUploaded = true;
     }
   }
 

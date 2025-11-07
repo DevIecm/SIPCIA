@@ -111,7 +111,7 @@ export class ReporteConsultas implements OnInit {
       this.descargarReporteAtencion.descargarReporteAtencionAll(null, this.tokenSesion).subscribe((blob: Blob) => {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = 'reporte.xlsx';
+        link.download = 'Reporte de la atención distrital a consultas.xlsx';
         link.click();
         window.URL.revokeObjectURL(link.href);
       });
@@ -119,7 +119,7 @@ export class ReporteConsultas implements OnInit {
       this.descargarReporteAtencion.descargarReporteAtencion(null, this.selectedIds,  this.tokenSesion).subscribe((blob: Blob) => {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = 'reporte.xlsx';
+        link.download = 'Reporte de la atención distrital a consultas.xlsx';
         link.click();
         window.URL.revokeObjectURL(link.href);
       });

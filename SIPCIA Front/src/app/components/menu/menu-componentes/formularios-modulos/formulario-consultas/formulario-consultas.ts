@@ -36,6 +36,8 @@ export class FormularioConsultas {
   catalogoReporte: any = [];
   catalogoFecha: any = [];
   infoUpdate: any = [];
+  lista: any = [];
+  periodo: any = [];
 
   opcionDemarcacion: any = null;
   opcionComunidad: any = null;
@@ -106,7 +108,6 @@ export class FormularioConsultas {
 
               formData.append("distrito_electoral", this.area.toString());
               formData.append("numero_reporte", this.formularioRegistro.get('nreporte')?.value || "");
-              formData.append("fecha_periodo", this.formularioRegistro.get('fyperiodo')?.value || "");  
               formData.append("presento_caso", this.formularioRegistro.get('presento_caso')?.value);
               formData.append("numero_consecutivo", this.idConsecutivo.toString());
               formData.append("fecha_consulta", this.formularioRegistro.get('fconsulta')?.value || "");
@@ -256,6 +257,8 @@ export class FormularioConsultas {
     if(this.moduloRegister === 1){
       this.area = sessionStorage.getItem('area')!;
     }
+    
+    this.lista=[1,2,3,4,5,6,7,8,9,10,11,12];
 
     this.formularioRegistro = this.formBuilder.group({
       nreporte: ['', [Validators.required]],
@@ -290,8 +293,7 @@ export class FormularioConsultas {
     }
 
     this.getConsecutivo();
-    this.catalogo_nreporte();
-    this.catalogo_fecha();
+    
 
     this.onCheckboxChange({ target: { checked: false } });
 
@@ -326,7 +328,14 @@ export class FormularioConsultas {
       }
     });
   };
-  
+   onChangeReporte(event: any) {
+    const nReporte = Number(event.target.value);
+    this.catalogo_fecha(nReporte);    
+  }
+
+   onChangePeriodo(){
+    console.log("Cambio fecha")   
+   }
   catalogo_pueblor() {
     this.catalogos.getCatalogos(Number(this.area), "cat_pueblos_originarios", this.tokenSesion).subscribe({
       next: (data) => {
@@ -340,12 +349,34 @@ export class FormularioConsultas {
       }
     });
   };
-  
-  catalogo_nreporte() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_numero_reporte", this.tokenSesion).subscribe({
+catalogo_fecha(id: number) {
+  this.catalogos.getCatalogos(id, "cat_fecha_periodo", this.tokenSesion).subscribe({
+    next: (data) => {
+      if (data.cat_fecha_periodo.length > 0) {
+        this.catalogoFecha = data.cat_fecha_periodo;
+
+        const primerValor = this.catalogoFecha[0].id;
+          if (this.formularioRegistro) {     
+            this.formularioRegistro.get('fyperiodo')?.setValue(primerValor);
+          }
+      } else {
+        this.catalogoFecha = [];
+      }
+    },
+    error: (err) => {
+      if (err.error.code === 160) {
+        this.service.cerrarSesionByToken();
+      }
+    },
+  });
+}
+
+
+  Ppppcatalogo_fecha() {
+    this.catalogos.getCatalogos(Number(this.area), "cat_fecha_periodo", this.tokenSesion).subscribe({
       next: (data) => {
-        if(data.cat_numero_reporte.length > 0) {
-          this.catalogoReporte = data.cat_numero_reporte;
+        if(data.cat_fecha_periodo.length > 0) {
+          this.catalogoFecha = data.cat_fecha_periodo;
         }
       }, error: (err) => {
         if(err.error.code === 160) {
@@ -355,11 +386,12 @@ export class FormularioConsultas {
     });
   };
 
-  catalogo_fecha() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_fecha_periodo", this.tokenSesion).subscribe({
+  
+  catalogo_nreporte() {
+    this.catalogos.getCatalogos(Number(this.area), "cat_numero_reporte", this.tokenSesion).subscribe({
       next: (data) => {
-        if(data.cat_fecha_periodo.length > 0) {
-          this.catalogoFecha = data.cat_fecha_periodo;
+        if(data.cat_numero_reporte.length > 0) {
+          this.catalogoReporte = data.cat_numero_reporte;
         }
       }, error: (err) => {
         if(err.error.code === 160) {
@@ -554,6 +586,7 @@ export class FormularioConsultas {
           this.infoUpdate = data.getRegistroAtencion[0];
          
           if(data.getRegistroAtencion.length > 0) {
+            this.catalogo_fecha(this.infoUpdate.numero_reporte);            
 
             if(this.moduloRegister === 2){
 

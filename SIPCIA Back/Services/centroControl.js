@@ -101,7 +101,7 @@ router.patch("/updateEstadoDistrito", Midleware.verifyToken, async (req, res) =>
     const registroAnterior = resultAnterior.recordset[0];
 
     if (!registroAnterior) {
-      return res.status(404).json({ message: "Registro no encontrado" });
+      return res.status(200).json({ message: "Registro no encontrado" });
     }
 
     //comparar
@@ -256,7 +256,7 @@ router.get("/getControlModulos", Midleware.verifyToken, async (req, res) => {
         getAllDistritos: result.recordset
       });
     } else {
-      return res.status(404).json({ message: "No se encontraron registros", code: 100 })
+      return res.status(200).json({ message: "No se encontraron registros", code: 100 })
     }
   } catch (error) {
     console.error(error);
@@ -338,7 +338,7 @@ router.patch("/updateEstadoModulo", Midleware.verifyToken, async (req, res) => {
     const registroAnterior = resultAnterior.recordset[0];
 
     if (!registroAnterior) {
-      return res.status(404).json({ message: "Registro no encontrado" });
+      return res.status(200).json({ message: "Registro no encontrado" });
     }
 
     //comparar
@@ -424,9 +424,9 @@ router.patch("/updateLimpiaDocumentos", Midleware.verifyToken, async (req, res) 
         code: 200,
       });
     } else {
-      return res.status(404).json({
+      return res.status(200).json({
         message: "No se actualizó ningún registro (posiblemente la tabla esté vacía)",
-        code: 404,
+        code: 200,
       });
     }
 

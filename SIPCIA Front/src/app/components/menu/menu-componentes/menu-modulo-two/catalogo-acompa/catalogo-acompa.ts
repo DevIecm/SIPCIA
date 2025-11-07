@@ -43,7 +43,7 @@ export class CatalogoAcompa implements OnInit {
   showModal = false;
 
   isRegistroC: boolean = false;
-
+  imagePreviewUrl: string | null = null;
 
   ngOnInit(): void {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
@@ -64,7 +64,7 @@ export class CatalogoAcompa implements OnInit {
     this.descargarReporteInstitucion.descargarReporteInstitucion(null,this.tokenSesion).subscribe((blob: Blob) => {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = 'reporte.xlsx';
+      link.download = 'Catálogo de Instituciones y personas para acompañamiento.xlsx';
       link.click();
       window.URL.revokeObjectURL(link.href);
     });
