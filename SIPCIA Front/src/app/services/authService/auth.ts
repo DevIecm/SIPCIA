@@ -30,7 +30,6 @@ export class Auth {
   };
   
   loginEncrypted(username: string, password: string, tipo_usuario: number): Observable<any> {
-    
     const data = {
         username,
         password,
