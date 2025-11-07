@@ -91,10 +91,22 @@
                         </label>
                     </div>
 
-                    <div class="mt-4">
-                        <button type="submit" (click)="goToRegister()" class="btn button-register-r">
-                            Aceptar
-                        </button>
+                    <div class="container text-center mt-4">
+                        <div class="row">
+                            <div class="col-3">
+                                <ng-hcaptcha 
+                                    siteKey="9060ed56-de14-4dc8-8546-571429e06f1e"
+                                    (verify)="onVerify($event)"
+                                    (expired)="onExpired($event)"
+                                    (error)="onError($event)">
+                                </ng-hcaptcha>
+                            </div>
+                            <div class="col-9">
+                                <button type="submit" [disabled]="captchaValido === false" (click)="goToRegister()" class="btn button-register-r">
+                                    Aceptar
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

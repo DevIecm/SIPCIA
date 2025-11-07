@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import * as data from '../../../labels/label.json';
 import { Navbar } from '../../../navbar/navbar';
 import { FormBuilder } from '@angular/forms';
 import { Auth } from '../../../../services/authService/auth';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-menu-modulo-four',
@@ -13,20 +14,25 @@ import Swal from 'sweetalert2';
   imports: [
     Navbar,
     MatCardModule,
-    CommonModule
+    CommonModule,
+    NgHcaptchaModule
   ],
   templateUrl: './menu-modulo-four.html',
   styleUrl: './menu-modulo-four.css'
 })
 export class MenuModuloFour implements OnInit{
-  
+  private token = signal<string | undefined>(undefined);
+  private expire = signal<boolean>(false);
+  private err = signal<any>(null);
+
+  @Output() verify = new EventEmitter<string | undefined>();
+  @Output() error = new EventEmitter<any>();
 
   nombreUser: string = '';
   cargoUser: string = '';
   data: any = data;
   captchaValido = false;
   position: string = '';
-  token: string | null = null;
   moduloSelected = localStorage.getItem('modulo');
   
   showModulo1: boolean = false;
@@ -61,19 +67,28 @@ export class MenuModuloFour implements OnInit{
 
   constructor(private router: Router, private formBuilder: FormBuilder, private auth: Auth) {}
 
-  onVerify(token: string) {
-    console.log('Token recibido:', token);
-    this.token = token;
+
+  onVerify = (token: string) => {
+      this.token.set(token);
+      this.expire.set(false);
+      this.verify.emit(this.token());
+      this.captchaValido = true;
   }
 
-  onExpired() {
-    console.log('hCaptcha expirado');
-    this.token = null;
+  onExpired = (response: any) => {
+      this.token.set(undefined);
+      Swal.fire({
+          icon: 'warning',
+          title: '¡Atención!',
+          text: 'El captcha a expirado, por favor intentalo nuevamente',
+          confirmButtonText: 'Entendido'
+      });
+      this.captchaValido = false;
   }
 
-  onError(err: any) {
-    console.error('Error hCaptcha:', err);
-    this.token = null;
+  onError = (error: any) => {
+      this.err.set(error);
+      this.captchaValido = false;
   }
 
   goToRegister() {
