@@ -66,11 +66,10 @@ export class MenuModuloFour implements OnInit{
 
     const user = "110198831a426807bccd9dbdf54b6dcb5298bc5d31ac49069e0ba3d210d970ae";
     const pass = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
-    const tipo = this.tipoUsuario;
 
     try {
 
-      this.auth.login(user, pass, this.tipoUsuario).subscribe({
+      this.auth.loginEncrypted(user, pass, this.tipoUsuario).subscribe({
         next: (res) => {
           sessionStorage.setItem("key", res.token);
           sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
