@@ -8,6 +8,7 @@ import { FormBuilder } from '@angular/forms';
 import { Auth } from '../../../../services/authService/auth';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
 import Swal from 'sweetalert2';
+import { Reportes } from '../../../../services/reporteService/reportes';
 @Component({
   selector: 'app-menu-modulo-four',
   standalone: true,
@@ -65,7 +66,10 @@ export class MenuModuloFour implements OnInit{
     this.position = sessionStorage.getItem('dir')!;
   }
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private auth: Auth) {}
+  constructor(private router: Router, 
+    private miServicio: Reportes,
+    private formBuilder: FormBuilder, 
+    private auth: Auth) {}
 
 
   onVerify = (token: string) => {
@@ -139,4 +143,18 @@ export class MenuModuloFour implements OnInit{
   cambiarPantalla(){
     this.mostrarPantalla = false;
   }
+  descargar(){
+    this.miServicio.descargarDocNorma("1757703550661-AVISDEPRIVACIDADSIMPLIFICADO.pdf").subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Aviso de Privacidad';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
+
 }

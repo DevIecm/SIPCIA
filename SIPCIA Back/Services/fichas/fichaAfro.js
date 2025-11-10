@@ -14,6 +14,8 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
     distrito_electoral,
     fecha_reunion,
     fecha_ficha,
+    ptrabajo_nombre,
+    racta_nombre,
     hora_reunion,
     numero_asistentes_reunion,
     lugar_reunion,
@@ -109,6 +111,8 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
       .input('nombre_ficha', sql.VarChar, nombre_ficha)
       .input('distrito_cabecera', sql.Int, distrito_cabecera)
       .input('fecha_ficha', sql.DateTime, fecha_ficha) 
+      .input('ptrabajo_nombre', sql.VarChar, ptrabajo_nombre)
+      .input('racta_nombre', sql.VarChar, racta_nombre)
       .query(`
                 INSERT INTO ficha_tecnica_afromexicana                     
                     (demarcacion_territorial, distrito_electoral, fecha_reunion,
@@ -117,7 +121,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
                     hora_asamblea_consultiva, numero_asistentes_consultiva, lugar_asamblea_consultiva, periodo_del,
                     periodo_al, numero_lugares_publicos, plan_trabajo, resumen_acta,
                     solicitud_cambios, cambios_solicitados, observaciones, fecha_registro,
-                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha, distrito_cabecera, fecha_ficha)
+                    hora_registro, usuario_registro, modulo_registro, estado_registro, nombre_ficha, distrito_cabecera, fecha_ficha, ptrabajo_nombre, racta_nombre)
                 OUTPUT INSERTED.id
                 VALUES (@demarcacion_territorial, @distrito_electoral, @fecha_reunion,
                     @hora_reunion, @numero_asistentes_reunion, @lugar_reunion, @fecha_asamblea_informativa,
@@ -125,7 +129,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
                     @hora_asamblea_consultiva, @numero_asistentes_consultiva, @lugar_asamblea_consultiva, @periodo_del,
                     @periodo_al, @numero_lugares_publicos, @plan_trabajo, @resumen_acta,
                     @solicitud_cambios, @cambios_solicitados, @observaciones, @fecha_registro,
-                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha, @distrito_cabecera, @fecha_ficha)
+                    @hora_registro, @usuario_registro, @modulo_registro, @estado_registro, @nombre_ficha, @distrito_cabecera, @fecha_ficha, @ptrabajo_nombre, @racta_nombre)
             `);
 
     const idRegistro = result.recordset[0].id;
@@ -335,6 +339,8 @@ router.get("/getRegistroFichaAfro", Midleware.verifyToken, async (req, res) => {
                     fi.distrito_electoral,
                     fi.fecha_registro,
                     fi.fecha_ficha,
+                    fi.ptrabajo_nombre,
+                    fi.racta_nombre,
                     fi.fecha_reunion,
                     fi.fecha_asamblea_informativa,
                     fi.fecha_asamblea_consultiva,

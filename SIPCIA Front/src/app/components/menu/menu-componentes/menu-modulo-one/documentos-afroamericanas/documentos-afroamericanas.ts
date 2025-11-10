@@ -210,7 +210,7 @@ export class DocumentosAfroamericanas implements OnInit{
   }
 
   descargar(){
-    this.miServicio.descargarDocNorma("1757703550661-purebaComunidadAfro.pdf", this.tokenSesion).subscribe({
+    this.miServicio.descargarDocNorma("1757703550661-purebaComunidadAfro.pdf").subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

@@ -280,8 +280,11 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div>
-                                                <label class="form-label">Plan de trabajo para la instrumentación <br> de la consulta Afromexicana 2025</label>
-
+                                                <textarea
+                                                    formControlName="ptrabajo_nombre"
+                                                    [placeholder]="'Plan de trabajo para la instrumentación\n de la consulta indígena 2025'"
+                                                    style="resize: none;" rows="3" maxlength="500"
+                                                    class="form-control"></textarea>
                                             </div>
                                         </div>
                                         <div class="col-8">
@@ -294,10 +297,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" style="margin-top: 5px;">
                                         <div class="col-4">
                                             <div>
-                                                <label class="form-label">Resumen del Acta de la(s) reunion(es) <br> con las Instancias Representativas</label>
+                                                <textarea
+                                                    formControlName="racta_nombre"
+                                                    [placeholder]="'Resumen del Acta de la(s) reunion(es)\n con las Instancias Representativas'"
+                                                    style="resize: none;" rows="3" maxlength="500"
+                                                    class="form-control"></textarea>
                                             </div>
                                         </div>
                                         <div class="col-8">
@@ -317,8 +324,15 @@
                             <div class="container text-center mt-4 mb-4">
                                 <div class="row">
                                     <div class="col-4">
-                                        <div>
+                                        <!--div>
                                             <label style="text-align: end;" class="form-label">Plan de trabajo para la instrumentación <br> de la consulta indígena 2025</label>
+                                        </div-->
+                                        <div>
+                                            <textarea
+                                                formControlName="ptrabajo_nombre"
+                                                [placeholder]="'Plan de trabajo para la instrumentación\n de la consulta indígena 2025'"
+                                                style="resize: none;" rows="3" maxlength="500"
+                                                class="form-control"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-8">
@@ -414,8 +428,15 @@
 
                                 <div class="row">
                                     <div class="col-4">
-                                        <div>
+                                        <!--div>
                                             <label style="text-align: end;" class="form-label">Resumen del Acta de la(s) reunion(es) <br> con las Instancias Representativas</label>
+                                        </div-->
+                                        <div>
+                                            <textarea
+                                                formControlName="racta_nombre"
+                                                [placeholder]="'Resumen del Acta de la(s) reunion(es)\n con las Instancias Representativas'"
+                                                style="resize: none;" rows="3" maxlength="500"
+                                                class="form-control"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-8">

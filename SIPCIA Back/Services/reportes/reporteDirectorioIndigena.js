@@ -1004,7 +1004,6 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
       const nombreFoto = row.fotografia
         ? path.basename(row.fotografia)
         : "";
-
       const foto =
         nombreFoto
           ? { text: nombreFoto, hyperlink: `${API_BASE_URL}/api/descargaDoc/downloadFoto/${nombreFoto}` }
@@ -1059,7 +1058,6 @@ router.get("/reporteAfluencia", Midleware.verifyToken, async (req, res) => {
   const { distrito_electoral, validacion } = req.query;
 
 
-  console.log("validacion", validacion);
 
   const distritoElectoral = distrito_electoral && distrito_electoral !== "null" && distrito_electoral !== ""
     ? Number(distrito_electoral)

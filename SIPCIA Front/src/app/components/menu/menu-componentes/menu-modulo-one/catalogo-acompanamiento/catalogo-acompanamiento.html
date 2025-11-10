@@ -89,15 +89,6 @@
                 <i style="margin-left: 5px;" [ngClass]="getSortIcon('nombre_completo')"></i>
               </div>
             </th>
-             <th 
-              scope="col"
-              (click)="sortData('pueblo_originario')"
-              style="cursor: pointer;">
-              <div>
-                <span>Fotografía</span>
-                <i style="margin-left: 5px;"></i>
-              </div>
-            </th>
             <th 
               scope="col"
               (click)="sortData('pueblo_originario')"
@@ -179,6 +170,15 @@
                 <i style="margin-left: 5px;" [ngClass]="getSortIcon('npueblo')"></i>
               </div>
             </th>
+            <th 
+              scope="col"
+              (click)="sortData('pueblo_originario')"
+              style="cursor: pointer;">
+              <div>
+                <span>Fotografía</span>
+                <i style="margin-left: 5px;"></i>
+              </div>
+            </th>
             <th scope="col">Documentos / CV</th>
           </tr>
         </thead>
@@ -196,15 +196,6 @@
             </td>
             <td><i (click)="goToBitacora(item.id_registro, 'catInstituciones')" class="bi bi-journal-text"></i></td>
             <td>{{ item.nombre_completo ? item.nombre_completo : '-'}}</td>
-            <td> <img
-                *ngIf="item.fotografia_url"
-                [src]="item.fotografia_url"
-                class="img-fluid rounded"
-                alt="Fotografía"
-                width="60"
-                height="60"
-              />
-            </td>
             <td>{{ item.pueblo_originario }}</td>
             <td>{{ item.pueblo }}</td>
             <td>{{ item.barrio ? item.barrio : '-'}}</td>
@@ -213,7 +204,19 @@
             <td>{{ item.comunidad ? item.comunidad : '-'}}</td>  
             <td>{{ item.interes_profesional ? item.interes_profesional : '-'}}</td>
             <td>{{ item.nombre_institucion ? item.nombre_institucion : '-'}}</td>
-            <td>{{ item.npueblo ? item.npueblo : '-'}}</td>
+            <td>{{ item.cargo ? item.cargo : '-'}}</td>
+            <td>
+              <img
+                *ngIf="item.fotografia_url"
+                [src]="item.fotografia_url"
+                class="img-fluid rounded"
+                alt="Fotografía"
+                width="60"
+                height="60"
+                (click)="descargarFotos(item)"
+                style="cursor: pointer;"
+              />
+            </td>
             <td><span *ngIf="item.nombre_archivo" 
                     class="text-primary" 
                     style="cursor: pointer;"

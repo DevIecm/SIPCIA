@@ -459,6 +459,18 @@ router.get("/getInstituciones", Midleware.verifyToken, async (req, res) => {
             : nombreUbicacion;
         }
 
+
+        let fotografia_liga = null;
+        let foto_nombre= null;
+
+        if(item.fotografia){
+          fotografia_liga = path.basename(item.fotografia);
+          const guionIndex = fotografia_liga.indexOf("-");
+          foto_nombre = guionIndex > -1
+            ? fotografia_liga.substring(guionIndex + 1)
+            : fotografia_liga;
+        }
+
         let fotografia_url = null;
 
         if (item.fotografia) {
@@ -472,7 +484,8 @@ router.get("/getInstituciones", Midleware.verifyToken, async (req, res) => {
           ...item,
           fotografia_url,
           cv_enlace: nombreUbicacion,
-          nombre_archivo: nombreUbicacionLimpio
+          nombre_archivo: nombreUbicacionLimpio,
+          fotografia_enlace: fotografia_liga
         };
       });
 

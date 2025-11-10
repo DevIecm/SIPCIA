@@ -175,7 +175,7 @@ export class DocumentosIndigenasTwo implements OnInit{
   }
 
   descargar(){
-    this.miServicio.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf", this.tokenSesion).subscribe({
+    this.miServicio.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf").subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

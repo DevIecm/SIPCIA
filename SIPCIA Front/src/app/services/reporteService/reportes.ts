@@ -148,9 +148,8 @@ export class Reportes {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-  descargarDocNorma(nombreFisico: string, token: string): Observable<Blob> {
+  descargarDocNorma(nombreFisico: string): Observable<Blob> {
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
     });
 
     return this.http.get(`${this.apiUrl}descargaDoc/downloadNorma/${nombreFisico}`, {
@@ -177,6 +176,21 @@ export class Reportes {
       })
     );
   }
+    descargarFoto(nombreFisico: string, token: string): Observable<Blob> {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  const url = `${this.apiUrl}descargaDoc/downloadFoto/${encodeURIComponent(nombreFisico)}`;
+
+  return this.http.get(url, {
+    headers,
+    responseType: 'blob'
+  }).pipe(
+    catchError((error: HttpErrorResponse) => throwError(() => error))
+  );
+}
+
 
   getCabezera(id_distrito: number, demarcacion: number, token: string): Observable<any> {
     const headers = new HttpHeaders({

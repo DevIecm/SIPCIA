@@ -159,6 +159,8 @@ export class FormularioDocumentos {
                 solicitud_cambios: Number(this.formularioRegistro.get('cammbiosOrdenDia')?.value) || 0,
                 cambios_solicitados: this.formularioRegistro.get('cuales')?.value || '',
                 observaciones: this.formularioRegistro.get('observaciones')?.value || null,
+                racta_nombre: this.formularioRegistro.get('racta_nombre')?.value || null,
+                ptrabajo_nombre: this.formularioRegistro.get('ptrabajo_nombre')?.value || null,
                 usuario_registro: this.id_usuario,
                 modulo_registro: this.tipo_usuario,
                 estado_registro: 1,
@@ -222,6 +224,8 @@ export class FormularioDocumentos {
                 solicitud_cambios: Number(this.formularioRegistro.get('cammbiosOrdenDia')?.value) || 0,
                 cambios_solicitados: this.formularioRegistro.get('cuales')?.value || '',
                 observaciones: this.formularioRegistro.get('observaciones')?.value || null,
+                racta_nombre: this.formularioRegistro.get('racta_nombre')?.value || null,
+                ptrabajo_nombre: this.formularioRegistro.get('ptrabajo_nombre')?.value || null,
                 usuario_registro: this.id_usuario,
                 modulo_registro: this.tipo_usuario,
                 estado_registro: 2,
@@ -316,6 +320,8 @@ export class FormularioDocumentos {
 
       cammbiosOrdenDia: [''],
       observaciones: [''],
+      ptrabajo_nombre: [''],
+      racta_nombre: [''],
       cuales: [''],
     });
     
@@ -445,6 +451,8 @@ export class FormularioDocumentos {
 
               cammbiosOrdenDia: this.infoUpdate.solicitud_cambios === false ? "0" : "1",
               observaciones: this.infoUpdate.observaciones ? this.infoUpdate.observaciones : '',
+              ptrabajo_nombre: this.infoUpdate.ptrabajo_nombre ? this.infoUpdate.ptrabajo_nombre : '',
+              racta_nombre: this.infoUpdate.racta_nombre ? this.infoUpdate.racta_nombre : '',
               cuales: this.infoUpdate.cambios_solicitados ? this.infoUpdate.cambios_solicitados : '',
             }
 
@@ -556,6 +564,8 @@ export class FormularioDocumentos {
               
               cammbiosOrdenDia: this.infoUpdate.solicitud_cambios === false ? "0" : "1",
               observaciones: this.infoUpdate.observaciones ? this.infoUpdate.observaciones : '',
+              ptrabajo_nombre: this.infoUpdate.ptrabajo_nombre ? this.infoUpdate.ptrabajo_nombre : '',
+              racta_nombre: this.infoUpdate.racta_nombre ? this.infoUpdate.racta_nombre : '',
               cuales: this.infoUpdate.cambios_solicitados ? this.infoUpdate.cambios_solicitados : '',
             };
 
