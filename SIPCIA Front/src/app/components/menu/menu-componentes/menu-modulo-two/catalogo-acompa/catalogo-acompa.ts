@@ -175,7 +175,7 @@ export class CatalogoAcompa implements OnInit {
   }
 
   onValidateInfo() {
-    this.router.navigate(['/menutwo']);
+    this.router.navigate(['/menu']);
   };
 
   logout() {

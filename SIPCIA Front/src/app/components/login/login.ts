@@ -61,23 +61,17 @@ export class Login implements OnInit {
       if(this.formularioLogin?.valid){
         
         this.auth.login(this.formularioLogin?.value.username, sha256(this.formularioLogin?.value.password), this.tipoUsuario).subscribe({
-           next: (res) => {
-             sessionStorage.setItem("key", res.token);
-             sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
-             sessionStorage.setItem("tipoUsuario", res.userData[0].tipo_usuario);
-             sessionStorage.setItem("nameUsuario", res.userData[0].nombre_usuario);
-             sessionStorage.setItem("cargo_usuario", res.userData[0].cargo_usuario);
-             sessionStorage.setItem("id_usuario", res.userData[0].id);
-             sessionStorage.setItem("area", res.userData[0].area_adscripcion);
-             sessionStorage.setItem("cabecera", res.userData[0].distrito);
-             
-            if(this.tipoUsuario === 1) {
-              this.router.navigate(['/menu']);
-            } else if(this.tipoUsuario === 2) {
-              this.router.navigate(['/menutwo']);
-            } else if(this.tipoUsuario === 3) {
-              this.router.navigate(['/menuthree']);
-            }
+          next: (res) => {
+            sessionStorage.setItem("key", res.token);
+            sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
+            sessionStorage.setItem("tipoUsuario", res.userData[0].tipo_usuario);
+            sessionStorage.setItem("nameUsuario", res.userData[0].nombre_usuario);
+            sessionStorage.setItem("cargo_usuario", res.userData[0].cargo_usuario);
+            sessionStorage.setItem("id_usuario", res.userData[0].id);
+            sessionStorage.setItem("area", res.userData[0].area_adscripcion);
+            sessionStorage.setItem("cabecera", res.userData[0].distrito); 
+            
+            this.router.navigate(['/menu']);
              
            },
            error: (err) => {

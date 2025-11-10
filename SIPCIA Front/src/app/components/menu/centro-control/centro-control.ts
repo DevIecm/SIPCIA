@@ -173,11 +173,11 @@ export class CentroControl {
         cancelButtonColor: "#9D75CA",
       }).then((result) => {
         if (result.isConfirmed) {
-          this.router.navigate(['/menutwo']);
+          this.router.navigate(['/menu']);
         }
       });
     } else {
-      this.router.navigate(['/menutwo']);
+      this.router.navigate(['/menu']);
     }
   };
 

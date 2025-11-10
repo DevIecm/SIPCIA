@@ -384,11 +384,11 @@ export class ModuloRegister implements OnInit{
         cancelButtonColor: "#9D75CA",
       }).then((result) => {
         if (result.isConfirmed) {
-          this.router.navigate(['/menuthree']);
+          this.router.navigate(['/menu']);
         }
       });
     } else {
-      this.router.navigate(['/menuthree']);
+      this.router.navigate(['/menu']);
     }
   };
   

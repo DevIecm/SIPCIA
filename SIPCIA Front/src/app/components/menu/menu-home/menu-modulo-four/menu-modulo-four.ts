@@ -113,7 +113,7 @@ export class MenuModuloFour implements OnInit{
           sessionStorage.setItem("area", res.userData[0].area_adscripcion);
           sessionStorage.setItem("cabecera", res.userData[0].distrito);
 
-          this.router.navigate(['/moduloRegisterFour']);
+          this.router.navigate(['/registro']);
         },
           error: (err) => {
             if(err.error.code === 401){

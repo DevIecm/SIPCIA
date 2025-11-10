@@ -153,7 +153,7 @@ export class PropuestaComunitaria implements OnInit {
   }
 
   onValidateInfo() {
-    this.router.navigate(['/menutwo']);
+    this.router.navigate(['/menu']);
   };
 
   openModal(id: number | undefined) {

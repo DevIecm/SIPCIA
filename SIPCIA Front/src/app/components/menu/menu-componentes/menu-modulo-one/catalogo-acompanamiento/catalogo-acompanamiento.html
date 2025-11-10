@@ -217,12 +217,16 @@
                 style="cursor: pointer;"
               />
             </td>
-            <td><span *ngIf="item.nombre_archivo" 
-                    class="text-primary" 
-                    style="cursor: pointer;"
-                    (click)="descargar2(item)">
+            <td>
+              <span 
+                *ngIf="item.nombre_archivo" 
+                class="text-primary" 
+                style="cursor: pointer;"
+                (click)="descargar2(item)">
+                
                 {{ item.nombre_archivo }}
-              </span></td>
+              </span>
+            </td>
           </tr>
         </tbody>
       </table>

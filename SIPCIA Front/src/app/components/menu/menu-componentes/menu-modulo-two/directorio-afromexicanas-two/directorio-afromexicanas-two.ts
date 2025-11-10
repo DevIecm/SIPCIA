@@ -153,7 +153,7 @@ export class DirectorioAfromexicanasTwo implements OnInit {
   }
 
   onValidateInfo() {
-    this.router.navigate(['/menutwo']);
+    this.router.navigate(['/menu']);
   };
 
   sortData(column: string) {

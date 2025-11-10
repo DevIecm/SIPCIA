@@ -81,7 +81,7 @@ export class ReporteRepresentativaTwo implements OnInit{
   }
 
   onValidateInfo() {
-    this.router.navigate(['/menutwo']);
+    this.router.navigate(['/menu']);
   };
 
   logout() {

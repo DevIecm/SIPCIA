@@ -88,7 +88,7 @@ export class Bitacora implements OnInit {
     if(this.tipoUsuario === 1) {
       this.router.navigate(['/menu']);
     } else if(this.tipoUsuario === 2) {
-      this.router.navigate(['/menutwo']);
+      this.router.navigate(['/menu']);
     }
   };
 
