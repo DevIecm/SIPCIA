@@ -22,18 +22,25 @@ export class Auth {
   };
 
   login(username: string, password: string, tipo_usuario: number): Observable<any> {
-    return this.http.post(this.apiUrl + 'login/login', {
+
+    const data = {
       username,
       password,
       tipo_usuario
+    };
+
+    const encryp = this.encrypPostData(data);
+
+    return this.http.post(this.apiUrl + 'login/login', {
+      encryp
     }).pipe(catchError((error: HttpErrorResponse) => {return throwError(() => error);}));
   };
   
   loginEncrypted(username: string, password: string, tipo_usuario: number): Observable<any> {
     const data = {
-        username,
-        password,
-        tipo_usuario
+      username,
+      password,
+      tipo_usuario
     };
 
     const encryp = this.encrypPostData(data);

@@ -181,10 +181,10 @@
 </div>
 
 @if(showModal) {
-<app-formulario-propuesta 
-  [idRegistro]="idRegistroSeleccionado" 
-  [isOpen]="showModal" 
-  (close)="closeModal()"
->
-</app-formulario-propuesta>
+  <app-formulario-propuesta 
+    [idRegistro]="idRegistroSeleccionado" 
+    [isOpen]="showModal" 
+    (close)="closeModal()"
+  >
+  </app-formulario-propuesta>
 }

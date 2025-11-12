@@ -42,12 +42,14 @@ export class FormularioComunitaria {
 
   cabecera: number | null = null;
   selectedFileName: string | null = null;
-  fileUploadedf: boolean = false;
-  fileUploadedu: boolean = false;
   selectedFile: File | null = null;
   opcionDemarcacion: any = null;
   selectedKmlFile: File | null = null;
   selectedZipFile: File | null = null;
+
+  fileUploadedf: boolean = false;
+  fileUploadedu: boolean = false;
+  isActive: boolean = false;
 
   constructor(
     private catalogos: Catalogos,
@@ -265,6 +267,7 @@ export class FormularioComunitaria {
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.moduloRegister = Number(localStorage.getItem('modulo')!);
     this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
+    const storedDoc = sessionStorage.getItem('doc3');
 
     if(this.moduloRegister === 1){
       this.area = Number(sessionStorage.getItem('area')!);
@@ -279,8 +282,17 @@ export class FormularioComunitaria {
       observaciones: [''],
       enlace_ubicacion: [''],
       fubicacion: [''],
+      foto: [''],
       flugar: [{ value: '', disabled: true}]
     });
+
+    this.isActive = storedDoc === 'false';
+
+    if (this.isActive) {
+      this.formularioRegistro.get('foto')?.disable();
+    } else {
+      this.formularioRegistro.get('foto')?.enable();
+    }
 
     if(!this.idRegistro){
       this.idRegistroC = true;

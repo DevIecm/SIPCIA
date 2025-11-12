@@ -498,7 +498,7 @@ router.get("/getRegistroLugares", Midleware.verifyToken, async (req, res) => {
                     rl.prestamo_iecm,
                     rl.nuevo_prestamo,
                     rl.superficie_espacio,
-                    rl.aforo,|
+                    rl.aforo,
                     rl.ventilacion,
                     rl.observaciones
 					from registro_lugares rl 

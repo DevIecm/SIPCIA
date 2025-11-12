@@ -44,6 +44,7 @@ export class ReporteConsultas implements OnInit {
 
   showModal = false;
   isRegistroC: boolean = false;
+  enableButtom: boolean = false;
   
   idSelected: number | undefined;
 
@@ -54,23 +55,41 @@ export class ReporteConsultas implements OnInit {
     this.position = sessionStorage.getItem('dir')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.area_adscripcion = Number(sessionStorage.getItem('area'));
-
     this.getRegister();
   }
 
   selectRow(id: number, event: Event): void {
     const checkbox = event.target as HTMLInputElement;
-
+    
     if (checkbox.checked) {
+      this.enableButtom = true;
       if (!this.selectedIds.includes(id)) {
         this.selectedIds.push(id);
       }
     } else {
+      this.enableButtom = false;
       this.selectedIds = this.selectedIds.filter(selectedId => selectedId !== id);
     }
   }
 
-    descargar2(item: any): void {
+  get isAllSelected(): boolean {
+    return this.dataTable.length > 0 && this.selectedIds.length === this.dataTable.length;
+  }
+
+
+  toggleAll(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    
+    if (checkbox.checked) {
+      this.enableButtom = true;
+      this.selectedIds = this.dataTable.map((item: any) => item.id_registro);
+    } else {
+      this.enableButtom = false;
+      this.selectedIds = [];
+    }
+  }
+
+  descargar2(item: any): void {
     this.miServicio.descargarOtrosNorma(item.enlace_documento, this.tokenSesion).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);

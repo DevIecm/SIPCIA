@@ -45,22 +45,22 @@ export class FormularioConsultas {
   opcionPueblo: any = null;
   opcionBarrio: any = null;
   opcionUnidadTerritorial: any = null;
+  selectedFileName: string | null = null;
+  selectedKmlFile: File | null = null;
 
   fileUploaded: boolean = false;
+  isActive: boolean = false;
   
   tokenSesion: string = '';
   today: string = '';
   area: string = '';
   position: string = '';
-  selectedFileName: string | null = null;
   labelTitle: string = '';
 
   tipo_usuario: number = 0;
   id_usuario: number = 0;
   idConsecutivo: number = 0;
   moduloRegister: number = 0;
-  selectedKmlFile: File | null = null;
-
   constructor(
     private catalogos: Catalogos,
     private service: Auth,
@@ -275,8 +275,19 @@ export class FormularioConsultas {
       consulta: [''],
       forma: [''],
       observaciones: [''],
+      documentos: [''],
       presento_caso: [0]
     });
+
+    const storedDoc = sessionStorage.getItem('doc1');
+
+    this.isActive = storedDoc === 'false';
+
+    if (this.isActive) {
+      this.formularioRegistro.get('documentos')?.disable();
+    } else {
+      this.formularioRegistro.get('documentos')?.enable();
+    }
 
     if(!this.idRegistro){
       this.idRegistroC = true;

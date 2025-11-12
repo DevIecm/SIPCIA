@@ -446,7 +446,7 @@ export class ModuloRegisterFour implements OnInit{
         formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");
         formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
         formData.append("demarcacion", this.opcionDemarcacion);
-        formData.append("distrito_electoral", this.area.toString());
+        formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
         formData.append("comunidad", this.opcionComunidad);
         formData.append("pueblo_originario", this.opcionPuebloOriginario);
         formData.append("pueblo_pbl", this.opcionPueblo);
@@ -480,7 +480,8 @@ export class ModuloRegisterFour implements OnInit{
                 confirmButtonText: "Aceptar",
                 confirmButtonColor: "#FBB03B",
               });
-              this.resetData();
+              
+              this.router.navigate(['']);
             }
           }, error: (err) => {
             

@@ -162,4 +162,8 @@ export class MenuHome implements OnInit{
   goToRegister() {
     this.router.navigate(['/moduloRegistro']);
   }
+
+  goControl() {
+    this.router.navigate(['ccontrol-deoeyg'])
+  }
 }

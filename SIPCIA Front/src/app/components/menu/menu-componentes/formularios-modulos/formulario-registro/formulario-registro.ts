@@ -27,19 +27,15 @@ export class FormularioRegistro implements OnInit{
   @Input() idRegistro : number | undefined;
   @Output() close = new EventEmitter<void>();
 
-  currentTime: string= '';
-  today: string = '';
-  moduloClicked: string = '';
-  afro: boolean = false;
-  indigenas: boolean = false;
   data: any = data;
   formularioRegistro: FormGroup | undefined;
   seleccionado: any;
   myDate: string | number | Date | undefined;
 
+  currentTime: string= '';
+  today: string = '';
+  moduloClicked: string = '';
   tokenSesion: string = '';
-  dataToEdit: any[] =[];
-
   nombreUser: string = '';
   cargoUser: string = '';
   position: string = '';
@@ -47,12 +43,17 @@ export class FormularioRegistro implements OnInit{
   labelText: string = '';
 
   catalogoComunidad: any = [];
+  dataToEdit: any[] =[];
   catalogoPueblos: any = [];
   catalogoPueblor: any = [];
   catalogoBarrios: any = [];
   catalogoUnidadTerritorial: any = [];
   catalogoDemarcacion: any = [];
 
+  afro: boolean = false;
+  indigenas: boolean = false;
+  isActive: boolean = false;
+  isActive2: boolean = false;
   infoUpdate: any = [];
   showIndigenas: boolean = false;
   showAfromexicanos: boolean = false;
@@ -105,14 +106,13 @@ export class FormularioRegistro implements OnInit{
       domicilio: ['', Validators.required],
       tfijo: ['', [Validators.pattern('^[0-9]+$')]],
       tcelular: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      docs: [{ value: '' }],
+      docs: [''],
       coficial: ['', [Validators.email]],
       cpersonal: ['', [Validators.required, Validators.email]],
     });
 
     this.moduloClicked = localStorage.getItem('moduloClicked')!;
     this.tokenSesion = sessionStorage.getItem('key')!;
-
     this.currentTime = this.datePipe.transform(new Date(), 'HH:mm:ss') + ' hrs.';
     this.today = this.datePipe.transform(new Date(), 'dd/MM/yyyy')!;
     this.cargoUser = sessionStorage.getItem('cargo_usuario')!;
@@ -120,22 +120,39 @@ export class FormularioRegistro implements OnInit{
     this.position = sessionStorage.getItem('dir')!;
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.area = sessionStorage.getItem('area')!;
-
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.id_usuario =  Number(sessionStorage.getItem('id_usuario')!);
-
     this.modulo = Number(localStorage.getItem('modulo')!);
+    const storedDoc2 = sessionStorage.getItem('doc2');
+    const storedDoc3 = sessionStorage.getItem('doc3');
+
+    this.isActive = storedDoc2 === 'false';
+    this.isActive2 = storedDoc3 === 'false';
 
     //Modulo 2 
 
     if(this.moduloClicked === '1.2') {
+      
+      if (this.isActive) {
+        this.formularioRegistro.get('docs')?.disable();
+      } else {
+        this.formularioRegistro.get('docs')?.enable();
+      }
       this.showAfromexicanos = false;
       this.labelText = "Edición de Instancia Indígena";
       this.showIndigenas = true;
+    
     } else if(this.moduloClicked === '1.3') {
+
+      if (this.isActive2) {
+        this.formularioRegistro.get('docs')?.disable();
+      } else {
+        this.formularioRegistro.get('docs')?.enable();
+      }
       this.showAfromexicanos = true;
       this.labelText = "Edición de Instancia Afromexicana";
       this.showIndigenas = false;
+    
     }
 
     this.getDataById();

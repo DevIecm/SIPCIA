@@ -62,6 +62,7 @@ export class ModuloRegister implements OnInit{
   area: string = '';
   id_usuario: number = 0;  
   isCarga: number = 0;
+  distritoElectoral: number = 0;
 
   selectedFileName: string | null = null;
   fileUploaded: boolean = false;
@@ -118,13 +119,8 @@ export class ModuloRegister implements OnInit{
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.area = sessionStorage.getItem('area')!;
     this.id_usuario = Number(sessionStorage.getItem('id_usuario')!);
-
-
-
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.catalogo_comunidad();
-    this.catalogo_demarcacion();
-    this.formularioRegistro?.get('duninominal')?.setValue(this.area);
   }
 
   onFileSelected(event: any) {
@@ -146,6 +142,31 @@ export class ModuloRegister implements OnInit{
     this.selectedFileName = null;
     this.fileUploaded = false;
     this.selectedFile = null;
+  }
+
+  changeSeccion(){
+    this.getSeccion();
+  }
+
+  getSeccion(){
+    this.serviceRegister.getSeccion(Number(this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
+      next: (data) => {
+
+        const distritos = data as { distrito_electoral: number }[];
+        this.distritoElectoral = distritos[0]?.distrito_electoral;
+        this.formularioRegistro?.get('duninominal')?.setValue(this.distritoElectoral);
+        this.catalogo_demarcacion();
+
+        if (this.formularioRegistro) {
+          this.formularioRegistro.get('scomunidad')?.enable();
+        }
+
+      }, error: (err) => {
+        if(err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+      }
+    });
   }
 
   onChangeComunidad() {
@@ -425,7 +446,7 @@ export class ModuloRegister implements OnInit{
         formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");
         formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
         formData.append("demarcacion", this.opcionDemarcacion);
-        formData.append("distrito_electoral", this.area.toString());
+        formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
         formData.append("comunidad", this.opcionComunidad);
         formData.append("pueblo_originario", this.opcionPuebloOriginario);
         formData.append("pueblo_pbl", this.opcionPueblo);
@@ -454,13 +475,15 @@ export class ModuloRegister implements OnInit{
           next: (data) => {
             if(data.code === 200) {
               Swal.fire({
-                title: "Se le ha asignado el folio único.",
-                text: data.folio,
+                title: "¿Está seguro que desea registrar la información capturada?",
                 icon: "success",
                 confirmButtonText: "Aceptar",
                 confirmButtonColor: "#FBB03B",
               });
-              this.resetData();
+
+              if (result.isConfirmed) {
+                this.router.navigate(['/menu']);
+              } 
             }
           }, error: (err) => {
             
@@ -549,11 +572,8 @@ export class ModuloRegister implements OnInit{
 
     const camposFaltantes: string[] = [];
 
-    // Recorremos todos los controles del formulario
     Object.keys(this.formularioRegistro.controls).forEach(campo => {
       const control = this.formularioRegistro?.get(campo);
-
-      // Verifica si el campo es requerido y no tiene valor
       const esRequerido = control?.hasValidator?.(Validators.required);
       const sinValor = !control?.value || control?.value.toString().trim() === '';
 

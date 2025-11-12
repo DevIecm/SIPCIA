@@ -9,6 +9,8 @@ import { Auth } from '../../../../services/authService/auth';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
 import Swal from 'sweetalert2';
 import { Reportes } from '../../../../services/reporteService/reportes';
+import * as CryptoJS from 'crypto-js';
+
 @Component({
   selector: 'app-menu-modulo-four',
   standalone: true,
@@ -41,6 +43,7 @@ export class MenuModuloFour implements OnInit{
   showModulo3: boolean = false;
   showModulo4: boolean = false;
   mostrarPantalla: boolean = false;
+  private cryptoHash = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"; 
 
   tipoUsuario: number | number = 0;
   idRegistroSeleccionado: number | undefined;
@@ -80,14 +83,14 @@ export class MenuModuloFour implements OnInit{
   }
 
   onExpired = (response: any) => {
-      this.token.set(undefined);
-      Swal.fire({
-          icon: 'warning',
-          title: '¡Atención!',
-          text: 'El captcha a expirado, por favor intentalo nuevamente',
-          confirmButtonText: 'Entendido'
-      });
-      this.captchaValido = false;
+    this.token.set(undefined);
+    Swal.fire({
+        icon: 'warning',
+        title: '¡Atención!',
+        text: 'El captcha a expirado, por favor intentalo nuevamente',
+        confirmButtonText: 'Entendido'
+    });
+    this.captchaValido = false;
   }
 
   onError = (error: any) => {
@@ -95,7 +98,22 @@ export class MenuModuloFour implements OnInit{
       this.captchaValido = false;
   }
 
+  decryptResponse(encryptedResponse: string) {
+    const bytes = CryptoJS.AES.decrypt(encryptedResponse, this.cryptoHash);
+    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+    return JSON.parse(decrypted);
+  }
+
+
   goToRegister() {
+    this.router.navigate(['/registro']);
+  }
+
+  logout() {
+    this.router.navigate(['']);
+  }
+
+  cambiarPantalla(){
 
     const user = "110198831a426807bccd9dbdf54b6dcb5298bc5d31ac49069e0ba3d210d970ae";
     const pass = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
@@ -103,17 +121,20 @@ export class MenuModuloFour implements OnInit{
     try {
 
       this.auth.loginEncrypted(user, pass, this.tipoUsuario).subscribe({
-        next: (res) => {
-          sessionStorage.setItem("key", res.token);
-          sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
-          sessionStorage.setItem("tipoUsuario", res.userData[0].tipo_usuario);
-          sessionStorage.setItem("nameUsuario", res.userData[0].nombre_usuario);
-          sessionStorage.setItem("cargo_usuario", res.userData[0].cargo_usuario);
-          sessionStorage.setItem("id_usuario", res.userData[0].id);
-          sessionStorage.setItem("area", res.userData[0].area_adscripcion);
-          sessionStorage.setItem("cabecera", res.userData[0].distrito);
+        next: (resp) => {
+          const res = this.decryptResponse(resp.data);
 
-          this.router.navigate(['/registro']);
+          sessionStorage.setItem("key", res.token);
+          sessionStorage.setItem("dir", res.userData.adscripcion_usuario);
+          sessionStorage.setItem("tipoUsuario", res.userData.tipo_usuario);
+          sessionStorage.setItem("nameUsuario", res.userData.nombre_usuario);
+          sessionStorage.setItem("cargo_usuario", res.userData.cargo_usuario);
+          sessionStorage.setItem("id_usuario", res.userData.id);
+          sessionStorage.setItem("area", res.userData.area_adscripcion);
+          sessionStorage.setItem("cabecera", res.userData.distrito);
+
+          this.mostrarPantalla = false;
+
         },
           error: (err) => {
             if(err.error.code === 401){
@@ -135,14 +156,7 @@ export class MenuModuloFour implements OnInit{
       console.error("Error al iniciar sesión", error);
     }
   }
-
-  logout() {
-    this.router.navigate(['']);
-  }
-
-  cambiarPantalla(){
-    this.mostrarPantalla = false;
-  }
+    
   descargar(){
     this.miServicio.descargarDocNorma("1757703550661-AVISDEPRIVACIDADSIMPLIFICADO.pdf").subscribe({
       next: (blob) => {

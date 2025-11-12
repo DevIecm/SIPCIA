@@ -51,6 +51,7 @@ export class FormularioPropuesta {
 
   fileUploadedu: boolean = false;
   fileUploadedf: boolean = false;
+  isActive: boolean = false;
 
   constructor(
     private catalogos: Catalogos,
@@ -69,6 +70,7 @@ export class FormularioPropuesta {
     this.cabecera = Number(sessionStorage.getItem('cabecera'));
     this.id_usuario = Number(sessionStorage.getItem('id_usuario'));
     this.moduloRegister = Number(localStorage.getItem('modulo'));
+    const storedDoc = sessionStorage.getItem('doc5');
 
     this.formularioRegistro = this.formBuilder.group({
       dDistrital: [{ value:'', disabled: true}],
@@ -76,6 +78,7 @@ export class FormularioPropuesta {
       lugar_espacio: ['', [Validators.required]],
       intitucion_propietaria: ['', [Validators.required]],
       domicilio: ['', [Validators.required]],
+      documentos: [''],
       superficie_espacio: new FormControl('', [
         Validators.required,
         Validators.min(0),
@@ -95,6 +98,13 @@ export class FormularioPropuesta {
       consecutivo: [{value: '', disabled: true}]
     });
 
+    this.isActive = storedDoc === 'false';
+
+    if (this.isActive) {
+      this.formularioRegistro.get('documentos')?.disable();
+    } else {
+      this.formularioRegistro.get('documentos')?.enable();
+    }
     if(this.moduloRegister === 1){
       this.area = Number(sessionStorage.getItem('area')!);
     }

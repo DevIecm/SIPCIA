@@ -9,25 +9,50 @@
                 }
 
                 @if(showModulo3) { 
-                    <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">DEGDHECyCC</h3>
+                    <h3 style="font-size: 1rem; font-weight: bold; margin: 0px;">{{ position }}</h3>
                 }
             </div>
         </a>
-        <form class="d-flex" role="search">
-            <div class="row row-cols-1">
-                <div class="col">
-                    <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
-                        <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
-                    </button>
-                </div>
 
-                <div class="col">
-                    <div class="div-redondeado-left">
-                        <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+        @if(showModulo2) {
+            <div class="d-flex" role="search">
+                <div class="row row-cols-1">
+                    <div class="col d-flex justify-content-end">
+                        <button (click)="goControl()" class="btn div-redondeado-left-home-m sin-margen-derecho-m">
+                            <h3 style="font-size: 0.9rem; margin: 0px;">Centro de Control</h3>
+                        </button>
+
+                        <button (click)="logout()" class="btn div-redondeado-left-sesion-m sin-margen-izquierdo-m">
+                            <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+                        </button>
+                    </div>
+
+                    <div class="col">
+                        <div class="div-redondeado-left">
+                            <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+                        </div>
                     </div>
                 </div>
             </div>
-        </form>
+        }
+
+        @if(!showModulo2) {
+            <div class="d-flex" role="search">
+                <div class="row row-cols-1">
+                    <div class="col">
+                        <button (click)="logout()" class="btn button-close div-redondeado-left-sesion">
+                            <h3 style="font-size: 0.9rem; margin: 0px;">{{ data.csesion }}</h3>
+                        </button>
+                    </div>
+
+                    <div class="col">
+                        <div class="div-redondeado-left">
+                            <h3 style="font-size: 0.8rem; margin: 0px;">{{ nombreUser }} <br> {{ cargoUser }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </nav>
 

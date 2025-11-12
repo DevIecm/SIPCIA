@@ -36,8 +36,6 @@ export class FormularioRegistroa {
   catalogoReporte: any = [];
   catalogoFecha: any = [];
   infoUpdate: any = [];
-  
-  selectedKmlFile: File | null = null;
 
   tokenSesion: string = '';
   today: string = '';
@@ -48,12 +46,14 @@ export class FormularioRegistroa {
   cabecera: number = 0;
   tipo_usuario: number = 0;
 
+  selectedKmlFile: File | null = null;
   selectedFoto: File | null = null;
   opcionDemarcacion: any = null;
   selectedFile: File | null = null;
   imagePreviewUrl: string | null = null;
 
   fileUploaded: boolean = false;
+  isActive: boolean = false;
 
   onFotoSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -275,6 +275,7 @@ export class FormularioRegistroa {
       domicilio: [''],
       telefono: [''],
       correo: [''],
+      documentos: ['']
     });
 
     if(!this.idRegistro){
@@ -285,6 +286,16 @@ export class FormularioRegistroa {
       this.idRegistroC = false
       this.formularioRegistro.get('comunidad')?.disable();
       this.getDataById(this.idRegistro);
+    }
+
+    const storedDoc = sessionStorage.getItem('doc7');
+
+    this.isActive = storedDoc === 'false';
+
+    if (this.isActive) {
+      this.formularioRegistro.get('documentos')?.disable();
+    } else {
+      this.formularioRegistro.get('documentos')?.enable();
     }
 
     this.catalogo_demarcacion();

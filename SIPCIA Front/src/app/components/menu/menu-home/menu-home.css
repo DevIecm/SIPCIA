@@ -102,3 +102,105 @@ hr{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 30pt;
 }
+
+/* Modulo 2 */
+
+.div-redondeado-left-sesion-m {
+    padding: 13px;
+    width: 200px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #FBB03B!important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+}
+
+.title-menu-m {
+    cursor: pointer;
+    white-space: normal;
+    overflow-wrap: break-word;
+    margin: 50px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+}
+
+.div-redondeado-right-m {
+    padding: 20px;
+    width: 230px;
+    height: 52px;
+    color: #f4f4f4!important;
+    background-color: #9B3BCA!important;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+}
+
+.div-redondeado-right-control-m {
+    padding: 13px;
+    width: 350px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #ef9200!important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+}
+
+.div-redondeado-right-home-m {
+    padding: 13px;
+    width: 484px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #FBB03B!important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 7pt;
+}
+
+
+.div-redondeado-left-home-m {
+    padding: 13px;
+    width: 200px;
+    height: 1px;
+    color: #f4f4f4!important;
+    background-color: #ef9200!important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+}
+
+.sin-margen-derecho-m {
+    margin-right: -10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.sin-margen-izquierdo-m {
+    margin-left: -10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}

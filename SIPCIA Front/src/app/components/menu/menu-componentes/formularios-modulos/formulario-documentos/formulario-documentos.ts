@@ -322,7 +322,7 @@ export class FormularioDocumentos {
       observaciones: [''],
       ptrabajo_nombre: [''],
       racta_nombre: [''],
-      cuales: [''],
+      cuales: ['']
     });
     
     setTimeout(() => {

@@ -46,7 +46,11 @@
       </div>
       <input 
         type="text" 
-        class="form-control input-search" [(ngModel)]="searchTerm" (input)="search()"  name="searchTerm" >
+        class="form-control input-search" 
+        [(ngModel)]="searchTerm" 
+        (input)="search()"  
+        name="searchTerm"
+      >
     </div>
     <div class="col-4 d-flex justify-content-end">
       <button 
@@ -57,7 +61,7 @@
         (click)="openModal(undefined)">Registrar consulta</button>
     </div>
     <div class="col-2 d-flex justify-content-end">
-      <button class="btn button" (click)="getReporte()">Genera y Descarga de Reporte</button>
+      <button class="btn button" [disabled]="!enableButtom" (click)="getReporte()">Genera y Descarga de Reporte</button>
     </div>
   </div>
 
@@ -66,7 +70,15 @@
       <table class="table">
         <thead>
           <tr class="table-primary">
-            <th scope="col">No.</th>
+            <th scope="col">
+              <input 
+                style="width: 11px; height: 11px;" 
+                class="form-check-input" 
+                type="checkbox" 
+                id="checkDefault"
+                [checked]="isAllSelected"
+                (change)="toggleAll($event)">
+            </th>
             <th scope="col">Edición</th>
             <th scope="col">No se presentó <br> el caso</th>
             <th 
@@ -87,15 +99,6 @@
                 <i style="margin-left: 5px;" [ngClass]="getSortIcon('fecha_consulta')"></i>
               </div>
             </th>
-            <!-- <th 
-              scope="col"
-              (click)="sortData(direccion_distrital)"
-              style="cursor: pointer;">
-              <div style="display: flex; align-items: center; gap: 5px;">
-                <span>Dirección <br> Distrital</span>
-                <i style="margin-left: 5px;" [ngClass]="getSortIcon('fecha_consulta')"></i>
-              </div>
-            </th> -->
             <th 
               scope="col"
               (click)="sortData('nombre_completo')"
@@ -187,9 +190,8 @@
                 style="width: 11px; height: 11px;" 
                 class="form-check-input" 
                 type="checkbox" 
-                value="{{ item.id_registro }}" 
-                (change)="selectRow(item.id_registro, $event)"
-                id="checkDefault">
+                [checked]="selectedIds.includes(item.id_registro)" 
+                (change)="selectRow(item.id_registro, $event)">
             </td>
             <td> 
               <button 
@@ -203,7 +205,6 @@
             <td>{{ item.presento_caso === false ? 'No' : 'Si'}}</td>
             <td>{{ item.numero_consecutivo ? item.numero_consecutivo : '-'}}</td>
             <td>{{ formatFecha(item.fecha_consulta)}}</td>
-            <!-- <td>{{ item.direccion_distrital }}</td> -->
             <td>{{ item.nombre_completo }}</td>
             <td>{{ item.pueblo_originario ? item.pueblo_originario : '-'}}</td>
             <td>{{ item.pueblo ? item.pueblo : '-'}}</td>

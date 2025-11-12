@@ -18,11 +18,10 @@ function encryptSHA256(text) {
 
 router.post("/loginEncrypt", async (req, res) => {
     try {
+        
         const ecnrypt = req.body.encryp;
-
         const bytes = CryptoJS.AES.decrypt(ecnrypt, secretKey);
-        const decryptData = bytes.toString(CryptoJS.enc.Utf8);
-        const data = JSON.parse(decryptData);
+        const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 
         const pool = await connectToDatabase();
         const result = await pool.request()
@@ -30,24 +29,85 @@ router.post("/loginEncrypt", async (req, res) => {
             .input('password', sql.VarChar, data.password)
             .input('tipo_usuario', sql.Int, data.tipo_usuario)
             .query(`SELECT
-                    cs.id,
-                    cs.usuario,
-                    cs.tipo_usuario,
-                    cs.estado_usuario,
-                    cs.nombre_usuario,
-                    cs.cargo_usuario,
-                    cs.correo_usuario,
-                    cs.area_adscripcion,
-                    cd.adscripcion_usuario,
-                    cd.distrito,
-                    cd.documento_1,
-                    cd.documento_2,
-                    cd.documento_3,
-                    cd.documento_4,
-                    cd.documento_5,
-                    cd.documento_6,
-                    cd.documento_7,
-                    tu.documento_1 AS modDoc
+                        cs.id,
+                        cs.usuario,
+                        cs.tipo_usuario,
+                        cs.estado_usuario,
+                        cs.nombre_usuario,
+                        cs.cargo_usuario,
+                        cs.correo_usuario,
+                        cs.area_adscripcion,
+                        cd.adscripcion_usuario,
+                        cd.distrito
+                    FROM usuarios cs
+                    JOIN estado_usuario es ON cs.estado_usuario = es.id
+                    JOIN adscripcion_usuario cd ON cs.area_adscripcion = cd.id
+                    WHERE 
+                        cs.usuario = @username
+                        AND cs.password = @password
+                        AND cs.tipo_usuario = @tipo_usuario
+                        AND cd.estado_sistema = 1;`)
+
+        if (result.recordset.length === 0) {
+            return res.status(401).json({ message: "Fallo autenticación", code: 101 });
+        }
+
+        const user = result.recordset[0];
+
+        if (user.estado_usuario !== 1) {
+            return res.status(401).json({ message: "Usuario inactivo", code: 401 });
+        }
+
+        const token = jwt.sign({ username: data.username }, secretKey, { expiresIn: "5h" });
+
+        const responseData = {
+            token,
+            userData: user
+        };
+
+        const encryptedResponse = CryptoJS.AES.encrypt(
+            JSON.stringify(responseData),
+            secretKey
+        ).toString();
+
+        return res.status(200).json({ data: encryptedResponse });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Error de servidor", error });
+    }
+});
+
+router.post("/login", async (req, res) => {
+    try {
+
+        const ecnrypt = req.body.encryp;
+        const bytes = CryptoJS.AES.decrypt(ecnrypt, secretKey);
+        const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        const pool = await connectToDatabase();
+
+        const result = await pool.request()
+            .input('username', sql.VarChar, data.username)
+            .input('password', sql.VarChar, data.password)
+            .input('tipo_usuario', sql.Int, data.tipo_usuario)
+            .query(`SELECT
+                        cs.id,
+                        cs.usuario,
+                        cs.tipo_usuario,
+                        cs.estado_usuario,
+                        cs.nombre_usuario,
+                        cs.cargo_usuario,
+                        cs.correo_usuario,
+                        cs.area_adscripcion,
+                        cd.adscripcion_usuario,
+                        cd.distrito,
+                        cd.documento_1,
+                        cd.documento_2,
+                        cd.documento_3,
+                        cd.documento_4,
+                        cd.documento_5,
+                        cd.documento_6,
+                        cd.documento_7,
+                        tu.documento_1 AS modDoc
                     FROM usuarios cs
                     JOIN tipo_usuario tu ON cs.tipo_usuario = tu.id 
                     JOIN estado_usuario es ON cs.estado_usuario = es.id
@@ -59,92 +119,29 @@ router.post("/loginEncrypt", async (req, res) => {
                         AND tu.estado_sistema = 1
                         AND cd.estado_sistema = 1;`)
 
-        if (result.recordset.length > 0) {
-            if (result.recordset[0].estado_usuario === 1) {
-                const token = jwt.sign({ username: data.username }, secretKey, { expiresIn: "5h" });
-                return res.status(200).json({
-                    token,
-                    userData: result.recordset
-                });
-
-            } else {
-
-                return res.status(401).json({ message: "Fallo autenticación", code: 401 });
-
-            }
-
-        } else {
+        if (result.recordset.length === 0) {
             return res.status(401).json({ message: "Fallo autenticación", code: 101 });
         }
 
-    } catch (error) {
-        return res.status(500).json({ message: "Error de servidor", error });
-    }
-});
+        const user = result.recordset[0];
 
-router.post("/login", async (req, res) => {
-    try {
-
-        const { username, password, tipo_usuario } = req.body;
-
-        if (!username || !password || !tipo_usuario) {
-            return res.status(400).json({ message: "Datos requeridos" })
+        if (user.estado_usuario !== 1) {
+            return res.status(401).json({ message: "Usuario inactivo", code: 401 });
         }
 
-        const ecryptedPass = encryptSHA256(password);
+        const token = jwt.sign({ username: data.username }, secretKey, { expiresIn: "5h" });
 
-        const pool = await connectToDatabase();
-        const result = await pool.request()
-            .input('username', sql.VarChar, username)
-            .input('password', sql.VarChar, password)
-            .input('tipo_usuario', sql.Int, tipo_usuario)
-            .query(`SELECT
-          cs.id,
-          cs.usuario,
-          cs.tipo_usuario,
-          cs.estado_usuario,
-          cs.nombre_usuario,
-          cs.cargo_usuario,
-          cs.correo_usuario,
-          cs.area_adscripcion,
-          cd.adscripcion_usuario,
-          cd.distrito,
-          cd.documento_1,
-          cd.documento_2,
-          cd.documento_3,
-          cd.documento_4,
-          cd.documento_5,
-          cd.documento_6,
-          cd.documento_7,
-          tu.documento_1 AS modDoc
-        FROM usuarios cs
-        JOIN tipo_usuario tu ON cs.tipo_usuario = tu.id 
-        JOIN estado_usuario es ON cs.estado_usuario = es.id
-        JOIN adscripcion_usuario cd ON cs.area_adscripcion = cd.id
-        WHERE 
-            cs.usuario = @username
-            AND cs.password = @password
-            AND cs.tipo_usuario = @tipo_usuario
-            AND tu.estado_sistema = 1
-            AND cd.estado_sistema = 1;`)
+        const responseData = {
+            token,
+            userData: user
+        };
 
-        if (result.recordset.length > 0) {
-            if (result.recordset[0].estado_usuario === 1) {
-                const token = jwt.sign({ username }, secretKey, { expiresIn: "5h" });
-                return res.status(200).json({
-                    token,
-                    userData: result.recordset
-                });
+        const encryptedResponse = CryptoJS.AES.encrypt(
+            JSON.stringify(responseData),
+            secretKey
+        ).toString();
 
-            } else {
-
-                return res.status(401).json({ message: "Fallo autenticación", code: 401 });
-
-            }
-
-        } else {
-            return res.status(401).json({ message: "Fallo autenticación", code: 101 });
-        }
+        return res.status(200).json({ data: encryptedResponse });
 
     } catch (error) {
         return res.status(500).json({ message: "Error de servidor", error });

@@ -47,7 +47,9 @@ export class NuevoRegistro implements OnInit{
   showIndigenas: boolean = false;
   showAfromexicanos: boolean = false;
   liberaForm: boolean = false;
-
+  fileUploaded: boolean = false;
+  isActive: boolean = false;
+  
   opcionComunidad: any = null;
   opcionPuebloOriginario: any = null;
   opcionPueblo: any = null;
@@ -64,7 +66,6 @@ export class NuevoRegistro implements OnInit{
   isCarga: number = 0;
 
   selectedFileName: string | null = null;
-  fileUploaded: boolean = false;
   selectedFile: File | null = null;
 
   constructor(
@@ -117,9 +118,15 @@ export class NuevoRegistro implements OnInit{
     this.position = sessionStorage.getItem('dir')!;
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.area = sessionStorage.getItem('area')!;
-    this.id_usuario = Number(sessionStorage.getItem('id_usuario')!);
+    const storedDoc = sessionStorage.getItem('doc1');
 
+    this.isActive = storedDoc === 'false';
 
+    if (this.isActive) {
+      this.formularioRegistro.get('documentos')?.disable();
+    } else {
+      this.formularioRegistro.get('documentos')?.enable();
+    }
 
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.catalogo_comunidad();

@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../services/authService/auth';
 import { sha256 } from 'js-sha256';
+import { Decrypt } from '../../services/decrypt';
 
 @Component({
   selector: 'app-login',
@@ -52,25 +53,51 @@ export class Login implements OnInit {
     sessionStorage.removeItem('dir');
     sessionStorage.removeItem('tipoUsuario');
     sessionStorage.removeItem('nameUsuario');
+    sessionStorage.removeItem("cargo_usuario");
+    sessionStorage.removeItem("id_usuario");
+    sessionStorage.removeItem("cabecera");
+    sessionStorage.removeItem("doc1");
+    sessionStorage.removeItem("doc2");
+    sessionStorage.removeItem("doc3");
+    sessionStorage.removeItem("doc4");
+    sessionStorage.removeItem("doc5");
+    sessionStorage.removeItem("doc6");
+    sessionStorage.removeItem("doc7");
   }
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private auth: Auth) {}
+  constructor(
+    private router: Router, 
+    private formBuilder: FormBuilder, 
+    private auth: Auth,
+    private crypt: Decrypt
+  ) {}
 
   onSubmit() {
     try {
       if(this.formularioLogin?.valid){
         
         this.auth.login(this.formularioLogin?.value.username, sha256(this.formularioLogin?.value.password), this.tipoUsuario).subscribe({
-          next: (res) => {
+          next: (resp) => {
+
+            const res = this.crypt.decryptResponse(resp.data);
+
             sessionStorage.setItem("key", res.token);
-            sessionStorage.setItem("dir", res.userData[0].adscripcion_usuario);
-            sessionStorage.setItem("tipoUsuario", res.userData[0].tipo_usuario);
-            sessionStorage.setItem("nameUsuario", res.userData[0].nombre_usuario);
-            sessionStorage.setItem("cargo_usuario", res.userData[0].cargo_usuario);
-            sessionStorage.setItem("id_usuario", res.userData[0].id);
-            sessionStorage.setItem("area", res.userData[0].area_adscripcion);
-            sessionStorage.setItem("cabecera", res.userData[0].distrito); 
+            sessionStorage.setItem("dir", res.userData.adscripcion_usuario);
+            sessionStorage.setItem("tipoUsuario", res.userData.tipo_usuario);
+            sessionStorage.setItem("nameUsuario", res.userData.nombre_usuario);
+            sessionStorage.setItem("cargo_usuario", res.userData.cargo_usuario);
+            sessionStorage.setItem("id_usuario", res.userData.id);
+            sessionStorage.setItem("area", res.userData.area_adscripcion);
+            sessionStorage.setItem("cabecera", res.userData.distrito); 
             
+            sessionStorage.setItem("doc1", res.userData.documento_1);
+            sessionStorage.setItem("doc2", res.userData.documento_2);
+            sessionStorage.setItem("doc3", res.userData.documento_3);
+            sessionStorage.setItem("doc4", res.userData.documento_4);
+            sessionStorage.setItem("doc5", res.userData.documento_5);
+            sessionStorage.setItem("doc6", res.userData.documento_6);
+            sessionStorage.setItem("doc7", res.userData.documento_7);
+
             this.router.navigate(['/menu']);
              
            },
