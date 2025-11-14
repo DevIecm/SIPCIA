@@ -67,6 +67,9 @@ export class ModuloRegisterFour implements OnInit{
   fileUploaded: boolean = false;
   selectedFile: File | null = null;
 
+  
+  isActive: boolean = false;
+
   constructor(
     private service: Auth, 
     private router: Router, 
@@ -118,6 +121,16 @@ export class ModuloRegisterFour implements OnInit{
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
     this.area = sessionStorage.getItem('area')!;
     this.id_usuario = Number(sessionStorage.getItem('id_usuario')!);
+    const storedDoc = sessionStorage.getItem('modDoc');
+
+    this.isActive = storedDoc === 'false';
+
+
+    if (this.isActive) {
+      this.formularioRegistro.get('documentos')?.disable();
+    } else {
+      this.formularioRegistro.get('documentos')?.enable();
+    }
 
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.catalogo_comunidad();
@@ -149,7 +162,7 @@ export class ModuloRegisterFour implements OnInit{
   }
 
   getSeccion(){
-    this.serviceRegister.getSeccion(Number(this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
+    this.serviceRegister.getSeccion((this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
       next: (data) => {
 
         const distritos = data as { distrito_electoral: number }[];
@@ -304,6 +317,7 @@ export class ModuloRegisterFour implements OnInit{
     }
   }
 
+
   catalogo_unidad_territorial() {
     this.catalogos.getCatalogos(Number(this.area), "cat_unidad_territorial", this.tokenSesion).subscribe({
       next: (data) => {
@@ -319,7 +333,7 @@ export class ModuloRegisterFour implements OnInit{
   };
 
   catalogo_demarcacion() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos((this.formularioRegistro?.get('duninominal')?.value), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {
           this.catalogoDemarcacion = data.cat_demarcacion_territorial;
@@ -445,7 +459,7 @@ export class ModuloRegisterFour implements OnInit{
         
         formData.append("nombre_completo", this.formularioRegistro.get('nombre_completo')?.value || "");
         formData.append("seccion_electoral", this.formularioRegistro.get('seccion_electoral')?.value || "");
-        formData.append("demarcacion", this.opcionDemarcacion);
+        formData.append("demarcacion", this.formularioRegistro.get('demarcacion')?.value || ""); 
         formData.append("distrito_electoral", this.formularioRegistro.get('duninominal')?.value || "");
         formData.append("comunidad", this.opcionComunidad);
         formData.append("pueblo_originario", this.opcionPuebloOriginario);

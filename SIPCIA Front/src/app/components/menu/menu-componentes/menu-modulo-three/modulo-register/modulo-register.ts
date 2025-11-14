@@ -68,6 +68,9 @@ export class ModuloRegister implements OnInit{
   fileUploaded: boolean = false;
   selectedFile: File | null = null;
 
+  
+  isActive: boolean = false;
+
   constructor(
     private service: Auth, 
     private router: Router, 
@@ -121,6 +124,19 @@ export class ModuloRegister implements OnInit{
     this.id_usuario = Number(sessionStorage.getItem('id_usuario')!);
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.catalogo_comunidad();
+
+    this.area = sessionStorage.getItem('modDoc')!;
+    
+    const storedDoc = sessionStorage.getItem('modDoc');
+
+    
+    this.isActive = storedDoc === 'false';
+
+    if (this.isActive) {
+      this.formularioRegistro.get('documentos')?.disable();
+    } else {
+      this.formularioRegistro.get('documentos')?.enable();
+    }
   }
 
   onFileSelected(event: any) {
@@ -149,7 +165,7 @@ export class ModuloRegister implements OnInit{
   }
 
   getSeccion(){
-    this.serviceRegister.getSeccion(Number(this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
+    this.serviceRegister.getSeccion((this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
       next: (data) => {
 
         const distritos = data as { distrito_electoral: number }[];
@@ -319,7 +335,7 @@ export class ModuloRegister implements OnInit{
   };
 
   catalogo_demarcacion() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos((this.formularioRegistro?.get('duninominal')?.value), "cat_demarcacion_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_demarcacion_territorial.length > 0) {
           this.catalogoDemarcacion = data.cat_demarcacion_territorial;

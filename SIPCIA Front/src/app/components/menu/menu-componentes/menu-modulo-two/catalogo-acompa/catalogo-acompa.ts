@@ -135,6 +135,34 @@ export class CatalogoAcompa implements OnInit {
     });
   };
 
+ descargarFotos(item: any): void {
+  this.miServicio.descargarFoto(item.fotografia_enlace, this.tokenSesion).subscribe({
+    next: (blob) => {
+      const mimeType =
+        blob.type && blob.type.startsWith("image/")
+          ? blob.type
+          : "image/png";
+
+      const fixedBlob = new Blob([blob], { type: mimeType });
+
+      const url = window.URL.createObjectURL(fixedBlob);
+      
+      const nombreDescarga =
+        item.fotografia_enlace ||
+        item.fotografia_enlace.split("-").slice(1).join("-") ||
+        "foto.png";
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = nombreDescarga;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => console.error("Error al descargar la imagen:", err)
+  });
+}
+
   descargar2(item: any): void {
     this.miServicio.descargarOtrosNorma(item.cv_enlace, this.tokenSesion).subscribe({
       next: (blob) => {

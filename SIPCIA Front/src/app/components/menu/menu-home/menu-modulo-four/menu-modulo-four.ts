@@ -156,14 +156,28 @@ export class MenuModuloFour implements OnInit{
       console.error("Error al iniciar sesión", error);
     }
   }
-    
-  descargar(){
+  
+  descargar2(){
     this.miServicio.descargarDocNorma("1757703550661-AVISDEPRIVACIDADSIMPLIFICADO.pdf").subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Aviso de Privacidad';
+        a.download = 'Aviso de Privacidad Simplificado';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error al descargar archivo:', err)
+    });
+  }
+    
+  descargar(){
+    this.miServicio.descargarDocNorma("1758128882717-AVISODEPRIVACIDADINTEGRAL.pdf").subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Aviso de Privacidad Integral';
         a.click();
         window.URL.revokeObjectURL(url);
       },

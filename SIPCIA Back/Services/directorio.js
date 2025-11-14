@@ -61,7 +61,7 @@ router.get("/comunidades", Midleware.verifyToken, async (req, res) => {
         comunidades: result.recordset
       });
     } else {
-      return res.status(200).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo", comunidades:[] });
     }
   } catch (error) {
     console.error(error);

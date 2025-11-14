@@ -26,6 +26,7 @@ const config = {
 };
 
 
+
 let pool;
 
 export async function connectToDatabase() {

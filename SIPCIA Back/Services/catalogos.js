@@ -226,26 +226,24 @@ router.get("/cat_demarcacion_territorial", Midleware.verifyToken, async (req, re
   try {
     const { id_distrito } = req.query;
 
+
     const pool = await connectToDatabase();
     const result = await pool.request()
       .input('id_distrito', sql.Int, id_distrito)
-      .query(`select DISTINCT dd.demarcacion_territorial as dt, 
-                dd.demarcacion_territorial as id,
-                dt.demarcacion_territorial  
-                from distritos_demarcaciones dd 
-                join demarcacion_territorial dt on dt.id = dd.demarcacion_territorial
-              WHERE dt.id <>1 ${id_distrito ? ' AND dd.distrito = @id_distrito' : ''}`);
+      .query(`SELECT DISTINCT dt.id, dt.demarcacion_territorial  FROM cat_secciones cs
+                join demarcacion_territorial dt on cs.demarcacion_territorial = dt.id 
+              WHERE 1=1 ${id_distrito ? ' AND cs.distrito_electoral = @id_distrito' : ''}`);
 
     if (result.recordset.length > 0) {
       return res.status(200).json({
         cat_demarcacion_territorial: result.recordset
       });
     } else {
-      return res.status(200).json({ message: "No se encontraron datos de tipo" });
+      return res.status(200).json({ message: "No se encontraron datos de tipo", cat_demarcacion_territorial:[] });
     }
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Error de servidor", error: error.message });
+    return res.status(500).json({ message: "Error de servidor", error: error.message, cat_demarcacion_territorial:[] });
   }
 });
 

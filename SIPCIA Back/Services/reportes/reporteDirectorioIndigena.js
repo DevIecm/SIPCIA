@@ -38,9 +38,9 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
           cb.barrio,
           r.comunidad_pbl,
           CASE 
-              WHEN r.otro_pbl IS NOT NULL THEN r.otro_pbl 
-              ELSE ut.ut 
-          END AS utotro,
+            when ut.ut is null then r.otro_pbl 
+            else ut.ut
+          END as utotro,  
           r.nombre_instancia,
           r.cargo_instancia,
           r.domicilio,
@@ -959,10 +959,10 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
 
     const headers = [
       "No.", "DD", "Demarcación", "Nombre (s) y apellidos completos",
-      "Foto", "Pueblo Originario", "Pueblo", "Barrio",
+      "Pueblo Originario", "Pueblo", "Barrio",
       "Unidad Territorial", "Otro", "Comunidad Indígena/Afromexicana", "Interés Profesional",
       "Datos de la Institución a la que pertenece", "Cargo", "Domicilio",
-      "Teléfono", "Correo Electrónico", "Documentos y/o Curriculum vitae(en su caso)"
+      "Teléfono", "Correo Electrónico", "Foto", "Documentos y/o Curriculum vitae(en su caso)"
     ];
 
     worksheet.addRow(headers);
@@ -1014,7 +1014,6 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
         row.distrito_electoral,
         row.demarcacion_territorial,
         row.nombre_completo,
-        foto,
         row.pueblo_originario,
         row.pueblo,
         row.barrio,
@@ -1027,10 +1026,11 @@ router.get("/reporteInstituciones", Midleware.verifyToken, async (req, res) => {
         row.domicilio,
         row.telefono,
         row.correo_electronico,
+        foto,
         archivo
       ]);
 
-      const cellUbicacion = rowExcel.getCell(5);
+      const cellUbicacion = rowExcel.getCell(17);
       const cellArchivo = rowExcel.getCell(18);
 
       [cellUbicacion, cellArchivo].forEach(cell => {
@@ -1727,8 +1727,10 @@ router.get("/reporteAtencionById", Midleware.verifyToken, async (req, res) => {
     );
 
       const cellArchivo = rowExcel.getCell(13);
+      const cellUbicacion = rowExcel.getCell(14);
 
-      [cellArchivo].forEach(cell => {
+
+      [cellArchivo, cellUbicacion].forEach(cell => {
         cell.font = { color: { argb: 'FF0000FF' }, underline: true };
       });
 
