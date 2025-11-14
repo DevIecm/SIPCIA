@@ -35,6 +35,17 @@ export class Auth {
       encryp
     }).pipe(catchError((error: HttpErrorResponse) => {return throwError(() => error);}));
   };
+
+  getData(id: number): Observable<any> {
+
+    const params = new HttpParams()
+      .set('id', id.toString())
+
+    return this.http.get(this.apiUrl + 'login/catch', {
+      params
+    }).pipe(catchError((error: HttpErrorResponse) => {return throwError(() => error);}));
+  };
+  
   
   loginEncrypted(username: string, password: string, tipo_usuario: number): Observable<any> {
     const data = {
