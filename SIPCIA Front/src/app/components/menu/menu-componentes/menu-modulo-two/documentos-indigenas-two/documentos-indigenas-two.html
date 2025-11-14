@@ -45,7 +45,12 @@
         <div class="box-search container justify-content-center">
           <label>Buscar:</label>
         </div>
-        <input type="text" class="form-control input-search"  name="searchTerm" >
+        <input 
+          type="text" 
+          class="form-control input-search"  
+          name="searchTerm"
+          [(ngModel)]="searchTerm"
+          (input)="search()">
       </div>
     </div>
   }
