@@ -39,16 +39,19 @@
 </nav>
 
 <div class="container justify-content-center mt-4">
-  @if(activeTab === 'home') {
-    <div class="row">
-      <div class="col-6 d-flex">
-        <div class="box-search container justify-content-center">
-          <label>Buscar:</label>
-        </div>
-        <input type="text" class="form-control input-search"  name="searchTerm" >
+  <div class="row">
+    <div class="col-6 d-flex">
+      <div class="box-search container justify-content-center">
+        <label>Buscar:</label>
       </div>
+      <input 
+        type="text" 
+        class="form-control input-search"  
+        name="searchTerm"
+        [(ngModel)]="searchTerm"
+        (input)="search()">
     </div>
-  }
+  </div>
 
   <div class="mt-4">
     <ul class="nav nav-tabs justify-content-end" style="position: relative;">

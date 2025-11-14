@@ -54,10 +54,12 @@ export class DocumentosIndigenasTwo implements OnInit{
   dataTableTwo: any = [];
   dataTableInd: any = [];
   allDatableTwo: any[] = [];
-
+  dataTableTwoAll: any[] = [];
   dataTableD: any = [];
   allDatableD: any[] = [];
-
+  allDatableTwoAll: any[] = [];
+  dataTableIndAll: any[] = [];
+  
   showModal = false;
   
   selectedFile: File | null = null;
@@ -173,6 +175,92 @@ export class DocumentosIndigenasTwo implements OnInit{
   closeModal() {
     this.showModal = false;
   }
+
+    search(): void {
+    if(this.activeTab === 'home') {
+      
+      const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+
+      if (rawFilter === '') {
+        this.dataTableTwo = [...this.dataTableTwoAll];
+        return;
+      }
+  
+      this.dataTableTwo = this.dataTableTwoAll.filter((val) => {
+        const id = (val.id ?? '').toString().toLowerCase().trim();
+        const nombre_documento = (val.nombre_documento ?? '').toString().toLowerCase().trim();
+        const fecha_carga = (val.fecha_carga ?? '').toLowerCase().trim();
+
+        return (
+          id.includes(rawFilter) ||
+          nombre_documento.includes(rawFilter) ||
+          fecha_carga.includes(rawFilter)
+        );
+      });
+
+    } else if(this.activeTab === 'profile') {
+
+      const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+      if (rawFilter === '') {
+        this.allDatableTwo = [...this.allDatableTwoAll];
+        return;
+      }
+
+      this.allDatableTwo = this.allDatableTwoAll.filter((val) => {
+        const id = (val.id ?? '').toString().toLowerCase().trim();
+        const nombre_documento = (val.nombre_documento ?? '').toString().toLowerCase().trim();
+        const fecha_carga = (val.fecha_carga ?? '').toLowerCase().trim();
+
+        return (
+          id.includes(rawFilter) ||
+          nombre_documento.includes(rawFilter) ||
+          fecha_carga.includes(rawFilter)
+        );
+      });
+
+    } else if(this.activeTab === 'contact') {
+
+      const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+
+      if (rawFilter === '') {
+        this.dataTableInd = [...this.dataTableIndAll];
+        return;
+      }
+
+      this.dataTableInd = this.dataTableIndAll.filter((val: { id: any; nombre_documento: any; fecha_carga: any; }) => {
+        const id = (val.id ?? '').toString().toLowerCase().trim();
+        const nombre_documento = (val.nombre_documento ?? '').toString().toLowerCase().trim();
+        const fecha_carga = (val.fecha_carga ?? '').toLowerCase().trim();
+
+        return (
+          id.includes(rawFilter) ||
+          nombre_documento.includes(rawFilter) ||
+          fecha_carga.includes(rawFilter)
+        );
+      });
+
+    } else if(this.activeTab === 'other'){
+
+      const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+    
+      if (rawFilter === '') {
+        this.dataTableD = [...this.allDatableD];
+        return;
+      }
+
+      this.dataTableD = this.allDatableD.filter((val) => {
+        const id = (val.id ?? '').toString().toLowerCase().trim();
+        const nombre_documento = (val.nombre_documento ?? '').toString().toLowerCase().trim();
+        const fecha_carga = (val.fecha_carga ?? '').toLowerCase().trim();
+
+        return (
+          id.includes(rawFilter) ||
+          nombre_documento.includes(rawFilter) ||
+          fecha_carga.includes(rawFilter)
+        );
+      });
+    }
+  };
 
   descargar(){
     this.miServicio.descargarDocNorma("1758128882717-purebaComunidadIndigena.pdf").subscribe({
@@ -304,59 +392,21 @@ export class DocumentosIndigenasTwo implements OnInit{
     return formattedDate;
   }
 
-  // getRegister(id: number) {
-  //   this.reporteService.getRegisterfichaTecnicaTablaTwo(1, id, this.tokenSesion).subscribe({
-  //     next: (data) => {
-  //       if(data.getDocumentos.length > 0) {
-  //         switch(id) {
-  //           case 1:
-  //             this.dataTableTwo = data.getDocumentos;
-  //             break;
-  //           case 2:
-  //             this.allDatableTwo = data.getDocumentos;
-  //             break;
-  //           case 3:
-  //             this.dataTableInd = data.getDocumentos;
-  //             break;
-  //         }
-  //       } else {
-  //         switch(id) {
-  //           case 1:
-  //             this.dataTableTwo = [];
-  //             break;
-  //           case 2:
-  //             this.allDatableTwo = [];
-  //             break;
-  //           case 3:
-  //             this.dataTableInd = [];
-  //             break;
-  //         }
-  //         Swal.fire("No se encontraron registros");
-  //       }        
-  //     },
-  //     error: (err) => {
-  //       if (err.error.code === 160) {
-  //         this.service.cerrarSesionByToken();
-  //       }
-  //       if(err.error.code === 100) {
-  //         Swal.fire("No se encontraron registros");
-  //       }
-  //     }
-  //   });
-  // }
-
   getRegister(id: number) {
     this.reporteService.getRegisterfichaTecnicaTablaTwo(1, id, this.tokenSesion).subscribe({
       next: (data) => {
         switch(id) {
           case 1:
             this.dataTableTwo = data.getDocumentos || [];
+            this.dataTableTwoAll = data.getDocumentos || [];
             break;
           case 2:
             this.allDatableTwo = data.getDocumentos || [];
+            this.allDatableTwoAll = data.getDocumentos || [];
             break;
           case 3:
             this.dataTableInd = data.getDocumentos || [];
+            this.dataTableIndAll = data.getDocumentos || [];
             break;
           default:
             break;

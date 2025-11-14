@@ -18,6 +18,7 @@ function encryptSHA256(text) {
 
 router.post("/loginEncrypt", async (req, res) => {
     try {
+        
         const ecnrypt = req.body.encryp;
         const bytes = CryptoJS.AES.decrypt(ecnrypt, secretKey);
         const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
@@ -37,7 +38,6 @@ router.post("/loginEncrypt", async (req, res) => {
                         cs.correo_usuario,
                         cs.area_adscripcion,
                         cd.adscripcion_usuario,
-                        cd.distrito,
                         tu.documento_1 AS modDoc
                     FROM usuarios cs
                     JOIN tipo_usuario tu ON cs.tipo_usuario = tu.id 
@@ -47,6 +47,7 @@ router.post("/loginEncrypt", async (req, res) => {
                         cs.usuario = @username
                         AND cs.password = @password
                         AND cs.tipo_usuario = @tipo_usuario
+                        AND tu.estado_sistema = 1
                         AND cd.estado_sistema = 1;`)
 
         if (result.recordset.length === 0) {
@@ -78,17 +79,44 @@ router.post("/loginEncrypt", async (req, res) => {
     }
 });
 
+router.get("/catch", async (req, res) => {
+    try {
+
+         const { id } = req.query;
+
+        if (!id) {
+            return res.status(400).json({ message: "Datos requeridos" });
+        }
+
+        const pool = await connectToDatabase();
+        const result = await pool.request()
+            .input('id', sql.Int, id)
+            .query(`SELECT
+                        cs.id,
+                        cs.estado_sistema    
+                    FROM tipo_usuario cs
+                    WHERE cs.id = @id`)
+    
+        if (result.recordset.length > 0) {
+            return res.status(200).json({
+                estado_sistema: result.recordset
+            });
+        } else {
+            return res.status(200).json({ message: "No se encontraron datos de tipo" });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: "Error de servidor", error });
+    }
+});
+
 router.post("/login", async (req, res) => {
     try {
+
         const ecnrypt = req.body.encryp;
         const bytes = CryptoJS.AES.decrypt(ecnrypt, secretKey);
         const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         const pool = await connectToDatabase();
-
-
-        console.log("data", data.username)
-        console.log("data", data.password)
-        console.log("data", data.tipo_usuario)
 
         const result = await pool.request()
             .input('username', sql.VarChar, data.username)

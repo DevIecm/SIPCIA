@@ -52,6 +52,8 @@ export class DocumentosAfroamericanas implements OnInit{
   fileUploaded: boolean = false;
 
   dataTableD: any = [];
+  allDatableDN: any = [];
+  allDatableR: any = [];
   allDatableD: any[] = [];
   dataTableDN: any = [];
   dataTableDA: any = [];
@@ -88,6 +90,93 @@ export class DocumentosAfroamericanas implements OnInit{
   logout() {
     this.router.navigate(['']);
   };
+
+  search(): void {
+    if(this.activeTab === 'home') {
+      
+      const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+
+      if (rawFilter === '') {
+        this.dataTableDN = [...this.allDatableDN];
+        return;
+      }
+  
+      this.dataTableDN = this.allDatableDN.filter((val: { id: any; nombre_documento: any; fecha_carga: any; }) => {
+        const id = (val.id ?? '').toString().toLowerCase().trim();
+        const nombre_documento = (val.nombre_documento ?? '').toString().toLowerCase().trim();
+        const fecha_carga = (val.fecha_carga ?? '').toLowerCase().trim();
+
+        return (
+          id.includes(rawFilter) ||
+          nombre_documento.includes(rawFilter) ||
+          fecha_carga.includes(rawFilter)
+        );
+      });
+
+    } else if(this.activeTab === 'profile') {
+
+      const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+      if (rawFilter === '') {
+        this.dataTableDA = [...this.allDatableDN];
+        return;
+      }
+
+      this.dataTableDA = this.allDatableDN.filter((val: { id: any; nombre_documento: any; fecha_carga: any; }) => {
+        const id = (val.id ?? '').toString().toLowerCase().trim();
+        const nombre_documento = (val.nombre_documento ?? '').toString().toLowerCase().trim();
+        const fecha_carga = (val.fecha_carga ?? '').toLowerCase().trim();
+
+        return (
+          id.includes(rawFilter) ||
+          nombre_documento.includes(rawFilter) ||
+          fecha_carga.includes(rawFilter)
+        );
+      });
+
+    } else if(this.activeTab === 'contact') {
+
+      const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+
+      if (rawFilter === '') {
+        this.dataTable = [...this.allDatableR];
+        return;
+      }
+
+      this.dataTable = this.allDatableR.filter((val: { id: any; nombre_documento: any; fecha_carga: any; }) => {
+        const id = (val.id ?? '').toString().toLowerCase().trim();
+        const nombre_documento = (val.nombre_documento ?? '').toString().toLowerCase().trim();
+        const fecha_carga = (val.fecha_carga ?? '').toLowerCase().trim();
+
+        return (
+          id.includes(rawFilter) ||
+          nombre_documento.includes(rawFilter) ||
+          fecha_carga.includes(rawFilter)
+        );
+      });
+
+    } else if(this.activeTab === 'other'){
+
+      const rawFilter = (this.searchTerm ?? '').trim().toLowerCase();
+    
+      if (rawFilter === '') {
+        this.dataTableD = [...this.allDatableD];
+        return;
+      }
+
+      this.dataTableD = this.allDatableD.filter((val) => {
+        const id = (val.id ?? '').toString().toLowerCase().trim();
+        const nombre_documento = (val.nombre_documento ?? '').toString().toLowerCase().trim();
+        const fecha_carga = (val.fecha_carga ?? '').toLowerCase().trim();
+
+        return (
+          id.includes(rawFilter) ||
+          nombre_documento.includes(rawFilter) ||
+          fecha_carga.includes(rawFilter)
+        );
+      });
+    }
+  };
+
 
   isCabecera(){
       this.Cabecera.validaCabecera(this.area_adscripcion, this.tokenSesion).subscribe({
@@ -248,9 +337,11 @@ export class DocumentosAfroamericanas implements OnInit{
           switch(id) {
             case 1:    
               this.dataTableDN = data.getDocumentos;
+              this.allDatableDN = data.getDocumentos;
               break;
             case 2:
               this.dataTableDA = data.getDocumentos;
+              this.allDatableDN = data.getDocumentos;
               break;
           }
         } else {
@@ -281,7 +372,7 @@ export class DocumentosAfroamericanas implements OnInit{
       next: (data) => {
         if(data.getFichasAfro.length > 0) {
           this.dataTable = data.getFichasAfro;
-          this.allDatable = data.getFichasAfro;
+          this.allDatableR = data.getFichasAfro;
         } else {
           Swal.fire("No se encontraron registros");
         }        
