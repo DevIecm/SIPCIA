@@ -48,6 +48,9 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
   } = req.body;
 
 
+
+
+
   // Validación de campos requeridos
 
   if (
@@ -122,9 +125,11 @@ router.post("/altaRegistro", upload.fields([{ name: "kmlFile", maxCount: 1 }]), 
       // Obtener folio
       const resultadoFolio = await pool.request()
         .input('distrito_electoral', sql.Int, distrito_electoral)
+        .input('comunidad', sql.Int, comunidad)
         .query(`
                 SELECT MAX(CAST(RIGHT(folio, 4) AS INT)) AS ultimoFolio
                 FROM registro
+              where comunidad =@comunidad
             `);
 
       const ultimoFolio = resultadoFolio.recordset[0].ultimoFolio || 0;

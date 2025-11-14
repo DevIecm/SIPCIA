@@ -99,7 +99,7 @@ export class Register {
       .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
   };
 
-  getSeccion(idSeccion: number, token: string) {
+  getSeccion(idSeccion: string, token: string) {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });

@@ -63,6 +63,7 @@ export class Login implements OnInit {
     sessionStorage.removeItem("doc5");
     sessionStorage.removeItem("doc6");
     sessionStorage.removeItem("doc7");
+    sessionStorage.removeItem("modDoc");
   }
 
   constructor(
@@ -97,6 +98,7 @@ export class Login implements OnInit {
             sessionStorage.setItem("doc5", res.userData.documento_5);
             sessionStorage.setItem("doc6", res.userData.documento_6);
             sessionStorage.setItem("doc7", res.userData.documento_7);
+            sessionStorage.setItem("modDoc", res.userData.modDoc);
 
             this.router.navigate(['/menu']);
              

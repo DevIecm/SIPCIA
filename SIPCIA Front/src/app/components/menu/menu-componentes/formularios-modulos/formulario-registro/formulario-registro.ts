@@ -163,7 +163,7 @@ export class FormularioRegistro implements OnInit{
   }
 
   getSeccion(){
-    this.registerService.getSeccion(Number(this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
+    this.registerService.getSeccion((this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
       next: (data) => {
 
         const distritos = data as { distrito_electoral: number }[];

@@ -18,7 +18,6 @@ function encryptSHA256(text) {
 
 router.post("/loginEncrypt", async (req, res) => {
     try {
-        
         const ecnrypt = req.body.encryp;
         const bytes = CryptoJS.AES.decrypt(ecnrypt, secretKey);
         const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
@@ -38,8 +37,10 @@ router.post("/loginEncrypt", async (req, res) => {
                         cs.correo_usuario,
                         cs.area_adscripcion,
                         cd.adscripcion_usuario,
-                        cd.distrito
+                        cd.distrito,
+                        tu.documento_1 AS modDoc
                     FROM usuarios cs
+                    JOIN tipo_usuario tu ON cs.tipo_usuario = tu.id 
                     JOIN estado_usuario es ON cs.estado_usuario = es.id
                     JOIN adscripcion_usuario cd ON cs.area_adscripcion = cd.id
                     WHERE 
@@ -79,11 +80,15 @@ router.post("/loginEncrypt", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     try {
-
         const ecnrypt = req.body.encryp;
         const bytes = CryptoJS.AES.decrypt(ecnrypt, secretKey);
         const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         const pool = await connectToDatabase();
+
+
+        console.log("data", data.username)
+        console.log("data", data.password)
+        console.log("data", data.tipo_usuario)
 
         const result = await pool.request()
             .input('username', sql.VarChar, data.username)

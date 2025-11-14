@@ -117,6 +117,7 @@ export class NuevoRegistro implements OnInit{
     this.tokenSesion = sessionStorage.getItem('key')!;
     this.position = sessionStorage.getItem('dir')!;
     this.tipo_usuario =  Number(sessionStorage.getItem('tipoUsuario')!);
+    this.id_usuario =  Number(sessionStorage.getItem('id_usuario')!);
     this.area = sessionStorage.getItem('area')!;
     const storedDoc = sessionStorage.getItem('doc1');
 
