@@ -87,6 +87,9 @@
                             <div *ngIf="item.Datos?.otro_afro">
                                 Otro Pueblo:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.otro_afro }}
                             </div>
+                            <div *ngIf="item.Datos?.unidad_territorial_pbl">
+                                Unidad Territorial:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.unidad_territorial_pbl }}
+                            </div>
                             <div *ngIf="item.Datos?.comunidad">
                                 Comunidad:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.comunidad }}
                             </div>
@@ -196,6 +199,9 @@
                             </div>
                             <div *ngIf="item.Datos?.enlace_ubicacion">
                                 Ubicacíon:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.enlace_ubicacion }}
+                            </div>
+                            <div *ngIf="item.Datos?.enlace_fotografia">
+                                Fotografía:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.enlace_fotografia }}
                             </div>
                             <div *ngIf="item.Datos?.intitucion_propietaria">
                                 Institución propietaria, encargada o responsable del lugar o espacio:&nbsp;&nbsp;&nbsp;&nbsp;{{ item.Datos.intitucion_propietaria }}

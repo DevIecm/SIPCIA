@@ -132,6 +132,7 @@ export class MenuModuloFour implements OnInit{
           sessionStorage.setItem("id_usuario", res.userData.id);
           sessionStorage.setItem("area", res.userData.area_adscripcion);
           sessionStorage.setItem("cabecera", res.userData.distrito);
+          sessionStorage.setItem("modDoc", res.userData.modDoc);
 
           this.mostrarPantalla = false;
 

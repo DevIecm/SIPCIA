@@ -55,6 +55,7 @@ router.post("/altaFichaInd", Midleware.verifyToken, async (req, res) => {
         !distrito_cabecera ||
         !estado_registro
     ) {
+        const faltantes = [];
         if (!demarcacion_territorial) faltantes.push("demarcacion_territorial");
         if (!distrito_electoral) faltantes.push("distrito_electoral");
         if (!fecha_ficha) faltantes.push("fecha_ficha");

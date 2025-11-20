@@ -4,7 +4,7 @@ import http from 'http';
 import path from "path";
 import { fileURLToPath } from "url";
 
-const hostname = 'localhost';
+const hostname = '145.0.46.49';
 
 const app = express();
 const port = 4000;

@@ -489,20 +489,29 @@ export class FormularioDocumentos {
               });
             }, 0);
 
-            
-            const personaResponsables = this.infoUpdate.personaRes ?? [];
+                // solo carga lo capturado
 
-            const direcciones = this.formularioRegistro?.get('direccionesDistritales') as FormArray;
-            const distritales = this.formularioRegistro?.get('direccionesDistritale') as FormArray;
+          const personaResponsables = this.infoUpdate.personaRes ?? [];
 
-            direcciones.clear();
-            distritales.clear();
+          const direcciones = this.formularioRegistro?.get('direccionesDistritales') as FormArray;
+          const distritales = this.formularioRegistro?.get('direccionesDistritale') as FormArray;
 
-            personaResponsables.forEach((persona: { dd_cabecera_demarcacion: string; direccion_distrital: string }) => {
-              direcciones.push(this.formBuilder.control(persona.dd_cabecera_demarcacion));
-              distritales.push(this.formBuilder.control(persona.direccion_distrital));
-            });
+          direcciones.clear();
+          distritales.clear();
 
+          personaResponsables.forEach((persona: any) => {
+
+            const cab = persona.dd_cabecera_demarcacion;
+            const dir = persona.direccion_distrital;
+
+            if (
+              cab && cab.toString().trim() !== "" &&
+              dir && dir.toString().trim() !== ""
+            ) {
+              direcciones.push(this.formBuilder.control(cab));
+              distritales.push(this.formBuilder.control(dir));
+            }
+          });
           
           } else {
             Swal.fire("No se encontraron registros");
@@ -572,19 +581,29 @@ export class FormularioDocumentos {
             this.formularioRegistro!.patchValue(datosFormularioCompletos);
             this.catalogo_demarcacion();
 
-            const personaResponsables = this.infoUpdate.personaRes ?? [];
+          // solo carga lo capturado
 
-            const direcciones = this.formularioRegistro?.get('direccionesDistritales') as FormArray;
-            const distritales = this.formularioRegistro?.get('direccionesDistritale') as FormArray;
+          const personaResponsables = this.infoUpdate.personaRes ?? [];
 
-            direcciones.clear();
-            distritales.clear();
+          const direcciones = this.formularioRegistro?.get('direccionesDistritales') as FormArray;
+          const distritales = this.formularioRegistro?.get('direccionesDistritale') as FormArray;
 
-            personaResponsables.forEach((persona: { dd_cabecera_demarcacion: string; direccion_distrital: string }) => {
-              direcciones.push(this.formBuilder.control(persona.dd_cabecera_demarcacion));
-              distritales.push(this.formBuilder.control(persona.direccion_distrital));
-            });
-          
+          direcciones.clear();
+          distritales.clear();
+
+          personaResponsables.forEach((persona: any) => {
+
+            const cab = persona.dd_cabecera_demarcacion;
+            const dir = persona.direccion_distrital;
+
+            if (
+              cab && cab.toString().trim() !== "" &&
+              dir && dir.toString().trim() !== ""
+            ) {
+              direcciones.push(this.formBuilder.control(cab));
+              distritales.push(this.formBuilder.control(dir));
+            }
+          });
           } else {
             Swal.fire("No se encontraron registros");
           }

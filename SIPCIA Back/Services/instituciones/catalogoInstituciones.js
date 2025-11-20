@@ -102,7 +102,17 @@ router.post("/altaInstituciones", Midleware.verifyToken, upload.fields([{ name: 
     !modulo_registro ||
     !estado_registro
   ) {
-    return res.status(400).json({ message: "Datos requeridos" })
+      if (!demarcacion_territorial) faltantes.push("demarcacion_territorial");
+      if (!nombre_completo) faltantes.push("nombre_completo");
+      if (!comunidad) faltantes.push("comunidad");
+      if (!usuario_registro) faltantes.push("usuario_registro");
+      if (!modulo_registro) faltantes.push("modulo_registro");
+      if (!estado_registro) faltantes.push("estado_registro");
+
+      return res.status(400).json({
+      message: "Faltan datos requeridos",
+      faltantes,
+      });
   }
 
   const kmlFile = req.files["kmlFile"] ? req.files["kmlFile"][0] : null;

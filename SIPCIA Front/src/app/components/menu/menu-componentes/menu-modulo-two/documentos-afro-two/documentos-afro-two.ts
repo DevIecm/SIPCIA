@@ -138,7 +138,7 @@ export class DocumentosAfroTwo implements OnInit{
 
     delete_ficha(id: number) {
           Swal.fire({
-            title: "¿Está seguro que desea Eliminar la Instancia?",
+            title: "¿Está seguro que desea eliminar esta ficha",
             icon: "warning", 
             showCancelButton: true,
             confirmButtonColor: "#FBB03B",
@@ -151,7 +151,7 @@ export class DocumentosAfroTwo implements OnInit{
                 next: (data) => {
                   if(data.code === 200) {
                     Swal.fire({
-                      title: "Se han aplicado correctamente los cambios.",
+                      title: "Se ha eliminado correctamente la ficha.",
                       icon: "success",
                       confirmButtonText: "Aceptar",
                       confirmButtonColor: "#FBB03B",
@@ -231,7 +231,7 @@ export class DocumentosAfroTwo implements OnInit{
 
 delete_item(id: number) {
   Swal.fire({
-    title: "¿Está seguro que desea Eliminar la Instancia?",
+    title: "¿Está seguro que desea eliminar este documento?",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#FBB03B",
@@ -244,7 +244,7 @@ delete_item(id: number) {
         next: (data) => {
           if (data.code === 200) {
             Swal.fire({
-              title: "Se han aplicado correctamente los cambios.",
+              title: "Se ha eliminado correctamente el documento.",
               icon: "success",
               confirmButtonText: "Aceptar",
               confirmButtonColor: "#FBB03B",

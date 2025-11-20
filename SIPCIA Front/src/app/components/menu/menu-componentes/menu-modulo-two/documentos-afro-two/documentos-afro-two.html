@@ -347,9 +347,9 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of dataTable; let i = index" class="dual-row">
-                    <td (click)="openModal(2, item.id) " style="cursor: pointer;">{{ item.nombre_ficha}}</td>
-                    <td>{{ formatFecha(item.fecha_registro) }} {{item.hora_registro}}</td>
-                    <td><i class="bi bi-trash" (click)="delete_ficha(item.id)"></i></td>
+                    <td (click)="openModal(2, item.id) " style="text-align: start; border: none; background-color: #86669D !important; color: #ffff; text-decoration: underline; cursor: pointer;">{{ item.nombre_ficha}}</td>
+                    <td style="border: none; background-color: #86669D !important; color: #ffff;">{{ formatFecha(item.fecha_registro) }} {{item.hora_registro}}</td>
+                    <td style="border: none; background-color: #86669D !important;"><i style="color: #ffff;"  class="bi bi-trash" (click)="delete_ficha(item.id)"></i></td>
                   </tr>
                 </tbody>
               </table>
@@ -371,7 +371,7 @@
             </div>
         </div>
         <div class="container justify-content-center mt-4">
-            <div class="row back-table" style="margin-top: -21px;">
+            <div class="row back-table" style="border: none; cursor: pointer; background-color: #785B8D !important;">
                 <div class="col-12">
                     <table class="table">
                         <thead>
@@ -379,35 +379,32 @@
                                 <th 
                                     scope="col"
                                     (click)="sortData('distrito_cabecera')"
-                                    style="cursor: pointer;">
+                                    style="text-align: start; border: none; width: 910px; cursor: pointer; background-color: #785B8D !important;">
                                     <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                                        <span>Nombre del Documento</span>
+                                        <span>Nombre</span>
                                         <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
                                     </div>
                                 </th>
                                 <th 
                                     scope="col"
                                     (click)="sortData('distrito_cabecera')"
-                                    style="cursor: pointer; width: 137px;">
+                                    style="border: none; cursor: pointer; background-color: #785B8D !important;">
                                     <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                                        <span>Fecha de Carga</span>
+                                        <span>Fecha</span>
                                         <i [ngClass]="getSortIcon('distrito_cabecera')"></i>
                                     </div>
                                 </th>
                                 <th 
-                                    scope="col"
-                                    style="cursor: pointer; width: 115px;">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
-                                        <span>Eliminar</span>
-                                    </div>
+                                  scope="col"
+                                  style="border: none; cursor: pointer; background-color: #785B8D !important;">
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of dataTableInd; let i = index" class="dual-row">
-                              <td (click)="descargarOtros(item.direccion_documento) " style="cursor: pointer;">{{ item.nombre_documento ? item.nombre_documento : '-' }}</td>
-                              <td>{{ formatFecha(item.fecha_carga) }} {{item.hora_carga}}</td>
-                              <td><i class="bi bi-trash" (click)="delete_item(item.id)"></i></td>                                
+                              <td (click)="descargarOtros(item.direccion_documento) " style="text-align: start; border: none; background-color: #785B8D !important; color: #ffff; text-decoration: underline; cursor: pointer;">{{ item.nombre_documento ? item.nombre_documento : '-' }}</td>
+                              <td style="border: none; background-color: #785B8D !important; color: #ffff;">{{ formatFecha(item.fecha_carga) }} {{item.hora_carga}}</td>
+                              <td style="border: none; background-color: #785B8D !important;"><i style="color: #ffff;" class="bi bi-trash" (click)="delete_item(item.id)"></i></td>                                
                             </tr>
                         </tbody>
                     </table>

@@ -43,11 +43,27 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
 
   const { persona_responsable_fta } = req.body
 
-  
 
-  if (!demarcacion_territorial || !distrito_electoral || !usuario_registro || !fecha_ficha ||
-    !modulo_registro || !estado_registro || !distrito_cabecera) {
-    return res.json(400).json({ message: "Datos requeridos" })
+
+  if (!demarcacion_territorial ||
+    !distrito_electoral ||
+    !usuario_registro ||
+    !fecha_ficha ||
+    !modulo_registro ||
+    !estado_registro ||
+    !distrito_cabecera) {
+    if (!demarcacion_territorial) faltantes.push("demarcacion_territorial");
+    if (!distrito_electoral) faltantes.push("distrito_electoral");
+    if (!usuario_registro) faltantes.push("usuario_registro");
+    if (!fecha_ficha) faltantes.push("fecha_ficha");
+    if (!modulo_registro) faltantes.push("modulo_registro");
+    if (!estado_registro) faltantes.push("estado_registro");
+    if (!distrito_cabecera) faltantes.push("distrito_cabecera");
+
+    return res.status(400).json({
+      message: "Faltan datos requeridos",
+      faltantes,
+    });
   }
 
   // Fecha y hora
@@ -68,7 +84,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
 
 
     // Obtener nombre
-       const resultadoFolio = await pool.request()
+    const resultadoFolio = await pool.request()
       .input('distrito_electoral', sql.Int, distrito_electoral)
       .query(`SELECT MAX(CAST(RIGHT(nombre_ficha, 5) AS INT)) AS ultimoFolio
             FROM ficha_tecnica_afromexicana
@@ -110,7 +126,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
       .input('estado_registro', sql.Int, estado_registro)
       .input('nombre_ficha', sql.VarChar, nombre_ficha)
       .input('distrito_cabecera', sql.Int, distrito_cabecera)
-      .input('fecha_ficha', sql.DateTime, fecha_ficha) 
+      .input('fecha_ficha', sql.DateTime, fecha_ficha)
       .input('ptrabajo_nombre', sql.VarChar, ptrabajo_nombre)
       .input('racta_nombre', sql.VarChar, racta_nombre)
       .query(`
@@ -141,6 +157,7 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
         const request = new sql.Request(transaction);
         const { dd_cabecera_demarcacion, direccion_distrital } = persona;
 
+
         await request
           .input('ficha_tecnica_iafromexicana', sql.Int, idRegistro)
           .input('dd_cabecera_demarcacion', sql.VarChar, dd_cabecera_demarcacion)
@@ -155,108 +172,6 @@ router.post("/altaFichaAfro", Midleware.verifyToken, async (req, res) => {
             `);
       }
     }
-/* // guardar por si, se ocupa
-    // Demarcación territorial
-    const resultDemarcacion = await transaction.request()
-      .input('id', sql.Int, demarcacion_territorial)
-      .query('SELECT demarcacion_territorial FROM demarcacion_territorial WHERE id = @id');
-    const demarcacion_territorialCatalogo = resultDemarcacion.recordset[0]?.demarcacion_territorial || `(${demarcacion_territorial})`;
-
-    // Distrito electoral
-    const resultDistrito = await transaction.request()
-      .input('id', sql.Int, distrito_electoral)
-      .query('SELECT direccion_distrital FROM cat_distrito WHERE id = @id');
-    const distrito_electoralCatalogo = resultDistrito.recordset[0]?.direccion_distrital || `(${distrito_electoral})`;
-
-    // Usuario registro
-    const resultUsuario = await transaction.request()
-      .input('id', sql.Int, usuario_registro)
-      .query('SELECT usuario FROM usuarios WHERE id = @id');
-    const usuario_registroCatalogo = resultUsuario.recordset[0]?.usuario || `(${usuario_registro})`;
-
-    // Módulo registro
-    const resultModulo = await transaction.request()
-      .input('id', sql.Int, modulo_registro)
-      .query('SELECT tipo_usuario FROM tipo_usuario WHERE id = @id');
-    const modulo_registroCatalogo = resultModulo.recordset[0]?.tipo_usuario || `(${modulo_registro})`;
-
-    // Estado registro
-    const resultEstado = await transaction.request()
-      .input('id', sql.Int, estado_registro)
-      .query('SELECT estado_registro FROM estado_registro WHERE id = @id');
-    const estado_registroCatalogo = resultEstado.recordset[0]?.estado_registro || `(${estado_registro})`;
-
-
-    const catalogos = {
-      demarcacion_territorial: { [demarcacion_territorial]: demarcacion_territorialCatalogo },
-      distrito_electoral: { [distrito_electoral]: distrito_electoralCatalogo },
-      usuario_registro: { [usuario_registro]: usuario_registroCatalogo },
-      modulo_registro: { [modulo_registro]: modulo_registroCatalogo },
-      estado_registro: { [estado_registro]: estado_registroCatalogo },
-    };
-
-    const campos = {
-      demarcacion_territorial,
-      distrito_electoral,
-      distrito_cabecera,
-      fecha_reunion,
-      fecha_ficha,
-      hora_reunion,
-      numero_asistentes_reunion,
-      lugar_reunion,
-      fecha_asamblea_informativa,
-      hora_asamblea_informativa,
-      numero_asistentes_informativa,
-      lugar_asamblea_informativa,
-      fecha_asamblea_consultiva,
-      hora_asamblea_consultiva,
-      numero_asistentes_consultiva,
-      lugar_asamblea_consultiva,
-      periodo_del,
-      periodo_al,
-      numero_lugares_publicos,
-      plan_trabajo,
-      resumen_acta,
-      solicitud_cambios,
-      cambios_solicitados,
-      observaciones,
-      usuario_registro,
-      modulo_registro,
-      estado_registro,
-      persona_responsable_fta
-    }
-
-    function reemplazarCatalogos(campos, catalogos) {
-      const resultado = { ...campos };
-
-      for (const campo in catalogos) {
-        const id = campos[campo];
-
-        if (id !== undefined && id !== null && id !== '') {
-          const nombre = catalogos[campo][id];
-          resultado[campo] = nombre || ` (${id})`;
-        }
-      }
-      return resultado;
-    }
-
-    const camposConValores = reemplazarCatalogos(campos, catalogos);
-    const camposModificados = JSON.stringify(camposConValores);
-
-    //registrar bitacora fichas
-    await transaction.request()
-      .input('usuario', sql.Int, usuario_registro)
-      .input('tipo_usuario', sql.Int, modulo_registro)
-      .input('fecha', sql.Date, fechaLocal)
-      .input('hora', sql.VarChar, horaActual)
-      .input('registro_id', sql.Int, idRegistro)
-      .input('campos_modificados', sql.VarChar(sql.MAX), camposModificados)
-      .query(`
-                INSERT INTO log_ficha_tecnica_afromexicana (usuario, tipo_usuario, fecha, hora, registro_id, campos_modificados)
-                VALUES (@usuario, @tipo_usuario, @fecha, @hora, @registro_id, @campos_modificados)
-            `);
-
- */
 
     // Confirmar la transacción
     await transaction.commit();

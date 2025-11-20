@@ -321,7 +321,7 @@ export class ModuloRegister implements OnInit{
   }
 
   catalogo_unidad_territorial() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_unidad_territorial", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos((this.formularioRegistro?.get('duninominal')?.value), "cat_unidad_territorial", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_unidad_territorial.length > 0) {
           this.catalogoUnidadTerritorial = data.cat_unidad_territorial;
@@ -349,7 +349,7 @@ export class ModuloRegister implements OnInit{
   };
 
   catalogo_pueblos() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos((this.formularioRegistro?.get('duninominal')?.value), "cat_pueblos", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_pueblos.length > 0) {
           this.catalogoPueblos = data.cat_pueblos;
@@ -363,7 +363,7 @@ export class ModuloRegister implements OnInit{
   };
 
   catalogo_pueblor() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_pueblos_originarios", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos((this.formularioRegistro?.get('duninominal')?.value), "cat_pueblos_originarios", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_pueblos_originarios.length > 0) {
           this.catalogoPueblor = data.cat_pueblos_originarios;
@@ -377,7 +377,7 @@ export class ModuloRegister implements OnInit{
   };
 
   catalogo_barrios() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_barrios", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos((this.formularioRegistro?.get('duninominal')?.value), "cat_barrios", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_barrios.length > 0) {
           this.catalogoBarrios = data.cat_barrios;
@@ -391,7 +391,7 @@ export class ModuloRegister implements OnInit{
   };
 
   catalogo_comunidad() {
-    this.catalogos.getCatalogos(Number(this.area), "cat_comunidad", this.tokenSesion).subscribe({
+    this.catalogos.getCatalogos((this.formularioRegistro?.get('duninominal')?.value), "cat_comunidad", this.tokenSesion).subscribe({
       next: (data) => {
         if(data.cat_comunidad.length > 0) {
           this.catalogoComunidad = data.cat_comunidad;
