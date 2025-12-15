@@ -48,7 +48,7 @@ router.get("/reporteDirectorioIndig", Midleware.verifyToken, async (req, res) =>
           r.telefono_celular,
           r.correo_electronico_oficial,
           r.correo_electronico_personal,
-          '1' AS moduloregistro,
+          r.modulo_registro AS moduloregistro,
           r.fecha_registro,
           CONVERT(VARCHAR(8), r.hora_registro, 108) AS hora_registro,
           r.enlace_documentos
@@ -259,7 +259,7 @@ router.get("/reporteDirectorioAfro", Midleware.verifyToken, async (req, res) => 
           r.telefono_celular,
           r.correo_electronico_oficial,
           r.correo_electronico_personal,
-          '1' AS moduloregistro,
+          r.modulo_registro AS moduloregistro,
           r.fecha_registro,
           CONVERT(VARCHAR(8), r.hora_registro, 108) AS hora_registro,
           r.enlace_documentos

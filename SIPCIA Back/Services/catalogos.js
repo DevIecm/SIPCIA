@@ -373,10 +373,11 @@ router.get("/distritoElectoral", Midleware.verifyToken, async (req, res) => {
     const pool = await connectToDatabase();
     const result = await pool.request()
       .input('idSeccion', sql.VarChar, idSeccion)
-      .query(`select 
-                distrito_electoral 
-                from cat_secciones
-                where seccion_electoral = @idSeccion;`);
+      .query(`SELECT 
+              distrito_electoral
+              FROM cat_secciones
+              WHERE seccion_electoral = RIGHT('0000' + @idSeccion, 4);`);
+
 
     if (result.recordset.length > 0) {
       return res.status(200).json(result.recordset);
