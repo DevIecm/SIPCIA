@@ -247,6 +247,56 @@ router.get("/cat_demarcacion_territorial", Midleware.verifyToken, async (req, re
   }
 });
 
+//catalogo completo de demarcacion
+router.get("/cat_demarcacion_territorial_all", Midleware.verifyToken, async (req, res) => {
+  try {
+
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+    .query(`SELECT id, dt.demarcacion_territorial
+            from demarcacion_territorial dt 
+            where id <> 1`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        cat_demarcacion_territorial: result.recordset
+      });
+    } else {
+      return res.status(200).json({ message: "No se encontraron datos de tipo", cat_demarcacion_territorial:[] });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message, cat_demarcacion_territorial_all:[] });
+  }
+});
+
+//filtro de distrito by demarcacion mod 2 y 3
+router.get("/distritoByDemarcacion", Midleware.verifyToken, async (req, res) => {
+  try {
+    const { id } = req.query;
+
+
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('id', sql.Int, id)
+      .query(`select dd.distrito 
+              from demarcacion_territorial dt 
+              join distritos_demarcaciones dd on dd.demarcacion_territorial = dt.id 
+              where dt.id = @id`);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({
+        distritoByDemarcacion: result.recordset
+      });
+    } else {
+      return res.status(200).json({ message: "No se encontraron datos de tipo", distritoByDemarcacion:[] });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error de servidor", error: error.message, distritoByDemarcacion:[] });
+  }
+});
+
 // catalogo Fecha y periodo
 router.get("/cat_fecha_periodo", Midleware.verifyToken, async (req, res) => {
   try {
@@ -366,6 +416,8 @@ router.get("/distritoElectoral", Midleware.verifyToken, async (req, res) => {
   try {
     const { idSeccion } = req.query;
 
+    console.log("idSeccion", idSeccion)
+
     if (!idSeccion) {
       return res.status(400).json({ message: "Datos requeridos" });
     }
@@ -376,7 +428,7 @@ router.get("/distritoElectoral", Midleware.verifyToken, async (req, res) => {
       .query(`SELECT 
               distrito_electoral
               FROM cat_secciones
-              WHERE seccion_electoral = RIGHT('0000' + @idSeccion, 4);`);
+              WHERE seccion_electoral =@idSeccion;`);
 
 
     if (result.recordset.length > 0) {
