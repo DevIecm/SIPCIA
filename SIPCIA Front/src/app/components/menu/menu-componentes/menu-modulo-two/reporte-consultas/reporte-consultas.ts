@@ -139,7 +139,7 @@ export class ReporteConsultas implements OnInit {
   }
 
   onValidateInfo() {
-    this.router.navigate(['/menu']);
+    this.router.navigate(['/inicio']);
   };
 
   openModal(id: number | undefined) {

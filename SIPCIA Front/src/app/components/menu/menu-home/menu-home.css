@@ -16,9 +16,9 @@
 }
 
 .div-redondeado-right {
+    max-width: 610px;
     padding: 20px;
-    width: 230px;
-    height: 4px;
+    max-height: 4px;
     color: #f4f4f4!important;
     background-color: #9B3BCA!important;
     border-top-right-radius: 30px;

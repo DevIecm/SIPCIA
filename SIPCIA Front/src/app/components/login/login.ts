@@ -31,7 +31,10 @@ export class Login implements OnInit {
   tipoUsuario: number | number = 0;
 
   ngOnInit() {
-    sessionStorage.removeItem('key');
+
+    sessionStorage.clear();
+    this.LoginForm();
+    
     if(localStorage.getItem("modulo") === "1" ){
       this.textoFormulario = "Acceso Distrital";
     } else if(localStorage.getItem("modulo") === "2"){
@@ -42,28 +45,7 @@ export class Login implements OnInit {
       this.textoFormulario = "Inscripción de datos de contacto de instancias representarivas autoridades tradicionales";
     }
 
-    this.formularioLogin = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
-    });
-
     this.tipoUsuario = Number(localStorage.getItem("modulo"));
-    
-    sessionStorage.removeItem('key');
-    sessionStorage.removeItem('dir');
-    sessionStorage.removeItem('tipoUsuario');
-    sessionStorage.removeItem('nameUsuario');
-    sessionStorage.removeItem("cargo_usuario");
-    sessionStorage.removeItem("id_usuario");
-    sessionStorage.removeItem("cabecera");
-    sessionStorage.removeItem("doc1");
-    sessionStorage.removeItem("doc2");
-    sessionStorage.removeItem("doc3");
-    sessionStorage.removeItem("doc4");
-    sessionStorage.removeItem("doc5");
-    sessionStorage.removeItem("doc6");
-    sessionStorage.removeItem("doc7");
-    sessionStorage.removeItem("modDoc");
   }
 
   constructor(
@@ -73,15 +55,20 @@ export class Login implements OnInit {
     private crypt: Decrypt
   ) {}
 
+  LoginForm() {
+    this.formularioLogin = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
+
   onSubmit() {
     try {
       if(this.formularioLogin?.valid){
-        
         this.auth.login(this.formularioLogin?.value.username, sha256(this.formularioLogin?.value.password), this.tipoUsuario).subscribe({
           next: (resp) => {
 
             const res = this.crypt.decryptResponse(resp.data);
-
             sessionStorage.setItem("key", res.token);
             sessionStorage.setItem("dir", res.userData.adscripcion_usuario);
             sessionStorage.setItem("tipoUsuario", res.userData.tipo_usuario);
@@ -90,7 +77,6 @@ export class Login implements OnInit {
             sessionStorage.setItem("id_usuario", res.userData.id);
             sessionStorage.setItem("area", res.userData.area_adscripcion);
             sessionStorage.setItem("cabecera", res.userData.distrito); 
-            
             sessionStorage.setItem("doc1", res.userData.documento_1);
             sessionStorage.setItem("doc2", res.userData.documento_2);
             sessionStorage.setItem("doc3", res.userData.documento_3);
@@ -99,8 +85,7 @@ export class Login implements OnInit {
             sessionStorage.setItem("doc6", res.userData.documento_6);
             sessionStorage.setItem("doc7", res.userData.documento_7);
             sessionStorage.setItem("modDoc", res.userData.modDoc);
-
-            this.router.navigate(['/menu']);
+            this.router.navigate(['/inicio']);
              
            },
            error: (err) => {

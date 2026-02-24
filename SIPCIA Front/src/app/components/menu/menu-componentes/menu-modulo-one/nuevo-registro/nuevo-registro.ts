@@ -386,11 +386,11 @@ export class NuevoRegistro implements OnInit{
         cancelButtonColor: "#9D75CA",
       }).then((result) => {
         if (result.isConfirmed) {
-          this.router.navigate(['/menu']);
+          this.router.navigate(['/inicio']);
         }
       });
     } else {
-      this.router.navigate(['/menu']);
+      this.router.navigate(['/inicio']);
     }
   };
   

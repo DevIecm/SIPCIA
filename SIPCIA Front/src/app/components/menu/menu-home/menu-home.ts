@@ -63,107 +63,107 @@ export class MenuHome implements OnInit{
   }
 
   goToRegistro(){
-    this.router.navigate(['nregistro']);
+    this.router.navigate(['nuevo-registro']);
   }
 
   goToDIndigenas(){
     localStorage.setItem('moduloClicked', '1.2');
-    this.router.navigate(['dindigenas']);
+    this.router.navigate(['directorio-instancias-indigenas']);
   }
 
   goToDAfro(){
     localStorage.setItem('moduloClicked', '1.3');
-    this.router.navigate(['dafroamericanas']);
+    this.router.navigate(['directorio-instancias-afromexicanas']);
   }
 
   goToRepresentativas(){
-    this.router.navigate(['representativas']);
+    this.router.navigate(['reporte-instancias-representativas']);
   }
 
   goToRComunitarias(){
-    this.router.navigate(['rcomunitaria']);
+    this.router.navigate(['registro-lugares-mayor-afluencia-comunitaria']);
   }
 
   goToPComunitaria(){
-    this.router.navigate(['pcomunitaria']);
+    this.router.navigate(['propuesta-lugares-asambleas-comunitarias']);
   }
 
   goToRConsultas(){
-    this.router.navigate(['rconsultas']);
+    this.router.navigate(['reporte-atencion-distrital-consultas']);
   }
 
   goToCAcompanamiento(){
-    this.router.navigate(['cacompanamiento']);
+    this.router.navigate(['catalogo-instituciones-personas']);
   }
 
   goToDNIndigenas(){
-    this.router.navigate(['dnindigenas']);
+    this.router.navigate(['documentos-consultas-indigenas']);
   }
 
   goToDNIAfro(){
-    this.router.navigate(['dnafroamericanas']);
+    this.router.navigate(['documentos-consultas-afromexicanas']);
   }
 
   //Modulo 2
 
   goToRegistroTwo() {
-    this.router.navigate(['nregistro-deoeyg']);
+    this.router.navigate(['nuevo-registro-deoeyg']);
     localStorage.setItem('moduloClicked', '2.1');
   }
   
   goToDIndigenasTwo() {
     localStorage.setItem('moduloClicked', '2.2');
-    this.router.navigate(['dirndigenas-deoeyg']);
+    this.router.navigate(['directorio-general-comunidades-indigenas']);
   }
 
   goToDAfroTwo() {
     localStorage.setItem('moduloClicked', '2.3');
-    this.router.navigate(['dafroamericanas-deoeyg']);
+    this.router.navigate(['directorio-general-comunidades-afromexicanas']);
   }
 
   goToCTecinas() {
-    this.router.navigate(['ctecnicas-deoeyg']);
+    this.router.navigate(['consulta-datos-iecm']);
   }
 
   goToCAfro() {
-    this.router.navigate(['cafro-deoeyg']);
+    this.router.navigate(['consulta-datos-intancias']);
   }
   
   goToRRepre() {
-    this.router.navigate(['rrepresentativas-deoeyg']);
+    this.router.navigate(['reporte-instancias-representativas-deoeyg']);
   }
 
   goToRComunitaria() {
-    this.router.navigate(['rcomunitaria-deoeyg']);
+    this.router.navigate(['registro-lugares-mayor-afluencia-comunitaria-deoeyg']);
   }
   
   goToPCom() {
-    this.router.navigate(['pcomunitarias-deoeyg']);
+    this.router.navigate(['propuesta-lugares-asambleas-comunitarias-deoeyg']);
   }
   
   goToRC() {
-    this.router.navigate(['rconsultas-deoeyg']);
+    this.router.navigate(['reporte-atencion-distrital-consultas-deoeyg']);
   }
   
   goToCA() {
-    this.router.navigate(['cacmpa-deoeyg']);
+    this.router.navigate(['catalogo-instituciones-personas-deoeyg']);
   }
 
   goToDI() {
-    this.router.navigate(['dindigenas-deoeyg']);
+    this.router.navigate(['documentos-consultas-indigenas-deoeyg']);
   }
 
   goToDAf() {
-    this.router.navigate(['dafro-deoeyg']);
+    this.router.navigate(['documentos-consultas-afromexicanas-deoeyg']);
   }
 
   //Modulo 3
 
   goToRegister() {
-    this.router.navigate(['/moduloRegistro']);
+    this.router.navigate(['/registro-iecm']);
   }
 
   goControl() {
-    this.router.navigate(['ccontrol-deoeyg'])
+    this.router.navigate(['centro-control'])
   }
 }

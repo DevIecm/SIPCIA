@@ -152,7 +152,7 @@ export class DirectorioAfroamericanas implements OnInit {
   }
 
   onValidateInfo() {
-    this.router.navigate(['/menu']);
+    this.router.navigate(['/inicio']);
   };
 
   sortData(column: string) {

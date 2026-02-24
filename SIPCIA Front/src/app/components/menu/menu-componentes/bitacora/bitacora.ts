@@ -84,11 +84,11 @@ export class Bitacora implements OnInit {
 
 
   onValidateInfo() {
-    this.router.navigate(['/menu']);
+    this.router.navigate(['/inicio']);
     if(this.tipoUsuario === 1) {
-      this.router.navigate(['/menu']);
+      this.router.navigate(['/inicio']);
     } else if(this.tipoUsuario === 2) {
-      this.router.navigate(['/menu']);
+      this.router.navigate(['/inicio']);
     }
   };
 

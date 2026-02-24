@@ -208,7 +208,7 @@ export class ConsultaAfromexicana implements OnInit {
   }
 
   onValidateInfo() {
-    this.router.navigate(['/menu']);
+    this.router.navigate(['/inicio']);
   };
 
   logout() {
