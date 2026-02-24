@@ -6,6 +6,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import CryptoJS from 'crypto-js';
 
+import nodemailer from 'nodemailer';
+
 const router = express.Router();
 const secretKey = process.env.JWT_KEY;
 dotenv.config();
@@ -15,6 +17,39 @@ function encryptSHA256(text) {
     hash.update(text);
     return hash.digest('hex');
 }
+
+router.post('/email', async (req, res) => {
+  try {
+    const { to, subject, text, html } = req.body;
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // STARTTLS
+      auth: {
+        user: 'luisenrique6142@gmail.com',
+        pass: 'oxmy okyn gysx wvtn',
+      },
+      tls: {
+        rejectUnauthorized: false
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: '"Enrique Pérez" <luisenrique6142@gmail.com>',
+      to,
+      subject,
+      text,
+      html,
+    });
+
+    res.status(200).json({ message: "Correo enviado", info });
+
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ message: "Error enviando correo", error });
+  }
+});
 
 router.post("/loginEncrypt", async (req, res) => {
     try {
