@@ -54,6 +54,21 @@ export class Home implements OnInit{
 
   onSubmit(modulo: number){
     this.router.navigate(['/login']);
-    localStorage.setItem('modulo', modulo.toString());
-  }
-}
+    localStorage.setItem('modulo', "1");
+  };
+
+  onSubmitModulo2(){
+    this.router.navigate(['/login']);
+    localStorage.setItem('modulo', "2");
+  };
+
+  onSubmitModulo3(){
+    this.router.navigate(['/login']);
+    localStorage.setItem('modulo', "3");
+  };
+  
+  onSubmitModulo4(){
+    this.router.navigate(['/modulo']);
+    localStorage.setItem('modulo', "4");
+  }; 
+} 
