@@ -15,44 +15,55 @@ export class Home implements OnInit{
   isActive: boolean = false;
 
   ngOnInit(): void {
+
     this.getInfo();
-    sessionStorage.clear();
+
+    sessionStorage.removeItem('key');
+    sessionStorage.removeItem("dir");
+    sessionStorage.removeItem("tipoUsuario");
+    sessionStorage.removeItem("nameUsuario");
+    sessionStorage.removeItem("cargo_usuario");
+    sessionStorage.removeItem('area');
+    sessionStorage.removeItem('cabecera');
+    sessionStorage.removeItem('id_usuario');
   }
 
-  constructor(
+   constructor(
     private router: Router, 
     private auth: Auth,
   ) {}
 
   getInfo() {
-    try {
-      this.auth.getData(4).subscribe({
-        next: (resp) => {
-            this.result = resp.estado_sistema;
-            this.isActive = resp.estado_sistema[0].estado_sistema;
-          },
-          error: (err) => {
-            if(err.error.code === 401){
-              Swal.fire({
-                icon: "error",
-                title: "Usuario inactivo",
-                text: "Por favor contacta al Administrador del Sistema",
-              });
-            } else if(err.error.code === 101) {
-              Swal.fire({
-                icon: "error",
-                title: "Usuario no encontrado",
-                text: "Por favor contacta al Administrador del Sistema",
-              });
-            }
-          }
-      });
-    } catch (error) {
-      console.error("Error al iniciar sesión", error);
-    }
-  }
+      try {
+          
+        this.auth.getData(4).subscribe({
+          next: (resp) => {
 
-  onSubmit(modulo: number){
+              this.result = resp.estado_sistema;
+              this.isActive = resp.estado_sistema[0].estado_sistema;
+            },
+            error: (err) => {
+              if(err.error.code === 401){
+                Swal.fire({
+                  icon: "error",
+                  title: "Usuario inactivo",
+                  text: "Por favor contacta al Administrador del Sistema",
+                });
+              } else if(err.error.code === 101) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Usuario no encontrado",
+                  text: "Por favor contacta al Administrador del Sistema",
+                });
+              }
+            }
+        });
+      } catch (error) {
+        console.error("Error al iniciar sesión", error);
+      }
+    }
+
+  onSubmitModulo1(){
     this.router.navigate(['/login']);
     localStorage.setItem('modulo', "1");
   };
@@ -68,7 +79,7 @@ export class Home implements OnInit{
   };
   
   onSubmitModulo4(){
-    this.router.navigate(['/modulo']);
+    this.router.navigate(['/ciudadania']);
     localStorage.setItem('modulo', "4");
   }; 
-} 
+}
