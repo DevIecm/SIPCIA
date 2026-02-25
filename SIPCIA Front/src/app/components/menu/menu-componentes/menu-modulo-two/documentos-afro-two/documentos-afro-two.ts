@@ -107,7 +107,7 @@ export class DocumentosAfroTwo implements OnInit{
 
     const formData = new FormData();
     formData.append('archivoZip', this.selectedFile);
-    formData.append('distrito', this.area_adscripcion.toString());
+    formData.append('distrito', '');
     formData.append('tipo_comunidad', "2");
     formData.append('estado_documento', estado_documento.toString());
     formData.append('tipo_documento', tipo_documento.toString());

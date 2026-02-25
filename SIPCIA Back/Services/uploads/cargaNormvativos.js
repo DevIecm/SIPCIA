@@ -41,13 +41,20 @@ const upload = multer({
 
 // guardar documentos .zip
 router.post("/subirDocumentoNormativo", Midleware.verifyToken, upload.single("archivoZip"), async (req, res) => {
-  const { distrito, tipo_comunidad, estado_documento, tipo_documento } = req.body;
+
+    const {
+      distrito,
+      tipo_comunidad,
+      estado_documento,
+      tipo_documento
+    } = req.body;
+
+  const distritoFinal = distrito ? parseInt(distrito) : null;
 
 
-  if (!distrito || !tipo_comunidad || !estado_documento || !tipo_documento) {
+  if (!tipo_comunidad || !estado_documento || !tipo_documento) {
     const faltantes = [];
 
-    if (!distrito) faltantes.push("distrito");
     if (!tipo_comunidad) faltantes.push("tipo_comunidad");
     if (!estado_documento) faltantes.push("estado_documento");
     if (!tipo_documento) faltantes.push("tipo_documento");
@@ -79,7 +86,7 @@ router.post("/subirDocumentoNormativo", Midleware.verifyToken, upload.single("ar
 
     const request = transaction.request();
     await request
-      .input('distrito', sql.Int, distrito)
+      .input('distrito', sql.Int, distritoFinal)
       .input('nombre_documento', sql.VarChar, nombreDocumento)
       .input('direccion_documento', sql.VarChar, rutaDocumento)
       .input('tipo_comunidad', sql.Int, tipo_comunidad)

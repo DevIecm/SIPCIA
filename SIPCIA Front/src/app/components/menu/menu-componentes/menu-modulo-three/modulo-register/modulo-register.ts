@@ -68,8 +68,12 @@ export class ModuloRegister implements OnInit{
   fileUploaded: boolean = false;
   selectedFile: File | null = null;
 
+  distrito_electoral: any = [];
   
   isActive: boolean = false;
+
+  
+  isActive3: boolean = false;
 
   constructor(
     private service: Auth, 
@@ -85,7 +89,7 @@ export class ModuloRegister implements OnInit{
       nombre_completo: ['', Validators.required],
       seccion_electoral: [''],
       demarcacion: [''],
-      duninominal: [{ value: '', disabled: true }],
+      duninominal: [{ value: '', disabled: false }],
       scomunidad: [''],
 
       ooriginario: [''],
@@ -124,6 +128,8 @@ export class ModuloRegister implements OnInit{
     this.id_usuario = Number(sessionStorage.getItem('id_usuario')!);
     this.originalFormData = this.formularioRegistro.getRawValue();
     this.catalogo_comunidad();
+    
+    this.catalogo_demarcacion_All();
 
     this.area = sessionStorage.getItem('modDoc')!;
     
@@ -160,31 +166,99 @@ export class ModuloRegister implements OnInit{
     this.selectedFile = null;
   }
 
-  changeSeccion(){
-    this.getSeccion();
+  changeSeccion() {
+
+    const seccion = this.formularioRegistro?.get('seccion_electoral')?.value;
+    this.isActive3= false;
+    this.formularioRegistro?.get('demarcacion')?.setValue('')
+    this.formularioRegistro?.get('duninominal')?.setValue('');
+
+    if (!seccion) {
+    this.isActive3= true;
+    this.catalogo_demarcacion_All();
+    } else{
+      this.getSeccion();
+    }
   }
 
-  getSeccion(){
-    this.serviceRegister.getSeccion((this.formularioRegistro?.get('seccion_electoral')?.value), this.tokenSesion).subscribe({
+   onDemarcacionChange() {    
+    if(!this.isActive3){
+       this.cat_distritos();
+    }
+  }
+
+  catalogo_demarcacion_All() {
+    this.catalogos.getCatalogos(null,"cat_demarcacion_territorial_all", this.tokenSesion).subscribe({
       next: (data) => {
-
-        const distritos = data as { distrito_electoral: number }[];
-        this.distritoElectoral = distritos[0]?.distrito_electoral;
-        this.formularioRegistro?.get('duninominal')?.setValue(this.distritoElectoral);
-        this.catalogo_demarcacion();
-
-        if (this.formularioRegistro) {
-          this.formularioRegistro.get('scomunidad')?.enable();
+        if(data.cat_demarcacion_territorial.length > 0) {
+          this.catalogoDemarcacion = data.cat_demarcacion_territorial;
         }
-
       }, error: (err) => {
         if(err.error.code === 160) {
           this.service.cerrarSesionByToken();
         }
       }
     });
+  };
+  
+  cat_distritos() {
+    this.catalogos.getdistritoBydemarcacion(
+      Number(this.formularioRegistro?.get('demarcacion')?.value),
+      this.tokenSesion
+    ).subscribe({
+      next: (data) => {
+        console
+        if (data.distritoByDemarcacion?.length > 0) {
+
+          this.distrito_electoral = data.distritoByDemarcacion.map((d: any) => ({
+            id: d.distrito,
+            distrito: d.distrito
+          }));
+/*
+          this.formularioRegistro?.get('duninominal')
+            ?.setValue(this.distrito_electoral[0].distrito);
+             */
+
+        }
+      }
+    });
   }
 
+  getSeccion() {
+    this.serviceRegister.getSeccion(
+      this.formularioRegistro?.get('seccion_electoral')?.value, 
+      this.tokenSesion
+    ).subscribe({
+      next: (data) => {
+
+        const distritos = data as { distrito_electoral: number, distrito?: string }[];
+
+        if (distritos.length > 0) {
+
+          this.distritoElectoral = distritos[0].distrito_electoral;
+
+          this.distrito_electoral = [{
+            id: this.distritoElectoral,
+            distrito: `${this.distritoElectoral}`
+          }];
+
+          this.formularioRegistro?.get('duninominal')
+            ?.setValue(this.distritoElectoral);
+
+        }
+
+        this.catalogo_demarcacion();
+
+        this.formularioRegistro?.get('scomunidad')?.enable();
+
+      },
+      error: (err) => {
+        if (err.error.code === 160) {
+          this.service.cerrarSesionByToken();
+        }
+      }
+    });
+  }
   onChangeComunidad() {
     if(this.opcionComunidad == 1) {
       this.showIndigenas = true;

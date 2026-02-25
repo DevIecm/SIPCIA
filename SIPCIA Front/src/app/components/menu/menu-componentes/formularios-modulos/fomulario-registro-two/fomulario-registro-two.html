@@ -51,7 +51,7 @@
               </div>
 
               <div class="container text-center">
-                <div class="row">
+                <div class="row align-items-start">
                   <div class="col">
                     <div class="mb-3">
                       <label class="form-label">Sección Electoral:</label>
@@ -69,6 +69,7 @@
                       <label class="form-label">Demarcación:</label>
                       <select 
                         formControlName="demarcacion"
+                        (change)="onDemarcacionChange()"
                         class="select-input form-select" 
                         aria-label="Default select example"
                       >
@@ -77,16 +78,22 @@
                           <option [value]="item.id">{{item.demarcacion_territorial}}</option>
                         }
                       </select>
-                    </div>
+                    </div>                  
                   </div>
                   <div class="col">
-                    <div class="mb-3">
-                      <label class="form-label">Distrito Electoral Local Uninominal:</label>
-                      <input 
-                        type="text"
+                      <label class="form-label">Distrito Electoral Local Uninominalub:</label>
+                      <select 
                         formControlName="duninominal"
-                        class="form-control">
-                    </div>
+                        class="select-input form-select"
+                      >
+                        <option [ngValue]="null" disabled>Seleccione una opción</option>
+
+                        @for (item of distrito_electoral; track item) {
+                          <option [ngValue]="item.id">
+                            {{item.distrito}}
+                          </option>
+                        }
+                      </select>
                   </div>
                 </div>
                 <div class="row">

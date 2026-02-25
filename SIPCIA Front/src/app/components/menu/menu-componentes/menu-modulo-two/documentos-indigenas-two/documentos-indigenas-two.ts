@@ -110,7 +110,7 @@ export class DocumentosIndigenasTwo implements OnInit{
 
     const formData = new FormData();
     formData.append('archivoZip', this.selectedFile);
-    formData.append('distrito', this.area_adscripcion.toString());//manda 34 para todos
+    formData.append('distrito', '');//manda null para todos
     formData.append('tipo_comunidad', "1");
     formData.append('estado_documento', estado_documento.toString());
     formData.append('tipo_documento', tipo_documento.toString());

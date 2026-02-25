@@ -170,7 +170,7 @@ router.patch("/updateAllDistritos", Midleware.verifyToken, async (req, res) => {
       .query(`
                 UPDATE adscripcion_usuario
                 SET estado_sistema = @estado_sistema
-                where id<>34;
+                where id<>35;
             `);
 
     await transaction.commit();

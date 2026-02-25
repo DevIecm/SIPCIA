@@ -118,8 +118,6 @@ router.post("/login", async (req, res) => {
         const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         const pool = await connectToDatabase();
 
-        
-        console.log("entraa", data);
 
         const result = await pool.request()
             .input('username', sql.VarChar, data.username)

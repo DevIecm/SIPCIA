@@ -52,4 +52,16 @@ export class Catalogos {
 
     return this.http.get(this.apiUrl + 'registro/getbyseccion', {headers, params}).pipe(catchError((error: HttpErrorResponse) => {return throwError(() => error);}));
   }; 
+
+  getdistritoBydemarcacion(id: number, token: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+      .set('id', id)
+
+    return this.http.get(this.apiUrl + 'catalogos/distritoByDemarcacion', {headers, params})
+      .pipe(catchError((error: HttpErrorResponse) => { return throwError(() => error); }))
+  }
 }
