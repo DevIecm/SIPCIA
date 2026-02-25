@@ -269,7 +269,9 @@
                                             @if(formId === 1){
                                                 <label class="form-label">Traducción en lengua indígena</label>
                                             }
-                                            <label class="form-label">Traducción de lengua</label>
+                                            @if(formId === 2){
+                                                <label class="form-label">Traducción de lengua</label>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -360,7 +362,7 @@
                                                         [disabled]="checksDisabled"
                                                         (change)="onCheckboxChange($event, 'lengua_tecnica_indigena')"
                                                         autocomplete="off">
-                                                    <label class="btn btn-toggle" for="btn-check-b">Mazteco</label>
+                                                    <label class="btn btn-toggle" for="btn-check-b">Mazateco</label>
                                                 </div>
                                                 <div class="col">
                                                     <input 
@@ -464,7 +466,7 @@
                                                         [disabled]="checksDisabled"
                                                         (change)="onCheckboxChange($event, 'traduccion_resumen_acta')"
                                                         autocomplete="off">
-                                                    <label class="btn btn-toggle" for="btn-check-h">Mazteco</label>
+                                                    <label class="btn btn-toggle" for="btn-check-h">Mazateco</label>
                                                 </div>
                                                 <div class="col">
                                                     <input 
