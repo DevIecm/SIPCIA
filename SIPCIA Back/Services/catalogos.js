@@ -416,7 +416,6 @@ router.get("/distritoElectoral", Midleware.verifyToken, async (req, res) => {
   try {
     const { idSeccion } = req.query;
 
-    console.log("idSeccion", idSeccion)
 
     if (!idSeccion) {
       return res.status(400).json({ message: "Datos requeridos" });
